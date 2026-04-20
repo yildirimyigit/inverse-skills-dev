@@ -1,0 +1,29 @@
+{
+  "name": "inverse-skills-dev",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspace/inverse-skills-dev",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "ms-azuretools.vscode-docker",
+        "tamasfe.even-better-toml",
+        "redhat.vscode-yaml",
+        "charliermarsh.ruff"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/opt/conda/envs/inverse-skills/bin/python",
+        "python.analysis.extraPaths": [
+          "/workspace/inverse-skills-dev/src"
+        ],
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+  "postCreateCommand": "micromamba run -n inverse-skills python -m pip install -e .",
+  "remoteUser": "mambauser"
+}

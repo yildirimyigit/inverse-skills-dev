@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "inverse-skills-dev"
+version = "0.1.0"
+description = "Development repository for inverse skill learning by restoring forward preconditions and effects."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  {name = "Yigit YILDIRIM"}
+]
+dependencies = []
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

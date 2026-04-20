@@ -1,0 +1,43 @@
+name: inverse-skills
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - ipykernel
+  - jupyterlab
+  - pytorch=2.4.*
+  - torchvision
+  - torchaudio
+  - pytorch-cuda=12.1
+  - tqdm
+  - pyyaml
+  - omegaconf
+  - hydra-core
+  - rich
+  - tensorboard
+  - wandb
+  - h5py
+  - imageio
+  - imageio-ffmpeg
+  - opencv
+  - einops
+  - pytest
+  - ruff
+  - black
+  - pip:
+      - gymnasium
+      - mani-skill
+      - tyro
+      - trimesh
+      - open3d
+      - transforms3d
+      - pyquaternion

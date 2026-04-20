@@ -1,0 +1,29 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: inverse-skills-dev:latest
+    container_name: inverse-skills-dev
+    working_dir: /workspace/inverse-skills-dev
+    stdin_open: true
+    tty: true
+    shm_size: "16gb"
+    volumes:
+      - ./:/workspace/inverse-skills-dev
+      - inverse-skills-micromamba:/opt/conda/pkgs
+    environment:
+      PYTHONUNBUFFERED: "1"
+      PYTHONPATH: /workspace/inverse-skills-dev/src
+      PROJECT_ROOT: /workspace/inverse-skills-dev
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: bash
+
+volumes:
+  inverse-skills-micromamba:
