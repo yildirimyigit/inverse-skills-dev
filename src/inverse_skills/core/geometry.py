@@ -6,95 +6,77 @@ from typing import Iterable
 import numpy as np
 
 
-def as_float_array(values: Iterable[float], expected_dim: int | None = None) -> np.ndarray:
+def as_float_array(values: Iterable[float], expected_len: int) -> np.ndarray:
     arr = np.asarray(list(values), dtype=np.float32)
-    if expected_dim is not None and arr.shape != (expected_dim,):
-        raise ValueError(f"Expected shape ({expected_dim},), got {arr.shape}")
+    if arr.shape != (expected_len,):
+        raise ValueError(f"Expected shape ({expected_len},), got {arr.shape}")
     return arr
 
 
-def normalize_quat_xyzw(quat: Iterable[float]) -> np.ndarray:
-    q = as_float_array(quat, 4)
-    n = float(np.linalg.norm(q))
-    if n < 1e-8:
-        raise ValueError("Quaternion norm is too close to zero")
-    return q / n
-
-
-def quat_alignment_distance_xyzw(q1: Iterable[float], q2: Iterable[float]) -> float:
-    """Sign-invariant quaternion distance in [0, 1].
-
-    Returns 0 for identical orientations and approaches 1 for orthogonal quaternions.
-    Quaternions are expected in xyzw convention.
-    """
-    qa = normalize_quat_xyzw(q1)
-    qb = normalize_quat_xyzw(q2)
-    return float(1.0 - abs(np.dot(qa, qb)))
-
-
-@dataclass(frozen=True)
+@dataclass
 class Pose:
-    """Rigid pose with position and xyzw quaternion."""
-
     position: np.ndarray
     quat_xyzw: np.ndarray
 
-    @classmethod
-    def identity(cls) -> "Pose":
-        return cls(position=np.zeros(3, dtype=np.float32), quat_xyzw=np.array([0, 0, 0, 1], dtype=np.float32))
-
-    @classmethod
-    def from_vector(cls, vector: Iterable[float]) -> "Pose":
-        arr = as_float_array(vector, 7)
-        return cls(position=arr[:3], quat_xyzw=normalize_quat_xyzw(arr[3:]))
-
-    def as_vector(self) -> np.ndarray:
-        return np.concatenate([self.position.astype(np.float32), self.quat_xyzw.astype(np.float32)])
-
-    def position_distance(self, other: "Pose") -> float:
-        return float(np.linalg.norm(self.position - other.position))
-
-    def orientation_distance(self, other: "Pose") -> float:
-        return quat_alignment_distance_xyzw(self.quat_xyzw, other.quat_xyzw)
+    def __post_init__(self) -> None:
+        self.position = as_float_array(self.position, 3)
+        self.quat_xyzw = as_float_array(self.quat_xyzw, 4)
 
     def weighted_distance(self, other: "Pose", quat_weight: float = 0.2) -> float:
-        return self.position_distance(other) + quat_weight * self.orientation_distance(other)
+        pos_dist = float(np.linalg.norm(self.position - other.position))
+        qa = self.quat_xyzw / max(np.linalg.norm(self.quat_xyzw), 1e-8)
+        qb = other.quat_xyzw / max(np.linalg.norm(other.quat_xyzw), 1e-8)
+        quat_alignment = float(abs(np.dot(qa, qb)))
+        quat_dist = 1.0 - quat_alignment
+        return pos_dist + quat_weight * quat_dist
 
     def to_dict(self) -> dict:
-        return {"position": self.position.tolist(), "quat_xyzw": self.quat_xyzw.tolist()}
+        return {
+            "position": self.position.tolist(),
+            "quat_xyzw": self.quat_xyzw.tolist(),
+        }
 
     @classmethod
     def from_dict(cls, data: dict) -> "Pose":
-        return cls(position=as_float_array(data["position"], 3), quat_xyzw=normalize_quat_xyzw(data["quat_xyzw"]))
+        return cls(position=data["position"], quat_xyzw=data["quat_xyzw"])
 
 
-@dataclass(frozen=True)
+@dataclass
 class Region:
-    """Axis-aligned box region used for source, target, support, or container slots."""
-
     name: str
-    center: np.ndarray
-    half_extents: np.ndarray
+    lower: np.ndarray
+    upper: np.ndarray
 
-    @classmethod
-    def from_bounds(cls, name: str, lower: Iterable[float], upper: Iterable[float]) -> "Region":
-        lo = as_float_array(lower, 3)
-        hi = as_float_array(upper, 3)
-        if np.any(hi <= lo):
-            raise ValueError("Every upper bound must be larger than the lower bound")
-        return cls(name=name, center=(lo + hi) / 2.0, half_extents=(hi - lo) / 2.0)
+    def __post_init__(self) -> None:
+        self.lower = as_float_array(self.lower, 3)
+        self.upper = as_float_array(self.upper, 3)
+        if np.any(self.lower >= self.upper):
+            raise ValueError("Region lower bounds must be strictly smaller than upper bounds")
 
-    def signed_margin(self, point: Iterable[float]) -> float:
-        """Positive inside, zero on boundary, negative outside."""
-        p = as_float_array(point, 3)
-        return float(np.min(self.half_extents - np.abs(p - self.center)))
+    @property
+    def center(self) -> np.ndarray:
+        return (self.lower + self.upper) / 2.0
 
-    def contains(self, point: Iterable[float]) -> bool:
-        return self.signed_margin(point) >= 0.0
+    def signed_margin(self, point: np.ndarray) -> float:
+        point = as_float_array(point, 3)
+        lower_margin = point - self.lower
+        upper_margin = self.upper - point
+        if np.all(lower_margin >= 0.0) and np.all(upper_margin >= 0.0):
+            return float(np.min(np.minimum(lower_margin, upper_margin)))
+        outside = np.maximum(self.lower - point, 0.0) + np.maximum(point - self.upper, 0.0)
+        return -float(np.linalg.norm(outside))
 
     def to_dict(self) -> dict:
-        return {"name": self.name, "center": self.center.tolist(), "half_extents": self.half_extents.tolist()}
+        return {
+            "name": self.name,
+            "lower": self.lower.tolist(),
+            "upper": self.upper.tolist(),
+        }
 
     @classmethod
     def from_dict(cls, data: dict) -> "Region":
-        return cls(name=data["name"], center=as_float_array(data["center"], 3), half_extents=as_float_array(data["half_extents"], 3))
+        return cls(name=data["name"], lower=data["lower"], upper=data["upper"])
+
+    @classmethod
+    def from_bounds(cls, name: str, lower: Iterable[float], upper: Iterable[float]) -> "Region":
+        return cls(name=name, lower=lower, upper=upper)

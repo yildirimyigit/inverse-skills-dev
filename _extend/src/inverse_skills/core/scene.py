@@ -86,9 +86,6 @@ class SceneGraph:
         except KeyError as exc:
             raise KeyError(f"Region '{name}' is not present in scene") from exc
 
-    def copy(self, timestep: int | None = None) -> "SceneGraph":
-        return SceneGraph.from_dict({**self.to_dict(), "timestep": self.timestep if timestep is None else int(timestep)})
-
     def to_dict(self) -> dict:
         return {
             "timestep": int(self.timestep),

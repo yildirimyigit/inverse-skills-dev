@@ -60,6 +60,8 @@ class Predicate(ABC):
 
 
 class PredicateRegistry:
+    """Small helper that evaluates and retrieves predicate instances by key."""
+
     def __init__(self, predicates: Iterable[Predicate]):
         self._predicates = {predicate.key: predicate for predicate in predicates}
 

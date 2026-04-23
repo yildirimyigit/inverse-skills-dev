@@ -1,3 +1,3 @@
-from .rollout import ForwardRollout, ForwardRolloutLogger, load_rollout
+from inverse_skills.logging.rollout import ForwardRollout
 
-__all__ = ["ForwardRollout", "ForwardRolloutLogger", "load_rollout"]
+__all__ = ["ForwardRollout"]

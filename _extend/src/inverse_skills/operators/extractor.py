@@ -22,6 +22,12 @@ class OperatorExtractionResult:
 
 
 class OperatorExtractor:
+    """Extracts a first simple operator from successful forward rollouts.
+
+    This intentionally uses only first and final scenes. It gives us a robust baseline before
+    we add temporal segmentation, causal filtering, or learned role binding.
+    """
+
     def __init__(self, predicate_registry: PredicateRegistry, config: OperatorExtractionConfig | None = None):
         self.predicates = predicate_registry
         self.config = config or OperatorExtractionConfig()

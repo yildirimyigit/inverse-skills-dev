@@ -6,6 +6,8 @@ from inverse_skills.predicates.base import PredicateRegistry
 
 
 class RestorationObjective:
+    """Dense inverse objective induced by a learned forward operator."""
+
     def __init__(self, operator: LearnedOperator, predicate_registry: PredicateRegistry):
         self.operator = operator
         self.predicates = predicate_registry
