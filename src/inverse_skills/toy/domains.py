@@ -10,11 +10,41 @@ from inverse_skills.predicates import GripperOpenPredicate, HoldingPredicate, In
 IDENTITY_QUAT = np.array([0.0, 0.0, 0.0, 1.0], dtype=np.float32)
 
 
-def base_regions() -> dict[str, Region]:
+def named_regions(source_name: str = "source", target_name: str = "target") -> dict[str, Region]:
     return {
-        "source": Region.from_bounds("source", lower=[-0.15, -0.15, -0.05], upper=[0.15, 0.15, 0.10]),
-        "target": Region.from_bounds("target", lower=[0.35, -0.15, -0.05], upper=[0.65, 0.15, 0.10]),
+        source_name: Region.from_bounds(source_name, lower=[-0.15, -0.15, -0.05], upper=[0.15, 0.15, 0.10]),
+        target_name: Region.from_bounds(target_name, lower=[0.35, -0.15, -0.05], upper=[0.65, 0.15, 0.10]),
     }
+
+
+def base_regions() -> dict[str, Region]:
+    return named_regions("source", "target")
+
+
+def make_scene_named(
+    timestep: int,
+    object_name: str,
+    object_position: list[float],
+    *,
+    source_name: str = "source",
+    target_name: str = "target",
+    holding: str | None = None,
+    gripper_width: float = 0.08,
+    skill_name: str | None = None,
+) -> SceneGraph:
+    obj = ObjectState(
+        name=object_name,
+        semantic_class="box",
+        pose=Pose(position=np.asarray(object_position, dtype=np.float32), quat_xyzw=IDENTITY_QUAT),
+    )
+    robot = RobotState(q=np.zeros(7, dtype=np.float32), gripper_width=gripper_width, holding=holding)
+    return SceneGraph(
+        timestep=timestep,
+        robot=robot,
+        objects={object_name: obj},
+        regions=named_regions(source_name, target_name),
+        metadata={} if skill_name is None else {"skill_name": skill_name},
+    )
 
 
 def make_scene(
@@ -25,18 +55,15 @@ def make_scene(
     gripper_width: float = 0.08,
     skill_name: str | None = None,
 ) -> SceneGraph:
-    cube = ObjectState(
-        name="cube",
-        semantic_class="box",
-        pose=Pose(position=np.asarray(object_position, dtype=np.float32), quat_xyzw=IDENTITY_QUAT),
-    )
-    robot = RobotState(q=np.zeros(7, dtype=np.float32), gripper_width=gripper_width, holding=holding)
-    return SceneGraph(
+    return make_scene_named(
         timestep=timestep,
-        robot=robot,
-        objects={"cube": cube},
-        regions=base_regions(),
-        metadata={} if skill_name is None else {"skill_name": skill_name},
+        object_name="cube",
+        object_position=object_position,
+        source_name="source",
+        target_name="target",
+        holding=holding,
+        gripper_width=gripper_width,
+        skill_name=skill_name,
     )
 
 
@@ -60,10 +87,14 @@ def make_push_rollouts(num_rollouts: int = 3) -> list[ForwardRollout]:
     return rollouts
 
 
-def build_predicate_registry() -> PredicateRegistry:
+def build_predicate_registry(
+    object_name: str = "cube",
+    source_name: str = "source",
+    target_name: str = "target",
+) -> PredicateRegistry:
     return PredicateRegistry([
-        InRegionPredicate("cube", "source"),
-        InRegionPredicate("cube", "target"),
+        InRegionPredicate(object_name, source_name),
+        InRegionPredicate(object_name, target_name),
         GripperOpenPredicate(min_width=0.04),
-        HoldingPredicate("cube"),
+        HoldingPredicate(object_name),
     ])
