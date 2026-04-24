@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
+      args:
+        NEW_MAMBA_USER_ID: "${LOCAL_UID:-1000}"
+        NEW_MAMBA_USER_GID: "${LOCAL_GID:-1000}"
     image: inverse-skills-dev:latest
     container_name: inverse-skills-dev
     working_dir: /workspace/inverse-skills-dev
@@ -16,6 +19,7 @@ services:
       PYTHONUNBUFFERED: "1"
       PYTHONPATH: /workspace/inverse-skills-dev/src
       PROJECT_ROOT: /workspace/inverse-skills-dev
+      HOME: /tmp/mamba-home
     deploy:
       resources:
         reservations:
@@ -23,7 +27,7 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-    command: bash
+    command: sleep infinity
 
 volumes:
   inverse-skills-micromamba:

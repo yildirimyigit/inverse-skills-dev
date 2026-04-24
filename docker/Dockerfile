@@ -1,7 +1,14 @@
 FROM mambaorg/micromamba:2.3.0-cuda12.1.1-ubuntu22.04
 
+ARG NEW_MAMBA_USER_ID=1000
+ARG NEW_MAMBA_USER_GID=1000
+
 USER root
 ENV DEBIAN_FRONTEND=noninteractive
+
+RUN groupmod --gid "${NEW_MAMBA_USER_GID}" "${MAMBA_USER}" && \
+    usermod --uid "${NEW_MAMBA_USER_ID}" --gid "${NEW_MAMBA_USER_GID}" "${MAMBA_USER}" && \
+    chown -R "${MAMBA_USER}:${MAMBA_USER}" /home/"${MAMBA_USER}" /opt/conda
 
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
