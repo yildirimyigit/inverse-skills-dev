@@ -98,3 +98,67 @@ def build_predicate_registry(
         GripperOpenPredicate(min_width=0.04),
         HoldingPredicate(object_name),
     ])
+
+
+def make_scene_named_with_distractor(
+    timestep: int,
+    object_name: str,
+    object_position: list[float],
+    *,
+    distractor_name: str,
+    distractor_position: list[float],
+    source_name: str = "source",
+    target_name: str = "target",
+    holding: str | None = None,
+    gripper_width: float = 0.08,
+    skill_name: str | None = None,
+) -> SceneGraph:
+    obj = ObjectState(
+        name=object_name,
+        semantic_class="box",
+        pose=Pose(position=np.asarray(object_position, dtype=np.float32), quat_xyzw=IDENTITY_QUAT),
+    )
+    distractor = ObjectState(
+        name=distractor_name,
+        semantic_class="box",
+        pose=Pose(position=np.asarray(distractor_position, dtype=np.float32), quat_xyzw=IDENTITY_QUAT),
+    )
+    robot = RobotState(q=np.zeros(7, dtype=np.float32), gripper_width=gripper_width, holding=holding)
+    return SceneGraph(
+        timestep=timestep,
+        robot=robot,
+        objects={
+            object_name: obj,
+            distractor_name: distractor,
+        },
+        regions=named_regions(source_name, target_name),
+        metadata={} if skill_name is None else {"skill_name": skill_name},
+    )
+
+
+def build_predicate_registry_grasp_hold(
+    object_name: str = "cube",
+    source_name: str = "source",
+) -> PredicateRegistry:
+    return PredicateRegistry([
+        InRegionPredicate(object_name, source_name),
+        GripperOpenPredicate(min_width=0.04),
+        HoldingPredicate(object_name),
+    ])
+
+
+def build_predicate_registry_with_distractor(
+    object_name: str,
+    source_name: str,
+    target_name: str,
+    distractor_name: str,
+) -> PredicateRegistry:
+    return PredicateRegistry([
+        InRegionPredicate(object_name, source_name),
+        InRegionPredicate(object_name, target_name),
+        InRegionPredicate(distractor_name, source_name),
+        InRegionPredicate(distractor_name, target_name),
+        GripperOpenPredicate(min_width=0.04),
+        HoldingPredicate(object_name),
+        HoldingPredicate(distractor_name),
+    ])

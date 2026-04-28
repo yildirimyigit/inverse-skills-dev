@@ -55,7 +55,9 @@ class ToyInversePlanner:
 
         return PlanResult(False, best_actions, best_score, expanded_nodes=expanded)
 
-    @staticmethod
-    def _state_key(scene: SceneGraph) -> tuple:
-        cube_pos = tuple(round(v, 3) for v in scene.get_object("cube").pose.position.tolist())
-        return (cube_pos, scene.robot.holding, round(scene.robot.gripper_width, 3))
+    def _state_key(self, scene: SceneGraph) -> tuple:
+        obj_pos = tuple(
+            round(v, 3)
+            for v in scene.get_object(self.primitives.object_name).pose.position.tolist()
+        )
+        return (obj_pos, scene.robot.holding, round(scene.robot.gripper_width, 3))

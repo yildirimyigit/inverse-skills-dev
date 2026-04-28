@@ -7,7 +7,11 @@ from typing import Any, Literal
 
 from inverse_skills.core import SceneGraph
 from inverse_skills.logging import ForwardRollout
-from inverse_skills.operators.schema import LearnedOperator, PredicateTerm
+from inverse_skills.operators.schema import (
+    LearnedOperator,
+    PredicateTerm,
+    _canonicalize_terms,
+)
 
 
 Polarity = Literal["positive", "negative"]
@@ -39,14 +43,20 @@ class ParameterizedOperatorTemplate:
     bindings: dict[str, str] = field(default_factory=dict)
     metadata: dict[str, Any] = field(default_factory=dict)
 
+    def __post_init__(self) -> None:
+        self.preconditions = _canonicalize_terms(self.preconditions)
+        self.add_effects = _canonicalize_terms(self.add_effects)
+        self.delete_effects = _canonicalize_terms(self.delete_effects)
+        self.inverse_target_terms = _canonicalize_terms(self.inverse_target_terms)
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "skill_name": self.skill_name,
             "parameters": self.parameters,
-            "preconditions": [t.to_dict() for t in self.preconditions],
-            "add_effects": [t.to_dict() for t in self.add_effects],
-            "delete_effects": [t.to_dict() for t in self.delete_effects],
-            "inverse_target_terms": [t.to_dict() for t in self.inverse_target_terms],
+            "preconditions": [t.to_dict() for t in _canonicalize_terms(self.preconditions)],
+            "add_effects": [t.to_dict() for t in _canonicalize_terms(self.add_effects)],
+            "delete_effects": [t.to_dict() for t in _canonicalize_terms(self.delete_effects)],
+            "inverse_target_terms": [t.to_dict() for t in _canonicalize_terms(self.inverse_target_terms)],
             "bindings": self.bindings,
             "metadata": self.metadata,
         }

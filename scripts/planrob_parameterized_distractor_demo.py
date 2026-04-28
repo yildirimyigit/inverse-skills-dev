@@ -4,23 +4,33 @@ import json
 from pathlib import Path
 
 from inverse_skills.operators import OperatorExtractor, OperatorParameterizer
-from inverse_skills.toy import build_predicate_registry, make_push_rollouts_executable_named
+from inverse_skills.toy import (
+    build_predicate_registry_with_distractor,
+    make_push_rollouts_executable_named_with_distractor,
+)
 
 
-def run_case(*, skill_name: str, object_name: str, source_name: str, target_name: str) -> dict:
-    rollouts = make_push_rollouts_executable_named(
+def run_case(*, skill_name: str, object_name: str, source_name: str, target_name: str, distractor_name: str) -> dict:
+    rollouts = make_push_rollouts_executable_named_with_distractor(
         object_name=object_name,
         source_name=source_name,
         target_name=target_name,
+        distractor_name=distractor_name,
         skill_name=skill_name,
     )
-    registry = build_predicate_registry(object_name, source_name, target_name)
+    registry = build_predicate_registry_with_distractor(
+        object_name=object_name,
+        source_name=source_name,
+        target_name=target_name,
+        distractor_name=distractor_name,
+    )
     learned = OperatorExtractor(registry).extract(skill_name, rollouts)
     template = OperatorParameterizer().parameterize(learned.operator, rollouts[0])
     return {
         "object_name": object_name,
         "source_name": source_name,
         "target_name": target_name,
+        "distractor_name": distractor_name,
         "ground_operator": learned.operator.to_dict(),
         "parameterized_template": template.to_dict(),
     }
@@ -28,8 +38,20 @@ def run_case(*, skill_name: str, object_name: str, source_name: str, target_name
 
 def main() -> None:
     outputs = {
-        "case_cube": run_case(skill_name="push_restore", object_name="cube", source_name="source", target_name="target"),
-        "case_mug": run_case(skill_name="push_restore", object_name="mug", source_name="home", target_name="goal"),
+        "case_cube": run_case(
+            skill_name="push_restore",
+            object_name="cube",
+            source_name="source",
+            target_name="target",
+            distractor_name="can",
+        ),
+        "case_mug": run_case(
+            skill_name="push_restore",
+            object_name="mug",
+            source_name="home",
+            target_name="goal",
+            distractor_name="bottle",
+        ),
     }
 
     outputs["templates_match"] = (
@@ -44,7 +66,7 @@ def main() -> None:
     )
 
     print(json.dumps(outputs, indent=2))
-    out = Path("artifacts/planrob_parameterized_demo.json")
+    out = Path("artifacts/planrob_parameterized_distractor_demo.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(outputs, indent=2), encoding="utf-8")
     print(f"Saved {out}")
