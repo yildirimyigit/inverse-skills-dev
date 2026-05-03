@@ -1,0 +1,673 @@
+"""End-to-end inverse skill execution on ManiSkill3 with symbolic + RL.
+
+Pipeline (one fixed seed for proof-of-concept):
+  1. Forward skill (scripted pick + lift)         — cube goes from init_pose up
+  2. Symbolic inverse phase                        — descend cube back near
+                                                    init_xy, deliberately stop
+                                                    5cm above init_pose with
+                                                    cube still held
+  3. RL phase (SAC trained from this script)      — refines the held cube to
+                                                    precise init_pose
+  4. Release (automatic)                           — open gripper + retract
+  5. Measure                                       — final cube pose vs init_pose
+
+Outputs:
+  artifacts/planrob_inverse_rl_model.zip         (trained SAC weights)
+  artifacts/planrob_inverse_rl_curve.png         (training learning curve)
+  artifacts/planrob_inverse_rl_demo.json         (numerical results)
+"""
+
+from __future__ import annotations
+
+import json
+import warnings
+from pathlib import Path
+
+import gymnasium as gym
+import matplotlib
+import numpy as np
+import torch
+from gymnasium import spaces
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    import mani_skill.envs  # noqa: F401
+
+from stable_baselines3 import SAC
+from stable_baselines3.common.callbacks import BaseCallback
+
+from inverse_skills.core import ObjectState, Pose, Region, RobotState, SceneGraph
+from inverse_skills.predicates import AtPosePredicate
+
+
+_IDENTITY_QUAT = np.array([0.0, 0.0, 0.0, 1.0], dtype=np.float32)
+_TABLE_LOWER = np.array([-0.15, -0.15, 0.00], dtype=np.float32)
+_TABLE_UPPER = np.array([0.15, 0.15, 0.05], dtype=np.float32)
+_SAC_SEED = 0
+_CANONICAL_MS_SEED = 0  # ManiSkill seed → canonical init_pose
+_EVAL_SEEDS = list(range(1000, 1010))  # held-out perturbation seeds for final eval
+
+# Phase 2 (cautious): fixed init_pose + perturbed handoff + action cap + curriculum.
+_PERTURBATION_RANGE_M = 0.02  # ±2cm xy perturbation around canonical handoff
+_CURRICULUM_START_TOL = 0.05  # 5cm at_pose tolerance at training start
+_CURRICULUM_END_TOL = 0.01  # 1cm tolerance after curriculum schedule
+_CURRICULUM_SCHEDULE_STEPS = 200_000  # linear ramp-down across this many steps
+_ACTION_SCALE_XYZ = 0.2  # caps EEF delta per step (~2cm)
+
+
+def _obs_to_scene(obs, regions: dict[str, Region], timestep: int = 0) -> SceneGraph:
+    obj_pose = obs["extra"]["obj_pose"].squeeze().cpu().numpy()
+    qpos = obs["agent"]["qpos"].squeeze().cpu().numpy()
+    gw = float(qpos[-2] + qpos[-1])
+    # PickCube-v1 exposes is_grasped; PushCube-v1 does not. Fall back to
+    # gripper-width threshold (< half default == closed/holding) when absent.
+    if "is_grasped" in obs["extra"]:
+        is_grasp = bool(obs["extra"]["is_grasped"].squeeze().item())
+    else:
+        is_grasp = gw < 0.04
+    return SceneGraph(
+        timestep=timestep,
+        robot=RobotState(q=qpos[:7].astype(np.float32), gripper_width=gw,
+                         holding="cube" if is_grasp else None),
+        objects={"cube": ObjectState(name="cube", semantic_class="cube",
+                                     pose=Pose(position=obj_pose[:3].astype(np.float32),
+                                               quat_xyzw=_IDENTITY_QUAT))},
+        regions=regions,
+    )
+
+
+def _step_toward(env, obs, target_xyz: np.ndarray, n_steps: int, tol: float,
+                 gripper_cmd: float):
+    """Move EEF toward target via pd_ee_delta_pos action. Returns final obs."""
+    for _ in range(n_steps):
+        tcp = obs["extra"]["tcp_pose"].squeeze()[:3].cpu().numpy()
+        delta = (target_xyz - tcp).astype(np.float64)
+        norm = float(np.linalg.norm(delta))
+        if norm < tol:
+            break
+        action = np.zeros(4, dtype=np.float32)
+        action[:3] = np.clip(delta / max(norm, 1e-6), -1.0, 1.0).astype(np.float32)
+        action[3] = gripper_cmd
+        obs, *_ = env.step(torch.tensor(action))
+    return obs
+
+
+def _close_gripper(env, obs, n_steps: int = 10):
+    for _ in range(n_steps):
+        obs, *_ = env.step(torch.tensor(np.array([0.0, 0.0, 0.0, -1.0], dtype=np.float32)))
+    return obs
+
+
+def _open_gripper(env, obs, n_steps: int = 6):
+    for _ in range(n_steps):
+        obs, *_ = env.step(torch.tensor(np.array([0.0, 0.0, 0.0, 1.0], dtype=np.float32)))
+    return obs
+
+
+# ── Environment ──────────────────────────────────────────────────────────────
+
+
+class InverseRecoveryEnv(gym.Env):
+    """Wraps ManiSkill PickCube-v1: reset replays forward + symbolic, step is RL.
+
+    Observation:  cube_pos(3), tcp_pos(3), gripper_width(1), goal_pos(3) = 10D
+    Action:       pd_ee_delta_pos (4D, [-1,1])
+    Reward:       residual potential at next state (only at_pose contributes)
+    Termination:  at_pose score >= success_threshold OR step budget exhausted
+    """
+
+    metadata = {"render_modes": []}
+
+    def __init__(self, max_steps: int = 20, success_threshold: float = 0.90,
+                 atpose_tolerance: float = _CURRICULUM_START_TOL,
+                 atpose_temperature: float = 0.05,
+                 distance_penalty: float = 2.0,
+                 action_scale_xyz: float = _ACTION_SCALE_XYZ,
+                 perturbation_range_m: float = _PERTURBATION_RANGE_M):
+        super().__init__()
+        self.distance_penalty = distance_penalty
+        self._env = gym.make("PickCube-v1", obs_mode="state_dict",
+                             control_mode="pd_ee_delta_pos", render_mode=None,
+                             max_episode_steps=400)
+        self.max_steps = max_steps
+        self.success_threshold = success_threshold
+        # Curriculum-mutable: train predicate uses _current_tolerance, eval predicate
+        # uses fixed _CURRICULUM_END_TOL (so eval is always honest about 1cm precision).
+        self._current_tolerance = atpose_tolerance
+        self.atpose_temperature = atpose_temperature
+        self.action_scale_xyz = action_scale_xyz
+        self.perturbation_range_m = perturbation_range_m
+        self.regions = {"table_surface": Region("table_surface", _TABLE_LOWER, _TABLE_UPPER)}
+
+        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(10,), dtype=np.float32)
+        self.action_space = spaces.Box(low=-1.0, high=1.0, shape=(4,), dtype=np.float32)
+
+        # Per-episode state — populated in reset(). init_pos is fixed across episodes
+        # in Phase 2 (canonical); only the symbolic-descent stop point is perturbed.
+        self.init_pos: np.ndarray = np.zeros(3, dtype=np.float32)
+        self.at_pose_pred: AtPosePredicate | None = None
+        self.at_pose_eval: AtPosePredicate | None = None
+        self._last_obs = None
+        self._step_count = 0
+        self._last_perturbation: np.ndarray = np.zeros(2, dtype=np.float32)
+
+    def set_curriculum_tolerance(self, value: float) -> None:
+        """Curriculum hook: caller adjusts at_pose tolerance over training time.
+        Effective at the start of the next episode (predicate rebuilt in reset())."""
+        self._current_tolerance = float(value)
+
+    # --- forward + symbolic phases (deterministic, scripted) ---------------
+
+    def _run_forward_pick(self, obs):
+        """Pick oracle: above → descend → close → lift."""
+        obj_pos = obs["extra"]["obj_pose"].squeeze()[:3].cpu().numpy()
+        above = np.array([obj_pos[0], obj_pos[1], obj_pos[2] + 0.08], dtype=np.float32)
+        obs = _step_toward(self._env, obs, above, n_steps=20, tol=0.018, gripper_cmd=1.0)
+        grasp = obj_pos.copy().astype(np.float32)
+        obs = _step_toward(self._env, obs, grasp, n_steps=20, tol=0.012, gripper_cmd=1.0)
+        obs = _close_gripper(self._env, obs, n_steps=10)
+        lift = np.array([obj_pos[0], obj_pos[1], obj_pos[2] + 0.15], dtype=np.float32)
+        obs = _step_toward(self._env, obs, lift, n_steps=15, tol=0.02, gripper_cmd=-1.0)
+        return obs
+
+    def _run_symbolic_descend(self, obs):
+        """Symbolic inverse: descend toward init_xy, stop 5cm short of init_z, with
+        random ±perturbation_range_m offset in xy. Cube remains held. The xy offset
+        plus the 5cm vertical gap form the residual RL must close. The randomized
+        handoff diversifies the replay buffer without changing the goal."""
+        target = self.init_pos.copy().astype(np.float32)
+        target[2] += 0.05
+        if self.perturbation_range_m > 0.0:
+            dx = float(self.np_random.uniform(-self.perturbation_range_m, self.perturbation_range_m))
+            dy = float(self.np_random.uniform(-self.perturbation_range_m, self.perturbation_range_m))
+            target[0] += dx
+            target[1] += dy
+            self._last_perturbation = np.array([dx, dy], dtype=np.float32)
+        else:
+            self._last_perturbation = np.zeros(2, dtype=np.float32)
+        obs = _step_toward(self._env, obs, target, n_steps=20, tol=0.012, gripper_cmd=-1.0)
+        return obs
+
+    # --- gym API ----------------------------------------------------------
+
+    def reset(self, seed=None, options=None):
+        # super().reset(seed=seed) seeds self.np_random — used for handoff perturbation.
+        super().reset(seed=seed)
+        # ManiSkill always uses the canonical seed → fixed init_pose. Diversity comes
+        # from the symbolic-descent perturbation, not from the cube's spawn position.
+        obs, _ = self._env.reset(seed=_CANONICAL_MS_SEED)
+        for _ in range(2):
+            obs, *_ = self._env.step(torch.tensor(np.array([0.0, 0.0, 0.0, 1.0], dtype=np.float32)))
+
+        self.init_pos = obs["extra"]["obj_pose"].squeeze()[:3].cpu().numpy().copy()
+        init_pose = Pose(position=self.init_pos.astype(np.float32), quat_xyzw=_IDENTITY_QUAT)
+        # Train predicate uses the curriculum-controlled tolerance.
+        self.at_pose_pred = AtPosePredicate(
+            "cube", target_pose=init_pose,
+            distance_threshold=self._current_tolerance, temperature=self.atpose_temperature,
+        )
+        # Eval predicate locked at 1cm regardless of curriculum — honest precision metric.
+        self.at_pose_eval = AtPosePredicate(
+            "cube", target_pose=init_pose,
+            distance_threshold=_CURRICULUM_END_TOL, temperature=0.005,
+        )
+
+        obs = self._run_forward_pick(obs)
+        obs = self._run_symbolic_descend(obs)
+        self._last_obs = obs
+        self._step_count = 0
+        return self._encode(obs), {
+            "phase": "rl_start", "seed": seed,
+            "init_pose": self.init_pos.tolist(),
+            "perturbation_xy": self._last_perturbation.tolist(),
+            "current_tolerance_m": self._current_tolerance,
+        }
+
+    def step(self, action):
+        # Action capping: scale xyz components to limit per-step EEF travel. Gripper
+        # command is unscaled (we want full open/close authority). The agent's policy
+        # still outputs in [-1,1]; the cap is applied here, transparently.
+        action_np = np.asarray(action, dtype=np.float32).copy()
+        action_np[:3] *= self.action_scale_xyz
+        action_t = torch.tensor(action_np)
+        obs, _r, _term, _trunc, info = self._env.step(action_t)
+        self._last_obs = obs
+        self._step_count += 1
+
+        scene = _obs_to_scene(obs, self.regions)
+        residual_score = float(self.at_pose_pred.evaluate(scene).score)
+
+        cube_pos = scene.objects["cube"].pose.position
+        distance = float(np.linalg.norm(cube_pos - self.init_pos))
+        # Phase 2 reward: sigmoid V_residual (positive Q-anchor) + linear distance
+        # penalty (gradient at large distance). Empirically necessary — pure
+        # -distance (Phase 3) and HER+sparse (Phase 4) both diverge catastrophically
+        # in this regime. The sigmoid component bounds reward in [0, 0.55] when
+        # distance is small, providing the positive value anchor that SAC needs;
+        # the distance penalty fills in the gradient where the sigmoid saturates.
+        reward = residual_score - self.distance_penalty * distance
+
+        terminated = residual_score >= self.success_threshold
+        truncated = self._step_count >= self.max_steps
+        info_out = {"v_residual": residual_score, "distance": distance, "step": self._step_count}
+        return self._encode(obs), reward, terminated, truncated, info_out
+
+    def _encode(self, obs) -> np.ndarray:
+        cube_pos = obs["extra"]["obj_pose"].squeeze()[:3].cpu().numpy()
+        tcp_pos = obs["extra"]["tcp_pose"].squeeze()[:3].cpu().numpy()
+        qpos = obs["agent"]["qpos"].squeeze().cpu().numpy()
+        gw = float(qpos[-2] + qpos[-1])
+        return np.concatenate([cube_pos, tcp_pos, [gw], self.init_pos]).astype(np.float32)
+
+    def close(self):
+        self._env.close()
+
+
+# ── Training callback for learning curve ────────────────────────────────────
+
+
+# ── Main pipeline ───────────────────────────────────────────────────────────
+
+
+class CheckpointAndLogCallback(BaseCallback):
+    """Logs episode V_residual, prints progress, saves periodic + best checkpoints.
+
+    Best checkpoint is selected by rolling-mean V_final over a 50-episode window —
+    so a brief lucky episode doesn't latch onto an unstable policy. Phase 1's
+    catastrophic divergence motivates having a best-checkpoint snapshot.
+    """
+
+    def __init__(self, checkpoint_path: Path, best_checkpoint_path: Path,
+                 checkpoint_every: int = 50_000, log_every: int = 5_000,
+                 best_window: int = 50, env: "InverseRecoveryEnv | None" = None):
+        super().__init__()
+        self.checkpoint_path = checkpoint_path
+        self.best_checkpoint_path = best_checkpoint_path
+        self.checkpoint_every = checkpoint_every
+        self.log_every = log_every
+        self.best_window = best_window
+        self._env_ref = env  # used for tolerance logging; not strictly required
+        self.episode_returns: list[float] = []
+        self.episode_v_finals: list[float] = []
+        self.episode_distances: list[float] = []
+        self.episode_tolerances: list[float] = []
+        self._episode_v: list[float] = []
+        self._episode_dist: list[float] = []
+        self._last_log_step = 0
+        self._last_ckpt_step = 0
+        self.best_rolling_v: float = -float("inf")
+        self.best_at_step: int = 0
+
+    def _on_step(self) -> bool:
+        infos = self.locals.get("infos", [])
+        dones = self.locals.get("dones", [])
+        for info, done in zip(infos, dones):
+            if "v_residual" in info:
+                self._episode_v.append(info["v_residual"])
+                self._episode_dist.append(info.get("distance", float("nan")))
+            if done:
+                if self._episode_v:
+                    self.episode_returns.append(float(np.mean(self._episode_v)))
+                    self.episode_v_finals.append(float(self._episode_v[-1]))
+                    self.episode_distances.append(float(self._episode_dist[-1]))
+                    self.episode_tolerances.append(
+                        float(self._env_ref._current_tolerance) if self._env_ref is not None else float("nan")
+                    )
+                    self._episode_v = []
+                    self._episode_dist = []
+
+        # Periodic logging
+        if self.num_timesteps - self._last_log_step >= self.log_every and self.episode_v_finals:
+            recent = self.episode_v_finals[-20:]
+            recent_d = self.episode_distances[-20:]
+            tol_now = self._env_ref._current_tolerance if self._env_ref is not None else float("nan")
+            print(f"  step {self.num_timesteps:>7d}  "
+                  f"episodes={len(self.episode_v_finals):>5d}  "
+                  f"tol={tol_now*1000:.1f}mm  "
+                  f"recent V_final={np.mean(recent):.4f}  "
+                  f"recent dist={np.mean(recent_d)*1000:.1f}mm  "
+                  f"best_rolling_V={self.best_rolling_v:.4f}@step{self.best_at_step}")
+            self._last_log_step = self.num_timesteps
+
+        # Periodic checkpoint
+        if self.num_timesteps - self._last_ckpt_step >= self.checkpoint_every:
+            self.model.save(self.checkpoint_path)
+            self._last_ckpt_step = self.num_timesteps
+
+        # Best-model tracking — rolling mean over best_window episodes
+        if len(self.episode_v_finals) >= self.best_window:
+            rolling = float(np.mean(self.episode_v_finals[-self.best_window:]))
+            if rolling > self.best_rolling_v:
+                self.best_rolling_v = rolling
+                self.best_at_step = int(self.num_timesteps)
+                self.model.save(self.best_checkpoint_path)
+        return True
+
+
+class CurriculumCallback(BaseCallback):
+    """Linearly tightens at_pose tolerance from start_tol to end_tol over schedule_steps,
+    then holds at end_tol. The env reads _current_tolerance when rebuilding its
+    train predicate at the next reset(), so the schedule kicks in at episode boundaries.
+    """
+
+    def __init__(self, env: "InverseRecoveryEnv", start_tol: float, end_tol: float,
+                 schedule_steps: int):
+        super().__init__()
+        self._env_ref = env
+        self.start_tol = start_tol
+        self.end_tol = end_tol
+        self.schedule_steps = schedule_steps
+
+    def _on_step(self) -> bool:
+        progress = min(1.0, self.num_timesteps / max(1, self.schedule_steps))
+        tol = self.start_tol + (self.end_tol - self.start_tol) * progress
+        self._env_ref.set_curriculum_tolerance(tol)
+        return True
+
+
+def train(total_timesteps: int, checkpoint_path: Path, best_checkpoint_path: Path
+          ) -> tuple[SAC, "CheckpointAndLogCallback", InverseRecoveryEnv]:
+    from stable_baselines3.common.callbacks import CallbackList
+
+    env = InverseRecoveryEnv(
+        max_steps=20,
+        atpose_tolerance=_CURRICULUM_START_TOL,
+        action_scale_xyz=_ACTION_SCALE_XYZ,
+        perturbation_range_m=_PERTURBATION_RANGE_M,
+    )
+    model = SAC(
+        "MlpPolicy", env, verbose=0,
+        learning_rate=3e-4, buffer_size=100_000,
+        learning_starts=1_000, batch_size=256,
+        tau=0.005, gamma=0.99,
+        policy_kwargs={"net_arch": [256, 256]},
+        seed=_SAC_SEED,
+    )
+    log_cb = CheckpointAndLogCallback(
+        checkpoint_path=checkpoint_path,
+        best_checkpoint_path=best_checkpoint_path,
+        checkpoint_every=50_000, log_every=5_000, best_window=50, env=env,
+    )
+    curr_cb = CurriculumCallback(
+        env, start_tol=_CURRICULUM_START_TOL, end_tol=_CURRICULUM_END_TOL,
+        schedule_steps=_CURRICULUM_SCHEDULE_STEPS,
+    )
+    callbacks = CallbackList([log_cb, curr_cb])
+    print(f"Training SAC for {total_timesteps} timesteps (Phase 2: sigmoid+penalty hybrid)...")
+    print(f"  fixed init_pose, ±{_PERTURBATION_RANGE_M*100:.1f}cm handoff perturbation, "
+          f"action_scale={_ACTION_SCALE_XYZ}, tol curriculum {_CURRICULUM_START_TOL*1000:.0f}->{_CURRICULUM_END_TOL*1000:.0f}mm "
+          f"over first {_CURRICULUM_SCHEDULE_STEPS} steps")
+    model.learn(total_timesteps=total_timesteps, callback=callbacks, progress_bar=False)
+    print(f"Training done. {len(log_cb.episode_returns)} episodes completed. "
+          f"Best rolling V={log_cb.best_rolling_v:.4f} at step {log_cb.best_at_step}.")
+    return model, log_cb, env
+
+
+def _release_and_measure(env: InverseRecoveryEnv) -> dict:
+    """Slow-open release: 15 steps of low-magnitude gripper command (0.3) then
+    a short settle, then retract. Empirically beats the naive full-speed open
+    by ~6× on cube-distance preservation (release-eval comparison) — at the
+    end of RL the cube is held at ~3mm from the goal; aggressive opening
+    introduces ~19mm lateral push from the gripper fingers, while the slow
+    open holds the release-induced error to ~7mm on average.
+    """
+    ms_obs = env._last_obs
+    # Slow open: lower per-step gripper command magnitude reduces impulsive
+    # finger spreading on the still-pinched cube.
+    for _ in range(15):
+        a = torch.tensor(np.array([0.0, 0.0, 0.0, 0.3], dtype=np.float32))
+        ms_obs, *_ = env._env.step(a)
+    # Brief settle with finish-open command.
+    for _ in range(3):
+        a = torch.tensor(np.array([0.0, 0.0, 0.0, 1.0], dtype=np.float32))
+        ms_obs, *_ = env._env.step(a)
+    # Retract straight up.
+    tcp = ms_obs["extra"]["tcp_pose"].squeeze()[:3].cpu().numpy()
+    retract = tcp.copy().astype(np.float32); retract[2] += 0.05
+    ms_obs = _step_toward(env._env, ms_obs, retract, n_steps=10, tol=0.01, gripper_cmd=1.0)
+
+    scene = _obs_to_scene(ms_obs, env.regions)
+    cube = scene.objects["cube"].pose.position
+    distance_mm = float(np.linalg.norm(cube - env.init_pos)) * 1000.0
+    v_eval = float(env.at_pose_eval.evaluate(scene).score)
+    return {
+        "distance_mm": distance_mm,
+        "v_after_release": v_eval,
+        "cube_final": cube.tolist(),
+        "init_pose": env.init_pos.tolist(),
+    }
+
+
+def _eval_episode(env: InverseRecoveryEnv, policy_fn, seed: int, do_rl: bool) -> dict:
+    """Run one evaluation episode at a specific seed: forward + symbolic +
+    (optional RL phase) + release + measure."""
+    obs, info_reset = env.reset(seed=seed)
+    rl_steps = 0
+    v_after_rl = None
+    if do_rl and policy_fn is not None:
+        terminated = truncated = False
+        while not (terminated or truncated):
+            action = policy_fn(obs)
+            obs, _r, terminated, truncated, info = env.step(action)
+            v_after_rl = info.get("v_residual", v_after_rl)
+            rl_steps += 1
+
+    # Pre-release V (residual at end of RL, cube still held)
+    pre_release_scene = _obs_to_scene(env._last_obs, env.regions)
+    v_pre_release_eval = float(env.at_pose_eval.evaluate(pre_release_scene).score)
+
+    measured = _release_and_measure(env)
+    return {
+        "seed": seed,
+        "rl_steps": rl_steps,
+        "v_after_rl": v_after_rl,
+        "v_pre_release_eval": v_pre_release_eval,
+        **measured,
+    }
+
+
+def _summarize(label: str, episodes: list[dict]) -> dict:
+    distances = np.array([e["distance_mm"] for e in episodes])
+    v_finals = np.array([e["v_after_release"] for e in episodes])
+    n_success = int(np.sum(distances < 10.0))
+    return {
+        "label": label,
+        "n_episodes": len(episodes),
+        "per_episode": episodes,
+        "distance_mm_mean": float(distances.mean()),
+        "distance_mm_std": float(distances.std()),
+        "distance_mm_min": float(distances.min()),
+        "distance_mm_max": float(distances.max()),
+        "v_after_release_mean": float(v_finals.mean()),
+        "v_after_release_std": float(v_finals.std()),
+        "success_rate_at_1cm": n_success / len(episodes),
+    }
+
+
+def evaluate_symbolic_only(env: InverseRecoveryEnv, seeds: list[int]) -> dict:
+    """Symbolic-only baseline: forward + symbolic + release. No RL phase."""
+    eps = [_eval_episode(env, policy_fn=None, seed=s, do_rl=False) for s in seeds]
+    return _summarize("symbolic_only", eps)
+
+
+def evaluate_random_policy(env: InverseRecoveryEnv, seeds: list[int]) -> dict:
+    """Random-RL baseline: forward + symbolic + random RL + release."""
+    rng = np.random.default_rng(0)
+    def random_fn(_obs):
+        return rng.uniform(-1.0, 1.0, size=4).astype(np.float32)
+    eps = [_eval_episode(env, policy_fn=random_fn, seed=s, do_rl=True) for s in seeds]
+    return _summarize("random_rl", eps)
+
+
+def evaluate_trained_policy(env: InverseRecoveryEnv, model: SAC, seeds: list[int]) -> dict:
+    """Trained SAC policy: forward + symbolic + deterministic policy + release."""
+    def trained_fn(obs):
+        action, _ = model.predict(obs, deterministic=True)
+        return action
+    eps = [_eval_episode(env, policy_fn=trained_fn, seed=s, do_rl=True) for s in seeds]
+    return _summarize("trained_sac", eps)
+
+
+def plot_curve(callback: CheckpointAndLogCallback, out_path: Path) -> None:
+    if not callback.episode_returns:
+        print("No episodes logged; skipping plot.")
+        return
+    plt.rcParams.update({"font.family": "serif", "font.size": 9})
+    fig, axes = plt.subplots(1, 3, figsize=(10.0, 2.8))
+    eps = np.arange(1, len(callback.episode_returns) + 1)
+
+    # Smooth with a rolling mean for readability
+    def _smooth(xs: list[float], w: int = 50) -> np.ndarray:
+        a = np.asarray(xs, dtype=np.float64)
+        if len(a) < w:
+            return a
+        kernel = np.ones(w) / w
+        return np.convolve(a, kernel, mode="valid")
+
+    axes[0].plot(eps, callback.episode_v_finals, color="#3060B0", lw=0.4, alpha=0.4)
+    smooth = _smooth(callback.episode_v_finals, 50)
+    axes[0].plot(np.arange(len(callback.episode_v_finals) - len(smooth) + 1,
+                            len(callback.episode_v_finals) + 1),
+                 smooth, color="#1f3a73", lw=1.4, label="50-ep moving avg")
+    axes[0].axhline(0.90, color="#888888", ls="--", lw=0.8, label="success threshold")
+    axes[0].set_xlabel("episode"); axes[0].set_ylabel("final V_residual")
+    axes[0].set_title("Final V_residual per episode", fontsize=9)
+    axes[0].legend(fontsize=7); axes[0].grid(True, alpha=0.3)
+    axes[0].set_ylim(-0.05, 1.05)
+
+    axes[1].plot(eps, np.asarray(callback.episode_distances) * 1000,
+                 color="#B05030", lw=0.4, alpha=0.4)
+    smooth_d = _smooth(callback.episode_distances, 50) * 1000
+    axes[1].plot(np.arange(len(callback.episode_distances) - len(smooth_d) + 1,
+                            len(callback.episode_distances) + 1),
+                 smooth_d, color="#722a18", lw=1.4)
+    axes[1].axhline(10, color="#888888", ls="--", lw=0.8, label="1cm tolerance")
+    axes[1].set_xlabel("episode"); axes[1].set_ylabel("final cube distance (mm)")
+    axes[1].set_title("Final cube distance to init_pose", fontsize=9)
+    axes[1].legend(fontsize=7); axes[1].grid(True, alpha=0.3)
+
+    axes[2].plot(eps, callback.episode_returns, color="#3a7a4a", lw=0.4, alpha=0.4)
+    smooth_r = _smooth(callback.episode_returns, 50)
+    axes[2].plot(np.arange(len(callback.episode_returns) - len(smooth_r) + 1,
+                            len(callback.episode_returns) + 1),
+                 smooth_r, color="#1e4a2e", lw=1.4)
+    axes[2].set_xlabel("episode"); axes[2].set_ylabel("mean episode reward")
+    axes[2].set_title("Mean shaped reward per episode", fontsize=9)
+    axes[2].grid(True, alpha=0.3)
+
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=180, bbox_inches="tight")
+    plt.close(fig)
+    print(f"Saved {out_path}")
+
+
+def main() -> None:
+    out_dir = Path("artifacts")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    ckpt_path = out_dir / "planrob_inverse_rl_phase2_model_final.zip"
+    best_path = out_dir / "planrob_inverse_rl_phase2_model_best.zip"
+    curve_path = out_dir / "planrob_inverse_rl_phase2_curve.png"
+    json_path = out_dir / "planrob_inverse_rl_phase2_demo.json"
+
+    # Baselines use the same eval predicate (1cm) and same held-out seeds for fairness.
+    base_env = InverseRecoveryEnv(
+        max_steps=20,
+        atpose_tolerance=_CURRICULUM_END_TOL,  # eval-time tolerance
+        action_scale_xyz=_ACTION_SCALE_XYZ,
+        perturbation_range_m=_PERTURBATION_RANGE_M,
+    )
+    base_env.set_curriculum_tolerance(_CURRICULUM_END_TOL)
+    print(f"Evaluating symbolic-only baseline on {len(_EVAL_SEEDS)} perturbation seeds...")
+    sym = evaluate_symbolic_only(base_env, _EVAL_SEEDS)
+    print(f"  symbolic_only:  dist {sym['distance_mm_mean']:.1f}±{sym['distance_mm_std']:.1f}mm  "
+          f"V {sym['v_after_release_mean']:.3f}±{sym['v_after_release_std']:.3f}  "
+          f"success@1cm {sym['success_rate_at_1cm']:.1%}")
+    print(f"Evaluating random-RL baseline on {len(_EVAL_SEEDS)} seeds...")
+    rnd = evaluate_random_policy(base_env, _EVAL_SEEDS)
+    print(f"  random_rl:      dist {rnd['distance_mm_mean']:.1f}±{rnd['distance_mm_std']:.1f}mm  "
+          f"V {rnd['v_after_release_mean']:.3f}±{rnd['v_after_release_std']:.3f}  "
+          f"success@1cm {rnd['success_rate_at_1cm']:.1%}")
+    base_env.close()
+
+    # Train
+    final_model, callback, env = train(
+        total_timesteps=1_000_000, checkpoint_path=ckpt_path, best_checkpoint_path=best_path,
+    )
+    final_model.save(ckpt_path)
+    plot_curve(callback, curve_path)
+
+    # Force tolerance to end-value for honest eval (curriculum may have left it elsewhere)
+    env.set_curriculum_tolerance(_CURRICULUM_END_TOL)
+
+    # Evaluate the FINAL model
+    print(f"Evaluating trained SAC (final) on {len(_EVAL_SEEDS)} seeds...")
+    final_eval = evaluate_trained_policy(env, final_model, _EVAL_SEEDS)
+    final_eval["label"] = "trained_sac_final"
+    print(f"  trained_final:  dist {final_eval['distance_mm_mean']:.1f}±{final_eval['distance_mm_std']:.1f}mm  "
+          f"V {final_eval['v_after_release_mean']:.3f}±{final_eval['v_after_release_std']:.3f}  "
+          f"success@1cm {final_eval['success_rate_at_1cm']:.1%}")
+
+    # Evaluate the BEST model (selected by best 50-episode rolling-mean V_final during training)
+    if best_path.exists():
+        best_model = SAC.load(best_path, env=env)
+        print(f"Evaluating trained SAC (best, snapshot at step {callback.best_at_step}) on {len(_EVAL_SEEDS)} seeds...")
+        best_eval = evaluate_trained_policy(env, best_model, _EVAL_SEEDS)
+        best_eval["label"] = "trained_sac_best"
+        print(f"  trained_best:   dist {best_eval['distance_mm_mean']:.1f}±{best_eval['distance_mm_std']:.1f}mm  "
+              f"V {best_eval['v_after_release_mean']:.3f}±{best_eval['v_after_release_std']:.3f}  "
+              f"success@1cm {best_eval['success_rate_at_1cm']:.1%}")
+    else:
+        best_eval = None
+    env.close()
+
+    payload = {
+        "phase": 2,
+        "phase_description": "fixed init_pose + handoff perturbation + action cap + tolerance curriculum + sigmoid-hybrid reward (CANONICAL — best of {1,2,3,4})",
+        "sac_seed": _SAC_SEED,
+        "manskill_canonical_seed": _CANONICAL_MS_SEED,
+        "eval_seeds": _EVAL_SEEDS,
+        "baseline_symbolic_only": sym,
+        "baseline_random_rl": rnd,
+        "trained_final": final_eval,
+        "trained_best": best_eval,
+        "training": {
+            "n_episodes_logged": len(callback.episode_returns),
+            "first50_mean_final_v": float(np.mean(callback.episode_v_finals[:50])) if callback.episode_v_finals else None,
+            "last50_mean_final_v": float(np.mean(callback.episode_v_finals[-50:])) if callback.episode_v_finals else None,
+            "last50_mean_distance_mm": float(np.mean(callback.episode_distances[-50:])) * 1000.0
+                if callback.episode_distances else None,
+            "best_rolling_v": float(callback.best_rolling_v),
+            "best_rolling_v_at_step": int(callback.best_at_step),
+        },
+        "config": {
+            "algorithm": "SAC",
+            "total_timesteps": 1_000_000,
+            "max_steps_per_episode": 20,
+            "atpose_tolerance_curriculum_start_m": _CURRICULUM_START_TOL,
+            "atpose_tolerance_curriculum_end_m": _CURRICULUM_END_TOL,
+            "atpose_tolerance_curriculum_schedule_steps": _CURRICULUM_SCHEDULE_STEPS,
+            "atpose_temperature_train": 0.05,
+            "atpose_temperature_eval": 0.005,
+            "buffer_size": 100_000,
+            "batch_size": 256,
+            "gamma": 0.99,
+            "net_arch": [256, 256],
+            "reward": "V_residual_sigmoid - 2.0 * distance(cube, init_pose)",
+            "distance_penalty_coef": 2.0,
+            "termination": "V_residual >= success_threshold (effectively unreachable; episodes truncate at max_steps)",
+            "success_threshold": 0.90,
+            "action_scale_xyz": _ACTION_SCALE_XYZ,
+            "handoff_perturbation_range_m": _PERTURBATION_RANGE_M,
+            "init_pose_randomization": "fixed canonical",
+            "release_motion": "slow_open_v1 (15 steps cmd=0.3 + 3 settle)",
+        },
+    }
+    json_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    print(f"Saved {json_path}")
+
+
+if __name__ == "__main__":
+    main()

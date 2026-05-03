@@ -137,11 +137,18 @@ The same formula bridges the continuous robot world to symbolic planning concept
 │  Expand: pick(cube), place(source), place(target), push, noop       │
 │                                                                     │
 │  Score each reachable state with V(s)                               │
-│  Return first sequence reaching V(s) >= 0.98                        │
+│  Track per-term max scores across every visited state               │
+│  Stop early if V(s) >= 0.98, else return best partial result        │
 │                                                                     │
-│            ┌─────────────────┐                                      │
-│            │  Inverse Plan   │  e.g., ["pick(cube)", "place(source)"]│
-│            └─────────────────┘                                      │
+│            ┌─────────────────────────────────────────────┐          │
+│            │  two_phase_inverse() output                 │          │
+│            │  ─────────────────────────                  │          │
+│            │  symbolic_prefix    e.g., [pick, place_src] │          │
+│            │  handoff_scene      (RL warm-start)         │          │
+│            │  residual_objective shaped reward over the  │          │
+│            │                     terms BFS could not fix │          │
+│            │  V_initial / V_handoff / V_target           │          │
+│            └─────────────────────────────────────────────┘          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -325,7 +332,138 @@ With a second irrelevant object (`can`) present during demonstrations, the extra
 
 ---
 
-## 8. Architecture Overview
+## 8. Two-Phase Inverse Recovery: What If BFS Can't Fully Undo?
+
+So far, the BFS planner either succeeds (V ≥ 0.98) or fails. But many real skills are only *partially* reversible: the discrete primitive library can restore *some* of the inverse target, while the rest needs continuous control that pick/place/push cannot express. We don't want the system to silently shrug — we want it to clearly say *"here's what symbolic planning can do, here's exactly what's left, and here's the reward function an RL agent should optimize to bridge the gap."*
+
+This section describes the **two-phase decomposition** the pipeline produces.
+
+### 8.1 The V-Gap
+
+Every inverse problem has a starting potential `V(s_initial)` (after the forward skill ran) and an ideal target `V_target = 1.0` (everything restored). The total gap is:
+
+```
+gap_total = V_target - V_initial
+```
+
+After BFS finishes, the best reachable scene has potential `V_handoff`. The gap decomposes:
+
+```
+gap_total = (V_handoff - V_initial)  +  (V_target - V_handoff)
+            └── closed by symbolic ──┘   └── remaining for RL ──┘
+```
+
+This is bookkeeping, but the framing matters: it tells the user (and reviewer) *exactly how much* of the problem the symbolic phase is responsible for.
+
+### 8.2 Identifying the Residual Terms
+
+Which inverse target predicates are still unsatisfied? A naive answer: just look at the handoff scene. A better answer: track every state BFS visited.
+
+During BFS, for every visited scene, the planner records each term's score and keeps the **maximum** seen across the entire search tree:
+
+```
+term_max_scores = { p1: max_over_all_visited_scenes(score_p1(s)),
+                    p2: max_over_all_visited_scenes(score_p2(s)),
+                    ... }
+```
+
+A term is **provably unreachable** by the symbolic primitives (within the BFS budget) if:
+
+```
+term_max_scores[p] < reachable_threshold   (default 0.90)
+```
+
+This is stronger than "unsatisfied at the handoff scene" — it says BFS *never* found any sequence of primitive actions that brought this predicate above the threshold. Those terms form the **residual set**.
+
+### 8.3 The Residual Inverse Objective
+
+The residual set defines a new, smaller objective function `V_residual(s)` — the same restoration potential, but only the residual terms contribute:
+
+```
+V_residual(s) = weighted average of term_score(p, s)  for p in residual_set
+```
+
+This is the **shaped RL reward**. An RL agent starts from the handoff scene (the warm-start state) and gets reward signal:
+
+```
+r(s, a, s') = V_residual(s') - V_residual(s)
+```
+
+Two properties make this useful:
+
+1. **Reward density**: `V_residual` has fewer terms than the full objective, so each term contributes more. The reward signal isn't diluted by predicates that are already satisfied.
+2. **No human reward engineering**: the same operator-extraction pipeline that produces the symbolic plan also produces this reward. The pipeline is end-to-end automatic.
+
+### 8.4 Worked Example: Pose-Precise Inverse (Structural Gap)
+
+A realistic case where BFS *structurally* cannot finish — not because of a budget limit, but because the discrete primitive library lacks the expressivity. The forward skill is the same `push_to_target`, but the inverse target now includes a precise pose predicate, not just region membership.
+
+**Setup.** Three demonstrations all start with the cube at the precise pose `init_pose = (0.05, 0.04, 0.02)`. The source region's geometric center is `source.center = (0, 0, 0.025)` — about 6.4 cm away from `init_pose`. We add an `at_pose(cube, init_pose)` predicate with a 5 mm distance tolerance to the registry, alongside the usual `in_region` and `gripper_open` predicates.
+
+**What gets extracted.** The operator extractor sees `at_pose` true at every rollout's start and false at every end, so it correctly classifies it as both a precondition and a delete effect:
+
+```
+Operator push_to_target (extracted):
+  Pre:  at_pose(cube, init_pose), gripper_open(), in_region(cube, source)
+  Add:  in_region(cube, target)
+  Del:  at_pose(cube, init_pose), in_region(cube, source)
+```
+
+The inverse target therefore includes restoring `at_pose` — the cube must be back at the precise starting pose, not just somewhere in the source region.
+
+**The structural limitation.** The toy primitive `place(source)` teleports the cube to `source.center`. That point is 6.4 cm from `init_pose` — far outside the 5 mm tolerance. **No sequence of `pick / place / push / noop`** can satisfy `at_pose` because none of these primitives can move the cube to an arbitrary precise position. This is a capability gap, not a search-budget gap.
+
+**What the system reports.**
+
+```
+BFS budget:    depth ≤ 3 (no limit imposed, scenario is structurally limited)
+V_initial:     0.250  (after forward push: cube at target, gripper open)
+V_handoff:     0.751  (after pick → place(source): in_region restored, at_pose not)
+V_target:      1.000
+
+gap_total:                  0.750
+gap_closed_by_symbolic:     0.500   ← 3 of 4 inverse terms restored
+gap_remaining_for_rl:       0.249   ← at_pose still unsatisfied
+
+term_max_scores (across every BFS-visited state):
+  gripper_open():               0.999  ✓ satisfied at handoff
+  in_region(cube, source):      0.999  ✓ satisfied at handoff
+  in_region(cube, target):      0.999  ✓ negation satisfied (cube no longer at target)
+  at_pose(cube, init_pose):     0.000  ✗ never reached → RESIDUAL
+
+Symbolic prefix: pick(cube) → place(source)
+Residual objective for RL: { at_pose(cube, init_pose) }
+fully_solved: False
+```
+
+**Why this is realistic.** Real robot deployments routinely require this kind of precise restoration: putting an object back on a specific spot on a shelf, returning a tool to a precise mounting bracket, replacing a museum exhibit at a marked location. The discrete planner can solve the *region-level* problem (the cube ends up in the right region), but precise positioning is a continuous-control problem that needs RL — and the residual objective tells RL exactly which predicate to optimize.
+
+This is the cleanest demonstration of the warm-start argument: the symbolic phase closes 67% of the V-gap (`0.500 / 0.750`) for free, leaves a single, focused predicate as the residual reward, and warm-starts RL from a state where every other inverse target term is already satisfied.
+
+### 8.5 Why This Is a Real Contribution
+
+The standard story for combining symbolic planning and RL is "use the symbolic plan as a coarse skeleton and let RL fill in the details." That's true at a hand-wave level, but the harder question is: *what reward should RL optimize?* In practice, hand-shaped rewards are brittle and labor-intensive.
+
+This project answers that question structurally: the residual objective falls out of the operator extraction. The pipeline produces, in one pass:
+
+- The symbolic prefix plan
+- The handoff state for warm-starting RL
+- The shaped reward function for RL
+- A precise statement of what fraction of the problem each phase is responsible for
+
+That's the warm-start argument made concrete.
+
+### 8.6 Code Pointers
+
+- `term_scores(scene)` — per-term scores from `RestorationObjective`
+- `ToyInversePlanner.plan()` — now returns `term_max_scores` and `handoff_scene`
+- `ResidualInverseObjective` — drop-in RL reward over residual terms only
+- `two_phase_inverse(planner, scene, max_depth=...)` — the top-level API
+- `TwoPhaseInverseResult` — the full output dataclass with V-gap properties
+
+---
+
+## 9. Architecture Overview
 
 ```
 inverse_skills/
@@ -344,9 +482,10 @@ inverse_skills/
 ├── operators/                  Core learning and planning
 │   ├── schema.py               LearnedOperator, PredicateTerm, inverse_target_terms()
 │   ├── extractor.py            OperatorExtractor: first/last score delta → operator
-│   ├── restoration.py          RestorationObjective: potential(), term_score(), reward()
+│   ├── restoration.py          RestorationObjective, ResidualInverseObjective
 │   ├── parameterized.py        OperatorParameterizer, RoleBindingInferer
-│   └── toy_planner.py          ToyInversePlanner: BFS over PrimitiveLibrary
+│   ├── toy_planner.py          ToyInversePlanner: BFS over PrimitiveLibrary
+│   └── two_phase.py            TwoPhaseInverseResult, two_phase_inverse()
 │
 └── toy/                        Toy tabletop domain
     ├── domains.py              Scene factories, predicate registry builders
@@ -369,13 +508,17 @@ OperatorExtractor  ──►  LearnedOperator  ──►  RestorationObjective
                                               ToyInversePlanner
                                                       │
                                                       ▼
-                                                  PlanResult
-                                            (actions[], success)
+                                              two_phase_inverse()
+                                                      │
+                              ┌───────────────────────┼───────────────────────┐
+                              ▼                       ▼                       ▼
+                       symbolic_prefix         handoff_scene         ResidualInverseObjective
+                       (action list)           (RL warm-start)       (shaped RL reward)
 ```
 
 ---
 
-## 9. Validation on Physics Simulation (ManiSkill3)
+## 10. Validation on Physics Simulation (ManiSkill3)
 
 The pipeline is also validated on `PickCube-v1` in ManiSkill3, a real physics simulator using a Panda arm.
 
@@ -402,7 +545,7 @@ This matches the toy `grasp_hold` structure exactly. One extra delete effect app
 
 ---
 
-## 10. Key Results Summary
+## 11. Key Results Summary
 
 | Claim | Result |
 |---|---|
@@ -412,10 +555,12 @@ This matches the toy `grasp_hold` structure exactly. One extra delete effect app
 | Template invariance across object/region renamings | True |
 | Template invariance with irrelevant distractor present | True |
 | Physics simulator generalisation (ManiSkill3) | True — correct operator recovered |
+| Two-phase decomposition: full budget closes V-gap | 99.96% (push, depth=3) |
+| Two-phase decomposition: structural gap surfaces residual | True (pose-precise push: closes 67% of V-gap, residual = `at_pose(cube, init_pose)`) |
 
 ---
 
-## 11. Why This Is Not Trajectory Reversal
+## 12. Why This Is Not Trajectory Reversal
 
 A common naive approach to "undoing" a skill is to reverse the trajectory: play the motion backwards. This fails in most real scenarios because:
 
@@ -429,9 +574,10 @@ For push: the forward skill uses `push(target)`. The inverse plan uses `pick(cub
 
 ---
 
-## 12. Limitations and Honest Scope
+## 13. Limitations and Honest Scope
 
 - **Toy domain planner is BFS** — scales poorly to large action spaces or long horizons. A learned policy or model-predictive controller would be needed for real deployment.
 - **Physics demo uses a scripted oracle**, not a learned policy. The key claim is about operator extraction from rollouts, not about learning the forward skill.
 - **Predicate registry is hand-specified** — an engineer must decide which predicates to track. Automatic predicate invention is out of scope.
 - **Single object, simple table domain** — multi-object manipulation with dependencies (e.g., stacked objects) is not addressed.
+- **Two-phase RL is proposed, not run.** The pipeline outputs the residual reward and warm-start state, and the V-gap numbers show the symbolic phase carries most of the load on the toy domain. Actually training an RL agent on the residual objective — and demonstrating that the warm start beats pure RL — is the natural next experiment. It is not run here.

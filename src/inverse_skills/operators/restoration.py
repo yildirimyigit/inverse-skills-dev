@@ -18,6 +18,9 @@ class RestorationObjective:
             score = 1.0 - score
         return float(term.weight * score)
 
+    def term_scores(self, scene: SceneGraph) -> dict[str, float]:
+        return {term.key: self.term_score(term, scene) for term in self.terms}
+
     def potential(self, scene: SceneGraph) -> float:
         if not self.terms:
             return 0.0
@@ -26,3 +29,17 @@ class RestorationObjective:
 
     def reward(self, previous_scene: SceneGraph, next_scene: SceneGraph) -> float:
         return self.potential(next_scene) - self.potential(previous_scene)
+
+
+class ResidualInverseObjective(RestorationObjective):
+    """RestorationObjective filtered to terms BFS provably cannot satisfy.
+
+    Drop-in reward function for an RL agent: same potential/reward API, but
+    only the residual subset of inverse target terms contributes.
+    """
+
+    def __init__(self, base: RestorationObjective, residual_keys: set[str]):
+        self.operator = base.operator
+        self.predicates = base.predicates
+        self.terms = [t for t in base.terms if t.key in residual_keys]
+        self.residual_keys = set(residual_keys)

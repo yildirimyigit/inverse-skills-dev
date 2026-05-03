@@ -3,14 +3,25 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import numpy as np
+
+from inverse_skills.core import Pose
 from inverse_skills.operators.extractor import OperatorExtractor
 from inverse_skills.operators.parameterized import OperatorParameterizer
 from inverse_skills.operators.restoration import RestorationObjective
 from inverse_skills.operators.toy_planner import ToyInversePlanner
+from inverse_skills.operators.two_phase import two_phase_inverse
+from inverse_skills.predicates import (
+    AtPosePredicate,
+    GripperOpenPredicate,
+    InRegionPredicate,
+    PredicateRegistry,
+)
 from inverse_skills.toy.domains import (
     build_predicate_registry,
     build_predicate_registry_grasp_hold,
     build_predicate_registry_with_distractor,
+    make_scene,
 )
 from inverse_skills.toy.generators import (
     make_grasp_hold_rollouts_executable,
@@ -20,6 +31,7 @@ from inverse_skills.toy.generators import (
     make_push_rollouts_executable_named_with_distractor,
 )
 from inverse_skills.toy.primitives import PrimitiveLibrary
+from inverse_skills.toy.simulator import ToyTabletopSimulator
 
 
 def _run_executable_case(skill_name: str, rollouts) -> dict:
@@ -126,11 +138,67 @@ def _run_parameterized_distractor_case(
     }
 
 
+def _run_two_phase_case(skill_name: str, rollouts, registry, max_depth: int) -> dict:
+    operator = OperatorExtractor(registry).extract(skill_name, rollouts).operator
+    objective = RestorationObjective(operator, registry)
+    planner = ToyInversePlanner(PrimitiveLibrary(), objective)
+    result = two_phase_inverse(planner, rollouts[0].last(), max_depth=max_depth)
+    return result.to_dict()
+
+
+def _build_pose_precise_push_case() -> tuple[str, list, PredicateRegistry]:
+    """Push rollouts that share a precise starting pose offset from source.center.
+
+    The inverse target includes at_pose(cube, init_pose) with 5mm tolerance.
+    BFS's place(source) teleports to source.center, which is ~6cm away — so
+    at_pose is structurally unreachable by the discrete primitive library.
+    """
+    init_position = [0.05, 0.04, 0.02]
+    init_pose = Pose(
+        position=np.asarray(init_position, dtype=np.float32),
+        quat_xyzw=np.array([0.0, 0.0, 0.0, 1.0], dtype=np.float32),
+    )
+    sim = ToyTabletopSimulator(PrimitiveLibrary())
+    rollouts = []
+    for i in range(3):
+        start = make_scene(0, init_position, skill_name="push_to_target")
+        out = sim.execute("push_to_target", f"push_pose_precise_{i:03d}", start, ["push(target)"])
+        rollouts.append(out.rollout)
+    registry = PredicateRegistry([
+        InRegionPredicate("cube", "source"),
+        InRegionPredicate("cube", "target"),
+        GripperOpenPredicate(min_width=0.04),
+        AtPosePredicate("cube", target_pose=init_pose,
+                        distance_threshold=0.005, temperature=0.001),
+    ])
+    return "push_to_target", rollouts, registry
+
+
 def build_bundle() -> dict:
     executable = {
         "pick_place": _run_executable_case("pick_place", make_pick_place_rollouts_executable()),
         "push_to_target": _run_executable_case("push_to_target", make_push_rollouts_executable()),
         "grasp_hold": _run_grasp_hold_case(),
+    }
+
+    pose_precise_skill, pose_precise_rollouts, pose_precise_registry = _build_pose_precise_push_case()
+
+    two_phase = {
+        "pick_place_d3": _run_two_phase_case(
+            "pick_place", make_pick_place_rollouts_executable(),
+            build_predicate_registry(), max_depth=3,
+        ),
+        "push_d3": _run_two_phase_case(
+            "push_to_target", make_push_rollouts_executable(),
+            build_predicate_registry(), max_depth=3,
+        ),
+        "grasp_hold_d3": _run_two_phase_case(
+            "grasp_hold", make_grasp_hold_rollouts_executable(),
+            build_predicate_registry_grasp_hold(), max_depth=3,
+        ),
+        "push_pose_precise": _run_two_phase_case(
+            pose_precise_skill, pose_precise_rollouts, pose_precise_registry, max_depth=3,
+        ),
     }
 
     parameterized = {
@@ -205,11 +273,18 @@ def build_bundle() -> dict:
             executable["grasp_hold"]["plan_final_potential"]
             - executable["grasp_hold"]["inverse_potential_at_forward_final"]
         ),
+        "push_d3_gap_closed_by_symbolic": two_phase["push_d3"]["gap_closed_by_symbolic"],
+        "push_d3_gap_remaining_for_rl": two_phase["push_d3"]["gap_remaining_for_rl"],
+        "pose_precise_gap_closed_by_symbolic": two_phase["push_pose_precise"]["gap_closed_by_symbolic"],
+        "pose_precise_gap_remaining_for_rl": two_phase["push_pose_precise"]["gap_remaining_for_rl"],
+        "pose_precise_residual_terms": two_phase["push_pose_precise"]["residual_term_keys"],
+        "pose_precise_fully_solved": two_phase["push_pose_precise"]["fully_solved"],
     }
 
     return {
         "summary": summary,
         "executable": executable,
+        "two_phase": two_phase,
         "parameterized": parameterized,
         "distractor": distractor,
     }

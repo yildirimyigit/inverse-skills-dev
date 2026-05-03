@@ -5,9 +5,10 @@ from inverse_skills.operators.parameterized import (
     RoleBindingInferer,
     TemplatePredicateTerm,
 )
-from inverse_skills.operators.restoration import RestorationObjective
+from inverse_skills.operators.restoration import ResidualInverseObjective, RestorationObjective
 from inverse_skills.operators.schema import LearnedOperator, PredicateTerm
 from inverse_skills.operators.toy_planner import PlanResult, ToyInversePlanner
+from inverse_skills.operators.two_phase import TwoPhaseInverseResult, two_phase_inverse
 
 __all__ = [
     "OperatorExtractionConfig",
@@ -17,9 +18,12 @@ __all__ = [
     "ParameterizedOperatorTemplate",
     "RoleBindingInferer",
     "TemplatePredicateTerm",
+    "ResidualInverseObjective",
     "RestorationObjective",
     "LearnedOperator",
     "PredicateTerm",
     "PlanResult",
     "ToyInversePlanner",
+    "TwoPhaseInverseResult",
+    "two_phase_inverse",
 ]
