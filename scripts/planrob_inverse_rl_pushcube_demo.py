@@ -1,9 +1,9 @@
 """End-to-end inverse skill execution on ManiSkill3 PushCube-v1.
 
-Forward skill: scripted closed-gripper push (~6cm displacement in +X).
-Inverse via pick-and-place: scripted pick at post-push position, lift, carry
-back to above init_pose with handoff perturbation, then RL refines the held
-cube precisely. Final release uses the canonical slow-open motion.
+Forward skill: scripted closed-gripper push toward ManiSkill's per-episode
+goal x position. Inverse via pick-and-place: scripted pick at post-push
+position, carry back to source, release at a slightly lifted handoff, then RL
+corrects any remaining pose error.
 
 This is the canonical PushCube experiment. The architecture mirrors Phase 2 on
 PickCube — the only differences are the forward push oracle and the symbolic
@@ -11,12 +11,12 @@ inverse needing a pick step (since the cube is on the table after forward).
 
 Pipeline:
   1. Forward push (scripted, action_scale=0.2 in push phase to avoid cube
-     inertia overshoot; ends with cube ~6cm in +X from init).
-  2. Symbolic inverse (scripted): break gripper-cube contact, open gripper,
-     re-read cube position, descend, close, lift, move to above init_pose,
-     descend to handoff (5cm above init + ±2cm perturbation, cube held).
-  3. RL phase (SAC, 1M steps, Phase 2 hybrid reward) refines the held cube
-     to precise init_pose.
+     inertia overshoot; target comes from obs["extra"]["goal_pos"] when present).
+  2. Symbolic inverse (scripted): re-read cube position, descend, close, lift,
+     move to above init_pose, descend to handoff (init_z+5mm + ±2cm xy
+     perturbation), open, and settle.
+  3. RL phase (SAC, 1M steps, Phase 2 hybrid reward) corrects the released
+     cube toward precise init_pose.
   4. Slow-open release motion (15 steps cmd=0.3 + 3 settle), measure final
      cube distance to init_pose.
 
@@ -65,9 +65,11 @@ _IDENTITY_QUAT = demo._IDENTITY_QUAT
 _TABLE_LOWER = demo._TABLE_LOWER
 _TABLE_UPPER = demo._TABLE_UPPER
 
-# PushCube-specific
-_PUSH_DISPLACEMENT_M = 0.03   # intended forward push distance in +X (cube ends ~6cm)
+# PushCube-specific. The fixed displacement is only a fallback; by default the
+# forward push uses ManiSkill's per-episode `goal_pos` x coordinate.
+_PUSH_DISPLACEMENT_M = 0.03
 _FORWARD_PUSH_SCALE = 0.2     # action scaling during push phase to control cube inertia
+_USE_ENV_GOAL_FOR_PUSH = True
 
 
 # ── Helpers (push-specific) ──────────────────────────────────────────────────
@@ -104,7 +106,7 @@ def _step_in_place(env, obs, n_steps: int, gripper_cmd: float):
 class PushCubeRecoveryEnv(gym.Env):
     """ManiSkill3 PushCube-v1 wrapped for inverse-skill RL.
 
-    On reset: replays forward push + symbolic inverse (pick + carry above init).
+    On reset: replays forward push + symbolic inverse (pick + release near init).
     On step: applies pd_ee_delta_pos action with xyz capping (Phase 2 architecture).
     Reward: Phase 2 hybrid V_residual_sigmoid - 2*distance.
     """
@@ -117,7 +119,8 @@ class PushCubeRecoveryEnv(gym.Env):
                  distance_penalty: float = 2.0,
                  action_scale_xyz: float = _ACTION_SCALE_XYZ,
                  perturbation_range_m: float = _PERTURBATION_RANGE_M,
-                 push_displacement_m: float = _PUSH_DISPLACEMENT_M):
+                 push_displacement_m: float = _PUSH_DISPLACEMENT_M,
+                 use_env_goal_for_push: bool = _USE_ENV_GOAL_FOR_PUSH):
         super().__init__()
         self.distance_penalty = distance_penalty
         self._env = gym.make(
@@ -132,6 +135,7 @@ class PushCubeRecoveryEnv(gym.Env):
         self.action_scale_xyz = action_scale_xyz
         self.perturbation_range_m = perturbation_range_m
         self.push_displacement_m = push_displacement_m
+        self.use_env_goal_for_push = use_env_goal_for_push
         self.regions = {"table_surface": demo.Region("table_surface", _TABLE_LOWER, _TABLE_UPPER)}
 
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(10,), dtype=np.float32)
@@ -143,64 +147,64 @@ class PushCubeRecoveryEnv(gym.Env):
         self._last_obs = None
         self._step_count = 0
         self._last_perturbation: np.ndarray = np.zeros(2, dtype=np.float32)
+        self._last_forward_goal_pos: np.ndarray | None = None
+        self._last_forward_push_displacement_m = float(push_displacement_m)
 
     def set_curriculum_tolerance(self, value: float) -> None:
         self._current_tolerance = float(value)
 
+    def _resolve_forward_push_displacement(self, obs, cube_init: np.ndarray) -> float:
+        """Use ManiSkill's per-episode goal if available, otherwise fall back
+        to the legacy fixed PushCube displacement."""
+        goal_pos_tensor = obs.get("extra", {}).get("goal_pos")
+        if self.use_env_goal_for_push and goal_pos_tensor is not None:
+            goal_pos = goal_pos_tensor.squeeze()[:3].cpu().numpy().astype(np.float32)
+            self._last_forward_goal_pos = goal_pos.copy()
+            self._last_forward_push_displacement_m = float(goal_pos[0])
+        else:
+            self._last_forward_goal_pos = None
+            self._last_forward_push_displacement_m = float(self.push_displacement_m)
+        return self._last_forward_push_displacement_m
+
     # --- forward + symbolic phases ----------------------------------------
 
     def _run_forward_push(self, obs):
-        """Closed-gripper push in +X by `push_displacement_m`. Action-scaled
-        to 0.2 in the push phase to control cube inertia. Approach-from-behind
-        and lower-to-push-height phases run at scale 1.0 (no contact)."""
+        """Closed-gripper push in +X. Action-scaled to 0.2 in the push phase
+        to control cube inertia."""
         cube_init = obs["extra"]["obj_pose"].squeeze()[:3].cpu().numpy().copy()
-        # Approach from -X side, gripper closed
-        behind_above = cube_init.copy(); behind_above[0] -= 0.06; behind_above[2] += 0.10
-        obs = _step_toward_scaled(self._env, obs, behind_above, 30, 0.012, gripper_cmd=-1.0, scale=1.0)
+        push_dx = self._resolve_forward_push_displacement(obs, cube_init)
         behind_push = cube_init.copy(); behind_push[0] -= 0.06; behind_push[2] = cube_init[2] + 0.005
-        obs = _step_toward_scaled(self._env, obs, behind_push, 25, 0.012, gripper_cmd=-1.0, scale=1.0)
-        # Push (scale=0.2 to avoid cube overshoot)
-        push_tgt = cube_init.copy(); push_tgt[0] += self.push_displacement_m; push_tgt[2] += 0.005
+        obs = _step_toward_scaled(self._env, obs, behind_push, 30, 0.012, gripper_cmd=-1.0, scale=1.0)
+        push_tgt = cube_init.copy(); push_tgt[0] += push_dx; push_tgt[2] += 0.005
         obs = _step_toward_scaled(self._env, obs, push_tgt, 30, 0.005, gripper_cmd=-1.0,
                                    scale=_FORWARD_PUSH_SCALE)
-        return obs
-
-    def _run_symbolic_inverse(self, obs):
-        """Pick at post-push location, lift, carry to above init_pose, descend
-        to handoff height (init_z + 5cm + ±2cm xy perturbation, cube held).
-        Steps:
-          A. Lift EEF straight up with gripper still closed (breaks contact)
-          B. Open gripper while up high
-          C. Re-read cube position fresh
-          D. Move EEF above cube
-          E. Descend to grasp height
-          F. Close gripper
-          G. Lift while held (cube comes up)
-          H. Move xy to above init_pose
-          I. Descend to handoff (with perturbation)
-        """
-        # A. Lift EEF straight up
         tcp = obs["extra"]["tcp_pose"].squeeze()[:3].cpu().numpy()
         up = tcp.copy(); up[2] += 0.10
         obs = _step_toward_scaled(self._env, obs, up, 20, 0.012, gripper_cmd=-1.0, scale=1.0)
-        # B. Open gripper while up high
         obs = _step_in_place(self._env, obs, 8, gripper_cmd=1.0)
-        # C. Re-read cube position
+        return obs
+
+    def _run_symbolic_inverse(self, obs):
+        """Pick at post-push location, lift, carry to source, release, settle.
+        Steps:
+          A. Re-read cube position fresh
+          B. Move EEF above cube
+          C. Descend to grasp height
+          D. Close gripper
+          E. Lift while held
+          F. Move xy to above init_pose
+          G. Descend to handoff (with perturbation)
+          H. Open gripper and settle
+        """
         cube_now = obs["extra"]["obj_pose"].squeeze()[:3].cpu().numpy().copy()
-        # D. Move above cube
         above_cube = cube_now.copy(); above_cube[2] += 0.10
         obs = _step_toward_scaled(self._env, obs, above_cube, 20, 0.012, gripper_cmd=1.0, scale=1.0)
-        # E. Descend to grasp height
         obs = _step_toward_scaled(self._env, obs, cube_now.copy(), 20, 0.012, gripper_cmd=1.0, scale=1.0)
-        # F. Close gripper
         obs = _step_in_place(self._env, obs, 10, gripper_cmd=-1.0)
-        # G. Lift while held
         lift_h = cube_now.copy(); lift_h[2] += 0.15
         obs = _step_toward_scaled(self._env, obs, lift_h, 15, 0.02, gripper_cmd=-1.0, scale=1.0)
-        # H. Move xy to above init_pose at lift height
         over_init = np.array([self.init_pos[0], self.init_pos[1], lift_h[2]], dtype=np.float32)
         obs = _step_toward_scaled(self._env, obs, over_init, 25, 0.012, gripper_cmd=-1.0, scale=1.0)
-        # I. Descend to handoff with random xy perturbation (per-episode via np_random)
         if self.perturbation_range_m > 0.0:
             dx = float(self.np_random.uniform(-self.perturbation_range_m, self.perturbation_range_m))
             dy = float(self.np_random.uniform(-self.perturbation_range_m, self.perturbation_range_m))
@@ -208,8 +212,10 @@ class PushCubeRecoveryEnv(gym.Env):
             dx = dy = 0.0
         self._last_perturbation = np.array([dx, dy], dtype=np.float32)
         handoff = self.init_pos.copy()
-        handoff[0] += dx; handoff[1] += dy; handoff[2] += 0.05
+        handoff[0] += dx; handoff[1] += dy; handoff[2] += 0.005
         obs = _step_toward_scaled(self._env, obs, handoff, 20, 0.012, gripper_cmd=-1.0, scale=1.0)
+        obs = _step_in_place(self._env, obs, 10, gripper_cmd=1.0)
+        obs = _step_in_place(self._env, obs, 10, gripper_cmd=1.0)
         return obs
 
     # --- gym API ------------------------------------------------------------
@@ -244,6 +250,10 @@ class PushCubeRecoveryEnv(gym.Env):
             "init_pose": self.init_pos.tolist(),
             "perturbation_xy": self._last_perturbation.tolist(),
             "current_tolerance_m": self._current_tolerance,
+            "use_env_goal_for_push": self.use_env_goal_for_push,
+            "forward_goal_pos": None if self._last_forward_goal_pos is None
+                else self._last_forward_goal_pos.tolist(),
+            "forward_push_displacement_m": self._last_forward_push_displacement_m,
         }
 
     def step(self, action):
@@ -309,7 +319,9 @@ def train(total_timesteps: int, checkpoint_path: Path, best_checkpoint_path: Pat
     )
     callbacks = CallbackList([log_cb, curr_cb])
     print(f"Training SAC for {total_timesteps} timesteps (PushCube-v1, Phase 2 hybrid reward)...")
-    print(f"  push_displacement={_PUSH_DISPLACEMENT_M*100:.1f}cm  push_scale={_FORWARD_PUSH_SCALE}  "
+    push_mode = "env_goal_x" if env.use_env_goal_for_push else f"fixed_{_PUSH_DISPLACEMENT_M*100:.1f}cm"
+    print(f"  push_mode={push_mode}  fallback_push_disp={_PUSH_DISPLACEMENT_M*100:.1f}cm  "
+          f"push_scale={_FORWARD_PUSH_SCALE}  "
           f"action_scale={_ACTION_SCALE_XYZ}  tol curriculum "
           f"{_CURRICULUM_START_TOL*1000:.0f}->{_CURRICULUM_END_TOL*1000:.0f}mm "
           f"over first {_CURRICULUM_SCHEDULE_STEPS} steps")
@@ -398,7 +410,9 @@ def main() -> None:
             "algorithm": "SAC",
             "total_timesteps": 1_000_000,
             "max_steps_per_episode": 20,
-            "push_displacement_m": _PUSH_DISPLACEMENT_M,
+            "forward_push_mode": "env_goal_x" if _USE_ENV_GOAL_FOR_PUSH else "fixed_displacement",
+            "use_env_goal_for_push": _USE_ENV_GOAL_FOR_PUSH,
+            "fallback_push_displacement_m": _PUSH_DISPLACEMENT_M,
             "push_action_scale": _FORWARD_PUSH_SCALE,
             "atpose_tolerance_curriculum_start_m": _CURRICULUM_START_TOL,
             "atpose_tolerance_curriculum_end_m": _CURRICULUM_END_TOL,
