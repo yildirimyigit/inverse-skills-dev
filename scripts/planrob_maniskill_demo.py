@@ -35,7 +35,7 @@ from inverse_skills.core import ObjectState, Pose, Region, RobotState, SceneGrap
 from inverse_skills.logging import ForwardRollout
 from inverse_skills.operators import OperatorExtractor, RestorationObjective
 from inverse_skills.operators.toy_planner import ToyInversePlanner
-from inverse_skills.predicates import GripperOpenPredicate, HoldingPredicate, InRegionPredicate, PredicateRegistry
+from inverse_skills.predicates import GripperOpenPredicate, HoldingPredicate, InRegionPredicate, NearPredicate, PredicateRegistry
 from inverse_skills.toy.primitives import PrimitiveLibrary
 
 _IDENTITY_QUAT = np.array([0.0, 0.0, 0.0, 1.0], dtype=np.float32)
@@ -55,6 +55,7 @@ def _obs_to_scene(obs: dict, regions: dict[str, Region], timestep: int) -> Scene
     qpos     = obs["agent"]["qpos"].squeeze().cpu().numpy()
     is_grasp = bool(obs["extra"]["is_grasped"].squeeze().item())
     gripper_width = float(qpos[-2] + qpos[-1])
+    tcp_pos  = obs["extra"]["tcp_pose"].squeeze()[:3].cpu().numpy()
 
     return SceneGraph(
         timestep=timestep,
@@ -63,11 +64,18 @@ def _obs_to_scene(obs: dict, regions: dict[str, Region], timestep: int) -> Scene
             gripper_width=gripper_width,
             holding="cube" if is_grasp else None,
         ),
-        objects={"cube": ObjectState(
-            name="cube",
-            semantic_class="cube",
-            pose=Pose(position=obj_pose[:3].astype(np.float32), quat_xyzw=_IDENTITY_QUAT),
-        )},
+        objects={
+            "cube": ObjectState(
+                name="cube",
+                semantic_class="cube",
+                pose=Pose(position=obj_pose[:3].astype(np.float32), quat_xyzw=_IDENTITY_QUAT),
+            ),
+            "tcp": ObjectState(
+                name="tcp",
+                semantic_class="tcp",
+                pose=Pose(position=tcp_pos.astype(np.float32), quat_xyzw=_IDENTITY_QUAT),
+            ),
+        },
         regions=regions,
         metadata={"skill_name": "pick_cube"},
     )
@@ -179,6 +187,7 @@ def main() -> None:
         InRegionPredicate("cube", "table_surface"),
         GripperOpenPredicate(min_width=0.04),
         HoldingPredicate("cube"),
+        NearPredicate("tcp", "cube", threshold=0.05),
     ])
 
     extraction = OperatorExtractor(registry).extract("pick_cube", rollouts)
