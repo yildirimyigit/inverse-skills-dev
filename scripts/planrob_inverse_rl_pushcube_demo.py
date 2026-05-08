@@ -65,11 +65,13 @@ _IDENTITY_QUAT = demo._IDENTITY_QUAT
 _TABLE_LOWER = demo._TABLE_LOWER
 _TABLE_UPPER = demo._TABLE_UPPER
 
-# PushCube-specific. The fixed displacement is only a fallback; by default the
-# forward push uses ManiSkill's per-episode `goal_pos` x coordinate.
+# PushCube-specific. The true ManiSkill goal is a 20cm +X displacement; for
+# several seeds that leaves the cube outside the reachable workspace of the
+# scripted pick/place inverse. Keep training in the fixed-displacement regime
+# unless the symbolic inverse is redesigned for the full env goal.
 _PUSH_DISPLACEMENT_M = 0.03
 _FORWARD_PUSH_SCALE = 0.2     # action scaling during push phase to control cube inertia
-_USE_ENV_GOAL_FOR_PUSH = True
+_USE_ENV_GOAL_FOR_PUSH = False
 
 
 # ── Helpers (push-specific) ──────────────────────────────────────────────────
@@ -154,13 +156,13 @@ class PushCubeRecoveryEnv(gym.Env):
         self._current_tolerance = float(value)
 
     def _resolve_forward_push_displacement(self, obs, cube_init: np.ndarray) -> float:
-        """Use ManiSkill's per-episode goal if available, otherwise fall back
-        to the legacy fixed PushCube displacement."""
+        """Use ManiSkill's per-episode absolute goal if available, otherwise
+        fall back to the legacy fixed PushCube displacement."""
         goal_pos_tensor = obs.get("extra", {}).get("goal_pos")
         if self.use_env_goal_for_push and goal_pos_tensor is not None:
             goal_pos = goal_pos_tensor.squeeze()[:3].cpu().numpy().astype(np.float32)
             self._last_forward_goal_pos = goal_pos.copy()
-            self._last_forward_push_displacement_m = float(goal_pos[0])
+            self._last_forward_push_displacement_m = float(goal_pos[0] - cube_init[0])
         else:
             self._last_forward_goal_pos = None
             self._last_forward_push_displacement_m = float(self.push_displacement_m)

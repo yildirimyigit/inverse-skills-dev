@@ -98,6 +98,38 @@ class GripperOpenPredicate(Predicate):
 
 
 @dataclass(frozen=True)
+class TcpNearObjectPredicate(Predicate):
+    """Robot end-effector is near the named object.
+
+    This is the natural representation of preconditions like
+    "in pusher contact" or "ready to grasp" without elevating the TCP to a
+    first-class scene object. Margin = distance_threshold − ||ee − obj||.
+    """
+
+    object_name: str
+    distance_threshold: float = 0.05
+    temperature: float = 0.02
+    weight: float = 1.0
+
+    @property
+    def name(self) -> str:
+        return "tcp_near"
+
+    @property
+    def args(self) -> tuple[str, ...]:
+        return (self.object_name,)
+
+    def evaluate(self, scene: SceneGraph) -> PredicateResult:
+        obj = scene.get_object(self.object_name)
+        if scene.robot.ee_pose is None:
+            margin = -float(self.distance_threshold)
+        else:
+            dist = float(np.linalg.norm(obj.pose.position - scene.robot.ee_pose.position))
+            margin = float(self.distance_threshold - dist)
+        return PredicateResult(self.name, self.args, margin=margin, temperature=self.temperature)
+
+
+@dataclass(frozen=True)
 class HoldingPredicate(Predicate):
     object_name: str
     temperature: float = 0.25

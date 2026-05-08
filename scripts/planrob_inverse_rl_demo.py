@@ -52,7 +52,7 @@ _EVAL_SEEDS = list(range(1000, 1010))  # held-out perturbation seeds for final e
 
 # Phase 2 (cautious): fixed init_pose + perturbed handoff + action cap + curriculum.
 _PERTURBATION_RANGE_M = 0.02  # ±2cm xy perturbation around canonical handoff
-_CURRICULUM_START_TOL = 0.05  # 5cm at_pose tolerance at training start
+_CURRICULUM_START_TOL = 0.01  # 1cm at_pose tolerance at training start
 _CURRICULUM_END_TOL = 0.01  # 1cm tolerance after curriculum schedule
 _CURRICULUM_SCHEDULE_STEPS = 200_000  # linear ramp-down across this many steps
 _ACTION_SCALE_XYZ = 0.2  # caps EEF delta per step (~2cm)
@@ -62,6 +62,8 @@ def _obs_to_scene(obs, regions: dict[str, Region], timestep: int = 0) -> SceneGr
     obj_pose = obs["extra"]["obj_pose"].squeeze().cpu().numpy()
     qpos = obs["agent"]["qpos"].squeeze().cpu().numpy()
     gw = float(qpos[-2] + qpos[-1])
+    tcp_pos = obs["extra"]["tcp_pose"].squeeze()[:3].cpu().numpy().astype(np.float32)
+    ee_pose = Pose(position=tcp_pos, quat_xyzw=_IDENTITY_QUAT)
     # PickCube-v1 exposes is_grasped; PushCube-v1 does not. Fall back to
     # gripper-width threshold (< half default == closed/holding) when absent.
     if "is_grasped" in obs["extra"]:
@@ -71,6 +73,7 @@ def _obs_to_scene(obs, regions: dict[str, Region], timestep: int = 0) -> SceneGr
     return SceneGraph(
         timestep=timestep,
         robot=RobotState(q=qpos[:7].astype(np.float32), gripper_width=gw,
+                         ee_pose=ee_pose,
                          holding="cube" if is_grasp else None),
         objects={"cube": ObjectState(name="cube", semantic_class="cube",
                                      pose=Pose(position=obj_pose[:3].astype(np.float32),

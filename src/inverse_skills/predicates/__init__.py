@@ -5,6 +5,7 @@ from inverse_skills.predicates.geometric import (
     HoldingPredicate,
     InRegionPredicate,
     NearPredicate,
+    TcpNearObjectPredicate,
 )
 
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     "HoldingPredicate",
     "InRegionPredicate",
     "NearPredicate",
+    "TcpNearObjectPredicate",
 ]

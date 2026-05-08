@@ -232,7 +232,7 @@ class PushCubeSymbolicVisualizer:
         goal_pos_tensor = self.obs.get("extra", {}).get("goal_pos")
         if self.use_env_goal_for_push and goal_pos_tensor is not None:
             self.forward_goal_pos = _to_numpy(goal_pos_tensor).squeeze()[:3].astype(np.float32).copy()
-            self.forward_push_displacement_m = float(self.forward_goal_pos[0])
+            self.forward_push_displacement_m = float(self.forward_goal_pos[0] - cube_init[0])
 
         behind_push = cube_init.copy()
         behind_push[0] -= 0.06
@@ -310,12 +310,7 @@ class PushCubeSymbolicVisualizer:
         self._step_in_place(10, gripper_cmd=1.0, phase="symbolic_release_at_handoff")
 
         # A few extra steps to settle (for video)
-        self._settle_n_steps(10, gripper_cmd=1.0, phase="symbolic_settle_at_handoff")
-
-    def _settle_n_steps(self, n_steps: int, gripper_cmd: float, phase: str) -> None:
-        action = np.array([0.0, 0.0, 0.0, gripper_cmd], dtype=np.float32)
-        for _ in range(n_steps):
-            self._step(action, phase)
+        self._step_in_place(10, gripper_cmd=1.0, phase="symbolic_settle_at_handoff")
 
     def _write_outputs(self) -> dict:
         self.out_dir.mkdir(parents=True, exist_ok=True)

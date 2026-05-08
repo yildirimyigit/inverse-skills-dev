@@ -1,20 +1,16 @@
-"""End-to-end inverse skill on PushCube-v1 — RL solves the FULL inverse target.
+"""End-to-end inverse skill on PushCube-v1 with residual at_pose RL correction.
 
-Differs from `planrob_inverse_rl_pushcube_demo.py` in one key respect: the RL
-reward includes both predicates from the operator-extracted inverse target —
-`at_pose(cube, init_pose)` AND `gripper_open()` — instead of only at_pose.
-The agent must therefore (a) bring the cube to the precise init_pose,
-then (b) keep the gripper open without disturbing the cube. In the current
-reset sequence, the symbolic inverse already performs the coarse place(source)
-release and settle; the RL phase corrects the remaining residual from that
-released-on-table handoff.
+The symbolic inverse performs the coarse place(source): it moves the cube back
+near the source, opens the gripper, and settles. The remaining unrestored
+predicate is therefore `at_pose(cube, init_pose)`, so the RL reward is exactly
+that predicate's soft truth value.
 
 This keeps the operator-extraction → reward → trained-policy chain explicit:
-every term in the inverse target appears in the reward, while the scripted
-prefix implements the coarse symbolic inverse.
+the scripted prefix restores `gripper_open()`, and the RL phase optimizes the
+remaining residual predicate.
 
-Reward:    V_at_pose + V_gripper_open - 2.0 * distance(cube, init_pose)
-Terminate: V_at_pose >= 0.90 AND V_gripper_open >= 0.90
+Reward:    V_at_pose
+Terminate: V_at_pose >= 0.50 only after curriculum reaches 1cm
 
 Outputs:
   artifacts/planrob_inverse_rl_pushcube_full_*.{json,png,zip}
@@ -67,43 +63,43 @@ _IDENTITY_QUAT = demo._IDENTITY_QUAT
 _TABLE_LOWER = demo._TABLE_LOWER
 _TABLE_UPPER = demo._TABLE_UPPER
 
-# PushCube oracle config. The fixed displacement is now only a fallback; by
-# default the forward push uses ManiSkill's per-episode `goal_pos` x coordinate.
+# PushCube oracle config. The true ManiSkill goal is a 20cm +X displacement;
+# for several seeds that leaves the cube outside the reachable workspace of
+# the scripted pick/place inverse. Keep training in the fixed-displacement
+# regime unless the symbolic inverse is redesigned for the full env goal.
 _PUSH_DISPLACEMENT_M = pc._PUSH_DISPLACEMENT_M
 _FORWARD_PUSH_SCALE = pc._FORWARD_PUSH_SCALE
-_USE_ENV_GOAL_FOR_PUSH = True
+_USE_ENV_GOAL_FOR_PUSH = False
 
-# Phase 5 specifics — full inverse target reward
-_GRIPPER_OPEN_TEMP_TRAIN = 0.02   # softer than eval temp for usable training gradient
+# Diagnostics for gripper_open, which the symbolic inverse should restore
+# before RL starts.
+_GRIPPER_OPEN_TEMP_TRAIN = 0.02   # diagnostic score during training episodes
 _GRIPPER_OPEN_TEMP_EVAL = 0.005
 _GRIPPER_OPEN_MIN_WIDTH = 0.04    # gripper_width threshold for "open"
 _MAX_STEPS = 30                    # room for residual correction after release
+_TERMINATION_TOL_EPS = 1e-9
 
 
 # ── Env ──────────────────────────────────────────────────────────────────────
 
 
 class PushCubeRecoveryFullEnv(gym.Env):
-    """PushCube-v1 inverse env where RL's reward covers the FULL inverse target.
+    """PushCube-v1 inverse env with an at_pose-only residual RL reward.
 
-    Reward       = V_at_pose + V_gripper_open - 2.0 * distance
-    Termination  = V_at_pose >= 0.90 AND V_gripper_open >= 0.90
+    Reward       = V_at_pose
+    Termination  = V_at_pose >= 0.50 in episodes built at final tolerance
     """
 
     metadata = {"render_modes": []}
 
-    def __init__(self, max_steps: int = _MAX_STEPS, success_threshold: float = 0.90,
+    def __init__(self, max_steps: int = _MAX_STEPS, success_threshold: float = 0.50,
                  atpose_tolerance: float = _CURRICULUM_START_TOL,
                  atpose_temperature: float = 0.05,
-                 distance_penalty: float = 2.0,
-                 gripper_open_weight: float = 1.0,
                  action_scale_xyz: float = _ACTION_SCALE_XYZ,
                  perturbation_range_m: float = _PERTURBATION_RANGE_M,
                  push_displacement_m: float = _PUSH_DISPLACEMENT_M,
                  use_env_goal_for_push: bool = _USE_ENV_GOAL_FOR_PUSH):
         super().__init__()
-        self.distance_penalty = distance_penalty
-        self.gripper_open_weight = gripper_open_weight
         self._env = gym.make(
             "PushCube-v1", obs_mode="state_dict",
             control_mode="pd_ee_delta_pos", render_mode=None,
@@ -133,6 +129,7 @@ class PushCubeRecoveryFullEnv(gym.Env):
         self.at_pose_eval: demo.AtPosePredicate | None = None
         self._last_obs = None
         self._step_count = 0
+        self._episode_tolerance = float(atpose_tolerance)
         self._last_perturbation: np.ndarray = np.zeros(2, dtype=np.float32)
         self._last_forward_goal_pos: np.ndarray | None = None
         self._last_forward_push_displacement_m = float(push_displacement_m)
@@ -140,14 +137,17 @@ class PushCubeRecoveryFullEnv(gym.Env):
     def set_curriculum_tolerance(self, value: float) -> None:
         self._current_tolerance = float(value)
 
+    def _termination_enabled(self) -> bool:
+        return self._episode_tolerance <= _CURRICULUM_END_TOL + _TERMINATION_TOL_EPS
+
     def _resolve_forward_push_displacement(self, obs, cube_init: np.ndarray) -> float:
-        """Use ManiSkill's per-episode goal if available, otherwise fall back
-        to the legacy fixed PushCube displacement."""
+        """Use ManiSkill's per-episode absolute goal if available, otherwise
+        fall back to the legacy fixed PushCube displacement."""
         goal_pos_tensor = obs.get("extra", {}).get("goal_pos")
         if self.use_env_goal_for_push and goal_pos_tensor is not None:
             goal_pos = goal_pos_tensor.squeeze()[:3].cpu().numpy().astype(np.float32)
             self._last_forward_goal_pos = goal_pos.copy()
-            self._last_forward_push_displacement_m = float(goal_pos[0])
+            self._last_forward_push_displacement_m = float(goal_pos[0] - cube_init[0])
         else:
             self._last_forward_goal_pos = None
             self._last_forward_push_displacement_m = float(self.push_displacement_m)
@@ -202,11 +202,12 @@ class PushCubeRecoveryFullEnv(gym.Env):
         for _ in range(2):
             obs, *_ = self._env.step(torch.tensor(np.array([0., 0., 0., 1.], dtype=np.float32)))
 
+        self._episode_tolerance = float(self._current_tolerance)
         self.init_pos = obs["extra"]["obj_pose"].squeeze()[:3].cpu().numpy().copy()
         init_pose = demo.Pose(position=self.init_pos.astype(np.float32), quat_xyzw=_IDENTITY_QUAT)
         self.at_pose_pred = demo.AtPosePredicate(
             "cube", target_pose=init_pose,
-            distance_threshold=self._current_tolerance, temperature=self.atpose_temperature)
+            distance_threshold=self._episode_tolerance, temperature=self.atpose_temperature)
         self.at_pose_eval = demo.AtPosePredicate(
             "cube", target_pose=init_pose,
             distance_threshold=_CURRICULUM_END_TOL, temperature=0.005)
@@ -220,6 +221,8 @@ class PushCubeRecoveryFullEnv(gym.Env):
             "init_pose": self.init_pos.tolist(),
             "perturbation_xy": self._last_perturbation.tolist(),
             "current_tolerance_m": self._current_tolerance,
+            "episode_tolerance_m": self._episode_tolerance,
+            "termination_enabled": self._termination_enabled(),
             "use_env_goal_for_push": self.use_env_goal_for_push,
             "forward_goal_pos": None if self._last_forward_goal_pos is None
                 else self._last_forward_goal_pos.tolist(),
@@ -239,18 +242,17 @@ class PushCubeRecoveryFullEnv(gym.Env):
         cube_pos = scene.objects["cube"].pose.position
         distance = float(np.linalg.norm(cube_pos - self.init_pos))
 
-        # Phase 5 reward: full operator-extracted inverse target
-        # (at_pose + gripper_open) - distance shaping
-        reward = at_pose_score + self.gripper_open_weight * gripper_score \
-                 - self.distance_penalty * distance
-        # Termination: BOTH predicates satisfied
-        terminated = (at_pose_score >= self.success_threshold and
-                      gripper_score >= self.success_threshold)
+        reward = at_pose_score
+        termination_enabled = self._termination_enabled()
+        terminated = termination_enabled and at_pose_score >= self.success_threshold
         truncated = self._step_count >= self.max_steps
         return self._encode(obs), reward, terminated, truncated, {
             "v_residual": at_pose_score,
             "v_gripper_open": gripper_score,
             "distance": distance,
+            "current_tolerance_m": self._current_tolerance,
+            "episode_tolerance_m": self._episode_tolerance,
+            "termination_enabled": termination_enabled,
             "step": self._step_count,
         }
 
@@ -371,9 +373,10 @@ def train(total_timesteps: int, checkpoint_path: Path, best_checkpoint_path: Pat
     )
     callbacks = CallbackList([log_cb, curr_cb])
     print(f"Training SAC for {total_timesteps} timesteps "
-          f"(PushCube-v1, FULL inverse target reward)...")
-    print(f"  reward = V_at_pose + V_gripper_open - 2*distance  "
-          f"(both terms must satisfy 0.90 to terminate)")
+          f"(PushCube-v1, at_pose-only residual reward)...")
+    print(f"  reward = V_at_pose  (no distance penalty, no gripper reward)  "
+          f"termination enabled after tol={_CURRICULUM_END_TOL*1000:.0f}mm "
+          f"with V_at_pose >= {env.success_threshold:.2f}")
     push_mode = "env_goal_x" if env.use_env_goal_for_push else f"fixed_{_PUSH_DISPLACEMENT_M*100:.1f}cm"
     print(f"  push_mode={push_mode}  fallback_push_disp={_PUSH_DISPLACEMENT_M*100:.1f}cm  "
           f"push_scale={_FORWARD_PUSH_SCALE}  "
@@ -388,7 +391,9 @@ def train(total_timesteps: int, checkpoint_path: Path, best_checkpoint_path: Pat
 
 
 def main() -> None:
-    out_dir = Path("artifacts")
+    from time import time
+    identifier = f"{int(time())}"
+    out_dir = Path("artifacts") / f"out/{identifier}"
     out_dir.mkdir(parents=True, exist_ok=True)
     ckpt_path = out_dir / "planrob_inverse_rl_pushcube_full_model_final.zip"
     best_path = out_dir / "planrob_inverse_rl_pushcube_full_model_best.zip"
@@ -450,7 +455,7 @@ def main() -> None:
 
     payload = {
         "phase": "pushcube_full",
-        "phase_description": "PushCube-v1 + RL reward over FULL inverse target (at_pose + gripper_open)",
+        "phase_description": "PushCube-v1 + RL reward over residual at_pose predicate after symbolic gripper_open restoration",
         "sac_seed": _SAC_SEED,
         "eval_seeds": _EVAL_SEEDS,
         "baseline_symbolic_only": sym,
@@ -470,8 +475,8 @@ def main() -> None:
         "config": {
             "env": "PushCube-v1",
             "algorithm": "SAC",
-            "reward": "V_at_pose + V_gripper_open - 2.0 * distance(cube, init_pose)",
-            "termination": "V_at_pose >= 0.90 AND V_gripper_open >= 0.90",
+            "reward": "V_at_pose",
+            "termination": "V_at_pose >= 0.50 only when episode_tolerance_m <= final curriculum tolerance",
             "total_timesteps": 1_000_000,
             "max_steps_per_episode": _MAX_STEPS,
             "forward_push_mode": "env_goal_x" if _USE_ENV_GOAL_FOR_PUSH else "fixed_displacement",
@@ -486,11 +491,10 @@ def main() -> None:
             "gripper_open_temperature_train": _GRIPPER_OPEN_TEMP_TRAIN,
             "gripper_open_temperature_eval": _GRIPPER_OPEN_TEMP_EVAL,
             "gripper_open_min_width_m": _GRIPPER_OPEN_MIN_WIDTH,
-            "gripper_open_weight": 1.0,
             "buffer_size": 100_000, "batch_size": 256, "gamma": 0.99,
             "net_arch": [256, 256],
-            "distance_penalty_coef": 2.0,
-            "success_threshold": 0.90,
+            "success_threshold": 0.50,
+            "termination_enabled_after_tolerance_m": _CURRICULUM_END_TOL,
             "action_scale_xyz": _ACTION_SCALE_XYZ,
             "handoff_perturbation_range_m": _PERTURBATION_RANGE_M,
             "release_motion_for_with_release_eval": "slow_open_v1 (15 steps cmd=0.3 + 3 settle)",
