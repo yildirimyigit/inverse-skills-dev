@@ -53,17 +53,23 @@ docker compose build
 ### 2. Run the container
 
 ```bash
-./run_dev_container.sh
+./scripts/run_dev_container.sh
 ```
 
 ### 3. Attach a new shell to the container
 
 ```bash
-./attach_dev_container.sh
+./scripts/attach_dev_container.sh
 ```
 
 ### 4. Verify Python import
 
 ```bash
 python -c "import torch; import mani_skill; print('ok')"
+```
+
+### 5. Run the Symbolic Inversion + SAC training
+
+```bash
+micromamba run -n inverse-skills python scripts/planrob_inverse_rl_pushcube_full_demo_2d_action.py
 ```
