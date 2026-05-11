@@ -1,25 +1,21 @@
 # inverse-skills-dev
 
-Minimal development repository for the simplest publishable version of inverse skill learning.
+Development repository for the inverse skill learning.
 
-## Current scope
+Example:
 
-The active project goal is to build the simplest publishable version first:
-- inverse skills are modeled as restoration of forward preconditions and effects
-- not as trajectory reversal
-- no paper writing until the minimal version is implemented and tested
-- environment should be reproducible across machines
+<img width="512" height="512" alt="res_low" src="https://github.com/user-attachments/assets/1a62989e-6a55-45ab-9f3b-11b35763c8ab" />
 
-## First environment target
 
-This first setup is intentionally focused on:
+## Current environment status
+
 - development
 - simulation
 - training
 - logging
 - evaluation
 
-A separate real-robot FR3 runtime stack can be added later.
+A separate real-robot FR3 runtime stack will be added later.
 
 ## Repository layout
 
@@ -54,20 +50,26 @@ inverse-skills-dev/
 docker compose build
 ```
 
-### 2. Open a shell in the container
+### 2. Run the container
 
 ```bash
-docker compose run --rm dev
+./scripts/run_dev_container.sh
 ```
 
-### 3. Verify Python import
+### 3. Attach a new shell to the container
+
+```bash
+./scripts/attach_dev_container.sh
+```
+
+### 4. Verify Python import
 
 ```bash
 python -c "import torch; import mani_skill; print('ok')"
 ```
 
-## Notes
+### 5. Run the Symbolic Inversion + SAC training
 
-- The container expects NVIDIA Docker support on the host if you want GPU access.
-- The first simulation target is ManiSkill to keep the environment lightweight and reproducible.
-- RLBench or ROS 2 should be isolated later if needed.
+```bash
+micromamba run -n inverse-skills python scripts/planrob_inverse_rl_pushcube_full_demo_2d_action.py
+```
