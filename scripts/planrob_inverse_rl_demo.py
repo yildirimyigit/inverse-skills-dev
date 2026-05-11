@@ -34,7 +34,7 @@ import matplotlib.pyplot as plt
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    import mani_skill.envs  # noqa: F401
+    import mani_skill.envs
 
 from stable_baselines3 import SAC
 from stable_baselines3.common.callbacks import BaseCallback
