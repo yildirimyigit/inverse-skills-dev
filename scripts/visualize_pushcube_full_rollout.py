@@ -34,7 +34,7 @@ from gymnasium.utils import seeding
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    import mani_skill.envs  # noqa: F401  (registers PushCube)
+    import mani_skill.envs
 
 from stable_baselines3 import SAC
 
@@ -52,7 +52,7 @@ _SPEC_FULL.loader.exec_module(pushcube_full)
 demo = pushcube_full.demo
 pc = pushcube_full.pc
 
-from inverse_skills.predicates import (  # noqa: E402
+from inverse_skills.predicates import (
     AtPosePredicate,
     GripperOpenPredicate,
     TcpNearObjectPredicate,
