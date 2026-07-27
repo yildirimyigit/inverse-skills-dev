@@ -4,7 +4,7 @@ Development repository for the inverse skill learning.
 
 Example:
 
-<img width="512" height="512" alt="res_low" src="https://github.com/user-attachments/assets/1a62989e-6a55-45ab-9f3b-11b35763c8ab" />
+<img width="512" height="512" alt="output-onlinegiftools" src="https://github.com/user-attachments/assets/d0ad7dae-24d8-4f1e-a328-924bf90e54dc" />
 
 
 ## Current environment status
