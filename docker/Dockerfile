@@ -61,6 +61,9 @@ RUN mkdir -p \
     /workspace/inverse-skills-dev/data && \
     chown -R $MAMBA_USER:$MAMBA_USER /workspace/inverse-skills-dev
 
+RUN mkdir -p /tmp/mamba-home/.claude && \
+    chown -R $MAMBA_USER:$MAMBA_USER /tmp/mamba-home
+
 USER $MAMBA_USER
 
 CMD ["bash"]

@@ -15,11 +15,13 @@ services:
     volumes:
       - ./:/workspace/inverse-skills-dev
       - inverse-skills-micromamba:/opt/conda/pkgs
+      - inverse-skills-claude:/tmp/mamba-home/.claude
     environment:
       PYTHONUNBUFFERED: "1"
       PYTHONPATH: /workspace/inverse-skills-dev/src
       PROJECT_ROOT: /workspace/inverse-skills-dev
       HOME: /tmp/mamba-home
+      CLAUDE_CONFIG_DIR: /tmp/mamba-home/.claude
     deploy:
       resources:
         reservations:
@@ -31,3 +33,4 @@ services:
 
 volumes:
   inverse-skills-micromamba:
+  inverse-skills-claude:

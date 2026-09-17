@@ -13,7 +13,9 @@
         "ms-azuretools.vscode-docker",
         "tamasfe.even-better-toml",
         "redhat.vscode-yaml",
-        "charliermarsh.ruff"
+        "charliermarsh.ruff",
+        "anthropic.claude-code",
+        "ms-python.python",
       ],
       "settings": {
         "python.defaultInterpreterPath": "/opt/conda/envs/inverse-skills/bin/python",
