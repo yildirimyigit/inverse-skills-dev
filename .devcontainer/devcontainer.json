@@ -27,6 +27,7 @@
     }
   },
   "postCreateCommand": "micromamba run -n inverse-skills python -m pip install -e .",
+  "postStartCommand": "bash .devcontainer/restore-claude.sh",
   "remoteUser": "mambauser",
   "remoteEnv": {
     "PATH": "/opt/conda/envs/inverse-skills/bin:${containerEnv:PATH}"
