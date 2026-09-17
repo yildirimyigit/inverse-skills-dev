@@ -3,16 +3,24 @@
 The symbolic inverse performs the coarse place(source): it picks the cube,
 carries it back, and opens the gripper near the source. The RL phase then
 maximizes a generic, framework-derived reward built from the inverse-target
-predicates' own normalized signed margins, with one mode per term:
+predicates' own *signed scores*, with one mode per term:
 
-  R(s) = Σ_active  sign · tanh(margin/scale)         in [-1, +1]
-       + Σ_fences  min(0, sign · tanh(margin/scale)) in [-1,  0]
+  R(s) = Σ_active  sign · (2·V_p − 1)          in [-1, +1]
+       + Σ_fences  min(0, sign · (2·V_p − 1))  in [-1,  0]
+
+where V_p = (1 + tanh(margin/T_p))/2 is the predicate's score. The signed score
+sign·(2·V_p−1) is identically sign·tanh(margin/T_p), so there is NO reward scale
+hyperparameter: each predicate's single temperature sets both its symbolic
+sharpness and its reward shape.
 
 For PushCube the inverse-target terms and modes are
-  • at_pose(cube, init_pose)        sign=+1, scale=3·tolerance, bipolar  (active residual)
-  • gripper_open()                  sign=+1, scale=min_width,   fence
-  • ¬at_pose(cube, forward_goal)    sign=-1, scale=tolerance,   fence
-  • tcp_near(cube)                  sign=+1, scale=5cm,          fence    (forward-push precondition)
+  • at_pose(cube, src)              sign=+1, bipolar  (active residual)
+  • gripper_open()                  sign=+1, fence
+  • ¬at_pose(cube, goal)            sign=-1, fence
+  • tcp_near(cube)                  sign=+1, fence    (forward-push precondition)
+
+Modes are not hardcoded: they are derived from the real handoff scene via
+F = {p : V_p(s_h) >= theta}.
 
 The active residual provides bipolar shaping toward satisfaction. Fences are
 silent when the predicate holds and only impose negative reward when it is
@@ -50,7 +58,7 @@ warnings.filterwarnings("ignore")
 import mani_skill.envs  # noqa: E402,F401  (registers PushCube)
 
 from inverse_skills.predicates import GripperOpenPredicate, TcpNearObjectPredicate  # noqa: E402
-from inverse_skills.operators.restoration import signed_margin_reward  # noqa: E402
+from inverse_skills.operators.restoration import signed_score_reward  # noqa: E402
 
 # Reuse helpers + RL config from canonical PickCube demo + PushCube oracle.
 _spec = importlib.util.spec_from_file_location("demo", "scripts/planrob_inverse_rl_demo.py")
@@ -96,11 +104,15 @@ _USE_ENV_GOAL_FOR_PUSH = True
 
 # Diagnostics for gripper_open, which the symbolic inverse should restore
 # before RL starts.
-_GRIPPER_OPEN_TEMP_TRAIN = 0.02   # diagnostic score during training episodes
-_GRIPPER_OPEN_TEMP_EVAL = 0.005
+_GRIPPER_OPEN_TEMP_TRAIN = 0.04   # diagnostic score during training episodes
+_GRIPPER_OPEN_TEMP_EVAL = 0.01
 _GRIPPER_OPEN_MIN_WIDTH = 0.04    # gripper_width threshold for "open"
 _TCP_NEAR_THRESHOLD_M = 0.05       # tcp considered "near" cube within 5cm
-_TCP_NEAR_TEMP = 0.02
+# theta for the fence/active partition: F = {p in I(o) : V_p(s_h) >= theta}.
+# Matched to the operator extractor's precondition threshold so that "counts as
+# restored" means the same thing in the symbolic and residual phases.
+_FENCE_THRESHOLD = 0.80
+_TCP_NEAR_TEMP = 0.04
 _MAX_STEPS = 60                    # room for residual correction after release
 _TERMINATION_TOL_EPS = 1e-9
 _OBSERVATION_MODE = "predicate_grounded"
@@ -137,12 +149,14 @@ _PERTURBATION_CURRICULUM_START_M = 0.0
 _PERTURBATION_CURRICULUM_END_M = _PERTURBATION_RANGE_M
 _PERTURBATION_CURRICULUM_SCHEDULE_STEPS = 200_000
 
-# Saturation-scale multiplier for the *active* residual term. Fences saturate
-# fast (scale=tolerance) so they only contribute gradient when violated. The
-# active term needs a wider linear region so gradient remains usable across
-# the full residual range (cube up to ~6 cm off init); without this, tanh
-# kills the gradient past ~3·tolerance and the policy gets stuck.
-_ACTIVE_RESIDUAL_SCALE_FACTOR = 3.0
+# at_pose temperature. This single number now sets BOTH the symbolic sharpness
+# of the predicate (V_p = sigmoid(margin/T)) and the reward's linear region,
+# because the signed score is tanh(margin/T). At T = 3*tolerance the reward
+# stays usable out to ~3*T = 9 cm of placement error, covering the full
+# residual range (cube up to ~6 cm off init). A sharper T would kill the
+# gradient past ~3*tolerance and the policy would get stuck — the failure the
+# old, independent active-residual scale factor existed to avoid.
+_ATPOSE_TEMPERATURE = 0.03
 
 # Scripted-prefix validity thresholds. After each scripted phase the env
 # checks the cube's actual position against the expected one. If either
@@ -161,9 +175,10 @@ _MAX_SCRIPTED_ATTEMPTS = 50
 class PushCubeRecoveryFullEnv(gym.Env):
     """PushCube-v1 inverse env with the generic multi-predicate residual reward.
 
-    Reward       = Σ_p sign_p · margin_p(scene) / scale_p
-                   over the inverse-target predicates
-                   {at_pose(cube, init), gripper_open, ¬at_pose(cube, fwd_goal)}.
+    Reward       = Σ_p signed score of p, i.e. sign_p · (2·V_p(scene) − 1),
+                   fences clipped to [-1, 0], over the inverse-target predicates
+                   {at_pose(cube, src), gripper_open, ¬at_pose(cube, goal),
+                    tcp_near(cube)}.
     Termination  = V_at_pose ≥ success_threshold AND V_gripper_open ≥ success_threshold
                    (only after curriculum reaches final tolerance).
     Action       = 4D xyz delta + gripper command (full pd_ee_delta_pos space).
@@ -173,7 +188,7 @@ class PushCubeRecoveryFullEnv(gym.Env):
 
     def __init__(self, max_steps: int = _MAX_STEPS, success_threshold: float = 0.50,
                  atpose_tolerance: float = _CURRICULUM_START_TOL,
-                 atpose_temperature: float = 0.015,
+                 atpose_temperature: float = _ATPOSE_TEMPERATURE,
                  action_scale_xyz: float = _ACTION_SCALE_XYZ,
                  perturbation_range_m: float = _PERTURBATION_RANGE_M,
                  push_displacement_m: float = _PUSH_DISPLACEMENT_M,
@@ -324,12 +339,14 @@ class PushCubeRecoveryFullEnv(gym.Env):
         self._episode_tolerance = float(self._current_tolerance)
         self.init_pos = obs["extra"]["obj_pose"].squeeze()[:3].cpu().numpy().copy()
         init_pose = demo.Pose(position=self.init_pos.astype(np.float32), quat_xyzw=_IDENTITY_QUAT)
+        # slot_name distinguishes the two at_pose groundings: without it both
+        # this and the forward-goal predicate key as at_pose(cube,target_pose).
         self.at_pose_pred = demo.AtPosePredicate(
-            "cube", target_pose=init_pose,
+            "cube", target_pose=init_pose, slot_name="src",
             distance_threshold=self._episode_tolerance, temperature=self.atpose_temperature)
         self.at_pose_eval = demo.AtPosePredicate(
-            "cube", target_pose=init_pose,
-            distance_threshold=_CURRICULUM_END_TOL, temperature=0.005)
+            "cube", target_pose=init_pose, slot_name="src",
+            distance_threshold=_CURRICULUM_END_TOL, temperature=0.01)
 
         # Resolve THIS episode's forward push displacement before building the
         # forward-goal predicate. _run_forward_push() will call this again —
@@ -342,16 +359,23 @@ class PushCubeRecoveryFullEnv(gym.Env):
         forward_goal_pose = demo.Pose(position=self.forward_goal_pos.astype(np.float32),
                                        quat_xyzw=_IDENTITY_QUAT)
         self.at_pose_forward_goal_pred = demo.AtPosePredicate(
-            "cube", target_pose=forward_goal_pose,
+            "cube", target_pose=forward_goal_pose, slot_name="goal",
             distance_threshold=self._episode_tolerance, temperature=self.atpose_temperature)
 
-        active_scale = max(_ACTIVE_RESIDUAL_SCALE_FACTOR * self._episode_tolerance, 1e-6)
-        fence_scale = max(self._episode_tolerance, 1e-6)
+        # Inverse target I(o) = Pre u Del u not-Add, as (predicate, sign, mode)
+        # tuples. There is no per-term reward scale: signed_score_reward derives
+        # the reward shape from each predicate's own temperature, which makes
+        # it identically the score on the signed axis.
+        #
+        # The modes here are PROVISIONAL: they are re-derived from the real
+        # handoff scene by _partition_inverse_target() once the symbolic prefix
+        # has run. They matter only for the rejected-attempt path, which never
+        # reaches the RL phase.
         self._inverse_target_terms = [
-            (self.at_pose_pred,              +1.0, active_scale,             "bipolar"),
-            (self.gripper_open_train,        +1.0, _GRIPPER_OPEN_MIN_WIDTH,  "fence"),
-            (self.at_pose_forward_goal_pred, -1.0, fence_scale,              "fence"),
-            (self.tcp_near_pred,             +1.0, _TCP_NEAR_THRESHOLD_M,    "fence"),
+            (self.at_pose_pred,              +1.0, "bipolar"),
+            (self.gripper_open_train,        +1.0, "fence"),
+            (self.at_pose_forward_goal_pred, -1.0, "fence"),
+            (self.tcp_near_pred,             +1.0, "fence"),
         ]
 
         # --- Forward push + check ----
@@ -390,7 +414,34 @@ class PushCubeRecoveryFullEnv(gym.Env):
         info["symbolic_err_m"] = symbolic_err
         info["symbolic_ok"] = bool(symbolic_ok)
         info["scripted_valid"] = bool(forward_ok and symbolic_ok)
+
+        # Framework step 4: derive fences/active residual from the real handoff.
+        self._inverse_target_terms, info["partition"] = self._partition_inverse_target(obs)
         return obs, info
+
+    def _partition_inverse_target(self, obs) -> tuple[list[tuple], list[dict]]:
+        """Split the inverse target into fences F and active residual A using
+        the scene the symbolic prefix actually produced.
+
+            F = {p in I(o) : V_p(s_h) >= theta}      -> mode "fence"
+            A = I(o) \\ F                            -> mode "bipolar"
+
+        These modes used to be hardcoded. Deriving them means a handoff that
+        failed to restore some predicate automatically promotes it into the
+        residual the policy is rewarded for fixing, instead of silently being
+        fenced as though it were already satisfied.
+        """
+        scene = demo._obs_to_scene(obs, self.regions)
+        terms: list[tuple] = []
+        partition: list[dict] = []
+        for predicate, sign, _provisional in self._inverse_target_terms:
+            score = float(predicate.evaluate(scene).score)
+            v_p = score if sign > 0 else 1.0 - score
+            mode = "fence" if v_p >= _FENCE_THRESHOLD else "bipolar"
+            terms.append((predicate, sign, mode))
+            partition.append({"predicate": predicate.key, "sign": float(sign),
+                              "v_p": v_p, "mode": mode})
+        return terms, partition
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
@@ -418,7 +469,7 @@ class PushCubeRecoveryFullEnv(gym.Env):
         self._step_count = 0
         initial_scene = demo._obs_to_scene(obs, self.regions)
         initial_at_pose = self.at_pose_pred.evaluate(initial_scene)
-        initial_reward = signed_margin_reward(initial_scene, self._inverse_target_terms)
+        initial_reward = signed_score_reward(initial_scene, self._inverse_target_terms)
         return self._encode(obs), {
             "phase": "rl_start",
             "seed": explicit_seed,
@@ -427,6 +478,7 @@ class PushCubeRecoveryFullEnv(gym.Env):
             "scripted_attempt_log": attempt_log,
             "forward_err_m": attempt_info["forward_err_m"],
             "symbolic_err_m": attempt_info["symbolic_err_m"],
+            "partition": attempt_info.get("partition", []),
             "init_pose": self.init_pos.tolist(),
             "forward_goal_pos_used_for_fence": self.forward_goal_pos.tolist(),
             "perturbation_xy": self._last_perturbation.tolist(),
@@ -468,9 +520,9 @@ class PushCubeRecoveryFullEnv(gym.Env):
         distance = float(np.linalg.norm(cube_pos - self.init_pos))
         cube_to_forward_goal = float(np.linalg.norm(cube_pos - self.forward_goal_pos))
 
-        # Generic predicate-derived reward — sum of normalized signed margins
+        # Generic predicate-derived reward — sum of signed scores
         # over the inverse-target terms.
-        reward = signed_margin_reward(scene, self._inverse_target_terms)
+        reward = signed_score_reward(scene, self._inverse_target_terms)
 
         termination_enabled = self._termination_enabled()
         terminated = (
@@ -933,7 +985,7 @@ def main() -> None:
 
     payload = {
         "phase": "pushcube_full",
-        "phase_description": "PushCube-v1 + 4D RL action with generic multi-predicate residual reward (sum of normalized signed margins over inverse-target terms)",
+        "phase_description": "PushCube-v1 + 4D RL action with generic multi-predicate residual reward (sum of signed scores over inverse-target terms)",
         "sac_seed": _SAC_SEED,
         "eval_seeds": _EVAL_SEEDS,
         "baseline_symbolic_only": sym,
@@ -953,14 +1005,15 @@ def main() -> None:
         "config": {
             "env": "PushCube-v1",
             "algorithm": "SAC",
-            "reward": "active term in [-1,+1] (bipolar tanh) + fences in [-1,0] (one-sided tanh: penalize violation, silent when satisfied)",
+            "reward": "sum of signed soft scores sign*(2*V_p-1): active term in [-1,+1] (bipolar) + fences in [-1,0] (one-sided: penalize violation, silent when satisfied)",
+            "reward_scale_rule": "no reward scale: contribution = sign*(2*V_p-1) == sign*tanh(margin/T_p), using each predicate's own temperature",
             "reward_terms": [
-                {"key": "at_pose(cube, init)",         "sign": +1.0, "scale": "active_residual_scale_factor * episode_tolerance_m", "mode": "bipolar", "role": "active residual"},
-                {"key": "gripper_open()",              "sign": +1.0, "scale": "gripper_open_min_width_m",                           "mode": "fence",   "role": "fence (precondition restored by symbolic prefix)"},
-                {"key": "at_pose(cube, forward_goal)", "sign": -1.0, "scale": "episode_tolerance_m",                                 "mode": "fence",   "role": "fence (negated add-effect)"},
-                {"key": "tcp_near(cube)",              "sign": +1.0, "scale": "tcp_near_threshold_m",                                "mode": "fence",   "role": "fence (forward-push precondition; prevents run-away)"},
+                {"key": "at_pose(cube, src)",   "sign": +1.0, "mode": "bipolar", "role": "active residual"},
+                {"key": "gripper_open()",       "sign": +1.0, "mode": "fence",   "role": "fence (precondition restored by symbolic prefix)"},
+                {"key": "at_pose(cube, goal)",  "sign": -1.0, "mode": "fence",   "role": "fence (negated add-effect)"},
+                {"key": "tcp_near(cube)",       "sign": +1.0, "mode": "fence",   "role": "fence (forward-push precondition; prevents run-away)"},
             ],
-            "active_residual_scale_factor": _ACTIVE_RESIDUAL_SCALE_FACTOR,
+            "fence_threshold_theta": _FENCE_THRESHOLD,
             "tcp_near_threshold_m": _TCP_NEAR_THRESHOLD_M,
             "tcp_near_temperature": _TCP_NEAR_TEMP,
             "observation_mode": env.observation_mode,

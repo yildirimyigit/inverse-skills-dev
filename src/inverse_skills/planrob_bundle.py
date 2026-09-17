@@ -169,7 +169,7 @@ def _build_pose_precise_push_case() -> tuple[str, list, PredicateRegistry]:
         InRegionPredicate("cube", "target"),
         GripperOpenPredicate(min_width=0.04),
         AtPosePredicate("cube", target_pose=init_pose,
-                        distance_threshold=0.005, temperature=0.001),
+                        distance_threshold=0.005, temperature=0.002),
     ])
     return "push_to_target", rollouts, registry
 

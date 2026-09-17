@@ -73,8 +73,8 @@ _USE_ENV_GOAL_FOR_PUSH = False
 
 # Diagnostics for gripper_open, which the symbolic inverse should restore
 # before RL starts.
-_GRIPPER_OPEN_TEMP_TRAIN = 0.02   # diagnostic score during training episodes
-_GRIPPER_OPEN_TEMP_EVAL = 0.005
+_GRIPPER_OPEN_TEMP_TRAIN = 0.04   # diagnostic score during training episodes
+_GRIPPER_OPEN_TEMP_EVAL = 0.01
 _GRIPPER_OPEN_MIN_WIDTH = 0.04    # gripper_width threshold for "open"
 _MAX_STEPS = 30                    # room for residual correction after release
 _TERMINATION_TOL_EPS = 1e-9
@@ -94,7 +94,7 @@ class PushCubeRecoveryFullEnv(gym.Env):
 
     def __init__(self, max_steps: int = _MAX_STEPS, success_threshold: float = 0.50,
                  atpose_tolerance: float = _CURRICULUM_START_TOL,
-                 atpose_temperature: float = 0.05,
+                 atpose_temperature: float = 0.1,
                  action_scale_xyz: float = _ACTION_SCALE_XYZ,
                  perturbation_range_m: float = _PERTURBATION_RANGE_M,
                  push_displacement_m: float = _PUSH_DISPLACEMENT_M,
@@ -210,7 +210,7 @@ class PushCubeRecoveryFullEnv(gym.Env):
             distance_threshold=self._episode_tolerance, temperature=self.atpose_temperature)
         self.at_pose_eval = demo.AtPosePredicate(
             "cube", target_pose=init_pose,
-            distance_threshold=_CURRICULUM_END_TOL, temperature=0.005)
+            distance_threshold=_CURRICULUM_END_TOL, temperature=0.01)
 
         obs = self._run_forward_push(obs)
         obs = self._run_symbolic_inverse(obs)

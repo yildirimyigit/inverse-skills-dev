@@ -13,6 +13,7 @@ src/inverse_skills/operators/parameterized.py
 src/inverse_skills/operators/restoration.py
 src/inverse_skills/operators/schema.py
 src/inverse_skills/operators/toy_planner.py
+src/inverse_skills/operators/two_phase.py
 src/inverse_skills/predicates/__init__.py
 src/inverse_skills/predicates/base.py
 src/inverse_skills/predicates/geometric.py
@@ -30,3 +31,4 @@ tests/test_operator_extraction.py
 tests/test_parameterized_operator.py
 tests/test_planrob_submission_bundle.py
 tests/test_toy_inverse_planner.py
+tests/test_two_phase_inverse.py

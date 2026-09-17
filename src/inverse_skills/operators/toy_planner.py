@@ -16,6 +16,8 @@ class PlanResult:
     expanded_nodes: int
     initial_potential: float = 0.0
     handoff_scene: SceneGraph | None = None
+    # Per-term max of V_p (unweighted, polarity applied) over every visited
+    # scene — the quantity `two_phase_inverse` thresholds for reachability.
     term_max_scores: dict[str, float] = field(default_factory=dict)
 
 
@@ -27,7 +29,9 @@ class ToyInversePlanner:
 
     def plan(self, start_scene: SceneGraph, max_depth: int = 3) -> PlanResult:
         start_score = self.objective.potential(start_scene)
-        term_max: dict[str, float] = dict(self.objective.term_scores(start_scene))
+        # Track unweighted V_p per term: `term_max_scores` feeds reachability
+        # thresholds, which are defined over the predicate score itself.
+        term_max: dict[str, float] = dict(self.objective.term_values(start_scene))
 
         if start_score >= self.success_threshold:
             return PlanResult(
@@ -51,9 +55,9 @@ class ToyInversePlanner:
             scene, actions = frontier.popleft()
             expanded += 1
             current_score = self.objective.potential(scene)
-            for key, score in self.objective.term_scores(scene).items():
-                if score > term_max.get(key, -1.0):
-                    term_max[key] = score
+            for key, value in self.objective.term_values(scene).items():
+                if value > term_max.get(key, -1.0):
+                    term_max[key] = value
             if current_score > best_score:
                 best_score = current_score
                 best_actions = [str(a) for a in actions]

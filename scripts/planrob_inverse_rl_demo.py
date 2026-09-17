@@ -126,7 +126,7 @@ class InverseRecoveryEnv(gym.Env):
 
     def __init__(self, max_steps: int = 20, success_threshold: float = 0.90,
                  atpose_tolerance: float = _CURRICULUM_START_TOL,
-                 atpose_temperature: float = 0.05,
+                 atpose_temperature: float = 0.1,
                  distance_penalty: float = 2.0,
                  action_scale_xyz: float = _ACTION_SCALE_XYZ,
                  perturbation_range_m: float = _PERTURBATION_RANGE_M):
@@ -215,7 +215,7 @@ class InverseRecoveryEnv(gym.Env):
         # Eval predicate locked at 1cm regardless of curriculum — honest precision metric.
         self.at_pose_eval = AtPosePredicate(
             "cube", target_pose=init_pose,
-            distance_threshold=_CURRICULUM_END_TOL, temperature=0.005,
+            distance_threshold=_CURRICULUM_END_TOL, temperature=0.01,
         )
 
         obs = self._run_forward_pick(obs)

@@ -288,7 +288,7 @@ class PushCubeFullRolloutVisualizer:
                 quat_xyzw=pushcube_full._IDENTITY_QUAT,
             ),
             distance_threshold=self.episode_tolerance,
-            temperature=0.015,
+            temperature=0.03,
         )
 
         self._run_symbolic_inverse()
@@ -337,11 +337,11 @@ class PushCubeFullRolloutVisualizer:
         )
         self.at_pose_pred = AtPosePredicate(
             "cube", target_pose=init_pose,
-            distance_threshold=self.episode_tolerance, temperature=0.015,
+            distance_threshold=self.episode_tolerance, temperature=0.03,
         )
         self.at_pose_eval = AtPosePredicate(
             "cube", target_pose=init_pose,
-            distance_threshold=pushcube_full._CURRICULUM_END_TOL, temperature=0.005,
+            distance_threshold=pushcube_full._CURRICULUM_END_TOL, temperature=0.01,
         )
 
     # --- generic step + capture (mirrors symbolic visualizer) --------------

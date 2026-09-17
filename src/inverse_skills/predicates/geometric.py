@@ -13,7 +13,7 @@ from inverse_skills.predicates.base import Predicate, PredicateResult
 class InRegionPredicate(Predicate):
     object_name: str
     region_name: str
-    temperature: float = 0.01
+    temperature: float = 0.02
     weight: float = 1.0
 
     @property
@@ -36,7 +36,7 @@ class NearPredicate(Predicate):
     object_a: str
     object_b: str
     distance_threshold: float = 0.05
-    temperature: float = 0.02
+    temperature: float = 0.04
     weight: float = 1.0
 
     @property
@@ -61,7 +61,7 @@ class AtPosePredicate(Predicate):
     slot_name: str = "target_pose"
     distance_threshold: float = 0.05
     quat_weight: float = 0.2
-    temperature: float = 0.02
+    temperature: float = 0.04
     weight: float = 1.0
 
     @property
@@ -81,7 +81,7 @@ class AtPosePredicate(Predicate):
 @dataclass(frozen=True)
 class GripperOpenPredicate(Predicate):
     min_width: float = 0.04
-    temperature: float = 0.005
+    temperature: float = 0.01
     weight: float = 1.0
 
     @property
@@ -108,7 +108,7 @@ class TcpNearObjectPredicate(Predicate):
 
     object_name: str
     distance_threshold: float = 0.05
-    temperature: float = 0.02
+    temperature: float = 0.04
     weight: float = 1.0
 
     @property
@@ -132,7 +132,7 @@ class TcpNearObjectPredicate(Predicate):
 @dataclass(frozen=True)
 class HoldingPredicate(Predicate):
     object_name: str
-    temperature: float = 0.25
+    temperature: float = 0.5
     weight: float = 1.0
 
     @property

@@ -8,56 +8,72 @@ from inverse_skills.operators.schema import LearnedOperator, PredicateTerm
 from inverse_skills.predicates.base import Predicate, PredicateRegistry
 
 
-def signed_margin_reward(
+def signed_score_reward(
     scene: SceneGraph,
     terms: Iterable[tuple],
     saturate: bool = True,
 ) -> float:
     """Dense reward derived directly from the predicate framework.
 
-    Each term is `(predicate, sign, scale)` or `(predicate, sign, scale, mode)`.
-    For each, evaluate the predicate on `scene` and add `sign * f(margin/scale)`
-    to the total — clipped according to `mode`.
+    Terminology, so that no word names two different objects:
+
+        margin  m_p(s)   in R, metres    <- geometry
+        score   V_p(s)   in [0, 1]       <- squash by temperature T_p
+        signed  V^_p(s)  in [-1, +1]     <- sign_p * (2*V_p - 1)
+        score
+
+    Each term is `(predicate, sign, mode)`. For each, evaluate the predicate on
+    `scene` and add its *signed score* to the total, clipped according to `mode`.
 
       • `sign=+1` for predicates that should hold in the inverse target;
         `sign=-1` for predicates that should be violated (negated add-effects).
-      • `scale` puts every term in unit-free units so heterogeneous predicates
-        can be summed (tolerance for at_pose, min_width for gripper_open, etc.).
-      • `mode="bipolar"` (default for 3-tuples) → contribution in [-1, +1].
-        Use this for the *active residual* predicate the symbolic prefix did
-        not fully restore. The agent gets gradient toward satisfaction AND
-        bonus for over-satisfaction.
+      • `mode="bipolar"` → contribution in [-1, +1]. Use this for the *active
+        residual* predicate the symbolic prefix did not fully restore. The agent
+        gets gradient toward satisfaction AND bonus for over-satisfaction.
       • `mode="fence"` → contribution in [-1, 0]. Use this for predicates the
         symbolic prefix already restored: violations cost reward, non-violation
         is silent. This is the literal content of "preconditions and
         delete-effects should hold" — no perverse incentive to over-saturate
         a fence and ignore the residual.
 
-    With `saturate=True` (default), `f = tanh` — the signed, bounded analog of
-    the sigmoid score the predicate framework already uses. Linear near
-    `margin = 0` with slope `1/scale`, smoothly saturates to ±1 outside
-    ~3·scale. Bounded reward keeps the SAC value function from blowing up
-    when state drifts far during exploration.
+    There is NO reward scale hyperparameter. The reward is the predicate's own
+    score V_p, mapped onto the signed axis:
 
-    With `saturate=False`, `f` is the identity — useful for diagnostics or for
-    tasks where the margin is already bounded by construction.
+        contribution = sign * (2 * V_p(s) - 1) = sign * tanh(margin / T_p)
+
+    the two being identical because V_p = (1 + tanh(margin/T_p)) / 2. The single
+    temperature T_p therefore fixes the reward shape as well as the score, and
+    "the reward is the score" holds by construction — they cannot drift apart.
+    The map x -> 2x-1 is the unique affine, order-preserving bijection
+    [0,1] -> [-1,+1] sending the decision boundary V_p = 1/2 to 0, so there is no
+    freedom in it.
+
+    Trade-off, stated plainly: T_p controls both how sharp the predicate is for
+    symbolic thresholding AND how far the RL gradient reaches (slope 1/T_p at the
+    boundary, saturating past ~3*T_p). Decoupling them would need a second
+    parameter, at which point the reward would no longer BE the score.
+
+    With `saturate=False`, the contribution is the raw normalized margin
+    `sign * margin / T_p` — unbounded, and a margin rather than a score. Used
+    only for the "no tanh" ablation.
     """
     total = 0.0
     for term in terms:
-        if len(term) == 3:
-            predicate, sign, scale = term
-            mode = "bipolar"
-        elif len(term) == 4:
-            predicate, sign, scale, mode = term
-        else:
+        if len(term) != 3:
             raise ValueError(
-                f"Each term must be (predicate, sign, scale) or "
-                f"(predicate, sign, scale, mode); got {term!r}"
+                f"Each term must be (predicate, sign, mode); got {term!r}. "
+                f"The per-term reward scale was removed — the predicate's own "
+                f"temperature now sets the reward shape."
             )
-        margin = predicate.evaluate(scene).margin
-        x = float(sign) * float(margin) / max(float(scale), 1e-6)
+        predicate, sign, mode = term
+        result = predicate.evaluate(scene)
         if saturate:
-            x = math.tanh(x)
+            # == sign * tanh(margin / T_p); computed from the score so the
+            # identity is manifest in the code, not just in the comments.
+            x = float(sign) * (2.0 * float(result.score) - 1.0)
+        else:
+            temp = max(float(result.temperature), 1e-6)
+            x = float(sign) * float(result.margin) / temp
         if mode == "fence":
             x = min(x, 0.0)
         elif mode != "bipolar":
@@ -72,12 +88,26 @@ class RestorationObjective:
         self.predicates = predicate_registry
         self.terms = operator.inverse_target_terms()
 
-    def term_score(self, term: PredicateTerm, scene: SceneGraph) -> float:
-        result = self.predicates.get(term.key).evaluate(scene)
-        score = result.score
+    def term_value(self, term: PredicateTerm, scene: SceneGraph) -> float:
+        """V_p(s): the predicate's own score with polarity applied, in [0, 1].
+
+        This is the quantity thresholds are defined over — the fence/active
+        partition (V_p(s_h) >= theta) and BFS term reachability. Keep it
+        unweighted: extraction weights are data-dependent (mean start score or
+        effect delta), so a satisfied predicate carrying weight 0.78 must not
+        be read as "only 78% restored".
+        """
+        score = self.predicates.get(term.key).evaluate(scene).score
         if term.polarity == "negative":
             score = 1.0 - score
-        return float(term.weight * score)
+        return float(score)
+
+    def term_values(self, scene: SceneGraph) -> dict[str, float]:
+        return {term.key: self.term_value(term, scene) for term in self.terms}
+
+    def term_score(self, term: PredicateTerm, scene: SceneGraph) -> float:
+        """Weighted contribution of a term to `potential`."""
+        return float(term.weight * self.term_value(term, scene))
 
     def term_scores(self, scene: SceneGraph) -> dict[str, float]:
         return {term.key: self.term_score(term, scene) for term in self.terms}

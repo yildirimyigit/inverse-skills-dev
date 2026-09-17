@@ -27,8 +27,8 @@ import numpy as np
 
 
 _THRESHOLD = 0.01      # at_pose distance threshold (m), our 1 cm target
-_TEMP_TRAIN = 0.05     # the softness used during RL training
-_TEMP_EVAL = 0.005     # the softness used for honest evaluation
+_TEMP_TRAIN = 0.1     # the softness used during RL training
+_TEMP_EVAL = 0.01     # the softness used for honest evaluation
 _DIST_PENALTY = 2.0    # coefficient on the linear distance penalty in the shaped reward
 _OUT_DIR = Path("artifacts")
 
