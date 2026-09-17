@@ -1,7 +1,7 @@
 name: inverse-skills
 channels:
-  - pytorch
-  - nvidia
+  # - pytorch
+  # - nvidia
   - conda-forge
 dependencies:
   - python=3.10
@@ -14,10 +14,10 @@ dependencies:
   - scikit-learn
   - ipykernel
   - jupyterlab
-  - pytorch=2.4.*
-  - torchvision
-  - torchaudio
-  - pytorch-cuda=12.1
+  # - pytorch=2.4.*
+  # - torchvision
+  # - torchaudio
+  # - pytorch-cuda=12.1
   - tqdm
   - pyyaml
   - omegaconf
@@ -34,14 +34,17 @@ dependencies:
   - ruff
   - black
   - pip:
+      # PyTorch comes from pip: the pytorch conda channel stopped at 2.5, and
+      # RTX 50-series GPUs (sm_120) need a CUDA 12.8 build (torch >= 2.7).
+      - --extra-index-url https://download.pytorch.org/whl/cu128
+      - torch==2.7.1+cu128
+      - torchvision==0.22.1+cu128
+      - torchaudio==2.7.1+cu128
+       # Pinned <1.3 because stable-baselines3 2.8.0 requires gymnasium<1.3.0.
       # Pinned <1.3 because stable-baselines3 2.8.0 requires gymnasium<1.3.0.
       # ManiSkill only needs >=0.29.1, so this is compatible with both.
       - gymnasium<1.3
       - mani-skill
-      # Pinned to 2.8.0 deliberately: it declares torch>=2.3, which the
-      # conda pytorch=2.4.* above satisfies. Newer SB3 (>=2.9) requires
-      # torch>=2.8 and will silently upgrade pytorch, leaving torchvision /
-      # torchaudio built against 2.4 and breaking ManiSkill's import.
       - stable-baselines3==2.8.0
       - tyro
       - trimesh

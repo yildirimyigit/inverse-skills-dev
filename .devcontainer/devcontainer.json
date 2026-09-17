@@ -25,5 +25,8 @@
     }
   },
   "postCreateCommand": "micromamba run -n inverse-skills python -m pip install -e .",
-  "remoteUser": "mambauser"
+  "remoteUser": "mambauser",
+  "remoteEnv": {
+    "PATH": "/opt/conda/envs/inverse-skills/bin:${containerEnv:PATH}"
+  },
 }
