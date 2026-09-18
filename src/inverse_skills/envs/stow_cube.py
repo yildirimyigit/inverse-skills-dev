@@ -35,7 +35,7 @@ POCKET_BACK_X = 0.15          # inner face of the back wall
 POCKET_HALF_WIDTH = 0.025     # inner half-width: 5 cm for the 4 cm cube
 ARM_LENGTH = 0.035            # side arms run from x = 0.115 to the back wall
 POCKET_A_XY = (POCKET_BACK_X - CUBE_HALF, 0.0)       # A seated against the back wall
-MOUTH_B_XY = (POCKET_A_XY[0] - 2 * CUBE_HALF, 0.0)   # B touching A's -x face
+MOUTH_B_XY = (POCKET_A_XY[0] - 2 * CUBE_HALF - 0.008, 0.0)   # B touching A's -x face
 SRC_A_XY = (0.0, 0.0)
 SRC_B_XY = (-0.10, 0.0)
 SRC_NOISE = 0.005             # +-5 mm xy noise on both source poses

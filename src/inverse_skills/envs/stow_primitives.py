@@ -36,7 +36,7 @@ _PRESS_DEPTH = 0.02        # drag_out() first commands the fingertips this far b
 _DRAG_SCALE = 0.2          # per-step stroke command while dragging
 _PRESS_CMD = 0.05          # per-step press command while dragging: lighter and the fingers skate
                            # over the cube, heavier (0.25) and the press stalls the arm's stroke
-_REGION_HALF_XY = 0.01
+_REGION_HALF_XY = 0.02     # slot half-width = the 2 cm restoration tolerance
 _REGION_HALF_Z = 0.05
 _HOLDING_MAX_DIST = 0.03   # a closed gripper this close to a cube counts as holding it
 _HOLDING_MAX_WIDTH = 0.04
