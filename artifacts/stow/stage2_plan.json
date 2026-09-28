@@ -1,0 +1,152 @@
+{
+  "goal_positive": [
+    "clear_of_walls(cube_a)",
+    "gripper_open()",
+    "in_region(cube_a,src_a)",
+    "in_region(cube_b,src_b)"
+  ],
+  "goal_negative": [
+    "in_region(cube_a,pocket)",
+    "in_region(cube_b,mouth)"
+  ],
+  "expected_plan": [
+    "pick(cube_b)",
+    "place(cube_b,src_b)",
+    "approach(cube_a)",
+    "HOLE[clear_of_walls(cube_a)]",
+    "pick(cube_a)",
+    "place(cube_a,src_a)"
+  ],
+  "all_seeds_match": true,
+  "alternatives": [
+    [
+      "approach(cube_a)",
+      "HOLE[clear_of_walls(cube_a)]",
+      "pick(cube_a)",
+      "place(cube_a,src_a)",
+      "pick(cube_b)",
+      "place(cube_b,src_b)"
+    ]
+  ],
+  "seeds": [
+    {
+      "seed": 1000,
+      "state": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "scores": {
+        "in_region(cube_a,src_a)": 1.9477619517260791e-10,
+        "in_region(cube_b,src_b)": 3.3306690738754696e-15,
+        "in_region(cube_a,pocket)": 0.9745750500933388,
+        "in_region(cube_b,mouth)": 0.9604194876241456,
+        "tcp_near(cube_a)": 0.012612262077089653,
+        "tcp_near(cube_b)": 0.023625254811677154,
+        "gripper_open()": 0.999549344956167,
+        "clear_of_walls(cube_a)": 0.1193584171676792
+      },
+      "plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
+        "approach(cube_a)",
+        "HOLE[clear_of_walls(cube_a)]",
+        "pick(cube_a)",
+        "place(cube_a,src_a)"
+      ],
+      "delegated": [
+        "clear_of_walls(cube_a)"
+      ],
+      "hole_indices": [
+        3
+      ],
+      "cost": [
+        1,
+        2,
+        1,
+        6
+      ],
+      "expanded": 75,
+      "matches_expected": true
+    },
+    {
+      "seed": 1001,
+      "state": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)"
+      ],
+      "scores": {
+        "in_region(cube_a,src_a)": 2.290400646920432e-10,
+        "in_region(cube_b,src_b)": 5.9396931817445875e-15,
+        "in_region(cube_a,pocket)": 0.9678120487376907,
+        "in_region(cube_b,mouth)": 0.5982441919016138,
+        "tcp_near(cube_a)": 0.012625954978742415,
+        "tcp_near(cube_b)": 0.022596488864199793,
+        "gripper_open()": 0.999549344956167,
+        "clear_of_walls(cube_a)": 0.11983429096249842
+      },
+      "plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
+        "approach(cube_a)",
+        "HOLE[clear_of_walls(cube_a)]",
+        "pick(cube_a)",
+        "place(cube_a,src_a)"
+      ],
+      "delegated": [
+        "clear_of_walls(cube_a)"
+      ],
+      "hole_indices": [
+        3
+      ],
+      "cost": [
+        1,
+        2,
+        1,
+        6
+      ],
+      "expanded": 85,
+      "matches_expected": true
+    },
+    {
+      "seed": 1002,
+      "state": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "scores": {
+        "in_region(cube_a,src_a)": 1.074014766011544e-10,
+        "in_region(cube_b,src_b)": 7.216449660063518e-16,
+        "in_region(cube_a,pocket)": 0.9528867351444976,
+        "in_region(cube_b,mouth)": 0.9213667742244269,
+        "tcp_near(cube_a)": 0.011575344942785004,
+        "tcp_near(cube_b)": 0.022121420205772346,
+        "gripper_open()": 0.999549348312283,
+        "clear_of_walls(cube_a)": 0.11938927654120679
+      },
+      "plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
+        "approach(cube_a)",
+        "HOLE[clear_of_walls(cube_a)]",
+        "pick(cube_a)",
+        "place(cube_a,src_a)"
+      ],
+      "delegated": [
+        "clear_of_walls(cube_a)"
+      ],
+      "hole_indices": [
+        3
+      ],
+      "cost": [
+        1,
+        2,
+        1,
+        6
+      ],
+      "expanded": 75,
+      "matches_expected": true
+    }
+  ]
+}

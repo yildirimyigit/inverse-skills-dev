@@ -1,0 +1,257 @@
+{
+  "summary": {
+    "n": 10,
+    "stow_ok": 10,
+    "stowed_pick_a_blocked": 10,
+    "pick_b_lifted": 10,
+    "place_b_ok": 10,
+    "approach_ok": 10,
+    "drag_ok": 10,
+    "after_drag_pick_a_lifted": 10,
+    "after_drag_place_a_ok": 10,
+    "after_drag_b_still_at_src": 10
+  },
+  "gate_pass": true,
+  "seeds": [
+    {
+      "seed": 0,
+      "src_a": [
+        -0.0,
+        0.0027
+      ],
+      "src_b": [
+        -0.1041,
+        -0.0037
+      ],
+      "stow_a_err": 0.003589963563551715,
+      "stow_b_err": 0.005738524923833057,
+      "stow_ok": true,
+      "stowed_pick_a_lifted": false,
+      "pick_b_lifted": true,
+      "place_b_err": 0.00025514873607949246,
+      "approach_a_moved": 0.0001297913655747146,
+      "drag_a_x": 0.058854956179857254,
+      "drag_a_y": 0.0004249568737577647,
+      "drag_ok": true,
+      "dragged_pick_a_lifted": true,
+      "place_a_err": 0.0010559989648924405,
+      "b_still_at_src": true
+    },
+    {
+      "seed": 1,
+      "src_a": [
+        0.0026,
+        -0.0022
+      ],
+      "src_b": [
+        -0.101,
+        0.0023
+      ],
+      "stow_a_err": 0.002344303513125498,
+      "stow_b_err": 0.005285352183504547,
+      "stow_ok": true,
+      "stowed_pick_a_lifted": false,
+      "pick_b_lifted": true,
+      "place_b_err": 0.0019392290981229692,
+      "approach_a_moved": 0.00010517749006878757,
+      "drag_a_x": 0.05834989249706268,
+      "drag_a_y": -0.00465943431481719,
+      "drag_ok": true,
+      "dragged_pick_a_lifted": true,
+      "place_a_err": 0.0034707070467051263,
+      "b_still_at_src": true
+    },
+    {
+      "seed": 2,
+      "src_a": [
+        0.0011,
+        -0.0012
+      ],
+      "src_b": [
+        -0.0986,
+        -0.0003
+      ],
+      "stow_a_err": 0.004212643122210351,
+      "stow_b_err": 0.00475105549995193,
+      "stow_ok": true,
+      "stowed_pick_a_lifted": false,
+      "pick_b_lifted": true,
+      "place_b_err": 0.0005833332073525728,
+      "approach_a_moved": 6.386161605865445e-05,
+      "drag_a_x": 0.05341464281082153,
+      "drag_a_y": -0.00023474334739148617,
+      "drag_ok": true,
+      "dragged_pick_a_lifted": true,
+      "place_a_err": 0.001372395011167183,
+      "b_still_at_src": true
+    },
+    {
+      "seed": 3,
+      "src_a": [
+        -0.005,
+        -0.0039
+      ],
+      "src_b": [
+        -0.1021,
+        -0.0047
+      ],
+      "stow_a_err": 0.0037732339880201375,
+      "stow_b_err": 0.00556083121586549,
+      "stow_ok": true,
+      "stowed_pick_a_lifted": false,
+      "pick_b_lifted": true,
+      "place_b_err": 0.0005241181348922315,
+      "approach_a_moved": 1.9484712825832552e-05,
+      "drag_a_x": 0.06670916080474854,
+      "drag_a_y": -0.004267957527190447,
+      "drag_ok": true,
+      "dragged_pick_a_lifted": true,
+      "place_a_err": 0.001628004727772494,
+      "b_still_at_src": true
+    },
+    {
+      "seed": 4,
+      "src_a": [
+        0.0006,
+        0.0006
+      ],
+      "src_b": [
+        -0.1041,
+        -0.0029
+      ],
+      "stow_a_err": 0.0019334566011418874,
+      "stow_b_err": 0.00554365324764715,
+      "stow_ok": true,
+      "stowed_pick_a_lifted": false,
+      "pick_b_lifted": true,
+      "place_b_err": 0.0015216464254028143,
+      "approach_a_moved": 1.0972857326728174e-05,
+      "drag_a_x": 0.05894506722688675,
+      "drag_a_y": 0.007777512539178133,
+      "drag_ok": true,
+      "dragged_pick_a_lifted": true,
+      "place_a_err": 0.0011904558058638652,
+      "b_still_at_src": true
+    },
+    {
+      "seed": 5,
+      "src_a": [
+        0.0033,
+        -0.0037
+      ],
+      "src_b": [
+        -0.0959,
+        0.0032
+      ],
+      "stow_a_err": 0.002953319907457944,
+      "stow_b_err": 0.00704724221122427,
+      "stow_ok": true,
+      "stowed_pick_a_lifted": false,
+      "pick_b_lifted": true,
+      "place_b_err": 0.00038509783007692933,
+      "approach_a_moved": 9.666277539600293e-05,
+      "drag_a_x": 0.053129374980926514,
+      "drag_a_y": -0.005322290118783712,
+      "drag_ok": true,
+      "dragged_pick_a_lifted": true,
+      "place_a_err": 0.002145195996426752,
+      "b_still_at_src": true
+    },
+    {
+      "seed": 6,
+      "src_a": [
+        0.0007,
+        0.0005
+      ],
+      "src_b": [
+        -0.0951,
+        0.0011
+      ],
+      "stow_a_err": 0.0018638770743468007,
+      "stow_b_err": 0.005241257482081133,
+      "stow_ok": true,
+      "stowed_pick_a_lifted": false,
+      "pick_b_lifted": true,
+      "place_b_err": 0.00027113947795921663,
+      "approach_a_moved": 4.094415392661002e-05,
+      "drag_a_x": 0.05131092295050621,
+      "drag_a_y": 0.006928608752787113,
+      "drag_ok": true,
+      "dragged_pick_a_lifted": true,
+      "place_a_err": 0.0009656826734156287,
+      "b_still_at_src": true
+    },
+    {
+      "seed": 7,
+      "src_a": [
+        0.0003,
+        -0.003
+      ],
+      "src_b": [
+        -0.0984,
+        0.0016
+      ],
+      "stow_a_err": 0.0030953419201481236,
+      "stow_b_err": 0.0052771366159618345,
+      "stow_ok": true,
+      "stowed_pick_a_lifted": false,
+      "pick_b_lifted": true,
+      "place_b_err": 0.0007349293366232055,
+      "approach_a_moved": 0.00029868714019350704,
+      "drag_a_x": 0.06570903211832047,
+      "drag_a_y": 0.0011788324918597937,
+      "drag_ok": true,
+      "dragged_pick_a_lifted": true,
+      "place_a_err": 0.0014146899703140164,
+      "b_still_at_src": true
+    },
+    {
+      "seed": 8,
+      "src_a": [
+        0.001,
+        0.0035
+      ],
+      "src_b": [
+        -0.0955,
+        -0.002
+      ],
+      "stow_a_err": 0.004216701794694647,
+      "stow_b_err": 0.005100512437100401,
+      "stow_ok": true,
+      "stowed_pick_a_lifted": false,
+      "pick_b_lifted": true,
+      "place_b_err": 0.0008124438289977339,
+      "approach_a_moved": 0.00034152533034662735,
+      "drag_a_x": 0.060243889689445496,
+      "drag_a_y": 0.00784046296030283,
+      "drag_ok": true,
+      "dragged_pick_a_lifted": true,
+      "place_a_err": 0.0007068185601926571,
+      "b_still_at_src": true
+    },
+    {
+      "seed": 9,
+      "src_a": [
+        0.0016,
+        -0.002
+      ],
+      "src_b": [
+        -0.1002,
+        0.0028
+      ],
+      "stow_a_err": 8.082191401678613e-05,
+      "stow_b_err": 0.005478544411589359,
+      "stow_ok": true,
+      "stowed_pick_a_lifted": false,
+      "pick_b_lifted": true,
+      "place_b_err": 0.0018074905658225478,
+      "approach_a_moved": 3.0950275811855986e-05,
+      "drag_a_x": 0.059938669204711914,
+      "drag_a_y": 0.0009397693793289363,
+      "drag_ok": true,
+      "dragged_pick_a_lifted": true,
+      "place_a_err": 0.001321904066878925,
+      "b_still_at_src": true
+    }
+  ]
+}

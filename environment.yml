@@ -44,7 +44,12 @@ dependencies:
       # Pinned <1.3 because stable-baselines3 2.8.0 requires gymnasium<1.3.0.
       # ManiSkill only needs >=0.29.1, so this is compatible with both.
       - gymnasium<1.3
-      - mani-skill
+      # Pinned: the StowCube env and the handoff cache use ManiSkill 3.0.x APIs
+      # (get_state_dict/set_state_dict, TableSceneBuilder, actors.build_box,
+      # env.unwrapped.get_obs). An unpinned install builds fine and then fails
+      # at runtime when those move.
+      - mani-skill==3.0.1
+      - sapien==3.0.3
       - stable-baselines3==2.8.0
       - tyro
       - trimesh

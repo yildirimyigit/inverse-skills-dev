@@ -1,0 +1,155 @@
+{
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "operator": {
+    "skill_name": "stow",
+    "preconditions": [
+      {
+        "key": "clear_of_walls(cube_a)",
+        "weight": 0.9999830245526169,
+        "polarity": "positive"
+      },
+      {
+        "key": "gripper_open()",
+        "weight": 0.9996646497496431,
+        "polarity": "positive"
+      },
+      {
+        "key": "in_region(cube_a,src_a)",
+        "weight": 0.9820113050469909,
+        "polarity": "positive"
+      },
+      {
+        "key": "in_region(cube_b,src_b)",
+        "weight": 0.9820113076792948,
+        "polarity": "positive"
+      }
+    ],
+    "add_effects": [
+      {
+        "key": "in_region(cube_a,pocket)",
+        "weight": 0.9661654434413218,
+        "polarity": "positive"
+      },
+      {
+        "key": "in_region(cube_b,mouth)",
+        "weight": 0.9553560677826346,
+        "polarity": "positive"
+      }
+    ],
+    "delete_effects": [
+      {
+        "key": "clear_of_walls(cube_a)",
+        "weight": 0.8804929159413986,
+        "polarity": "positive"
+      },
+      {
+        "key": "in_region(cube_a,src_a)",
+        "weight": 0.9820113047430499,
+        "polarity": "positive"
+      },
+      {
+        "key": "in_region(cube_b,src_b)",
+        "weight": 0.9820113076792923,
+        "polarity": "positive"
+      }
+    ],
+    "inverse_target_terms": [
+      {
+        "key": "clear_of_walls(cube_a)",
+        "weight": 0.9999830245526169,
+        "polarity": "positive"
+      },
+      {
+        "key": "gripper_open()",
+        "weight": 0.9996646497496431,
+        "polarity": "positive"
+      },
+      {
+        "key": "in_region(cube_a,pocket)",
+        "weight": 0.9661654434413218,
+        "polarity": "negative"
+      },
+      {
+        "key": "in_region(cube_a,src_a)",
+        "weight": 0.9820113050469909,
+        "polarity": "positive"
+      },
+      {
+        "key": "in_region(cube_b,mouth)",
+        "weight": 0.9553560677826346,
+        "polarity": "negative"
+      },
+      {
+        "key": "in_region(cube_b,src_b)",
+        "weight": 0.9820113076792948,
+        "polarity": "positive"
+      }
+    ],
+    "metadata": {
+      "num_rollouts": 5,
+      "extractor": "first_last_score_delta_v0"
+    }
+  },
+  "scores": {
+    "clear_of_walls(cube_a)": {
+      "start_mean": 0.9999830245526169,
+      "end_mean": 0.11949010861121831,
+      "delta": -0.8804929159413986,
+      "abs_delta": 0.8804929159413986
+    },
+    "gripper_open()": {
+      "start_mean": 0.9996646497496431,
+      "end_mean": 0.9995493453589015,
+      "delta": -0.00011530439074158849,
+      "abs_delta": 0.00011530439074158849
+    },
+    "in_region(cube_a,pocket)": {
+      "start_mean": 3.024765771186821e-10,
+      "end_mean": 0.9661654437437984,
+      "delta": 0.9661654434413218,
+      "abs_delta": 0.9661654434413218
+    },
+    "in_region(cube_a,src_a)": {
+      "start_mean": 0.9820113050469909,
+      "end_mean": 3.0394100569708373e-10,
+      "delta": -0.9820113047430499,
+      "abs_delta": 0.9820113047430499
+    },
+    "in_region(cube_b,mouth)": {
+      "start_mean": 6.228351168147128e-15,
+      "end_mean": 0.9553560677826408,
+      "delta": 0.9553560677826346,
+      "abs_delta": 0.9553560677826346
+    },
+    "in_region(cube_b,src_b)": {
+      "start_mean": 0.9820113076792948,
+      "end_mean": 2.4646951146678474e-15,
+      "delta": -0.9820113076792923,
+      "abs_delta": 0.9820113076792923
+    },
+    "tcp_near(cube_a)": {
+      "start_mean": 0.007488905607072461,
+      "end_mean": 0.012623605631086643,
+      "delta": 0.005134700024014182,
+      "abs_delta": 0.005134700024014182
+    },
+    "tcp_near(cube_b)": {
+      "start_mean": 0.002114905212937379,
+      "end_mean": 0.023509570086625697,
+      "delta": 0.021394664873688317,
+      "abs_delta": 0.021394664873688317
+    }
+  },
+  "checks": {
+    "pre_matches": true,
+    "add_matches": true,
+    "del_matches": true,
+    "no_tcp_near_terms": true
+  }
+}

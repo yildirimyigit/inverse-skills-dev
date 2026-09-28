@@ -13,9 +13,22 @@ __pycache__/
 # Jupyter
 .ipynb_checkpoints/
 
-# Project artifacts
+# Project artifacts. Everything under artifacts/ is regenerable working output
+# and stays out of the repo, except the stow reference set below: the extracted
+# operator and the trained hole policy are inputs to stages 2 and 4, so a fresh
+# clone can run those without first reproducing stages 1 and 3.
 data/
-artifacts/
+artifacts/*
+!artifacts/stow/
+artifacts/stow/*
+!artifacts/stow/*.json
+!artifacts/stow/stage3/
+artifacts/stow/stage3/*
+!artifacts/stow/stage3/1789749141/
+artifacts/stow/stage3/1789749141/*
+!artifacts/stow/stage3/1789749141/sac_hole_best.zip
+!artifacts/stow/stage3/1789749141/summary.json
+!artifacts/stow/stage3/1789749141/precondition.json
 checkpoints/
 logs/
 wandb/
@@ -27,3 +40,8 @@ outputs/
 .vscode/
 
 CLAUDE.md
+
+# Claude memory and transcript backups, seeded into the container volume by
+# .devcontainer/restore-claude.sh. Local to each machine; never committed.
+.claude-memory/
+.claude-transcripts/

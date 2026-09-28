@@ -1,0 +1,301 @@
+{
+  "timesteps": 120000,
+  "minutes": 14.728814451633298,
+  "expert": {
+    "success_rate": 1.0,
+    "fence_rate": 0.0,
+    "contract_rate": 0.0,
+    "mean_steps": 5.3,
+    "mean_x_mm": -117.15317666530609
+  },
+  "best": {
+    "success_rate": 1.0,
+    "fence_rate": 1.0,
+    "contract_rate": 1.0,
+    "mean_steps": 4.2,
+    "mean_x_mm": 24.810262210667133
+  },
+  "final": {
+    "success_rate": 0.0,
+    "fence_rate": 1.0,
+    "contract_rate": 0.0,
+    "mean_steps": 40.0,
+    "mean_x_mm": 103.85681390762329
+  },
+  "history": [
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 4.3,
+      "mean_x_mm": 66.2631444633007,
+      "timesteps": 4000,
+      "saved": true
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.0,
+      "contract_rate": 0.0,
+      "mean_steps": 4.9,
+      "mean_x_mm": -102.09687948226929,
+      "timesteps": 8000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 21.5,
+      "mean_x_mm": 85.04743948578835,
+      "timesteps": 12000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.9,
+      "contract_rate": 0.9,
+      "mean_steps": 5.1,
+      "mean_x_mm": 52.05937582068145,
+      "timesteps": 16000
+    },
+    {
+      "success_rate": 0.9,
+      "fence_rate": 1.0,
+      "contract_rate": 0.9,
+      "mean_steps": 5.3,
+      "mean_x_mm": 76.90841555595398,
+      "timesteps": 20000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 4.2,
+      "mean_x_mm": 25.154312327504158,
+      "timesteps": 24000,
+      "saved": true
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.0,
+      "contract_rate": 0.0,
+      "mean_steps": 4.2,
+      "mean_x_mm": -88.52339014410973,
+      "timesteps": 28000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.0,
+      "contract_rate": 0.0,
+      "mean_steps": 4.8,
+      "mean_x_mm": -157.4300840497017,
+      "timesteps": 32000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.0,
+      "contract_rate": 0.0,
+      "mean_steps": 4.6,
+      "mean_x_mm": -203.05563658475876,
+      "timesteps": 36000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.4,
+      "contract_rate": 0.4,
+      "mean_steps": 3.9,
+      "mean_x_mm": -77.25300882011652,
+      "timesteps": 40000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.0,
+      "contract_rate": 0.0,
+      "mean_steps": 3.8,
+      "mean_x_mm": -233.38578641414642,
+      "timesteps": 44000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.2,
+      "contract_rate": 0.2,
+      "mean_steps": 3.8,
+      "mean_x_mm": -208.07464569807053,
+      "timesteps": 48000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.0,
+      "contract_rate": 0.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -129.9265444278717,
+      "timesteps": 52000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 4.2,
+      "mean_x_mm": 42.22694933414459,
+      "timesteps": 56000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 4.3,
+      "mean_x_mm": 51.559703797101974,
+      "timesteps": 60000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 4.2,
+      "mean_x_mm": 57.4746023863554,
+      "timesteps": 64000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.9,
+      "contract_rate": 0.9,
+      "mean_steps": 4.0,
+      "mean_x_mm": 64.45586644113064,
+      "timesteps": 68000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.9,
+      "contract_rate": 0.9,
+      "mean_steps": 4.4,
+      "mean_x_mm": 67.77805909514427,
+      "timesteps": 72000
+    },
+    {
+      "success_rate": 0.1,
+      "fence_rate": 1.0,
+      "contract_rate": 0.1,
+      "mean_steps": 36.3,
+      "mean_x_mm": 102.12488174438477,
+      "timesteps": 76000
+    },
+    {
+      "success_rate": 0.0,
+      "fence_rate": 1.0,
+      "contract_rate": 0.0,
+      "mean_steps": 40.0,
+      "mean_x_mm": 107.01881647109985,
+      "timesteps": 80000
+    },
+    {
+      "success_rate": 0.0,
+      "fence_rate": 0.9,
+      "contract_rate": 0.0,
+      "mean_steps": 40.0,
+      "mean_x_mm": 106.54862895607948,
+      "timesteps": 84000
+    },
+    {
+      "success_rate": 0.4,
+      "fence_rate": 1.0,
+      "contract_rate": 0.4,
+      "mean_steps": 22.3,
+      "mean_x_mm": 100.41343569755554,
+      "timesteps": 88000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.9,
+      "contract_rate": 0.9,
+      "mean_steps": 5.8,
+      "mean_x_mm": 79.80029731988907,
+      "timesteps": 92000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.3,
+      "contract_rate": 0.3,
+      "mean_steps": 5.0,
+      "mean_x_mm": 63.74327093362808,
+      "timesteps": 96000
+    },
+    {
+      "success_rate": 0.9,
+      "fence_rate": 1.0,
+      "contract_rate": 0.9,
+      "mean_steps": 4.9,
+      "mean_x_mm": 69.920614361763,
+      "timesteps": 100000
+    },
+    {
+      "success_rate": 0.9,
+      "fence_rate": 0.8,
+      "contract_rate": 0.7,
+      "mean_steps": 5.0,
+      "mean_x_mm": 68.23675371706486,
+      "timesteps": 104000
+    },
+    {
+      "success_rate": 0.9,
+      "fence_rate": 0.7,
+      "contract_rate": 0.6,
+      "mean_steps": 8.6,
+      "mean_x_mm": 74.45409782230854,
+      "timesteps": 108000
+    },
+    {
+      "success_rate": 0.7,
+      "fence_rate": 1.0,
+      "contract_rate": 0.7,
+      "mean_steps": 14.8,
+      "mean_x_mm": 85.51136180758476,
+      "timesteps": 112000
+    },
+    {
+      "success_rate": 0.0,
+      "fence_rate": 1.0,
+      "contract_rate": 0.0,
+      "mean_steps": 40.0,
+      "mean_x_mm": 107.72248208522797,
+      "timesteps": 116000
+    },
+    {
+      "success_rate": 0.0,
+      "fence_rate": 1.0,
+      "contract_rate": 0.0,
+      "mean_steps": 40.0,
+      "mean_x_mm": 103.62266525626183,
+      "timesteps": 120000
+    }
+  ],
+  "precondition_sweep": [
+    {
+      "dz_mm": -10,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": -5,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": 0,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": 5,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": 10,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": 15,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": 20,
+      "success_rate": 1.0
+    }
+  ],
+  "x_clear_mm": 110.0,
+  "passed": true
+}

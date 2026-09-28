@@ -1,0 +1,56 @@
+{
+  "rows": [
+    {
+      "x_mm": 60,
+      "lift_rate": 1.0
+    },
+    {
+      "x_mm": 70,
+      "lift_rate": 1.0
+    },
+    {
+      "x_mm": 80,
+      "lift_rate": 1.0
+    },
+    {
+      "x_mm": 90,
+      "lift_rate": 1.0
+    },
+    {
+      "x_mm": 95,
+      "lift_rate": 1.0
+    },
+    {
+      "x_mm": 100,
+      "lift_rate": 1.0
+    },
+    {
+      "x_mm": 105,
+      "lift_rate": 1.0
+    },
+    {
+      "x_mm": 110,
+      "lift_rate": 1.0
+    },
+    {
+      "x_mm": 115,
+      "lift_rate": 0.0
+    },
+    {
+      "x_mm": 120,
+      "lift_rate": 0.0
+    },
+    {
+      "x_mm": 130,
+      "lift_rate": 0.0
+    }
+  ],
+  "reliable_limit_mm": 110,
+  "seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004
+  ]
+}
