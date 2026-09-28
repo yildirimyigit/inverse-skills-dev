@@ -222,13 +222,30 @@ def place(env, obs, name: str, target_xyz):
     return step_in_place(env, obs, 10, gripper_cmd=1.0)
 
 
-def approach(env, obs, name: str):
-    """Closed gripper brought to just above the cube's top face: the hole's start pose."""
+def approach(env, obs, name: str, seat: bool = True):
+    """Bring the closed gripper down onto the cube's top face.
+
+    With `seat` (the default) the primitive ends pressing on the cube rather
+    than hovering over it. That press is what any contact skill needs: from a
+    free-air hover a downward command slides the fingers off the near edge and
+    onto the table, and the cube never moves. Seating is therefore part of
+    reaching the object, not part of the skill that follows.
+    """
     obs = retreat(env, obs, gripper_cmd=1.0)  # clear the last released cube before closing
     c = cube_pos(obs, name)
     obs = step_toward(env, obs, [c[0], c[1], c[2] + 0.10], 30, 0.012, -1.0, 1.0)
     hover_z = c[2] + geo.CUBE_HALF + _FINGERTIP_OFFSET + _HOVER_CLEARANCE
-    return step_toward(env, obs, [c[0], c[1], hover_z], 40, 0.003, -1.0, _DESCENT_SCALE)
+    obs = step_toward(env, obs, [c[0], c[1], hover_z], 40, 0.003, -1.0, _DESCENT_SCALE)
+    if not seat:
+        return obs
+    return seat_on(env, obs, name)
+
+
+def seat_on(env, obs, name: str, depth: float = _PRESS_DEPTH):
+    """Press the closed fingertips onto the cube's top face until they stop."""
+    c = cube_pos(obs, name)
+    press_z = c[2] + geo.CUBE_HALF + _FINGERTIP_OFFSET - depth
+    return step_toward(env, obs, [c[0], c[1], press_z], 20, 0.002, -1.0, _DESCENT_SCALE)
 
 
 def lift(env, obs, height: float = 0.10, gripper_cmd: float = -1.0):
@@ -248,9 +265,7 @@ def drag_out(env, obs, name: str, target_x: float):
     press has to be commanded on every step or the normal force, and with it
     the friction, disappears.
     """
-    c = cube_pos(obs, name)
-    press_z = c[2] + geo.CUBE_HALF + _FINGERTIP_OFFSET - _PRESS_DEPTH
-    obs = step_toward(env, obs, [c[0], c[1], press_z], 10, 0.002, -1.0, _DESCENT_SCALE)
+    obs = seat_on(env, obs, name)
     for _ in range(120):
         if cube_pos(obs, name)[0] <= target_x:
             break

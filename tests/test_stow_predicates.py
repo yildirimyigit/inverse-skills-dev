@@ -32,7 +32,17 @@ def test_clear_of_walls_separates_source_from_pocket():
     at_source = predicate.evaluate(scene_with_cube_a_at(0.0))
     in_pocket = predicate.evaluate(scene_with_cube_a_at(geo.POCKET_A_XY[0]))
     assert at_source.score > 0.95 and at_source.truth
-    assert in_pocket.score < 0.05 and not in_pocket.truth
+    assert in_pocket.score < 0.2 and not in_pocket.truth
+
+
+def test_threshold_sits_inside_the_measured_grasp_limit():
+    """X_CLEAR is the measured limit (pick lifts A to 110 mm, never at 115 mm),
+    so the framework's 0.8 threshold must be conservative with respect to it."""
+    predicate = sp.ClearOfWallsPredicate("cube_a")
+    assert predicate.evaluate(scene_with_cube_a_at(0.110)).score < 0.8   # limit, not yet trusted
+    assert predicate.evaluate(scene_with_cube_a_at(0.115)).truth is False  # measured failure
+    established = predicate.evaluate(scene_with_cube_a_at(0.096))
+    assert established.score >= 0.8 and established.truth
 
 
 def test_registry_keys():

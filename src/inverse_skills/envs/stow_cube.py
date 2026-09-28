@@ -39,7 +39,12 @@ MOUTH_B_XY = (POCKET_A_XY[0] - 2 * CUBE_HALF - 0.008, 0.0)   # B touching A's -x
 SRC_A_XY = (0.0, 0.0)
 SRC_B_XY = (-0.10, 0.0)
 SRC_NOISE = 0.005             # +-5 mm xy noise on both source poses
-X_CLEAR = 0.095               # clear_of_walls(A) holds when x_A <= X_CLEAR (6 cm from the arm tips)
+# clear_of_walls(A) holds when x_A <= X_CLEAR. Measured, not chosen: the
+# scripted pick lifts A reliably up to x = 110 mm and never at 115 mm or beyond,
+# where the fingers meet the arm tips (scripts/stow_pick_limit.py). The zero
+# crossing is therefore the physical grasp limit, and the framework's 0.8
+# threshold sits ~14 mm inside it as a margin of safety.
+X_CLEAR = 0.110
 SLOT_TOLERANCE = 0.01         # "in pocket" / "in mouth" radius used by evaluate()
 
 
