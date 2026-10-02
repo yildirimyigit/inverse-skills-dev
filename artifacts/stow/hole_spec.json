@@ -1,0 +1,124 @@
+{
+  "hole": "HOLE[clear_of_walls(cube_a)]",
+  "achieve": "clear_of_walls(cube_a)",
+  "object": "cube_a",
+  "start": [
+    "tcp_near(cube_a)"
+  ],
+  "preserve": [
+    "in_region(cube_b,src_b)"
+  ],
+  "preserve_absent": [
+    "in_region(cube_b,mouth)"
+  ],
+  "prefix": [
+    {
+      "name": "pick(cube_b)",
+      "pre": [],
+      "pre_absent": [
+        "holding(cube_a)",
+        "holding(cube_b)"
+      ],
+      "add": [
+        "holding(cube_b)",
+        "tcp_near(cube_b)"
+      ],
+      "delete": [
+        "gripper_open()",
+        "in_region(cube_b,mouth)",
+        "in_region(cube_b,pocket)",
+        "in_region(cube_b,src_a)",
+        "in_region(cube_b,src_b)",
+        "tcp_near(cube_a)"
+      ],
+      "hole_for": null
+    },
+    {
+      "name": "place(cube_b,src_b)",
+      "pre": [
+        "holding(cube_b)"
+      ],
+      "pre_absent": [],
+      "add": [
+        "gripper_open()",
+        "in_region(cube_b,src_b)"
+      ],
+      "delete": [
+        "holding(cube_b)"
+      ],
+      "hole_for": null
+    },
+    {
+      "name": "approach(cube_a)",
+      "pre": [],
+      "pre_absent": [
+        "holding(cube_a)",
+        "holding(cube_b)"
+      ],
+      "add": [
+        "tcp_near(cube_a)"
+      ],
+      "delete": [
+        "gripper_open()",
+        "tcp_near(cube_b)"
+      ],
+      "hole_for": null
+    }
+  ],
+  "suffix": [
+    {
+      "name": "pick(cube_a)",
+      "pre": [
+        "clear_of_walls(cube_a)"
+      ],
+      "pre_absent": [
+        "holding(cube_a)",
+        "holding(cube_b)"
+      ],
+      "add": [
+        "holding(cube_a)",
+        "tcp_near(cube_a)"
+      ],
+      "delete": [
+        "gripper_open()",
+        "in_region(cube_a,mouth)",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_a,src_a)",
+        "in_region(cube_a,src_b)",
+        "tcp_near(cube_b)"
+      ],
+      "hole_for": null
+    },
+    {
+      "name": "place(cube_a,src_a)",
+      "pre": [
+        "holding(cube_a)"
+      ],
+      "pre_absent": [],
+      "add": [
+        "gripper_open()",
+        "in_region(cube_a,src_a)"
+      ],
+      "delete": [
+        "holding(cube_a)"
+      ],
+      "hole_for": null
+    }
+  ],
+  "plan": [
+    "pick(cube_b)",
+    "place(cube_b,src_b)",
+    "approach(cube_a)",
+    "HOLE[clear_of_walls(cube_a)]",
+    "pick(cube_a)",
+    "place(cube_a,src_a)"
+  ],
+  "hole_index": 3,
+  "cost": [
+    1,
+    0,
+    2,
+    1,
+    6
+  ]
+}

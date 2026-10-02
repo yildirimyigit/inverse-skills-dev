@@ -45,6 +45,31 @@ def test_threshold_sits_inside_the_measured_grasp_limit():
     assert established.score >= 0.8 and established.truth
 
 
+def test_tcp_near_holds_in_the_state_approach_produces():
+    """Seated on the cube, the TCP is 30.6-32.0 mm from its centre (measured)."""
+    scene = scene_with_cube_a_at(0.0)
+    near = sp.registry().get("tcp_near(cube_a)")
+    for distance in (0.030, 0.032):
+        scene.robot.ee_pose = Pose(position=[0.0, 0.0, geo.CUBE_HALF + distance], quat_xyzw=_QUAT)
+        assert near.evaluate(scene).score >= 0.8
+    scene.robot.ee_pose = Pose(position=[0.0, 0.0, 0.18], quat_xyzw=_QUAT)   # home, far away
+    assert near.evaluate(scene).score < 0.05
+
+
+def test_gripper_open_separates_open_from_holding_a_cube():
+    """Fully open is 80 mm; holding a 4 cm cube leaves 36-37 mm (measured)."""
+    scene = scene_with_cube_a_at(0.0)
+    open_pred = sp.registry().get("gripper_open()")
+    scene.robot.gripper_width = 0.080
+    assert open_pred.evaluate(scene).score >= 0.95
+    scene.robot.gripper_width = 0.037
+    assert open_pred.evaluate(scene).score <= 0.05
+
+
+def test_robot_relative_predicates_are_typed_by_the_vocabulary():
+    assert sp.registry().robot_relative_keys() == ["tcp_near(cube_a)", "tcp_near(cube_b)"]
+
+
 def test_registry_keys():
     assert sp.registry().keys() == [
         "clear_of_walls(cube_a)",

@@ -254,6 +254,34 @@ def lift(env, obs, height: float = 0.10, gripper_cmd: float = -1.0):
     return step_toward(env, obs, up, 20, 0.012, gripper_cmd, 1.0)
 
 
+# ── where the primitives aim, and how their outcome is measured ─────────────
+
+SEATED_XY = 0.012          # the fingertips are over the cube, not beside it
+SEATED_Z = 0.004           # and resting on its top face, not on the pocket walls
+
+
+def slot_target(obs, cube: str, slot: str) -> np.ndarray:
+    """The point a placement into `slot` aims for."""
+    if slot in ("src_a", "src_b"):
+        return src_pos(obs, cube)
+    xy = geo.POCKET_A_XY if slot == "pocket" else geo.MOUTH_B_XY
+    return np.array([xy[0], xy[1], geo.CUBE_HALF], dtype=np.float64)
+
+
+def seated_on(obs, name: str) -> bool:
+    """Is the gripper resting on the cube's top face, as `approach` promises?
+
+    A distance test is not enough: when a cube ends flush against the back wall,
+    or the stow under-pushes it, the hand comes down on the 6 cm pocket walls
+    instead — about 10 mm from the cube, but with nothing under the fingers.
+    """
+    c = cube_pos(obs, name)
+    tcp = tcp_pos(obs)
+    contact_z = c[2] + geo.CUBE_HALF + _FINGERTIP_OFFSET
+    return bool(abs(tcp[0] - c[0]) <= SEATED_XY and abs(tcp[1] - c[1]) <= SEATED_XY
+                and tcp[2] <= contact_z + SEATED_Z)
+
+
 # ── physics check only (stands in for the learned hole in Stage 0) ──────────
 
 

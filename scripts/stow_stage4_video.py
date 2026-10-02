@@ -3,7 +3,9 @@
   full          the planned inverse with the learned operator in the hole
   library_only  the same plan with the hole skipped, because no hole-free plan
                 exists — it breaks at pick(cube_a)
-  hole_first    the equal-cost ordering the late-hole tie-break rejected
+  without the interference model
+                the ordering a planner that does not know the extraction sweeps the
+                mouth cannot tell apart from the chosen one
 
 The panel tracks the goal literals throughout, so "the goal is met" is visible
 rather than asserted at the end.
@@ -115,11 +117,14 @@ def main() -> None:
     model = SAC.load(args.checkpoint, device="cuda")
     goal_pos, goal_neg = sd.goal_from_operator(args.operator)
     planned = hp.plan(sd.domain(), sd.stowed_state(), goal_pos, goal_neg)
+    blind = hp.plan(sd.domain(interference=False), sd.stowed_state(), goal_pos, goal_neg)
+    other = next(alt for alt in (blind.steps, *blind.alternatives)
+                 if tuple(a.name for a in alt) != planned.actions)
     conditions = [
-        ("full: planner + learned operator", list(planned.actions)),
+        ("full: planner + learned operator", list(planned.steps)),
         ("library only: no hole-free plan exists",
-         [a for a in planned.actions if not a.startswith("HOLE")]),
-        ("hole first: equal cost, rejected by the tie-break", list(planned.alternatives[0])),
+         [a for a in planned.steps if a.hole_for is None]),
+        ("no interference model: an equal-cost ordering", list(other)),
     ]
 
     registry = sp.registry()
@@ -137,13 +142,13 @@ def main() -> None:
         env.title, env.action, env.note = title, "forward skill: stow A", None
         env.frames = []
         obs = prim.forward_stow(env, obs)
-        env.action = "plan: " + " -> ".join(_short(a) for a in plan[:3]) + " ..."
+        env.action = "plan: " + " -> ".join(_short(a.name) for a in plan[:3]) + " ..."
         env.hold(1.5, args.fps)
 
         def announce(action, attempt):
             env.action = _short(action) + (f"   retry {attempt - 1}" if attempt > 1 else "")
 
-        obs, report = ex.execute_plan(env, obs, plan, model=model,
+        obs, report = ex.execute_plan(env, obs, plan, model=model, goal=(goal_pos, goal_neg),
                                       regions=env.regions, on_action=announce)
         failed = next((s for s in report.steps if not s.ok), None)
         env.action = "goal met" if report.goal_met else (

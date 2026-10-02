@@ -1,0 +1,426 @@
+{
+  "timesteps": 120000,
+  "minutes": 16.707097982983882,
+  "spec": {
+    "hole": "HOLE[clear_of_walls(cube_a)]",
+    "achieve": "clear_of_walls(cube_a)",
+    "object": "cube_a",
+    "start": [
+      "tcp_near(cube_a)"
+    ],
+    "preserve": [
+      "in_region(cube_b,src_b)"
+    ],
+    "preserve_absent": [
+      "in_region(cube_b,mouth)"
+    ],
+    "prefix": [
+      {
+        "name": "pick(cube_b)",
+        "pre": [],
+        "pre_absent": [
+          "holding(cube_a)",
+          "holding(cube_b)"
+        ],
+        "add": [
+          "holding(cube_b)",
+          "tcp_near(cube_b)"
+        ],
+        "delete": [
+          "gripper_open()",
+          "in_region(cube_b,mouth)",
+          "in_region(cube_b,pocket)",
+          "in_region(cube_b,src_a)",
+          "in_region(cube_b,src_b)",
+          "tcp_near(cube_a)"
+        ],
+        "hole_for": null
+      },
+      {
+        "name": "place(cube_b,src_b)",
+        "pre": [
+          "holding(cube_b)"
+        ],
+        "pre_absent": [],
+        "add": [
+          "gripper_open()",
+          "in_region(cube_b,src_b)"
+        ],
+        "delete": [
+          "holding(cube_b)"
+        ],
+        "hole_for": null
+      },
+      {
+        "name": "approach(cube_a)",
+        "pre": [],
+        "pre_absent": [
+          "holding(cube_a)",
+          "holding(cube_b)"
+        ],
+        "add": [
+          "tcp_near(cube_a)"
+        ],
+        "delete": [
+          "gripper_open()",
+          "tcp_near(cube_b)"
+        ],
+        "hole_for": null
+      }
+    ],
+    "suffix": [
+      {
+        "name": "pick(cube_a)",
+        "pre": [
+          "clear_of_walls(cube_a)"
+        ],
+        "pre_absent": [
+          "holding(cube_a)",
+          "holding(cube_b)"
+        ],
+        "add": [
+          "holding(cube_a)",
+          "tcp_near(cube_a)"
+        ],
+        "delete": [
+          "gripper_open()",
+          "in_region(cube_a,mouth)",
+          "in_region(cube_a,pocket)",
+          "in_region(cube_a,src_a)",
+          "in_region(cube_a,src_b)",
+          "tcp_near(cube_b)"
+        ],
+        "hole_for": null
+      },
+      {
+        "name": "place(cube_a,src_a)",
+        "pre": [
+          "holding(cube_a)"
+        ],
+        "pre_absent": [],
+        "add": [
+          "gripper_open()",
+          "in_region(cube_a,src_a)"
+        ],
+        "delete": [
+          "holding(cube_a)"
+        ],
+        "hole_for": null
+      }
+    ],
+    "plan": [
+      "pick(cube_b)",
+      "place(cube_b,src_b)",
+      "approach(cube_a)",
+      "HOLE[clear_of_walls(cube_a)]",
+      "pick(cube_a)",
+      "place(cube_a,src_a)"
+    ],
+    "hole_index": 3,
+    "cost": [
+      1,
+      0,
+      2,
+      1,
+      6
+    ]
+  },
+  "expert": {
+    "success_rate": 1.0,
+    "fence_rate": 0.0,
+    "contract_rate": 0.0,
+    "mean_steps": 4.8,
+    "mean_x_mm": -119.75963339209557
+  },
+  "best": {
+    "success_rate": 1.0,
+    "fence_rate": 1.0,
+    "contract_rate": 1.0,
+    "mean_steps": 3.7,
+    "mean_x_mm": 52.88736894726753
+  },
+  "final": {
+    "success_rate": 1.0,
+    "fence_rate": 1.0,
+    "contract_rate": 1.0,
+    "mean_steps": 3.7,
+    "mean_x_mm": 52.4246271699667
+  },
+  "history": [
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 4.5,
+      "mean_x_mm": 63.214292377233505,
+      "timesteps": 4000,
+      "saved": true
+    },
+    {
+      "success_rate": 0.6,
+      "fence_rate": 1.0,
+      "contract_rate": 0.6,
+      "mean_steps": 7.5,
+      "mean_x_mm": 77.09210626780987,
+      "timesteps": 8000
+    },
+    {
+      "success_rate": 0.7,
+      "fence_rate": 0.9,
+      "contract_rate": 0.6,
+      "mean_steps": 33.0,
+      "mean_x_mm": 65.13380091637373,
+      "timesteps": 12000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.8,
+      "mean_x_mm": 61.89260147511959,
+      "timesteps": 16000,
+      "saved": true
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.0,
+      "contract_rate": 0.0,
+      "mean_steps": 4.0,
+      "mean_x_mm": 62.3671293258667,
+      "timesteps": 20000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.0,
+      "contract_rate": 0.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -48.706115409731865,
+      "timesteps": 24000
+    },
+    {
+      "success_rate": 0.2,
+      "fence_rate": 1.0,
+      "contract_rate": 0.2,
+      "mean_steps": 32.6,
+      "mean_x_mm": 100.48720315098763,
+      "timesteps": 28000
+    },
+    {
+      "success_rate": 0.3,
+      "fence_rate": 1.0,
+      "contract_rate": 0.3,
+      "mean_steps": 28.9,
+      "mean_x_mm": 98.48880618810654,
+      "timesteps": 32000
+    },
+    {
+      "success_rate": 0.3,
+      "fence_rate": 1.0,
+      "contract_rate": 0.3,
+      "mean_steps": 28.9,
+      "mean_x_mm": 99.26900491118431,
+      "timesteps": 36000
+    },
+    {
+      "success_rate": 0.2,
+      "fence_rate": 1.0,
+      "contract_rate": 0.2,
+      "mean_steps": 32.6,
+      "mean_x_mm": 101.10678821802139,
+      "timesteps": 40000
+    },
+    {
+      "success_rate": 0.0,
+      "fence_rate": 1.0,
+      "contract_rate": 0.0,
+      "mean_steps": 40.0,
+      "mean_x_mm": 106.3802532851696,
+      "timesteps": 44000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.9,
+      "mean_x_mm": 32.51501955091953,
+      "timesteps": 48000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.9,
+      "contract_rate": 0.9,
+      "mean_steps": 3.7,
+      "mean_x_mm": -64.71894830465317,
+      "timesteps": 52000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.0,
+      "contract_rate": 0.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -264.77992683649063,
+      "timesteps": 56000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.0,
+      "contract_rate": 0.0,
+      "mean_steps": 3.6,
+      "mean_x_mm": -267.6233470439911,
+      "timesteps": 60000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.1,
+      "contract_rate": 0.1,
+      "mean_steps": 3.6,
+      "mean_x_mm": -252.13684430345893,
+      "timesteps": 64000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.2,
+      "contract_rate": 0.2,
+      "mean_steps": 3.7,
+      "mean_x_mm": -224.17873106896877,
+      "timesteps": 68000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.0,
+      "contract_rate": 0.0,
+      "mean_steps": 4.0,
+      "mean_x_mm": -252.7852326631546,
+      "timesteps": 72000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.1,
+      "contract_rate": 0.1,
+      "mean_steps": 3.9,
+      "mean_x_mm": -187.82953843474388,
+      "timesteps": 76000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.8,
+      "contract_rate": 0.8,
+      "mean_steps": 4.1,
+      "mean_x_mm": -18.427368756965734,
+      "timesteps": 80000
+    },
+    {
+      "success_rate": 0.9,
+      "fence_rate": 1.0,
+      "contract_rate": 0.9,
+      "mean_steps": 7.3,
+      "mean_x_mm": 73.1719118077308,
+      "timesteps": 84000
+    },
+    {
+      "success_rate": 0.5,
+      "fence_rate": 1.0,
+      "contract_rate": 0.5,
+      "mean_steps": 21.3,
+      "mean_x_mm": 96.99358940124512,
+      "timesteps": 88000
+    },
+    {
+      "success_rate": 0.2,
+      "fence_rate": 1.0,
+      "contract_rate": 0.2,
+      "mean_steps": 32.7,
+      "mean_x_mm": 101.75012908875942,
+      "timesteps": 92000
+    },
+    {
+      "success_rate": 0.1,
+      "fence_rate": 1.0,
+      "contract_rate": 0.1,
+      "mean_steps": 36.1,
+      "mean_x_mm": 114.70408700406551,
+      "timesteps": 96000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 4.2,
+      "mean_x_mm": -3.158586286008358,
+      "timesteps": 100000
+    },
+    {
+      "success_rate": 0.7,
+      "fence_rate": 1.0,
+      "contract_rate": 0.7,
+      "mean_steps": 14.8,
+      "mean_x_mm": 22.583383321762085,
+      "timesteps": 104000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.8,
+      "mean_x_mm": -36.28107365220785,
+      "timesteps": 108000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.8,
+      "mean_x_mm": 56.139013916254044,
+      "timesteps": 112000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.8,
+      "mean_x_mm": 55.0457376986742,
+      "timesteps": 116000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 52.88736894726753,
+      "timesteps": 120000,
+      "saved": true
+    }
+  ],
+  "precondition_sweep": [
+    {
+      "dz_mm": -10,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": -5,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": 0,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": 5,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": 10,
+      "success_rate": 0.9
+    },
+    {
+      "dz_mm": 15,
+      "success_rate": 0.7
+    },
+    {
+      "dz_mm": 20,
+      "success_rate": 0.8
+    }
+  ],
+  "x_clear_mm": 110.0,
+  "passed": true
+}

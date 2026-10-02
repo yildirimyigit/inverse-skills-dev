@@ -1,14 +1,28 @@
 """Stage 4: run the whole inverse on the robot, and the ablations beside it.
 
-Four conditions on the same seeds:
+Before the conditions run, the learned skill joins the library the same way the
+forward skill entered the framework: its own executions are handed to the
+operator extractor, and what comes back — preconditions, add and delete
+effects — becomes a library action. Nothing about it is written by hand.
 
-  full          the planned inverse, hole filled by the learned operator
-  library_only  the best the library can do: no plan exists, so the hole is
-                simply skipped and the executive reports where it breaks
-  hole_first    the ordering the late-hole tie-break rejected, at equal cost
-  relearned     re-plan once the learned operator joins the library: no holes
+Conditions, on the same seeds:
 
-Writes artifacts/stow/stage4_execution.json.
+  full                  the planned inverse, the hole filled by the learned skill
+  library_only          no plan exists; the hole is skipped to show where it breaks
+  without_interference  the ordering a planner without the interference model
+                        cannot tell apart from the chosen one — the two tie
+  relearned             re-planned once the learned skill is a library action
+
+Every run is monitored: the executive reports each scored literal where the
+measured scene disagrees with what that condition's domain predicts.
+
+An inverse is only defined when the forward skill actually happened, so each
+episode must start in the state the plan was made for. When the forward push
+falls short (it occasionally leaves A outside the pocket's seat), the scene is
+re-rolled, as the hole environment does for its handoffs, and the re-roll is
+reported rather than hidden.
+
+Writes artifacts/stow/learned_operator.json and artifacts/stow/stage4_execution.json.
 """
 
 from __future__ import annotations
@@ -25,112 +39,146 @@ from inverse_skills.envs import stow_domain as sd
 from inverse_skills.envs import stow_executive as ex
 from inverse_skills.envs import stow_predicates as sp
 from inverse_skills.envs import stow_primitives as prim
+from inverse_skills.envs.stow_hole_env import load_spec
+from inverse_skills.logging.rollout import ForwardRollout
 from inverse_skills.operators import hole_planner as hp
+from inverse_skills.operators.extractor import OperatorExtractor
 from inverse_skills.operators.hole_planner import Action
 
 torch.set_num_threads(1)
 
-# The learned operator, as it enters the library: the predicate it establishes,
-# the precondition Stage 3 measured, and the gripper state it leaves behind.
-LEARNED_DRAG = Action(
-    name="drag(cube_a)",
-    pre=frozenset({"tcp_near(cube_a)"}),
-    add=frozenset({"clear_of_walls(cube_a)"}),
-    delete=frozenset({"gripper_open()"}),
-)
+EXTRACTION_SEEDS = tuple(range(2000, 2010))   # disjoint from the evaluation seeds
+_MAX_FORWARD_ATTEMPTS = 5
 
 
-def stowed(env, seed: int):
-    obs = prim.reset(env, seed)
-    regions = prim.regions(obs)
-    return prim.forward_stow(env, obs), regions
-
-
-def symbolic(obs, regions) -> frozenset[str]:
+def measured(obs, regions) -> frozenset[str]:
     registry = sp.registry()
     scene = prim.obs_to_scene(obs, regions)
     return hp.symbolic_state({k: float(r.score) for k, r in registry.evaluate_all(scene).items()})
+
+
+def stowed(env, seed: int, expected: frozenset[str]):
+    """The scene the forward skill leaves for this seed, re-rolled until it is the
+    state the plan starts from. Returns the observation, regions and re-rolls."""
+    for attempt in range(_MAX_FORWARD_ATTEMPTS):
+        obs = prim.reset(env, seed + attempt * 10_000)
+        regions = prim.regions(obs)
+        obs = prim.forward_stow(env, obs)
+        if measured(obs, regions) == expected:
+            return obs, regions, attempt
+    raise RuntimeError(f"seed {seed}: the forward skill never produced the planned start")
+
+
+def learn_operator(env, model, spec: dict, seeds, planned_start) -> tuple[Action, dict]:
+    """Model the learned skill from its own executions, as a demonstration would be."""
+    prefix = [Action.from_dict(a) for a in spec["prefix"]]
+    registry = sp.registry()
+    name = f"learned:{spec['achieve']}"
+    rollouts = []
+    for seed in seeds:
+        obs, regions, _ = stowed(env, seed, planned_start)
+        obs, report = ex.execute_plan(env, obs, prefix, regions=regions)
+        if len(report.steps) != len(prefix) or not all(s.ok for s in report.steps):
+            continue
+        before = prim.obs_to_scene(obs, regions)
+        obs = ex.run_learned(env, obs, model, spec["achieve"], regions, registry)
+        after = prim.obs_to_scene(obs, regions, timestep=1)
+        rollouts.append(ForwardRollout(skill_name=name, demo_id=f"run_{seed}", scenes=[before, after]))
+    extracted = OperatorExtractor(registry).extract(name, rollouts)
+    action = hp.learned_action(spec["achieve"], extracted.operator)
+    return action, {"rollouts": len(rollouts), "seeds": list(seeds),
+                    "operator": extracted.operator.to_dict(), "scores": extracted.scores,
+                    "action": action.to_dict()}
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("checkpoint", type=Path)
     ap.add_argument("--seeds", type=lambda s: [int(x) for x in s.split(",")],
-                    default=[1000, 1001, 1002, 1003, 1004])
+                    default=list(range(1000, 1010)))
+    ap.add_argument("--spec", type=Path, default=Path("artifacts/stow/hole_spec.json"))
     ap.add_argument("--operator", type=Path, default=Path("artifacts/stow/stage1_operator.json"))
     ap.add_argument("--out", type=Path, default=Path("artifacts/stow/stage4_execution.json"))
+    ap.add_argument("--learned-out", type=Path, default=Path("artifacts/stow/learned_operator.json"))
     args = ap.parse_args()
 
     model = SAC.load(args.checkpoint, device="cuda")
-    goal_pos, goal_neg = sd.goal_from_operator(args.operator)
-    domain = sd.domain()
+    spec = load_spec(args.spec)
+    goal = sd.goal_from_operator(args.operator)
+    start = sd.stowed_state()
     env = prim.make_env()
 
-    planned = hp.plan(domain, sd.stowed_state(), goal_pos, goal_neg)
-    full_plan = list(planned.actions)
-    hole_first = list(planned.alternatives[0])
-    library_only = [a for a in full_plan if not a.startswith("HOLE")]
-    relearned = hp.plan(sd.domain(extra_actions=[LEARNED_DRAG]), sd.stowed_state(),
-                        goal_pos, goal_neg, max_delegated=0)
+    domain = sd.domain()
+    planned = hp.plan(domain, start, *goal)
+    if list(planned.actions) != spec["plan"]:
+        raise SystemExit("the plan differs from the one the policy was trained for; rerun stage 2")
+    blind_domain = sd.domain(interference=False)
+    blind = hp.plan(blind_domain, start, *goal)
+    other = next(alt for alt in (blind.steps, *blind.alternatives)
+                 if tuple(a.name for a in alt) != planned.actions)
 
-    print("plans")
-    print("  full        ", " -> ".join(full_plan))
-    print("  library_only", " -> ".join(library_only), " (no plan exists; the hole is skipped)")
-    print("  hole_first  ", " -> ".join(hole_first))
-    print("  relearned   ", " -> ".join(relearned.actions),
-          f" (0 holes, cost {relearned.cost})")
+    print(f"learning the model of LEARNED[{spec['achieve']}] from its executions "
+          f"on seeds {EXTRACTION_SEEDS[0]}-{EXTRACTION_SEEDS[-1]}")
+    learned, learned_record = learn_operator(env, model, spec, EXTRACTION_SEEDS, start)
+    print(f"  from {learned_record['rollouts']} runs:")
+    print(f"    pre   {', '.join(sorted(learned.pre))}")
+    print(f"    add   {', '.join(sorted(learned.add))}")
+    print(f"    del   {', '.join(sorted(learned.delete))}")
+    args.learned_out.write_text(json.dumps(learned_record, indent=2))
+    learned_domain = sd.domain(extra_actions=[learned])
+    relearned = hp.plan(learned_domain, start, *goal, max_delegated=0)
 
-    learned_domain = sd.domain(extra_actions=[LEARNED_DRAG])
-    conditions = {"full": full_plan, "library_only": library_only,
-                  "hole_first": hole_first, "relearned": list(relearned.actions),
-                  "relearned_replan": list(relearned.actions)}
+    conditions = {
+        "full": (list(planned.steps), domain),
+        "library_only": ([s for s in planned.steps if s.hole_for is None], domain),
+        "without_interference": (list(other), blind_domain),
+        "relearned": (list(relearned.steps) if relearned else [], learned_domain),
+    }
+    print("\nplans")
+    for name, (steps, _) in conditions.items():
+        print(f"  {name:21s}", " -> ".join(s.name for s in steps) or "no plan")
+
     results = {name: [] for name in conditions}
-    for name, plan in conditions.items():
+    for name, (steps, cond_domain) in conditions.items():
         print(f"\n{name}")
         for seed in args.seeds:
-            obs, regions = stowed(env, seed)
-            obs, report = ex.execute_plan(env, obs, plan, model=model, regions=regions)
-            # The contract's recovery path: a plan whose steps all passed their
-            # own postconditions can still miss the goal, because a later step
-            # disturbs an earlier one. The executive measures the world and
-            # plans again from what it finds.
-            rounds = 1
-            if name.endswith("replan"):
-                while not report.goal_met and rounds < 3:
-                    again = hp.plan(learned_domain, symbolic(obs, regions),
-                                    goal_pos, goal_neg, max_delegated=0)
-                    if again is None or not again.actions:
-                        break
-                    print(f"      replanning: {' -> '.join(again.actions)}")
-                    obs, report = ex.execute_plan(env, obs, list(again.actions),
-                                                  model=model, regions=regions)
-                    rounds += 1
-            results[name].append({"seed": seed, "rounds": rounds, **report.to_dict()})
+            obs, regions, rerolls = stowed(env, seed, start)
+            obs, report = ex.execute_plan(env, obs, steps, model=model, regions=regions,
+                                          goal=goal, domain=cond_domain)
+            results[name].append({"seed": seed, "forward_rerolls": rerolls, **report.to_dict()})
             failed = next((s for s in report.steps if not s.ok), None)
             status = "goal met" if report.goal_met else (
                 f"failed at {failed.action} ({failed.detail})" if failed else "goal not met")
-            retries = sum(s.attempts - 1 for s in report.steps)
+            diverged = [f"{s.action}: {', '.join(s.divergence)}" for s in report.steps if s.divergence]
+            retries = sum(max(s.attempts - 1, 0) for s in report.steps)
             print(f"  seed {seed}: {status}; A {report.cube_a_err_mm:5.1f}mm "
-                  f"B {report.cube_b_err_mm:5.1f}mm; retries {retries}")
-            if not report.goal_met:
-                for s in report.steps:
-                    print(f"      {'ok ' if s.ok else 'BAD'} {s.action:28s} x{s.attempts} {s.detail}")
+                  f"B {report.cube_b_err_mm:5.1f}mm; retries {retries}"
+                  + (f"; forward skill re-rolled {rerolls}x" if rerolls else ""))
+            for line in diverged:
+                print(f"      model != world after {line}")
     env.close()
 
-    print(f"\n{'condition':14s} {'goal met':>9} {'mean A err':>11} {'mean B err':>11}")
+    print(f"\n{'condition':22s} {'goal met':>9} {'mean A err':>11} {'mean B err':>11} {'diverging steps':>16}")
     summary = {}
     for name, rows in results.items():
-        met = float(np.mean([r["goal_met"] for r in rows]))
+        met = float(np.mean([bool(r["goal_met"]) for r in rows]))
         a_err = float(np.mean([r["cube_a_err_mm"] for r in rows]))
         b_err = float(np.mean([r["cube_b_err_mm"] for r in rows]))
-        summary[name] = {"goal_met_rate": met, "mean_a_err_mm": a_err, "mean_b_err_mm": b_err}
-        print(f"{name:14s} {met:>8.0%} {a_err:>10.1f}mm {b_err:>10.1f}mm")
+        diverging = sum(bool(s["divergence"]) for r in rows for s in r["steps"])
+        summary[name] = {"goal_met_rate": met, "mean_a_err_mm": a_err, "mean_b_err_mm": b_err,
+                         "diverging_steps": diverging}
+        print(f"{name:22s} {met:>8.0%} {a_err:>10.1f}mm {b_err:>10.1f}mm {diverging:>16}")
 
-    passed = summary["full"]["goal_met_rate"] >= 0.8 and summary["library_only"]["goal_met_rate"] == 0.0
+    passed = (summary["full"]["goal_met_rate"] >= 0.8
+              and summary["library_only"]["goal_met_rate"] == 0.0
+              and summary["relearned"]["goal_met_rate"] >= 0.8
+              and spec["achieve"] in learned.add)
     print("\nSTAGE 4:", "PASS" if passed else "FAIL")
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps({"plans": conditions, "summary": summary,
-                                    "results": results, "passed": passed}, indent=2))
+    args.out.write_text(json.dumps({
+        "plans": {name: [s.name for s in steps] for name, (steps, _) in conditions.items()},
+        "learned_action": learned.to_dict(),
+        "summary": summary, "results": results, "passed": passed}, indent=2))
     print(f"wrote {args.out}")
 
 

@@ -11,7 +11,13 @@ Honest means the model admits what the scripted primitives can and cannot do:
   * grasping and pushing close the gripper; placing opens it.
 
 `holding` is the planner's bookkeeping fluent rather than a scored predicate:
-the executive knows what the gripper holds, so the registry never needs it.
+the executive knows what the gripper holds, so the registry never needs it —
+and, having no soft score, it can never be delegated to a learned skill.
+
+Besides the actions, the domain states facts about the world that every action
+obeys, holes included: which literals imply or exclude each other, and which
+changes sweep other objects aside (see `_disturbances`). Everything the planner
+derives about holes comes from these and from the predicate registry.
 """
 
 from __future__ import annotations
@@ -20,7 +26,8 @@ import json
 from pathlib import Path
 
 from inverse_skills.envs import stow_cube as geo
-from inverse_skills.operators.hole_planner import Action, Domain
+from inverse_skills.envs import stow_predicates as sp
+from inverse_skills.operators.hole_planner import Action, Disturbance, Domain
 
 CUBES = ("cube_a", "cube_b")
 SLOT_X = {
@@ -85,21 +92,41 @@ def library() -> list[Action]:
     return actions
 
 
-def domain(extra_actions: list[Action] | None = None) -> Domain:
+def _disturbances() -> list[Disturbance]:
+    """Moving a cube into or out of the pocket slides it along the pocket's axis,
+    at least between the seat and the clearance line. Any other cube resting on a
+    slot that overlaps that corridor is pushed along and displaced.
+
+    Measured on the robot: extracting A while B sits in the mouth pushes B about
+    35 mm ahead of it, and B then lands on A's own source. All slots lie on the
+    pocket's axis (y = 0), so the corridor is a range of x.
+    """
+    corridor = (geo.X_CLEAR - geo.CUBE_HALF, SLOT_X["pocket"] + geo.CUBE_HALF)
+    swept = [slot for slot, x in SLOT_X.items() if slot != "pocket"
+             and x + geo.CUBE_HALF > corridor[0] and x - geo.CUBE_HALF < corridor[1]]
+    return [Disturbance(trigger=_in(mover, "pocket"),
+                        clobbers=frozenset(_in(other, slot) for other in CUBES
+                                           if other != mover for slot in swept))
+            for mover in CUBES]
+
+
+def domain(extra_actions: list[Action] | None = None, interference: bool = True) -> Domain:
+    """The stow planning domain. `interference=False` drops the disturbance
+    facts; it exists only to show what the planner does without them."""
+    registry = sp.registry()
     implications = {
         _in(cube, slot): frozenset({_clear(cube)})
         for cube in CLEAR_OBJECTS for slot in SLOT_X if _slot_is_clear(slot)
     }
     mutex = [frozenset(_in(cube, slot) for slot in SLOT_X) for cube in CUBES]
     mutex += [frozenset({_clear(cube), _in(cube, "pocket")}) for cube in CLEAR_OBJECTS]
-    candidates = [_clear(cube) for cube in CLEAR_OBJECTS]
-    candidates += [_in(cube, slot) for cube in CUBES for slot in SLOT_X]
-    candidates += [f"tcp_near({cube})" for cube in CUBES]
     return Domain(
         actions=library() + list(extra_actions or []),
-        hole_candidates=candidates,
+        scored=frozenset(registry.keys()),
+        robot_relative=frozenset(registry.robot_relative_keys()),
         mutex_groups=mutex,
         implications=implications,
+        disturbances=_disturbances() if interference else [],
     )
 
 

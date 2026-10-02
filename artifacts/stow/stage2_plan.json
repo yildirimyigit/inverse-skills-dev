@@ -18,7 +18,19 @@
     "place(cube_a,src_a)"
   ],
   "all_seeds_match": true,
-  "alternatives": [
+  "unreachable": [
+    "clear_of_walls(cube_a)",
+    "in_region(cube_a,src_a)"
+  ],
+  "without_interference_model": [
+    [
+      "pick(cube_b)",
+      "place(cube_b,src_b)",
+      "approach(cube_a)",
+      "HOLE[clear_of_walls(cube_a)]",
+      "pick(cube_a)",
+      "place(cube_a,src_a)"
+    ],
     [
       "approach(cube_a)",
       "HOLE[clear_of_walls(cube_a)]",
@@ -30,21 +42,21 @@
   ],
   "seeds": [
     {
-      "seed": 1000,
+      "seed": 0,
       "state": [
         "gripper_open()",
         "in_region(cube_a,pocket)",
         "in_region(cube_b,mouth)"
       ],
       "scores": {
-        "in_region(cube_a,src_a)": 1.9477619517260791e-10,
-        "in_region(cube_b,src_b)": 3.3306690738754696e-15,
-        "in_region(cube_a,pocket)": 0.9745750500933388,
-        "in_region(cube_b,mouth)": 0.9604194876241456,
-        "tcp_near(cube_a)": 0.012612262077089653,
-        "tcp_near(cube_b)": 0.023625254811677154,
-        "gripper_open()": 0.999549344956167,
-        "clear_of_walls(cube_a)": 0.1193584171676792
+        "in_region(cube_a,src_a)": 2.777208463200509e-10,
+        "in_region(cube_b,src_b)": 1.4432899320127035e-15,
+        "in_region(cube_a,pocket)": 0.9638066013157827,
+        "in_region(cube_b,mouth)": 0.9552964198416896,
+        "tcp_near(cube_a)": 0.00016394525239948887,
+        "tcp_near(cube_b)": 0.0005812093826270126,
+        "gripper_open()": 0.9759753310212219,
+        "clear_of_walls(cube_a)": 0.1193648391086371
       },
       "plan": [
         "pick(cube_b)",
@@ -54,44 +66,9 @@
         "pick(cube_a)",
         "place(cube_a,src_a)"
       ],
-      "delegated": [
-        "clear_of_walls(cube_a)"
-      ],
-      "hole_indices": [
-        3
-      ],
-      "cost": [
-        1,
-        2,
-        1,
-        6
-      ],
-      "expanded": 75,
-      "matches_expected": true
-    },
-    {
-      "seed": 1001,
-      "state": [
-        "gripper_open()",
-        "in_region(cube_a,pocket)"
-      ],
-      "scores": {
-        "in_region(cube_a,src_a)": 2.290400646920432e-10,
-        "in_region(cube_b,src_b)": 5.9396931817445875e-15,
-        "in_region(cube_a,pocket)": 0.9678120487376907,
-        "in_region(cube_b,mouth)": 0.5982441919016138,
-        "tcp_near(cube_a)": 0.012625954978742415,
-        "tcp_near(cube_b)": 0.022596488864199793,
-        "gripper_open()": 0.999549344956167,
-        "clear_of_walls(cube_a)": 0.11983429096249842
-      },
-      "plan": [
-        "pick(cube_b)",
-        "place(cube_b,src_b)",
-        "approach(cube_a)",
-        "HOLE[clear_of_walls(cube_a)]",
-        "pick(cube_a)",
-        "place(cube_a,src_a)"
+      "candidates": [
+        "clear_of_walls(cube_a)",
+        "in_region(cube_a,src_a)"
       ],
       "delegated": [
         "clear_of_walls(cube_a)"
@@ -101,29 +78,31 @@
       ],
       "cost": [
         1,
+        0,
         2,
         1,
         6
       ],
-      "expanded": 85,
+      "ties": [],
+      "expanded": 44,
       "matches_expected": true
     },
     {
-      "seed": 1002,
+      "seed": 1,
       "state": [
         "gripper_open()",
         "in_region(cube_a,pocket)",
         "in_region(cube_b,mouth)"
       ],
       "scores": {
-        "in_region(cube_a,src_a)": 1.074014766011544e-10,
-        "in_region(cube_b,src_b)": 7.216449660063518e-16,
-        "in_region(cube_a,pocket)": 0.9528867351444976,
-        "in_region(cube_b,mouth)": 0.9213667742244269,
-        "tcp_near(cube_a)": 0.011575344942785004,
-        "tcp_near(cube_b)": 0.022121420205772346,
-        "gripper_open()": 0.999549348312283,
-        "clear_of_walls(cube_a)": 0.11938927654120679
+        "in_region(cube_a,src_a)": 4.712211731927596e-10,
+        "in_region(cube_b,src_b)": 2.6645352591003757e-15,
+        "in_region(cube_a,pocket)": 0.9715633181391564,
+        "in_region(cube_b,mouth)": 0.9543211350310623,
+        "tcp_near(cube_a)": 0.00016133583023891784,
+        "tcp_near(cube_b)": 0.0005762025540641535,
+        "gripper_open()": 0.9759754358394217,
+        "clear_of_walls(cube_a)": 0.11967846734808452
       },
       "plan": [
         "pick(cube_b)",
@@ -133,6 +112,10 @@
         "pick(cube_a)",
         "place(cube_a,src_a)"
       ],
+      "candidates": [
+        "clear_of_walls(cube_a)",
+        "in_region(cube_a,src_a)"
+      ],
       "delegated": [
         "clear_of_walls(cube_a)"
       ],
@@ -141,11 +124,151 @@
       ],
       "cost": [
         1,
+        0,
         2,
         1,
         6
       ],
-      "expanded": 75,
+      "ties": [],
+      "expanded": 44,
+      "matches_expected": true
+    },
+    {
+      "seed": 2,
+      "state": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "scores": {
+        "in_region(cube_a,src_a)": 3.5093378203399084e-10,
+        "in_region(cube_b,src_b)": 4.6629367034256575e-15,
+        "in_region(cube_a,pocket)": 0.9592020975275259,
+        "in_region(cube_b,mouth)": 0.9579704472966423,
+        "tcp_near(cube_a)": 0.00016432967497531648,
+        "tcp_near(cube_b)": 0.0005824094281464687,
+        "gripper_open()": 0.9759753659606714,
+        "clear_of_walls(cube_a)": 0.11921267249506373
+      },
+      "plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
+        "approach(cube_a)",
+        "HOLE[clear_of_walls(cube_a)]",
+        "pick(cube_a)",
+        "place(cube_a,src_a)"
+      ],
+      "candidates": [
+        "clear_of_walls(cube_a)",
+        "in_region(cube_a,src_a)"
+      ],
+      "delegated": [
+        "clear_of_walls(cube_a)"
+      ],
+      "hole_indices": [
+        3
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        6
+      ],
+      "ties": [],
+      "expanded": 44,
+      "matches_expected": true
+    },
+    {
+      "seed": 3,
+      "state": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "scores": {
+        "in_region(cube_a,src_a)": 1.048187647789689e-10,
+        "in_region(cube_b,src_b)": 2.1649348980190553e-15,
+        "in_region(cube_a,pocket)": 0.9625096263263782,
+        "in_region(cube_b,mouth)": 0.9556741585088755,
+        "tcp_near(cube_a)": 0.00016167462684291145,
+        "tcp_near(cube_b)": 0.000575736786414538,
+        "gripper_open()": 0.9759754358394217,
+        "clear_of_walls(cube_a)": 0.11987044444097034
+      },
+      "plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
+        "approach(cube_a)",
+        "HOLE[clear_of_walls(cube_a)]",
+        "pick(cube_a)",
+        "place(cube_a,src_a)"
+      ],
+      "candidates": [
+        "clear_of_walls(cube_a)",
+        "in_region(cube_a,src_a)"
+      ],
+      "delegated": [
+        "clear_of_walls(cube_a)"
+      ],
+      "hole_indices": [
+        3
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        6
+      ],
+      "ties": [],
+      "expanded": 44,
+      "matches_expected": true
+    },
+    {
+      "seed": 4,
+      "state": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "scores": {
+        "in_region(cube_a,src_a)": 3.1501046215964834e-10,
+        "in_region(cube_b,src_b)": 1.3877787807814457e-15,
+        "in_region(cube_a,pocket)": 0.9737455754101491,
+        "in_region(cube_b,mouth)": 0.9535181782349342,
+        "tcp_near(cube_a)": 0.00016588480174112297,
+        "tcp_near(cube_b)": 0.0005809471752277195,
+        "gripper_open()": 0.9759753659606714,
+        "clear_of_walls(cube_a)": 0.11932411966333589
+      },
+      "plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
+        "approach(cube_a)",
+        "HOLE[clear_of_walls(cube_a)]",
+        "pick(cube_a)",
+        "place(cube_a,src_a)"
+      ],
+      "candidates": [
+        "clear_of_walls(cube_a)",
+        "in_region(cube_a,src_a)"
+      ],
+      "delegated": [
+        "clear_of_walls(cube_a)"
+      ],
+      "hole_indices": [
+        3
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        6
+      ],
+      "ties": [],
+      "expanded": 44,
       "matches_expected": true
     }
   ]

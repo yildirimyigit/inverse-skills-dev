@@ -20,7 +20,7 @@ import torch
 from stable_baselines3 import SAC
 
 from inverse_skills.envs import stow_primitives as prim
-from inverse_skills.envs.stow_hole_env import StowHoleEnv
+from inverse_skills.envs.stow_hole_env import StowHoleEnv, load_spec
 
 torch.set_num_threads(1)
 
@@ -30,6 +30,10 @@ _BAD = (235, 120, 110)
 _MID = (200, 200, 200)
 _ACCENT = (255, 215, 120)
 _DRAG = np.array([-0.2 / 0.3, -0.05 / 0.15], dtype=np.float32)
+
+
+def _short(key: str) -> str:
+    return key.replace("cube_a", "A").replace("cube_b", "B")
 
 
 def _panel(frame, title, rows, note=None):
@@ -66,17 +70,15 @@ def episode(env: StowHoleEnv, seed: int, model, title: str, fps: int):
         frame = env._env.render()
         frame = np.asarray(frame.squeeze(0).cpu().numpy() if hasattr(frame, "cpu") else frame)
         scores = env._scores(env._obs)
-        active = scores["clear_of_walls(cube_a)"]
-        fence = scores["in_region(cube_b,src_b)"]
-        b_x = prim.cube_pos(env._obs, "cube_b")[0] * 1000
-        rows = [
-            ("clear_of_walls(A)", f"{active:.2f}" + ("  HELD" if active >= 0.8 else ""),
-             _GOOD if active >= 0.8 else _MID),
-            ("fence: B at src_b", f"{fence:.2f}" + ("" if fence >= 0.8 else "  BROKEN"),
-             _GOOD if fence >= 0.8 else _BAD),
-            ("cube A x", f"{prim.cube_pos(env._obs, 'cube_a')[0] * 1000:+.0f} mm", _MID),
-            ("cube B x", f"{b_x:+.0f} mm", _MID),
-        ]
+        active = scores[env.achieve]
+        rows = [(_short(env.achieve), f"{active:.2f}" + ("  HELD" if active >= 0.8 else ""),
+                 _GOOD if active >= 0.8 else _MID)]
+        for key in env.spec["preserve"]:
+            held = scores[key] >= 0.8
+            rows.append(("fence: " + _short(key), f"{scores[key]:.2f}" + ("" if held else "  BROKEN"),
+                         _GOOD if held else _BAD))
+        for cube in ("cube_a", "cube_b"):
+            rows.append((f"{_short(cube)} x", f"{prim.cube_pos(env._obs, cube)[0] * 1000:+.0f} mm", _MID))
         frames.append(_panel(frame, title, rows, note))
 
     grab("handoff: seated on A, after pick B / place B / approach A")
@@ -96,13 +98,15 @@ def episode(env: StowHoleEnv, seed: int, model, title: str, fps: int):
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("checkpoint", type=Path)
+    ap.add_argument("--spec", type=Path, default=Path("artifacts/stow/hole_spec.json"))
     ap.add_argument("--seed", type=int, default=1000)
     ap.add_argument("--fps", type=int, default=20)
     ap.add_argument("--out-dir", type=Path, default=Path("artifacts/stow/videos"))
     args = ap.parse_args()
 
     model = SAC.load(args.checkpoint, device="cuda")
-    env = StowHoleEnv(seed_pool=(args.seed,), curriculum=1.0, render_mode="rgb_array")
+    env = StowHoleEnv(load_spec(args.spec), seed_pool=(args.seed,), curriculum=1.0,
+                      render_mode="rgb_array")
 
     scripted, scripted_info = episode(env, args.seed, None, "scripted drag (Stage 0)", args.fps)
     learned, learned_info = episode(env, args.seed, model, "learned hole policy (SAC)", args.fps)
@@ -121,7 +125,7 @@ def main() -> None:
         ("learned policy: " + summarize(learned_info), _GOOD, 0.46),
         ("", _MID, 0.45),
         ("the fence term is the difference: the policy", _MID, 0.44),
-        ("stops once clear_of_walls(A) holds, instead of", _MID, 0.44),
+        (f"stops once {_short(env.achieve)} holds, instead of", _MID, 0.44),
         ("dragging A onward into B's source", _MID, 0.44),
     ]
     y = 60

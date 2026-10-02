@@ -18,7 +18,7 @@ import torch
 from stable_baselines3 import SAC
 
 from inverse_skills.envs import stow_primitives as prim
-from inverse_skills.envs.stow_hole_env import StowHoleEnv
+from inverse_skills.envs.stow_hole_env import StowHoleEnv, load_spec
 
 torch.set_num_threads(1)
 
@@ -30,7 +30,7 @@ def run_from_offset(env: StowHoleEnv, model, seed: int, dx_mm: float, dz_mm: flo
     offset = np.array([dx_mm / 1000.0, 0.0, dz_mm / 1000.0])
     env._obs = prim.step_toward(env._env, env._obs, prim.tcp_pos(env._obs) + offset,
                                 20, 0.001, -1.0, 0.25)
-    obs = env._observation(env._obs, env._scores(env._obs))
+    obs = env._observation(env._obs)
     done, info = False, {}
     while not done:
         action, _ = model.predict(obs, deterministic=True)
@@ -42,6 +42,7 @@ def run_from_offset(env: StowHoleEnv, model, seed: int, dx_mm: float, dz_mm: flo
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("checkpoint", type=Path)
+    ap.add_argument("--spec", type=Path, default=Path("artifacts/stow/hole_spec.json"))
     ap.add_argument("--dx-mm", type=lambda s: [float(x) for x in s.split(",")],
                     default=[-30, -20, -10, 0, 10, 20, 30])
     ap.add_argument("--dz-mm", type=lambda s: [float(x) for x in s.split(",")],
@@ -49,7 +50,7 @@ def main() -> None:
     args = ap.parse_args()
 
     model = SAC.load(args.checkpoint, device="cuda")
-    env = StowHoleEnv(seed_pool=EVAL_SEEDS, curriculum=1.0)
+    env = StowHoleEnv(load_spec(args.spec), seed_pool=EVAL_SEEDS, curriculum=1.0)
 
     print("success rate over handoff offsets (dx across, dz down);")
     print("dx is along the drag, dz is above the seated pose\n")

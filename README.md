@@ -113,9 +113,9 @@ The extracted operator and a trained policy are committed under
 |---|---------|------|--------|
 | 0 | `python scripts/stow_stage0_gate.py` | ~4 min | `artifacts/stow/stage0_gate.json` |
 | 1 | `python scripts/stow_stage1_extract.py` | ~1 min | `artifacts/stow/stage1_operator.json` |
-| 2 | `python scripts/stow_stage2_plan.py` | ~1 min | `artifacts/stow/stage2_plan.json` |
-| 3 | `python scripts/stow_stage3_train.py --timesteps 120000` | ~15 min (GPU) | `artifacts/stow/stage3/<run id>/` |
-| 4 | `python scripts/stow_stage4_execute.py artifacts/stow/stage3/1789749141/sac_hole_best` | ~8 min | `artifacts/stow/stage4_execution.json` |
+| 2 | `python scripts/stow_stage2_plan.py` | ~1 min | `artifacts/stow/stage2_plan.json`, `artifacts/stow/hole_spec.json` |
+| 3 | `python scripts/stow_stage3_train.py --timesteps 120000` | ~17 min (GPU) | `artifacts/stow/stage3/<run id>/` |
+| 4 | `python scripts/stow_stage4_execute.py artifacts/stow/stage3/1790788534/sac_hole_best` | ~15 min | `artifacts/stow/stage4_execution.json`, `artifacts/stow/learned_operator.json` |
 
 Each stage prints `PASS` or `FAIL` against its own checks. What they verify:
 
@@ -125,20 +125,36 @@ Each stage prints `PASS` or `FAIL` against its own checks. What they verify:
 - **Stage 1** — the STRIPS operator extracted from 5 demonstrations matches the
   scene's intended meaning, with no spurious `tcp_near` terms.
 - **Stage 2** — the planner, from measured predicate scores, produces
-  `pick B → place B → approach A → HOLE[clear_of_walls(A)] → pick A → place A`,
-  with the hole mid-plan, and finds no plan at all when holes are disallowed.
-- **Stage 3** — SAC learns the hole's policy; the best checkpoint is selected on
-  the operator's contract (postcondition established *and* fences intact).
-- **Stage 4** — the executive runs the full plan on the robot and the ablations
-  beside it.
+  `pick B → place B → approach A → HOLE[clear_of_walls(A)] → pick A → place A`
+  with no equally cheap alternative, and finds no plan at all when holes are
+  disallowed. Everything about the hole is derived, not given: which predicate
+  to delegate (the open conditions the library cannot reach), where the learned
+  skill starts (the robot-relative predicates the library can establish), and
+  what it must preserve (the causal links spanning it). These are written to
+  `hole_spec.json`, the learning problem Stage 3 trains against.
+- **Stage 3** — SAC learns the hole's policy against the spec; the best
+  checkpoint is selected on the operator's contract (postcondition established
+  *and* fences intact).
+- **Stage 4** — the learned skill is first modelled from its own executions by
+  the same extractor that modelled the forward skill, and joins the library.
+  The executive then runs the full plan and the ablations — library only, the
+  ordering a planner without the interference model cannot rule out, and the
+  re-planned inverse using the learned operator — checking every step's
+  preconditions and postconditions and reporting wherever the measured scene
+  diverges from the domain's prediction.
+
+The planner itself contains no domain vocabulary (a test enforces it). The
+domain supplies facts about its world — which literals imply or exclude each
+other, and which changes displace other objects (moving a cube into or out of
+the pocket sweeps the mouth) — and the plan's ordering follows from them.
 
 Supporting scripts:
 
 ```bash
 python scripts/stow_planner_demo.py          # planner on a complete vs incomplete library (no GPU)
 python scripts/stow_pick_limit.py            # measures the grasp limit that calibrates X_CLEAR
-python scripts/stow_stage3_precondition.py artifacts/stow/stage3/1789749141/sac_hole_best
-python -m pytest -q                          # 27 tests, no GPU needed
+python scripts/stow_stage3_precondition.py artifacts/stow/stage3/1790788534/sac_hole_best
+python -m pytest -q                          # 39 tests, no GPU needed
 ```
 
 Every stage has a matching `stow_stage<N>_video.py` that renders an annotated
@@ -146,6 +162,20 @@ mp4 into `artifacts/stow/videos/` (not committed — regenerate as needed).
 `scripts/stow_framework_video.py` renders the pipeline end to end without the
 ablations.
 
-Reference results, all on 5 seeds: the full pipeline restores both cubes to
-about 2 mm on 5/5; the library-only ablation stops at `pick(A)` with its
-precondition unmet on 5/5.
+Reference results, run `1790788534`, 10 evaluation seeds:
+
+| condition | goal met | A error | B error |
+|---|---|---|---|
+| full: planner + learned skill | 10/10 | 1.5 mm | 0.8 mm |
+| library only | 0/10 — refused at `pick(A)`, precondition unmet | | |
+| without the interference model | 3/10 | 51 mm | 89 mm |
+| re-planned with the learned operator | 9/10 | | |
+
+In the full plan the domain's prediction matches the measured scene after
+every step except on one seed, where the forward push jams B against A and
+lifting B drags A partly out of the pocket — an interaction the model does not
+contain, which the executive reports at the step that causes it. That same
+seed is the re-planned condition's one failure: A ends outside the learned
+operator's measured precondition, and the executive declines to run it there.
+Two seeds' forward pushes fall short of the stowed state and are re-rolled,
+since an inverse is only defined once the forward skill has happened.

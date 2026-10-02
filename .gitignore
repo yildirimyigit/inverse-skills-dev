@@ -24,11 +24,11 @@ artifacts/stow/*
 !artifacts/stow/*.json
 !artifacts/stow/stage3/
 artifacts/stow/stage3/*
-!artifacts/stow/stage3/1789749141/
-artifacts/stow/stage3/1789749141/*
-!artifacts/stow/stage3/1789749141/sac_hole_best.zip
-!artifacts/stow/stage3/1789749141/summary.json
-!artifacts/stow/stage3/1789749141/precondition.json
+!artifacts/stow/stage3/1790788534/
+artifacts/stow/stage3/1790788534/*
+!artifacts/stow/stage3/1790788534/sac_hole_best.zip
+!artifacts/stow/stage3/1790788534/summary.json
+!artifacts/stow/stage3/1790788534/precondition.json
 checkpoints/
 logs/
 wandb/

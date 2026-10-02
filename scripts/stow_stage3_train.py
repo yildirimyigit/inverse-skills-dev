@@ -1,6 +1,7 @@
 """Stage 3: learn the hole's policy with SAC, then measure its precondition.
 
-Trains on `StowHoleEnv`, evaluates the best checkpoint on held-out seeds, and
+Trains on `StowHoleEnv` built from the hole spec Stage 2 wrote — what to
+achieve, what to preserve, where to start — evaluates the best checkpoint on held-out seeds, and
 sweeps the handoff pose to find where the learned operator actually works —
 that success region is what the operator advertises as its precondition, and
 what Stage 4's planner may rely on.
@@ -22,7 +23,7 @@ from stable_baselines3.common.callbacks import BaseCallback
 
 from inverse_skills.envs import stow_cube as geo
 from inverse_skills.envs import stow_primitives as prim
-from inverse_skills.envs.stow_hole_env import StowHoleEnv
+from inverse_skills.envs.stow_hole_env import StowHoleEnv, load_spec
 
 # SAC's small MLPs thrash across this machine's 20 cores: 129 ms/step at the
 # default thread count against 10 ms at one thread.
@@ -109,7 +110,7 @@ def rollout(env: StowHoleEnv, seeds, policy=None, curriculum: float = 1.0) -> di
         successes.append(bool(info.get("postcondition")))
         fences.append(bool(info.get("fences_held")))
         steps.append(info.get("first_satisfied_step") or env.max_steps)
-        finals.append(info.get("cube_a_x", float("nan")) * 1000.0)
+        finals.append(info.get("object_x", float("nan")) * 1000.0)
     env.set_curriculum(previous)
     return {
         "success_rate": float(np.mean(successes)),
@@ -134,7 +135,7 @@ def precondition_sweep(env: StowHoleEnv, model, seeds, offsets_mm) -> list[dict]
             env._obs = prim.step_toward(env._env, env._obs,
                                         prim.tcp_pos(env._obs) + np.array([0, 0, dz_mm / 1000.0]),
                                         10, 0.001, -1.0, 0.25)
-            obs = env._observation(env._obs, env._scores(env._obs))
+            obs = env._observation(env._obs)
             done, info = False, {}
             while not done:
                 action, _ = model.predict(obs, deterministic=True)
@@ -153,15 +154,19 @@ def main() -> None:
     ap.add_argument("--curriculum-steps", type=int, default=60_000)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--device", default="cuda")
+    ap.add_argument("--spec", type=Path, default=Path("artifacts/stow/hole_spec.json"))
     ap.add_argument("--out-dir", type=Path, default=Path("artifacts/stow/stage3"))
     args = ap.parse_args()
+    spec = load_spec(args.spec)
+    print(f"hole: achieve {spec['achieve']}, start {spec['start']}, preserve "
+          f"{spec['preserve']}, keep false {spec['preserve_absent']}")
 
     run_dir = args.out_dir / str(int(time.time()))
     run_dir.mkdir(parents=True, exist_ok=True)
     best_path = run_dir / "sac_hole_best"
 
-    train_env = StowHoleEnv(seed_pool=tuple(range(32)))
-    eval_env = StowHoleEnv(seed_pool=EVAL_SEEDS, curriculum=1.0)
+    train_env = StowHoleEnv(spec, seed_pool=tuple(range(32)))
+    eval_env = StowHoleEnv(spec, seed_pool=EVAL_SEEDS, curriculum=1.0)
 
     print("baselines on the eval seeds")
     expert = rollout(eval_env, EVAL_SEEDS, policy=None)
@@ -198,6 +203,7 @@ def main() -> None:
     (run_dir / "summary.json").write_text(json.dumps({
         "timesteps": args.timesteps,
         "minutes": minutes,
+        "spec": spec,
         "expert": expert,
         "best": best_stats,
         "final": final_stats,

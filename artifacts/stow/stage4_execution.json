@@ -15,7 +15,7 @@
       "pick(cube_a)",
       "place(cube_a,src_a)"
     ],
-    "hole_first": [
+    "without_interference": [
       "approach(cube_a)",
       "HOLE[clear_of_walls(cube_a)]",
       "pick(cube_a)",
@@ -24,328 +24,682 @@
       "place(cube_b,src_b)"
     ],
     "relearned": [
-      "approach(cube_a)",
-      "drag(cube_a)",
-      "pick(cube_a)",
-      "place(cube_a,src_a)",
       "pick(cube_b)",
-      "place(cube_b,src_b)"
-    ],
-    "relearned_replan": [
+      "place(cube_b,src_b)",
       "approach(cube_a)",
-      "drag(cube_a)",
+      "LEARNED[clear_of_walls(cube_a)]",
       "pick(cube_a)",
-      "place(cube_a,src_a)",
-      "pick(cube_b)",
-      "place(cube_b,src_b)"
+      "place(cube_a,src_a)"
     ]
+  },
+  "learned_action": {
+    "name": "LEARNED[clear_of_walls(cube_a)]",
+    "pre": [
+      "in_region(cube_a,pocket)",
+      "in_region(cube_b,src_b)",
+      "tcp_near(cube_a)"
+    ],
+    "pre_absent": [],
+    "add": [
+      "clear_of_walls(cube_a)"
+    ],
+    "delete": [
+      "in_region(cube_a,pocket)"
+    ],
+    "hole_for": null
   },
   "summary": {
     "full": {
       "goal_met_rate": 1.0,
-      "mean_a_err_mm": 1.9503933101687103,
-      "mean_b_err_mm": 1.2043019412625777
+      "mean_a_err_mm": 1.5300051937562407,
+      "mean_b_err_mm": 0.8137089935661462,
+      "diverging_steps": 3
     },
     "library_only": {
       "goal_met_rate": 0.0,
-      "mean_a_err_mm": 124.9755461407459,
-      "mean_b_err_mm": 1.2043019412625777
+      "mean_a_err_mm": 128.10355812839617,
+      "mean_b_err_mm": 0.8137089935661462,
+      "diverging_steps": 3
     },
-    "hole_first": {
-      "goal_met_rate": 0.6,
-      "mean_a_err_mm": 42.11577235380447,
-      "mean_b_err_mm": 75.43759708299042
+    "without_interference": {
+      "goal_met_rate": 0.3,
+      "mean_a_err_mm": 51.3349944892464,
+      "mean_b_err_mm": 89.43757420629379,
+      "diverging_steps": 30
     },
     "relearned": {
-      "goal_met_rate": 0.6,
-      "mean_a_err_mm": 42.11577235380447,
-      "mean_b_err_mm": 75.43759708299042
-    },
-    "relearned_replan": {
-      "goal_met_rate": 0.8,
-      "mean_a_err_mm": 34.80522048114348,
-      "mean_b_err_mm": 43.43270690022232
+      "goal_met_rate": 0.9,
+      "mean_a_err_mm": 11.599824147349732,
+      "mean_b_err_mm": 0.8137089935661462,
+      "diverging_steps": 3
     }
   },
   "results": {
     "full": [
       {
         "seed": 1000,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 114mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
           },
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": []
           },
           {
             "action": "HOLE[clear_of_walls(cube_a)]",
             "attempts": 1,
             "ok": true,
-            "detail": "clear_of_walls 0.88"
+            "detail": "clear_of_walls(cube_a) 0.89",
+            "divergence": []
           },
           {
             "action": "pick(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 115mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_a,src_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 2.0941408864129385,
+        "cube_a_err_mm": 1.0691477226418549,
         "cube_b_err_mm": 0.2749812161601146,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.9758027723818408,
+          "in_region(cube_a,src_a)": 0.9780545392703068,
           "in_region(cube_b,src_b)": 0.9812739835246418,
-          "in_region(cube_a,pocket)": 1.434393714916382e-10,
+          "in_region(cube_a,pocket)": 1.5852247292613697e-10,
           "in_region(cube_b,mouth)": 7.827072323607354e-15,
-          "tcp_near(cube_a)": 0.8986464223727254,
-          "tcp_near(cube_b)": 0.1030436200896277,
-          "gripper_open()": 0.9996645373335836,
-          "clear_of_walls(cube_a)": 0.9999880235254901
+          "tcp_near(cube_a)": 0.9873326933490769,
+          "tcp_near(cube_b)": 0.012996426329178634,
+          "gripper_open()": 0.9820069920337291,
+          "clear_of_walls(cube_a)": 0.9999874095940151
         },
         "ok": true
       },
       {
         "seed": 1001,
-        "rounds": 1,
+        "forward_rerolls": 1,
         "steps": [
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 114mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
           },
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": []
           },
           {
             "action": "HOLE[clear_of_walls(cube_a)]",
             "attempts": 1,
             "ok": true,
-            "detail": "clear_of_walls 0.89"
+            "detail": "clear_of_walls(cube_a) 0.89",
+            "divergence": []
           },
           {
             "action": "pick(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 117mm"
+            "detail": "cube z 115mm",
+            "divergence": []
           },
           {
             "action": "place(cube_a,src_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 1.9180837163786293,
-        "cube_b_err_mm": 0.5463636034925573,
+        "cube_a_err_mm": 1.4212581508550177,
+        "cube_b_err_mm": 0.32087654104861324,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.9752575135658568,
-          "in_region(cube_b,src_b)": 0.9799904358891753,
-          "in_region(cube_a,pocket)": 1.6337969865887203e-10,
-          "in_region(cube_b,mouth)": 1.709743457922741e-14,
-          "tcp_near(cube_a)": 0.8987301635211653,
-          "tcp_near(cube_b)": 0.1188326869334349,
-          "gripper_open()": 0.999664533835591,
-          "clear_of_walls(cube_a)": 0.9999872181577695
+          "in_region(cube_a,src_a)": 0.976718748565875,
+          "in_region(cube_b,src_b)": 0.9810303009741321,
+          "in_region(cube_a,pocket)": 1.2308143393369164e-10,
+          "in_region(cube_b,mouth)": 2.3703261575747092e-14,
+          "tcp_near(cube_a)": 0.987603092213114,
+          "tcp_near(cube_b)": 0.02350490177379483,
+          "gripper_open()": 0.9820067287393521,
+          "clear_of_walls(cube_a)": 0.999988905915723
         },
         "ok": true
       },
       {
         "seed": 1002,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 107mm"
+            "detail": "cube z 107mm",
+            "divergence": [
+              "in_region(cube_a,pocket)"
+            ]
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.96"
+            "detail": "in_region 0.96",
+            "divergence": [
+              "clear_of_walls(cube_a)",
+              "in_region(cube_a,pocket)"
+            ]
           },
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": [
+              "in_region(cube_a,pocket)"
+            ]
           },
           {
             "action": "HOLE[clear_of_walls(cube_a)]",
             "attempts": 1,
             "ok": true,
-            "detail": "clear_of_walls 0.88"
+            "detail": "clear_of_walls(cube_a) 0.87",
+            "divergence": []
           },
           {
             "action": "pick(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 113mm"
+            "detail": "cube z 113mm",
+            "divergence": []
           },
           {
             "action": "place(cube_a,src_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 1.6588941791835867,
+        "cube_a_err_mm": 1.663983715255319,
         "cube_b_err_mm": 4.1950210586381615,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.9766491424335955,
+          "in_region(cube_a,src_a)": 0.9766195504542858,
           "in_region(cube_b,src_b)": 0.9593666308777717,
-          "in_region(cube_a,pocket)": 8.783068716766707e-11,
+          "in_region(cube_a,pocket)": 8.783435090364833e-11,
           "in_region(cube_b,mouth)": 1.4988010832439613e-15,
-          "tcp_near(cube_a)": 0.8975527229190479,
-          "tcp_near(cube_b)": 0.08268825939831637,
-          "gripper_open()": 0.9996645178443029,
-          "clear_of_walls(cube_a)": 0.9999906282856462
+          "tcp_near(cube_a)": 0.9871373911125139,
+          "tcp_near(cube_b)": 0.00806012419638752,
+          "gripper_open()": 0.9820068603870133,
+          "clear_of_walls(cube_a)": 0.9999906280905733
         },
         "ok": true
       },
       {
         "seed": 1003,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 114mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
           },
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": []
           },
           {
             "action": "HOLE[clear_of_walls(cube_a)]",
             "attempts": 1,
             "ok": true,
-            "detail": "clear_of_walls 0.88"
+            "detail": "clear_of_walls(cube_a) 0.88",
+            "divergence": []
           },
           {
             "action": "pick(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 115mm"
+            "detail": "cube z 115mm",
+            "divergence": []
           },
           {
             "action": "place(cube_a,src_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.97",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 1.7915503942273856,
+        "cube_a_err_mm": 2.3010024961820728,
         "cube_b_err_mm": 0.08918812773013429,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.9754200020664037,
+          "in_region(cube_a,src_a)": 0.9746258342000437,
           "in_region(cube_b,src_b)": 0.9817237531151028,
-          "in_region(cube_a,pocket)": 9.411799117842179e-11,
+          "in_region(cube_a,pocket)": 7.793815592904707e-11,
           "in_region(cube_b,mouth)": 1.0436096431476471e-14,
-          "tcp_near(cube_a)": 0.8956856190506282,
-          "tcp_near(cube_b)": 0.1234512177870723,
-          "gripper_open()": 0.9996645298378404,
-          "clear_of_walls(cube_a)": 0.9999902986549273
+          "tcp_near(cube_a)": 0.9874169779569955,
+          "tcp_near(cube_b)": 0.019438992379893272,
+          "gripper_open()": 0.9820075186111367,
+          "clear_of_walls(cube_a)": 0.9999911718203117
         },
         "ok": true
       },
       {
         "seed": 1004,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 114mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
           },
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": []
           },
           {
             "action": "HOLE[clear_of_walls(cube_a)]",
             "attempts": 1,
             "ok": true,
-            "detail": "clear_of_walls 0.88"
+            "detail": "clear_of_walls(cube_a) 0.88",
+            "divergence": []
           },
           {
             "action": "pick(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 116mm"
+            "detail": "cube z 117mm",
+            "divergence": []
           },
           {
             "action": "place(cube_a,src_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.97"
+            "detail": "in_region 0.98",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 2.28929737464101,
+        "cube_a_err_mm": 1.552779999579235,
         "cube_b_err_mm": 0.9159557002919214,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.9734655244471726,
+          "in_region(cube_a,src_a)": 0.9767856687787335,
           "in_region(cube_b,src_b)": 0.9791509509838795,
-          "in_region(cube_a,pocket)": 4.81389372808394e-10,
+          "in_region(cube_a,pocket)": 9.296060587971056e-10,
           "in_region(cube_b,mouth)": 5.88418203051333e-15,
-          "tcp_near(cube_a)": 0.8992308917691727,
-          "tcp_near(cube_b)": 0.07175828850045951,
-          "gripper_open()": 0.999664561318837,
-          "clear_of_walls(cube_a)": 0.9999780598945822
+          "tcp_near(cube_a)": 0.9844013393206895,
+          "tcp_near(cube_b)": 0.005937724941743883,
+          "gripper_open()": 0.9820080978288119,
+          "clear_of_walls(cube_a)": 0.999969511485765
+        },
+        "ok": true
+      },
+      {
+        "seed": 1005,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "HOLE[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.87",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 115mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          }
+        ],
+        "goal_met": true,
+        "cube_a_err_mm": 1.7673207899428391,
+        "cube_b_err_mm": 0.11749981605742513,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 0.9753907785205191,
+          "in_region(cube_b,src_b)": 0.9815982612170491,
+          "in_region(cube_a,pocket)": 4.031430744788622e-10,
+          "in_region(cube_b,mouth)": 4.107825191113079e-15,
+          "tcp_near(cube_a)": 0.9866963803333518,
+          "tcp_near(cube_b)": 0.006236407309379355,
+          "gripper_open()": 0.982007676581409,
+          "clear_of_walls(cube_a)": 0.9999799219813181
+        },
+        "ok": true
+      },
+      {
+        "seed": 1006,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "HOLE[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.87",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 118mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          }
+        ],
+        "goal_met": true,
+        "cube_a_err_mm": 0.580459170286094,
+        "cube_b_err_mm": 0.8819778987103776,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 0.9798876379692179,
+          "in_region(cube_b,src_b)": 0.9788876820467844,
+          "in_region(cube_a,pocket)": 1.4816659010818967e-10,
+          "in_region(cube_b,mouth)": 2.298161660974074e-14,
+          "tcp_near(cube_a)": 0.9863340397233271,
+          "tcp_near(cube_b)": 0.024227414664268643,
+          "gripper_open()": 0.9820091509049618,
+          "clear_of_walls(cube_a)": 0.9999878277823071
+        },
+        "ok": true
+      },
+      {
+        "seed": 1007,
+        "forward_rerolls": 1,
+        "steps": [
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "HOLE[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.87",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 118mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          }
+        ],
+        "goal_met": true,
+        "cube_a_err_mm": 1.6312273919854456,
+        "cube_b_err_mm": 0.8588657653027868,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 0.9764903933128322,
+          "in_region(cube_b,src_b)": 0.9792210139323185,
+          "in_region(cube_a,pocket)": 2.0601909067607949e-10,
+          "in_region(cube_b,mouth)": 4.9404924595819466e-15,
+          "tcp_near(cube_a)": 0.9866654036182484,
+          "tcp_near(cube_b)": 0.009287249268390085,
+          "gripper_open()": 0.9820078872063207,
+          "clear_of_walls(cube_a)": 0.9999856468383354
+        },
+        "ok": true
+      },
+      {
+        "seed": 1008,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "HOLE[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.90",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          }
+        ],
+        "goal_met": true,
+        "cube_a_err_mm": 1.5441873687866174,
+        "cube_b_err_mm": 0.16607660996721835,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 0.9772745749683105,
+          "in_region(cube_b,src_b)": 0.9814183169656006,
+          "in_region(cube_a,pocket)": 1.1693301882331752e-10,
+          "in_region(cube_b,mouth)": 3.219646771412954e-15,
+          "tcp_near(cube_a)": 0.987395785285264,
+          "tcp_near(cube_b)": 0.009533290644106518,
+          "gripper_open()": 0.9820068340575567,
+          "clear_of_walls(cube_a)": 0.9999891865640944
+        },
+        "ok": true
+      },
+      {
+        "seed": 1009,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "HOLE[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.88",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          }
+        ],
+        "goal_met": true,
+        "cube_a_err_mm": 1.7686851320479107,
+        "cube_b_err_mm": 0.31664720175470906,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 0.9768987022800775,
+          "in_region(cube_b,src_b)": 0.9809891601875246,
+          "in_region(cube_a,pocket)": 1.821972017701512e-10,
+          "in_region(cube_b,mouth)": 4.163336342344337e-15,
+          "tcp_near(cube_a)": 0.9873320707532903,
+          "tcp_near(cube_b)": 0.008832989354440324,
+          "gripper_open()": 0.9820068603870133,
+          "clear_of_walls(cube_a)": 0.9999865021384289
         },
         "ok": true
       }
@@ -353,31 +707,35 @@
     "library_only": [
       {
         "seed": 1000,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 114mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
           },
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": []
           },
           {
             "action": "pick(cube_a)",
             "attempts": 0,
             "ok": false,
-            "detail": "precondition not met: clear_of_walls(cube_a)"
+            "detail": "precondition not met: clear_of_walls(cube_a)",
+            "divergence": []
           }
         ],
         "goal_met": false,
@@ -388,84 +746,99 @@
           "in_region(cube_b,src_b)": 0.9812739835246418,
           "in_region(cube_a,pocket)": 0.9745477221033754,
           "in_region(cube_b,mouth)": 7.827072323607354e-15,
-          "tcp_near(cube_a)": 0.7227437177832515,
-          "tcp_near(cube_b)": 7.379453306005646e-05,
-          "gripper_open()": 0.000335350130466483,
+          "tcp_near(cube_a)": 0.8717168589246955,
+          "tcp_near(cube_b)": 5.446436912581731e-09,
+          "gripper_open()": 6.144174602207286e-06,
           "clear_of_walls(cube_a)": 0.11964126524685204
         },
         "ok": false
       },
       {
         "seed": 1001,
-        "rounds": 1,
+        "forward_rerolls": 1,
         "steps": [
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 114mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
           },
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": []
           },
           {
             "action": "pick(cube_a)",
             "attempts": 0,
             "ok": false,
-            "detail": "precondition not met: clear_of_walls(cube_a)"
+            "detail": "precondition not met: clear_of_walls(cube_a)",
+            "divergence": []
           }
         ],
         "goal_met": false,
-        "cube_a_err_mm": 131.00005545947664,
-        "cube_b_err_mm": 0.5463636034925573,
+        "cube_a_err_mm": 132.75299748087622,
+        "cube_b_err_mm": 0.32087654104861324,
         "final_scores": {
-          "in_region(cube_a,src_a)": 2.2840268565360589e-10,
-          "in_region(cube_b,src_b)": 0.9799904358891753,
-          "in_region(cube_a,pocket)": 0.9674249252634891,
-          "in_region(cube_b,mouth)": 1.709743457922741e-14,
-          "tcp_near(cube_a)": 0.7151358930298954,
-          "tcp_near(cube_b)": 8.30394419306657e-05,
-          "gripper_open()": 0.000335350130466483,
-          "clear_of_walls(cube_a)": 0.11968741617979889
+          "in_region(cube_a,src_a)": 1.6141216141463133e-10,
+          "in_region(cube_b,src_b)": 0.9810303009741321,
+          "in_region(cube_a,pocket)": 0.9642113481128454,
+          "in_region(cube_b,mouth)": 2.3703261575747092e-14,
+          "tcp_near(cube_a)": 0.860441030349597,
+          "tcp_near(cube_b)": 8.248972060975746e-09,
+          "gripper_open()": 6.15591607106003e-06,
+          "clear_of_walls(cube_a)": 0.11960595604329738
         },
         "ok": false
       },
       {
         "seed": 1002,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 107mm"
+            "detail": "cube z 107mm",
+            "divergence": [
+              "in_region(cube_a,pocket)"
+            ]
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.96"
+            "detail": "in_region 0.96",
+            "divergence": [
+              "clear_of_walls(cube_a)",
+              "in_region(cube_a,pocket)"
+            ]
           },
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": [
+              "in_region(cube_a,pocket)"
+            ]
           },
           {
             "action": "pick(cube_a)",
             "attempts": 0,
             "ok": false,
-            "detail": "precondition not met: clear_of_walls(cube_a)"
+            "detail": "precondition not met: clear_of_walls(cube_a)",
+            "divergence": []
           }
         ],
         "goal_met": false,
@@ -476,40 +849,44 @@
           "in_region(cube_b,src_b)": 0.9593666308777717,
           "in_region(cube_a,pocket)": 0.07095634345277052,
           "in_region(cube_b,mouth)": 1.4988010832439613e-15,
-          "tcp_near(cube_a)": 0.7223241985143268,
-          "tcp_near(cube_b)": 0.000319505972185663,
-          "gripper_open()": 0.000335350130466483,
+          "tcp_near(cube_a)": 0.8712481163252463,
+          "tcp_near(cube_b)": 1.0214932005814248e-07,
+          "gripper_open()": 6.144174602207286e-06,
           "clear_of_walls(cube_a)": 0.7834771005892672
         },
         "ok": false
       },
       {
         "seed": 1003,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 114mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
           },
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": []
           },
           {
             "action": "pick(cube_a)",
             "attempts": 0,
             "ok": false,
-            "detail": "precondition not met: clear_of_walls(cube_a)"
+            "detail": "precondition not met: clear_of_walls(cube_a)",
+            "divergence": []
           }
         ],
         "goal_met": false,
@@ -520,40 +897,44 @@
           "in_region(cube_b,src_b)": 0.9817237531151028,
           "in_region(cube_a,pocket)": 0.9763099727927929,
           "in_region(cube_b,mouth)": 1.0436096431476471e-14,
-          "tcp_near(cube_a)": 0.7260327351488849,
-          "tcp_near(cube_b)": 8.015437024616601e-05,
-          "gripper_open()": 0.000335350130466483,
+          "tcp_near(cube_a)": 0.8753564325638699,
+          "tcp_near(cube_b)": 6.425753096284126e-09,
+          "gripper_open()": 6.144174602207286e-06,
           "clear_of_walls(cube_a)": 0.11995646469464605
         },
         "ok": false
       },
       {
         "seed": 1004,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 114mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
           },
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": []
           },
           {
             "action": "pick(cube_a)",
             "attempts": 0,
             "ok": false,
-            "detail": "precondition not met: clear_of_walls(cube_a)"
+            "detail": "precondition not met: clear_of_walls(cube_a)",
+            "divergence": []
           }
         ],
         "goal_met": false,
@@ -564,136 +945,391 @@
           "in_region(cube_b,src_b)": 0.9791509509838795,
           "in_region(cube_a,pocket)": 0.9754799961914266,
           "in_region(cube_b,mouth)": 5.88418203051333e-15,
-          "tcp_near(cube_a)": 0.7199358828328577,
-          "tcp_near(cube_b)": 6.59666506144796e-05,
-          "gripper_open()": 0.000335350130466483,
+          "tcp_near(cube_a)": 0.8685601124484589,
+          "tcp_near(cube_b)": 4.352173177402108e-09,
+          "gripper_open()": 6.144174602207286e-06,
           "clear_of_walls(cube_a)": 0.12015292256663063
+        },
+        "ok": false
+      },
+      {
+        "seed": 1005,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 0,
+            "ok": false,
+            "detail": "precondition not met: clear_of_walls(cube_a)",
+            "divergence": []
+          }
+        ],
+        "goal_met": false,
+        "cube_a_err_mm": 127.31841894532172,
+        "cube_b_err_mm": 0.11749981605742513,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 4.770768780026913e-10,
+          "in_region(cube_b,src_b)": 0.9815982612170491,
+          "in_region(cube_a,pocket)": 0.9806378794158558,
+          "in_region(cube_b,mouth)": 4.107825191113079e-15,
+          "tcp_near(cube_a)": 0.8729627777421216,
+          "tcp_near(cube_b)": 3.943751492041514e-09,
+          "gripper_open()": 6.144174602207286e-06,
+          "clear_of_walls(cube_a)": 0.12019703779247604
+        },
+        "ok": false
+      },
+      {
+        "seed": 1006,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 0,
+            "ok": false,
+            "detail": "precondition not met: clear_of_walls(cube_a)",
+            "divergence": []
+          }
+        ],
+        "goal_met": false,
+        "cube_a_err_mm": 132.52550507385774,
+        "cube_b_err_mm": 0.8819778987103776,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 1.6834289517930756e-10,
+          "in_region(cube_b,src_b)": 0.9788876820467844,
+          "in_region(cube_a,pocket)": 0.9669936030546982,
+          "in_region(cube_b,mouth)": 2.298161660974074e-14,
+          "tcp_near(cube_a)": 0.8753779935237409,
+          "tcp_near(cube_b)": 1.0625859525603687e-08,
+          "gripper_open()": 6.144174602207286e-06,
+          "clear_of_walls(cube_a)": 0.1199276805048834
+        },
+        "ok": false
+      },
+      {
+        "seed": 1007,
+        "forward_rerolls": 1,
+        "steps": [
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 0,
+            "ok": false,
+            "detail": "precondition not met: clear_of_walls(cube_a)",
+            "divergence": []
+          }
+        ],
+        "goal_met": false,
+        "cube_a_err_mm": 130.6012409622961,
+        "cube_b_err_mm": 0.8588657653027868,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 2.4734236880874505e-10,
+          "in_region(cube_b,src_b)": 0.9792210139323185,
+          "in_region(cube_a,pocket)": 0.9784950823087939,
+          "in_region(cube_b,mouth)": 4.9404924595819466e-15,
+          "tcp_near(cube_a)": 0.8665680172133678,
+          "tcp_near(cube_b)": 3.984129581802165e-09,
+          "gripper_open()": 6.144174602207286e-06,
+          "clear_of_walls(cube_a)": 0.11945822593539096
+        },
+        "ok": false
+      },
+      {
+        "seed": 1008,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 0,
+            "ok": false,
+            "detail": "precondition not met: clear_of_walls(cube_a)",
+            "divergence": []
+          }
+        ],
+        "goal_met": false,
+        "cube_a_err_mm": 133.0906351480163,
+        "cube_b_err_mm": 0.16607660996721835,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 1.505854330119405e-10,
+          "in_region(cube_b,src_b)": 0.9814183169656006,
+          "in_region(cube_a,pocket)": 0.9707615690768938,
+          "in_region(cube_b,mouth)": 3.219646771412954e-15,
+          "tcp_near(cube_a)": 0.8738818433546096,
+          "tcp_near(cube_b)": 3.372377821442285e-09,
+          "gripper_open()": 6.144174602207286e-06,
+          "clear_of_walls(cube_a)": 0.11995111636111722
+        },
+        "ok": false
+      },
+      {
+        "seed": 1009,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 0,
+            "ok": false,
+            "detail": "precondition not met: clear_of_walls(cube_a)",
+            "divergence": []
+          }
+        ],
+        "goal_met": false,
+        "cube_a_err_mm": 130.86910842934088,
+        "cube_b_err_mm": 0.31664720175470906,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 2.344801020015552e-10,
+          "in_region(cube_b,src_b)": 0.9809891601875246,
+          "in_region(cube_a,pocket)": 0.9812072001014741,
+          "in_region(cube_b,mouth)": 4.163336342344337e-15,
+          "tcp_near(cube_a)": 0.8786182751837417,
+          "tcp_near(cube_b)": 4.73547212553882e-09,
+          "gripper_open()": 6.144174602207286e-06,
+          "clear_of_walls(cube_a)": 0.11960485767919071
         },
         "ok": false
       }
     ],
-    "hole_first": [
+    "without_interference": [
       {
         "seed": 1000,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": []
           },
           {
             "action": "HOLE[clear_of_walls(cube_a)]",
             "attempts": 1,
             "ok": true,
-            "detail": "clear_of_walls 0.84"
+            "detail": "clear_of_walls(cube_a) 0.85",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
           },
           {
             "action": "pick(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 114mm"
+            "detail": "cube z 114mm",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 3,
+            "ok": false,
+            "detail": "in_region 0.00",
+            "divergence": [
+              "in_region(cube_a,src_a)",
+              "in_region(cube_b,mouth)",
+              "tcp_near(cube_a)"
+            ]
+          }
+        ],
+        "goal_met": false,
+        "cube_a_err_mm": 124.2918018906571,
+        "cube_b_err_mm": 148.33022919811737,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 2.5543075432565843e-09,
+          "in_region(cube_b,src_b)": 8.853473509873311e-12,
+          "in_region(cube_a,pocket)": 0.0,
+          "in_region(cube_b,mouth)": 0.04450000740181148,
+          "tcp_near(cube_a)": 0.0008697479578803624,
+          "tcp_near(cube_b)": 0.32420680524138257,
+          "gripper_open()": 0.9820006455863329,
+          "clear_of_walls(cube_a)": 0.9999999998645517
+        },
+        "ok": false
+      },
+      {
+        "seed": 1001,
+        "forward_rerolls": 1,
+        "steps": [
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "HOLE[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.86",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 115mm",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
           },
           {
             "action": "place(cube_a,src_a)",
             "attempts": 2,
             "ok": true,
-            "detail": "in_region 0.89"
+            "detail": "in_region 0.81",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
           },
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 119mm"
+            "detail": "cube z 117mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.95"
+            "detail": "in_region 0.96",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 9.71994414997227,
-        "cube_b_err_mm": 7.251424370929883,
+        "cube_a_err_mm": 8.07707866019757,
+        "cube_b_err_mm": 3.853325209435732,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.8869863488004961,
-          "in_region(cube_b,src_b)": 0.9465186834672257,
-          "in_region(cube_a,pocket)": 2.7916335909594636e-11,
-          "in_region(cube_b,mouth)": 3.0531133177191805e-15,
-          "tcp_near(cube_a)": 0.101395722200671,
-          "tcp_near(cube_b)": 0.8809089413734803,
-          "gripper_open()": 0.9996645183440422,
-          "clear_of_walls(cube_a)": 0.99999471643898
-        },
-        "ok": true
-      },
-      {
-        "seed": 1001,
-        "rounds": 1,
-        "steps": [
-          {
-            "action": "approach(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "seated"
-          },
-          {
-            "action": "HOLE[clear_of_walls(cube_a)]",
-            "attempts": 1,
-            "ok": true,
-            "detail": "clear_of_walls 0.88"
-          },
-          {
-            "action": "pick(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "cube z 117mm"
-          },
-          {
-            "action": "place(cube_a,src_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "in_region 0.92"
-          },
-          {
-            "action": "pick(cube_b)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "cube z 126mm"
-          },
-          {
-            "action": "place(cube_b,src_b)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "in_region 0.93"
-          }
-        ],
-        "goal_met": true,
-        "cube_a_err_mm": 7.865108865406194,
-        "cube_b_err_mm": 8.820721737699337,
-        "final_scores": {
-          "in_region(cube_a,src_a)": 0.9224185231973602,
-          "in_region(cube_b,src_b)": 0.9268421495085164,
-          "in_region(cube_a,pocket)": 1.0392203764197916e-09,
-          "in_region(cube_b,mouth)": 7.460698725481052e-14,
-          "tcp_near(cube_a)": 0.05912656310027564,
-          "tcp_near(cube_b)": 0.8563799268621406,
-          "gripper_open()": 0.9996645168448222,
-          "clear_of_walls(cube_a)": 0.9999677640900472
+          "in_region(cube_a,src_a)": 0.9290839328719578,
+          "in_region(cube_b,src_b)": 0.963982130890727,
+          "in_region(cube_a,pocket)": 6.675358044105906e-10,
+          "in_region(cube_b,mouth)": 1.099120794378905e-14,
+          "tcp_near(cube_a)": 0.0046918487878129245,
+          "tcp_near(cube_b)": 0.975520497571966,
+          "gripper_open()": 0.9820068340575567,
+          "clear_of_walls(cube_a)": 0.9999741639479147
         },
         "ok": true
       },
       {
         "seed": 1002,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
             "action": "approach(cube_a)",
             "attempts": 3,
             "ok": false,
-            "detail": "not seated on the cube"
+            "detail": "not seated on the cube",
+            "divergence": [
+              "tcp_near(cube_a)"
+            ]
           }
         ],
         "goal_met": false,
@@ -704,590 +1340,1055 @@
           "in_region(cube_b,src_b)": 7.216449660063518e-16,
           "in_region(cube_a,pocket)": 0.9528867351444976,
           "in_region(cube_b,mouth)": 0.9213667742244269,
-          "tcp_near(cube_a)": 0.04643684021864103,
-          "tcp_near(cube_b)": 0.06247951344199265,
-          "gripper_open()": 0.000335350130466483,
+          "tcp_near(cube_a)": 0.002365907033428316,
+          "tcp_near(cube_b)": 0.004421698913191441,
+          "gripper_open()": 6.144174602207286e-06,
           "clear_of_walls(cube_a)": 0.11938927654120679
         },
         "ok": false
       },
       {
         "seed": 1003,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": []
           },
           {
             "action": "HOLE[clear_of_walls(cube_a)]",
             "attempts": 1,
             "ok": true,
-            "detail": "clear_of_walls 0.80"
+            "detail": "clear_of_walls(cube_a) 0.86",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
           },
           {
             "action": "pick(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 114mm"
+            "detail": "cube z 115mm",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
           },
           {
             "action": "place(cube_a,src_a)",
-            "attempts": 2,
+            "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.84"
+            "detail": "in_region 0.81",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
           },
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 117mm"
+            "detail": "cube z 118mm",
+            "divergence": [
+              "in_region(cube_a,src_a)"
+            ]
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.95",
+            "divergence": [
+              "in_region(cube_a,src_a)"
+            ]
           }
         ],
-        "goal_met": true,
-        "cube_a_err_mm": 12.523028206020022,
-        "cube_b_err_mm": 1.8996746866575307,
+        "goal_met": false,
+        "cube_a_err_mm": 34.79210293584885,
+        "cube_b_err_mm": 6.074399007439534,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.841806634030644,
-          "in_region(cube_b,src_b)": 0.9764103411018247,
-          "in_region(cube_a,pocket)": 1.0797640559445654e-11,
-          "in_region(cube_b,mouth)": 7.993605777301127e-15,
-          "tcp_near(cube_a)": 0.13132219871816708,
-          "tcp_near(cube_b)": 0.8921373173365207,
-          "gripper_open()": 0.9996645148458516,
-          "clear_of_walls(cube_a)": 0.9999967140379994
+          "in_region(cube_a,src_a)": 0.12161560002072408,
+          "in_region(cube_b,src_b)": 0.9476732037163136,
+          "in_region(cube_a,pocket)": 2.796540776728307e-12,
+          "in_region(cube_b,mouth)": 3.4416913763379853e-15,
+          "tcp_near(cube_a)": 0.01931127822240164,
+          "tcp_near(cube_b)": 0.9836309879403078,
+          "gripper_open()": 0.9820092035571808,
+          "clear_of_walls(cube_a)": 0.9999982273593417
         },
-        "ok": true
+        "ok": false
       },
       {
         "seed": 1004,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
             "action": "approach(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "seated"
+            "detail": "seated",
+            "divergence": []
           },
           {
             "action": "HOLE[clear_of_walls(cube_a)]",
             "attempts": 1,
             "ok": true,
-            "detail": "clear_of_walls 0.87"
+            "detail": "clear_of_walls(cube_a) 0.87",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
           },
           {
             "action": "pick(cube_a)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 116mm"
+            "detail": "cube z 116mm",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
           },
           {
             "action": "place(cube_a,src_a)",
             "attempts": 3,
             "ok": false,
-            "detail": "in_region 0.01"
+            "detail": "in_region 0.00",
+            "divergence": [
+              "in_region(cube_a,src_a)",
+              "in_region(cube_b,mouth)",
+              "tcp_near(cube_a)"
+            ]
           }
         ],
         "goal_met": false,
-        "cube_a_err_mm": 45.36100067856997,
-        "cube_b_err_mm": 165.08124874953492,
+        "cube_a_err_mm": 72.49353142531825,
+        "cube_b_err_mm": 141.94191257580408,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.007131003672382563,
-          "in_region(cube_b,src_b)": 5.304645611658998e-13,
-          "in_region(cube_a,pocket)": 5.446043713608351e-06,
-          "in_region(cube_b,mouth)": 0.004538769688630928,
-          "tcp_near(cube_a)": 0.4692544745039983,
-          "tcp_near(cube_b)": 0.2033095766458648,
-          "gripper_open()": 0.9996644003849324,
-          "clear_of_walls(cube_a)": 0.9976717511686238
+          "in_region(cube_a,src_a)": 3.096076540198833e-05,
+          "in_region(cube_b,src_b)": 1.0338002676135716e-10,
+          "in_region(cube_a,pocket)": 0.0012617367494993648,
+          "in_region(cube_b,mouth)": 1.4402196865659356e-06,
+          "tcp_near(cube_a)": 0.06331485351909844,
+          "tcp_near(cube_b)": 0.057462259158027884,
+          "gripper_open()": 0.9820006455863329,
+          "clear_of_walls(cube_a)": 0.9656766066921059
         },
         "ok": false
+      },
+      {
+        "seed": 1005,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "HOLE[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.88",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 116mm",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 3,
+            "ok": false,
+            "detail": "in_region 0.47",
+            "divergence": [
+              "in_region(cube_a,src_a)",
+              "in_region(cube_b,mouth)"
+            ]
+          }
+        ],
+        "goal_met": false,
+        "cube_a_err_mm": 20.789487365156624,
+        "cube_b_err_mm": 150.1116322206347,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 0.46761414486029906,
+          "in_region(cube_b,src_b)": 6.0171867488634234e-12,
+          "in_region(cube_a,pocket)": 7.531419932149674e-12,
+          "in_region(cube_b,mouth)": 0.0351171476279854,
+          "tcp_near(cube_a)": 0.905728586968467,
+          "tcp_near(cube_b)": 0.5783538154547713,
+          "gripper_open()": 0.9820066234205422,
+          "clear_of_walls(cube_a)": 0.9999972556632702
+        },
+        "ok": false
+      },
+      {
+        "seed": 1006,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "HOLE[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.84",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 115mm",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 3,
+            "ok": false,
+            "detail": "in_region 0.01",
+            "divergence": [
+              "in_region(cube_a,src_a)",
+              "tcp_near(cube_a)"
+            ]
+          }
+        ],
+        "goal_met": false,
+        "cube_a_err_mm": 45.18791048572788,
+        "cube_b_err_mm": 181.24556324749005,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 0.0070640440902640655,
+          "in_region(cube_b,src_b)": 9.992007221626409e-15,
+          "in_region(cube_a,pocket)": 1.2742647909624871e-06,
+          "in_region(cube_b,mouth)": 0.9620537379765961,
+          "tcp_near(cube_a)": 0.7601682904830149,
+          "tcp_near(cube_b)": 0.0642186360637158,
+          "gripper_open()": 0.982000092472322,
+          "clear_of_walls(cube_a)": 0.9988724383818472
+        },
+        "ok": false
+      },
+      {
+        "seed": 1007,
+        "forward_rerolls": 1,
+        "steps": [
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "HOLE[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.87",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 116mm",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 3,
+            "ok": false,
+            "detail": "in_region 0.00",
+            "divergence": [
+              "in_region(cube_a,src_a)",
+              "in_region(cube_b,mouth)",
+              "tcp_near(cube_a)"
+            ]
+          }
+        ],
+        "goal_met": false,
+        "cube_a_err_mm": 59.331291465727396,
+        "cube_b_err_mm": 66.24718771150064,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 0.0004151096715436786,
+          "in_region(cube_b,src_b)": 0.00028766466947638403,
+          "in_region(cube_a,pocket)": 3.236004268059034e-05,
+          "in_region(cube_b,mouth)": 7.150748326800738e-10,
+          "tcp_near(cube_a)": 0.3090021038246568,
+          "tcp_near(cube_b)": 0.35396285929720694,
+          "gripper_open()": 0.982000487555461,
+          "clear_of_walls(cube_a)": 0.9943434975180603
+        },
+        "ok": false
+      },
+      {
+        "seed": 1008,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "HOLE[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.87",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.92",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 116mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          }
+        ],
+        "goal_met": true,
+        "cube_a_err_mm": 8.100301012989034,
+        "cube_b_err_mm": 1.2409677926144747,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 0.9172898503520626,
+          "in_region(cube_b,src_b)": 0.9770941707660061,
+          "in_region(cube_a,pocket)": 7.308708638298356e-10,
+          "in_region(cube_b,mouth)": 3.1086244689504383e-15,
+          "tcp_near(cube_a)": 0.0016316498607265584,
+          "tcp_near(cube_b)": 0.9851026096995128,
+          "gripper_open()": 0.9820067287393521,
+          "clear_of_walls(cube_a)": 0.9999729661181478
+        },
+        "ok": true
+      },
+      {
+        "seed": 1009,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "HOLE[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.88",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.94",
+            "divergence": [
+              "in_region(cube_b,mouth)"
+            ]
+          },
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 116mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          }
+        ],
+        "goal_met": true,
+        "cube_a_err_mm": 5.176659781787383,
+        "cube_b_err_mm": 1.1956092297708338,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 0.9518236704081264,
+          "in_region(cube_b,src_b)": 0.9775509915361358,
+          "in_region(cube_a,pocket)": 6.430441734650572e-10,
+          "in_region(cube_b,mouth)": 4.385380947269368e-15,
+          "tcp_near(cube_a)": 0.0019895595665754273,
+          "tcp_near(cube_b)": 0.9846904918008791,
+          "gripper_open()": 0.9820067287393521,
+          "clear_of_walls(cube_a)": 0.9999746423227431
+        },
+        "ok": true
       }
     ],
     "relearned": [
       {
         "seed": 1000,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
-          {
-            "action": "approach(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "seated"
-          },
-          {
-            "action": "drag(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "clear_of_walls 0.84"
-          },
-          {
-            "action": "pick(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "cube z 114mm"
-          },
-          {
-            "action": "place(cube_a,src_a)",
-            "attempts": 2,
-            "ok": true,
-            "detail": "in_region 0.89"
-          },
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 119mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.95"
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "LEARNED[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.89",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 9.71994414997227,
-        "cube_b_err_mm": 7.251424370929883,
+        "cube_a_err_mm": 1.0691477226418549,
+        "cube_b_err_mm": 0.2749812161601146,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.8869863488004961,
-          "in_region(cube_b,src_b)": 0.9465186834672257,
-          "in_region(cube_a,pocket)": 2.7916335909594636e-11,
-          "in_region(cube_b,mouth)": 3.0531133177191805e-15,
-          "tcp_near(cube_a)": 0.101395722200671,
-          "tcp_near(cube_b)": 0.8809089413734803,
-          "gripper_open()": 0.9996645183440422,
-          "clear_of_walls(cube_a)": 0.99999471643898
+          "in_region(cube_a,src_a)": 0.9780545392703068,
+          "in_region(cube_b,src_b)": 0.9812739835246418,
+          "in_region(cube_a,pocket)": 1.5852247292613697e-10,
+          "in_region(cube_b,mouth)": 7.827072323607354e-15,
+          "tcp_near(cube_a)": 0.9873326933490769,
+          "tcp_near(cube_b)": 0.012996426329178634,
+          "gripper_open()": 0.9820069920337291,
+          "clear_of_walls(cube_a)": 0.9999874095940151
         },
         "ok": true
       },
       {
         "seed": 1001,
-        "rounds": 1,
+        "forward_rerolls": 1,
         "steps": [
-          {
-            "action": "approach(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "seated"
-          },
-          {
-            "action": "drag(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "clear_of_walls 0.88"
-          },
-          {
-            "action": "pick(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "cube z 117mm"
-          },
-          {
-            "action": "place(cube_a,src_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "in_region 0.92"
-          },
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 126mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.93"
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "LEARNED[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.89",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 115mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 7.865108865406194,
-        "cube_b_err_mm": 8.820721737699337,
+        "cube_a_err_mm": 1.4212581508550177,
+        "cube_b_err_mm": 0.32087654104861324,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.9224185231973602,
-          "in_region(cube_b,src_b)": 0.9268421495085164,
-          "in_region(cube_a,pocket)": 1.0392203764197916e-09,
-          "in_region(cube_b,mouth)": 7.460698725481052e-14,
-          "tcp_near(cube_a)": 0.05912656310027564,
-          "tcp_near(cube_b)": 0.8563799268621406,
-          "gripper_open()": 0.9996645168448222,
-          "clear_of_walls(cube_a)": 0.9999677640900472
+          "in_region(cube_a,src_a)": 0.976718748565875,
+          "in_region(cube_b,src_b)": 0.9810303009741321,
+          "in_region(cube_a,pocket)": 1.2308143393369164e-10,
+          "in_region(cube_b,mouth)": 2.3703261575747092e-14,
+          "tcp_near(cube_a)": 0.987603092213114,
+          "tcp_near(cube_b)": 0.02350490177379483,
+          "gripper_open()": 0.9820067287393521,
+          "clear_of_walls(cube_a)": 0.999988905915723
         },
         "ok": true
       },
       {
         "seed": 1002,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
           {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 107mm",
+            "divergence": [
+              "in_region(cube_a,pocket)"
+            ]
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.96",
+            "divergence": [
+              "clear_of_walls(cube_a)",
+              "in_region(cube_a,pocket)"
+            ]
+          },
+          {
             "action": "approach(cube_a)",
-            "attempts": 3,
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": [
+              "in_region(cube_a,pocket)"
+            ]
+          },
+          {
+            "action": "LEARNED[clear_of_walls(cube_a)]",
+            "attempts": 0,
             "ok": false,
-            "detail": "not seated on the cube"
+            "detail": "precondition not met: in_region(cube_a,pocket)",
+            "divergence": []
           }
         ],
         "goal_met": false,
-        "cube_a_err_mm": 135.1097798690539,
-        "cube_b_err_mm": 194.13491587013038,
+        "cube_a_err_mm": 102.36217325119023,
+        "cube_b_err_mm": 4.1950210586381615,
         "final_scores": {
-          "in_region(cube_a,src_a)": 1.074014766011544e-10,
-          "in_region(cube_b,src_b)": 7.216449660063518e-16,
-          "in_region(cube_a,pocket)": 0.9528867351444976,
-          "in_region(cube_b,mouth)": 0.9213667742244269,
-          "tcp_near(cube_a)": 0.04643684021864103,
-          "tcp_near(cube_b)": 0.06247951344199265,
-          "gripper_open()": 0.000335350130466483,
-          "clear_of_walls(cube_a)": 0.11938927654120679
+          "in_region(cube_a,src_a)": 7.650543670800758e-08,
+          "in_region(cube_b,src_b)": 0.9593666308777717,
+          "in_region(cube_a,pocket)": 0.07095634345277052,
+          "in_region(cube_b,mouth)": 1.4988010832439613e-15,
+          "tcp_near(cube_a)": 0.8712481163252463,
+          "tcp_near(cube_b)": 1.0214932005814248e-07,
+          "gripper_open()": 6.144174602207286e-06,
+          "clear_of_walls(cube_a)": 0.7834771005892672
         },
         "ok": false
       },
       {
         "seed": 1003,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
-          {
-            "action": "approach(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "seated"
-          },
-          {
-            "action": "drag(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "clear_of_walls 0.80"
-          },
-          {
-            "action": "pick(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "cube z 114mm"
-          },
-          {
-            "action": "place(cube_a,src_a)",
-            "attempts": 2,
-            "ok": true,
-            "detail": "in_region 0.84"
-          },
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 117mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "LEARNED[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.88",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 115mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.97",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 12.523028206020022,
-        "cube_b_err_mm": 1.8996746866575307,
+        "cube_a_err_mm": 2.3010024961820728,
+        "cube_b_err_mm": 0.08918812773013429,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.841806634030644,
-          "in_region(cube_b,src_b)": 0.9764103411018247,
-          "in_region(cube_a,pocket)": 1.0797640559445654e-11,
-          "in_region(cube_b,mouth)": 7.993605777301127e-15,
-          "tcp_near(cube_a)": 0.13132219871816708,
-          "tcp_near(cube_b)": 0.8921373173365207,
-          "gripper_open()": 0.9996645148458516,
-          "clear_of_walls(cube_a)": 0.9999967140379994
+          "in_region(cube_a,src_a)": 0.9746258342000437,
+          "in_region(cube_b,src_b)": 0.9817237531151028,
+          "in_region(cube_a,pocket)": 7.793815592904707e-11,
+          "in_region(cube_b,mouth)": 1.0436096431476471e-14,
+          "tcp_near(cube_a)": 0.9874169779569955,
+          "tcp_near(cube_b)": 0.019438992379893272,
+          "gripper_open()": 0.9820075186111367,
+          "clear_of_walls(cube_a)": 0.9999911718203117
         },
         "ok": true
       },
       {
         "seed": 1004,
-        "rounds": 1,
+        "forward_rerolls": 0,
         "steps": [
-          {
-            "action": "approach(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "seated"
-          },
-          {
-            "action": "drag(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "clear_of_walls 0.87"
-          },
-          {
-            "action": "pick(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "cube z 116mm"
-          },
-          {
-            "action": "place(cube_a,src_a)",
-            "attempts": 3,
-            "ok": false,
-            "detail": "in_region 0.01"
-          }
-        ],
-        "goal_met": false,
-        "cube_a_err_mm": 45.36100067856997,
-        "cube_b_err_mm": 165.08124874953492,
-        "final_scores": {
-          "in_region(cube_a,src_a)": 0.007131003672382563,
-          "in_region(cube_b,src_b)": 5.304645611658998e-13,
-          "in_region(cube_a,pocket)": 5.446043713608351e-06,
-          "in_region(cube_b,mouth)": 0.004538769688630928,
-          "tcp_near(cube_a)": 0.4692544745039983,
-          "tcp_near(cube_b)": 0.2033095766458648,
-          "gripper_open()": 0.9996644003849324,
-          "clear_of_walls(cube_a)": 0.9976717511686238
-        },
-        "ok": false
-      }
-    ],
-    "relearned_replan": [
-      {
-        "seed": 1000,
-        "rounds": 1,
-        "steps": [
-          {
-            "action": "approach(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "seated"
-          },
-          {
-            "action": "drag(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "clear_of_walls 0.84"
-          },
-          {
-            "action": "pick(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "cube z 114mm"
-          },
-          {
-            "action": "place(cube_a,src_a)",
-            "attempts": 2,
-            "ok": true,
-            "detail": "in_region 0.89"
-          },
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 119mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.95"
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "LEARNED[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.88",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 117mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 9.71994414997227,
-        "cube_b_err_mm": 7.251424370929883,
+        "cube_a_err_mm": 1.552779999579235,
+        "cube_b_err_mm": 0.9159557002919214,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.8869863488004961,
-          "in_region(cube_b,src_b)": 0.9465186834672257,
-          "in_region(cube_a,pocket)": 2.7916335909594636e-11,
-          "in_region(cube_b,mouth)": 3.0531133177191805e-15,
-          "tcp_near(cube_a)": 0.101395722200671,
-          "tcp_near(cube_b)": 0.8809089413734803,
-          "gripper_open()": 0.9996645183440422,
-          "clear_of_walls(cube_a)": 0.99999471643898
+          "in_region(cube_a,src_a)": 0.9767856687787335,
+          "in_region(cube_b,src_b)": 0.9791509509838795,
+          "in_region(cube_a,pocket)": 9.296060587971056e-10,
+          "in_region(cube_b,mouth)": 5.88418203051333e-15,
+          "tcp_near(cube_a)": 0.9844013393206895,
+          "tcp_near(cube_b)": 0.005937724941743883,
+          "gripper_open()": 0.9820080978288119,
+          "clear_of_walls(cube_a)": 0.999969511485765
         },
         "ok": true
       },
       {
-        "seed": 1001,
-        "rounds": 1,
+        "seed": 1005,
+        "forward_rerolls": 0,
         "steps": [
-          {
-            "action": "approach(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "seated"
-          },
-          {
-            "action": "drag(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "clear_of_walls 0.88"
-          },
-          {
-            "action": "pick(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "cube z 117mm"
-          },
-          {
-            "action": "place(cube_a,src_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "in_region 0.92"
-          },
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 126mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.93"
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "LEARNED[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.87",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 115mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 7.865108865406194,
-        "cube_b_err_mm": 8.820721737699337,
+        "cube_a_err_mm": 1.7673207899428391,
+        "cube_b_err_mm": 0.11749981605742513,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.9224185231973602,
-          "in_region(cube_b,src_b)": 0.9268421495085164,
-          "in_region(cube_a,pocket)": 1.0392203764197916e-09,
-          "in_region(cube_b,mouth)": 7.460698725481052e-14,
-          "tcp_near(cube_a)": 0.05912656310027564,
-          "tcp_near(cube_b)": 0.8563799268621406,
-          "gripper_open()": 0.9996645168448222,
-          "clear_of_walls(cube_a)": 0.9999677640900472
+          "in_region(cube_a,src_a)": 0.9753907785205191,
+          "in_region(cube_b,src_b)": 0.9815982612170491,
+          "in_region(cube_a,pocket)": 4.031430744788622e-10,
+          "in_region(cube_b,mouth)": 4.107825191113079e-15,
+          "tcp_near(cube_a)": 0.9866963803333518,
+          "tcp_near(cube_b)": 0.006236407309379355,
+          "gripper_open()": 0.982007676581409,
+          "clear_of_walls(cube_a)": 0.9999799219813181
         },
         "ok": true
       },
       {
-        "seed": 1002,
-        "rounds": 3,
+        "seed": 1006,
+        "forward_rerolls": 0,
         "steps": [
-          {
-            "action": "approach(cube_a)",
-            "attempts": 3,
-            "ok": false,
-            "detail": "not seated on the cube"
-          }
-        ],
-        "goal_met": false,
-        "cube_a_err_mm": 135.1097798690539,
-        "cube_b_err_mm": 194.13491587013038,
-        "final_scores": {
-          "in_region(cube_a,src_a)": 1.074014766011544e-10,
-          "in_region(cube_b,src_b)": 7.216449660063518e-16,
-          "in_region(cube_a,pocket)": 0.9528867351444976,
-          "in_region(cube_b,mouth)": 0.9213667742244269,
-          "tcp_near(cube_a)": 0.04643665876565306,
-          "tcp_near(cube_b)": 0.06247927340927989,
-          "gripper_open()": 0.000335350130466483,
-          "clear_of_walls(cube_a)": 0.11938927654120679
-        },
-        "ok": false
-      },
-      {
-        "seed": 1003,
-        "rounds": 1,
-        "steps": [
-          {
-            "action": "approach(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "seated"
-          },
-          {
-            "action": "drag(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "clear_of_walls 0.80"
-          },
-          {
-            "action": "pick(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "cube z 114mm"
-          },
-          {
-            "action": "place(cube_a,src_a)",
-            "attempts": 2,
-            "ok": true,
-            "detail": "in_region 0.84"
-          },
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 117mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.98"
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "LEARNED[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.87",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 118mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 12.523028206020022,
-        "cube_b_err_mm": 1.8996746866575307,
+        "cube_a_err_mm": 0.580459170286094,
+        "cube_b_err_mm": 0.8819778987103776,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.841806634030644,
-          "in_region(cube_b,src_b)": 0.9764103411018247,
-          "in_region(cube_a,pocket)": 1.0797640559445654e-11,
-          "in_region(cube_b,mouth)": 7.993605777301127e-15,
-          "tcp_near(cube_a)": 0.13132219871816708,
-          "tcp_near(cube_b)": 0.8921373173365207,
-          "gripper_open()": 0.9996645148458516,
-          "clear_of_walls(cube_a)": 0.9999967140379994
+          "in_region(cube_a,src_a)": 0.9798876379692179,
+          "in_region(cube_b,src_b)": 0.9788876820467844,
+          "in_region(cube_a,pocket)": 1.4816659010818967e-10,
+          "in_region(cube_b,mouth)": 2.298161660974074e-14,
+          "tcp_near(cube_a)": 0.9863340397233271,
+          "tcp_near(cube_b)": 0.024227414664268643,
+          "gripper_open()": 0.9820091509049618,
+          "clear_of_walls(cube_a)": 0.9999878277823071
         },
         "ok": true
       },
       {
-        "seed": 1004,
-        "rounds": 2,
+        "seed": 1007,
+        "forward_rerolls": 1,
         "steps": [
-          {
-            "action": "pick(cube_a)",
-            "attempts": 1,
-            "ok": true,
-            "detail": "cube z 122mm"
-          },
-          {
-            "action": "place(cube_a,src_a)",
-            "attempts": 2,
-            "ok": true,
-            "detail": "in_region 0.96"
-          },
           {
             "action": "pick(cube_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "cube z 125mm"
+            "detail": "cube z 114mm",
+            "divergence": []
           },
           {
             "action": "place(cube_b,src_b)",
             "attempts": 1,
             "ok": true,
-            "detail": "in_region 0.95"
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "LEARNED[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.87",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 118mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
           }
         ],
         "goal_met": true,
-        "cube_a_err_mm": 8.808241315265017,
-        "cube_b_err_mm": 5.056797835694439,
+        "cube_a_err_mm": 1.6312273919854456,
+        "cube_b_err_mm": 0.8588657653027868,
         "final_scores": {
-          "in_region(cube_a,src_a)": 0.9133747184100843,
-          "in_region(cube_b,src_b)": 0.9524919697948755,
-          "in_region(cube_a,pocket)": 1.347605249613082e-09,
-          "in_region(cube_b,mouth)": 4.6074255521944e-15,
-          "tcp_near(cube_a)": 0.039461776873240595,
-          "tcp_near(cube_b)": 0.8790417539318274,
-          "gripper_open()": 0.9996645723115052,
-          "clear_of_walls(cube_a)": 0.9999632915997081
+          "in_region(cube_a,src_a)": 0.9764903933128322,
+          "in_region(cube_b,src_b)": 0.9792210139323185,
+          "in_region(cube_a,pocket)": 2.0601909067607949e-10,
+          "in_region(cube_b,mouth)": 4.9404924595819466e-15,
+          "tcp_near(cube_a)": 0.9866654036182484,
+          "tcp_near(cube_b)": 0.009287249268390085,
+          "gripper_open()": 0.9820078872063207,
+          "clear_of_walls(cube_a)": 0.9999856468383354
+        },
+        "ok": true
+      },
+      {
+        "seed": 1008,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "LEARNED[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.90",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          }
+        ],
+        "goal_met": true,
+        "cube_a_err_mm": 1.5441873687866174,
+        "cube_b_err_mm": 0.16607660996721835,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 0.9772745749683105,
+          "in_region(cube_b,src_b)": 0.9814183169656006,
+          "in_region(cube_a,pocket)": 1.1693301882331752e-10,
+          "in_region(cube_b,mouth)": 3.219646771412954e-15,
+          "tcp_near(cube_a)": 0.987395785285264,
+          "tcp_near(cube_b)": 0.009533290644106518,
+          "gripper_open()": 0.9820068340575567,
+          "clear_of_walls(cube_a)": 0.9999891865640944
+        },
+        "ok": true
+      },
+      {
+        "seed": 1009,
+        "forward_rerolls": 0,
+        "steps": [
+          {
+            "action": "pick(cube_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_b,src_b)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          },
+          {
+            "action": "approach(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "seated",
+            "divergence": []
+          },
+          {
+            "action": "LEARNED[clear_of_walls(cube_a)]",
+            "attempts": 1,
+            "ok": true,
+            "detail": "clear_of_walls(cube_a) 0.88",
+            "divergence": []
+          },
+          {
+            "action": "pick(cube_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "cube z 114mm",
+            "divergence": []
+          },
+          {
+            "action": "place(cube_a,src_a)",
+            "attempts": 1,
+            "ok": true,
+            "detail": "in_region 0.98",
+            "divergence": []
+          }
+        ],
+        "goal_met": true,
+        "cube_a_err_mm": 1.7686851320479107,
+        "cube_b_err_mm": 0.31664720175470906,
+        "final_scores": {
+          "in_region(cube_a,src_a)": 0.9768987022800775,
+          "in_region(cube_b,src_b)": 0.9809891601875246,
+          "in_region(cube_a,pocket)": 1.821972017701512e-10,
+          "in_region(cube_b,mouth)": 4.163336342344337e-15,
+          "tcp_near(cube_a)": 0.9873320707532903,
+          "tcp_near(cube_b)": 0.008832989354440324,
+          "gripper_open()": 0.9820068603870133,
+          "clear_of_walls(cube_a)": 0.9999865021384289
         },
         "ok": true
       }

@@ -160,13 +160,14 @@ def main() -> None:
         env.done = {i for i in range(len(plan)) if i < env.current}
         env.subtitle = _short(action) + (f"   retry {attempt - 1}" if attempt > 1 else "")
 
-    obs, report = ex.execute_plan(env, obs, plan, model=model, regions=env.regions,
+    obs, report = ex.execute_plan(env, obs, list(planned.steps), model=model, regions=env.regions,
+                                  goal=(goal_pos, goal_neg),
                                   on_action=announce)
     env.current, env.done = -1, set(range(len(plan)))
     env.title = "restored" if report.goal_met else "goal not met"
     env.subtitle = (f"A {report.cube_a_err_mm:.1f} mm from source, "
                     f"B {report.cube_b_err_mm:.1f} mm, "
-                    f"{sum(s.attempts - 1 for s in report.steps)} retries")
+                    f"{sum(max(s.attempts - 1, 0) for s in report.steps)} retries")
     env.hold(3.5, args.fps)
     env.close()
 

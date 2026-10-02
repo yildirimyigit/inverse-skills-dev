@@ -32,6 +32,7 @@
       ],
       "cost": [
         1,
+        0,
         2,
         1,
         6
@@ -42,20 +43,12 @@
       "hole_indices": [
         3
       ],
-      "expanded": 75,
-      "alternatives": [
-        [
-          "approach(cube_a)",
-          "HOLE[clear_of_walls(cube_a)]",
-          "pick(cube_a)",
-          "place(cube_a,src_a)",
-          "pick(cube_b)",
-          "place(cube_b,src_b)"
-        ]
-      ],
+      "expanded": 44,
+      "alternatives": [],
       "trace": [
         {
           "action": "pick(cube_b)",
+          "displaced": [],
           "is_hole": false,
           "requires": [],
           "requires_absent": [
@@ -85,6 +78,7 @@
         },
         {
           "action": "place(cube_b,src_b)",
+          "displaced": [],
           "is_hole": false,
           "requires": [
             "holding(cube_b)"
@@ -111,6 +105,7 @@
         },
         {
           "action": "approach(cube_a)",
+          "displaced": [],
           "is_hole": false,
           "requires": [],
           "requires_absent": [
@@ -138,6 +133,7 @@
         },
         {
           "action": "HOLE[clear_of_walls(cube_a)]",
+          "displaced": [],
           "is_hole": true,
           "requires": [
             "tcp_near(cube_a)"
@@ -161,6 +157,7 @@
         },
         {
           "action": "pick(cube_a)",
+          "displaced": [],
           "is_hole": false,
           "requires": [
             "clear_of_walls(cube_a)"
@@ -186,6 +183,7 @@
         },
         {
           "action": "place(cube_a,src_a)",
+          "displaced": [],
           "is_hole": false,
           "requires": [
             "holding(cube_a)"
@@ -218,22 +216,23 @@
       ],
       "unreachable_goal_literals": [],
       "hole_free_plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
         "approach(cube_a)",
         "drag(cube_a)",
         "pick(cube_a)",
-        "place(cube_a,src_a)",
-        "pick(cube_b)",
-        "place(cube_b,src_b)"
+        "place(cube_a,src_a)"
       ],
       "plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
         "approach(cube_a)",
         "drag(cube_a)",
         "pick(cube_a)",
-        "place(cube_a,src_a)",
-        "pick(cube_b)",
-        "place(cube_b,src_b)"
+        "place(cube_a,src_a)"
       ],
       "cost": [
+        0,
         0,
         0,
         0,
@@ -241,20 +240,69 @@
       ],
       "delegated": [],
       "hole_indices": [],
-      "expanded": 68,
-      "alternatives": [
-        [
-          "approach(cube_a)",
-          "drag(cube_a)",
-          "pick(cube_b)",
-          "place(cube_b,src_b)",
-          "pick(cube_a)",
-          "place(cube_a,src_a)"
-        ]
-      ],
+      "expanded": 44,
+      "alternatives": [],
       "trace": [
         {
+          "action": "pick(cube_b)",
+          "displaced": [],
+          "is_hole": false,
+          "requires": [],
+          "requires_absent": [
+            "holding(cube_a)",
+            "holding(cube_b)"
+          ],
+          "adds": [
+            "holding(cube_b)",
+            "tcp_near(cube_b)"
+          ],
+          "removes": [
+            "gripper_open()",
+            "in_region(cube_b,mouth)"
+          ],
+          "state_after": [
+            "holding(cube_b)",
+            "in_region(cube_a,pocket)",
+            "tcp_near(cube_b)"
+          ],
+          "goal_remaining": [
+            "clear_of_walls(cube_a)",
+            "gripper_open()",
+            "in_region(cube_a,pocket)",
+            "in_region(cube_a,src_a)",
+            "in_region(cube_b,src_b)"
+          ]
+        },
+        {
+          "action": "place(cube_b,src_b)",
+          "displaced": [],
+          "is_hole": false,
+          "requires": [
+            "holding(cube_b)"
+          ],
+          "requires_absent": [],
+          "adds": [
+            "gripper_open()",
+            "in_region(cube_b,src_b)"
+          ],
+          "removes": [
+            "holding(cube_b)"
+          ],
+          "state_after": [
+            "gripper_open()",
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_b)"
+          ],
+          "goal_remaining": [
+            "clear_of_walls(cube_a)",
+            "in_region(cube_a,pocket)",
+            "in_region(cube_a,src_a)"
+          ]
+        },
+        {
           "action": "approach(cube_a)",
+          "displaced": [],
           "is_hole": false,
           "requires": [],
           "requires_absent": [
@@ -265,24 +313,24 @@
             "tcp_near(cube_a)"
           ],
           "removes": [
-            "gripper_open()"
+            "gripper_open()",
+            "tcp_near(cube_b)"
           ],
           "state_after": [
             "in_region(cube_a,pocket)",
-            "in_region(cube_b,mouth)",
+            "in_region(cube_b,src_b)",
             "tcp_near(cube_a)"
           ],
           "goal_remaining": [
             "clear_of_walls(cube_a)",
             "gripper_open()",
             "in_region(cube_a,pocket)",
-            "in_region(cube_a,src_a)",
-            "in_region(cube_b,mouth)",
-            "in_region(cube_b,src_b)"
+            "in_region(cube_a,src_a)"
           ]
         },
         {
           "action": "drag(cube_a)",
+          "displaced": [],
           "is_hole": false,
           "requires": [
             "tcp_near(cube_a)"
@@ -296,18 +344,17 @@
           ],
           "state_after": [
             "clear_of_walls(cube_a)",
-            "in_region(cube_b,mouth)",
+            "in_region(cube_b,src_b)",
             "tcp_near(cube_a)"
           ],
           "goal_remaining": [
             "gripper_open()",
-            "in_region(cube_a,src_a)",
-            "in_region(cube_b,mouth)",
-            "in_region(cube_b,src_b)"
+            "in_region(cube_a,src_a)"
           ]
         },
         {
           "action": "pick(cube_a)",
+          "displaced": [],
           "is_hole": false,
           "requires": [
             "clear_of_walls(cube_a)"
@@ -323,18 +370,17 @@
           "state_after": [
             "clear_of_walls(cube_a)",
             "holding(cube_a)",
-            "in_region(cube_b,mouth)",
+            "in_region(cube_b,src_b)",
             "tcp_near(cube_a)"
           ],
           "goal_remaining": [
             "gripper_open()",
-            "in_region(cube_a,src_a)",
-            "in_region(cube_b,mouth)",
-            "in_region(cube_b,src_b)"
+            "in_region(cube_a,src_a)"
           ]
         },
         {
           "action": "place(cube_a,src_a)",
+          "displaced": [],
           "is_hole": false,
           "requires": [
             "holding(cube_a)"
@@ -351,62 +397,8 @@
             "clear_of_walls(cube_a)",
             "gripper_open()",
             "in_region(cube_a,src_a)",
-            "in_region(cube_b,mouth)",
-            "tcp_near(cube_a)"
-          ],
-          "goal_remaining": [
-            "in_region(cube_b,mouth)",
-            "in_region(cube_b,src_b)"
-          ]
-        },
-        {
-          "action": "pick(cube_b)",
-          "is_hole": false,
-          "requires": [],
-          "requires_absent": [
-            "holding(cube_a)",
-            "holding(cube_b)"
-          ],
-          "adds": [
-            "holding(cube_b)",
-            "tcp_near(cube_b)"
-          ],
-          "removes": [
-            "gripper_open()",
-            "in_region(cube_b,mouth)",
-            "tcp_near(cube_a)"
-          ],
-          "state_after": [
-            "clear_of_walls(cube_a)",
-            "holding(cube_b)",
-            "in_region(cube_a,src_a)",
-            "tcp_near(cube_b)"
-          ],
-          "goal_remaining": [
-            "gripper_open()",
-            "in_region(cube_b,src_b)"
-          ]
-        },
-        {
-          "action": "place(cube_b,src_b)",
-          "is_hole": false,
-          "requires": [
-            "holding(cube_b)"
-          ],
-          "requires_absent": [],
-          "adds": [
-            "gripper_open()",
-            "in_region(cube_b,src_b)"
-          ],
-          "removes": [
-            "holding(cube_b)"
-          ],
-          "state_after": [
-            "clear_of_walls(cube_a)",
-            "gripper_open()",
-            "in_region(cube_a,src_a)",
             "in_region(cube_b,src_b)",
-            "tcp_near(cube_b)"
+            "tcp_near(cube_a)"
           ],
           "goal_remaining": []
         }

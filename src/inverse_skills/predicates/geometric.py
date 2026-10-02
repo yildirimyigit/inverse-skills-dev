@@ -110,6 +110,7 @@ class TcpNearObjectPredicate(Predicate):
     distance_threshold: float = 0.05
     temperature: float = 0.04
     weight: float = 1.0
+    robot_relative = True
 
     @property
     def name(self) -> str:
@@ -134,6 +135,7 @@ class HoldingPredicate(Predicate):
     object_name: str
     temperature: float = 0.5
     weight: float = 1.0
+    robot_relative = True
 
     @property
     def name(self) -> str:

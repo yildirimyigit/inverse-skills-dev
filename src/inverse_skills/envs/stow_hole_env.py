@@ -1,82 +1,49 @@
-"""The hole as a gym environment: learn `clear_of_walls(cube_a)`, nothing else.
+"""A hole as a gym environment, built from the planner's hole spec.
 
-`reset()` runs everything the plan puts before the hole — the forward skill,
-then `pick(B)`, `place(B,src_b)`, `approach(A)` — and hands over at exactly the
-state the executive will hand over at. The policy is then responsible for one
-predicate.
+The spec (`hole_planner.hole_spec`, written by Stage 2) is the whole learning
+problem, and nothing about it is chosen here:
 
-Deliberately small, because the RL is the part most likely to fail:
+  achieve          the predicate the skill must establish — the reward's active term
+  preserve         literals the plan relies on across the hole — one-sided fences
+  preserve_absent  literals the plan needs to stay false — one-sided fences too
+  start            what must hold when the skill takes over — checked at handoff
+  prefix           the plan up to the hole — run by the executive in `reset()`
 
-  * 2D action (stroke along -x, press along -z). The gripper stays closed and
-    y is fixed: the Stage 0 sweep showed the whole skill is the balance
-    between stroke and press, and the drag's lateral drift never mattered.
-  * 4 observations, all predicate-grounded: the active predicate's margin over
-    its temperature, and the TCP's offset from the cube over the same scale.
-  * The reward is the framework's, with no additions — the active term is
-    2*V-1 for `clear_of_walls`, the fences are one-sided penalties on what the
-    prefix already established. The only number chosen here is the predicate's
-    temperature, which Stage 1 already fixed.
+so the episode starts in exactly the state the executive will hand over.
 
-A start-state curriculum widens the handoff from "fingertips on the cube" to
-the full hover, so the first episodes see reward gradient immediately.
+Deliberately small, because the RL is the part most likely to fail: a 2D
+action and a 4D observation (`stow_skill_io`), and the framework's reward with
+no additions. Episodes run a fixed horizon: the active reward is positive once
+the predicate holds, so ending on success would make stalling just short of it
+the optimal policy.
+
+A start-state curriculum loosens the handoff from a firm seat on the object to
+a light touch, so the first episodes see reward gradient immediately.
 """
 
 from __future__ import annotations
+
+import json
+from pathlib import Path
 
 import gymnasium as gym
 import numpy as np
 import torch
 from gymnasium import spaces
 
-from inverse_skills.envs import stow_cube as geo
 from inverse_skills.envs import stow_predicates as sp
 from inverse_skills.envs import stow_primitives as prim
+from inverse_skills.envs import stow_skill_io as skill_io
+from inverse_skills.envs.stow_executive import SATISFIED, execute_plan
+from inverse_skills.operators.hole_planner import Action
 
 MAX_STEPS = 40
-POSTCONDITION_THRESHOLD = 0.8      # the executive's "done" test, = the fence threshold
-FENCE_THRESHOLD = 0.8
-
-_ACTION_STROKE = 0.3               # max per-step stroke command, from the Stage 0 sweep
-_ACTION_PRESS = 0.15               # max per-step press command
-# The episode starts seated on the cube, because `approach` leaves it there.
+# The episode starts seated on the object, because `approach` leaves it there.
 # The curriculum varies how firmly: a deep press target gives a large PD error
 # and a strong grip, a shallow one barely bites.
 _SEAT_FIRM = 0.02
 _SEAT_LIGHT = 0.005
-_PREFIX_TOLERANCE = 0.02           # B must land within this of src_b for a valid handoff
-_SEATED_XY = 0.012                 # the fingertips are over the cube, not beside it
-_SEATED_Z = 0.004                  # and resting on its top face, not on the pocket walls
 _MAX_PREFIX_ATTEMPTS = 5
-
-# The fence: what the prefix established and the hole must not break. `tcp_near`
-# is the hole's precondition, not a fence — the fingers press on the cube all
-# episode, so its score sits near the 0.8 threshold and would add noise to the
-# reward for a predicate the policy cannot usefully trade against. The executive
-# re-checks it before a retry instead.
-_FENCES = ("in_region(cube_b,src_b)",)
-_ACTIVE = "clear_of_walls(cube_a)"
-
-
-def policy_observation(obs) -> np.ndarray:
-    """The 4-vector the hole policy sees, from a raw ManiSkill observation.
-
-    Shared with the executive so the deployed policy sees exactly what it was
-    trained on.
-    """
-    cube = prim.cube_pos(obs, "cube_a")
-    tcp = prim.tcp_pos(obs)
-    return np.array([
-        (geo.X_CLEAR - float(cube[0])) / sp._CLEAR_TEMP,
-        (tcp[0] - cube[0]) / geo.CUBE_HALF,
-        (tcp[1] - cube[1]) / geo.CUBE_HALF,
-        (tcp[2] - cube[2]) / geo.CUBE_HALF,
-    ], dtype=np.float32)
-
-
-def policy_command(action) -> np.ndarray:
-    """Map the 2D policy action to the arm's 4D delta command."""
-    a = np.asarray(action, dtype=np.float32).reshape(-1)
-    return np.array([a[0] * _ACTION_STROKE, 0.0, a[1] * _ACTION_PRESS, -1.0], dtype=np.float32)
 
 
 class StowHoleEnv(gym.Env):
@@ -84,14 +51,21 @@ class StowHoleEnv(gym.Env):
 
     metadata = {"render_modes": []}
 
-    def __init__(self, max_steps: int = MAX_STEPS, curriculum: float = 0.0,
+    def __init__(self, spec: dict, max_steps: int = MAX_STEPS, curriculum: float = 0.0,
                  seed_pool: tuple[int, ...] = tuple(range(32)),
                  render_mode: str | None = None):
         super().__init__()
         self._env = prim.make_env(render_mode=render_mode)
         self.registry = sp.registry()
+        self.spec = spec
+        self.achieve = spec["achieve"]
+        self.object = spec["object"]
+        self._achieve = self.registry.get(self.achieve)
+        self._prefix = [Action.from_dict(a) for a in spec["prefix"]]
+        if any(a.hole_for for a in self._prefix):
+            raise ValueError("the prefix contains another hole; learn that one first")
         self.max_steps = max_steps
-        self.curriculum = float(curriculum)     # 0 = fingertips on the cube, 1 = full hover
+        self.curriculum = float(curriculum)     # 0 = firm seat, 1 = light touch
         # Episodes draw from a fixed pool so the cached handoffs stay bounded.
         self.seed_pool = tuple(seed_pool)
         self.action_space = spaces.Box(low=-1.0, high=1.0, shape=(2,), dtype=np.float32)
@@ -100,31 +74,50 @@ class StowHoleEnv(gym.Env):
         self._obs = None
         self._regions = None
         self._steps = 0
-        # The prefix costs ~0.35 s of simulation and is deterministic per seed,
+        self._first_satisfied: int | None = None
+        # The prefix costs ~0.4 s of simulation and is deterministic per seed,
         # so each seed's handoff is simulated once and restored thereafter.
         self._handoffs: dict[int, tuple] = {}
 
-    # -- prefix ---------------------------------------------------------------
+    # -- handoff --------------------------------------------------------------
 
     def set_curriculum(self, value: float) -> None:
         self.curriculum = float(np.clip(value, 0.0, 1.0))
 
     def _run_prefix(self, seed: int):
-        """Everything the plan puts before the hole, with the handoff checked."""
+        """The forward skill, then the plan up to the hole, checked step by step."""
         obs = prim.reset(self._env, seed)
         self._regions = prim.regions(obs)
         obs = prim.forward_stow(self._env, obs)
-        obs = prim.pick(self._env, obs, "cube_b")
-        obs = prim.place(self._env, obs, "cube_b", prim.src_pos(obs, "cube_b"))
-        b_error = float(np.linalg.norm(
-            prim.cube_pos(obs, "cube_b")[:2] - prim.src_pos(obs, "cube_b")[:2]))
-        obs = prim.approach(self._env, obs, "cube_a")
-        return obs, b_error
+        obs, report = execute_plan(self._env, obs, self._prefix, regions=self._regions)
+        prefix_ok = len(report.steps) == len(self._prefix) and all(s.ok for s in report.steps)
+        return obs, prefix_ok
+
+    def _handoff(self, episode_seed: int) -> tuple:
+        """The cached post-prefix simulator state for this seed, computed once.
+
+        A handoff is valid when every prefix step met its postcondition and the
+        hole's start literals hold as measured. Invalid ones are re-rolled with a
+        fresh scene: a prefix that failed is the executive's problem, not
+        something the policy should be asked to learn from.
+        """
+        if episode_seed not in self._handoffs:
+            attempts, valid = 0, False
+            for attempt in range(_MAX_PREFIX_ATTEMPTS):
+                attempts = attempt + 1
+                obs, prefix_ok = self._run_prefix(episode_seed + attempt * 10_000)
+                scores = self._scores(obs)
+                valid = prefix_ok and all(scores[p] >= SATISFIED for p in self.spec["start"])
+                if valid:
+                    break
+            state = self._env.unwrapped.get_state_dict()
+            self._handoffs[episode_seed] = (state, self._regions, attempts, valid)
+        return self._handoffs[episode_seed]
 
     def _descend_to_start(self, obs):
-        """Seat the fingertips on the cube, as firmly as the curriculum says."""
+        """Seat the fingertips on the object, as firmly as the curriculum says."""
         depth = _SEAT_FIRM + self.curriculum * (_SEAT_LIGHT - _SEAT_FIRM)
-        return prim.seat_on(self._env, obs, "cube_a", depth=depth)
+        return prim.seat_on(self._env, obs, self.object, depth=depth)
 
     # -- scoring --------------------------------------------------------------
 
@@ -132,51 +125,23 @@ class StowHoleEnv(gym.Env):
         scene = prim.obs_to_scene(obs, self._regions)
         return {k: float(r.score) for k, r in self.registry.evaluate_all(scene).items()}
 
-    def _observation(self, obs, scores) -> np.ndarray:
-        return policy_observation(obs)
+    def _observation(self, obs) -> np.ndarray:
+        return skill_io.observe(obs, self._regions, self._achieve, self.object)
 
     def _reward(self, scores) -> float:
         """Active term plus one-sided fences — the framework's signed scores."""
-        reward = 2.0 * scores[_ACTIVE] - 1.0
-        for key in _FENCES:
+        reward = 2.0 * scores[self.achieve] - 1.0
+        for key in self.spec["preserve"]:
             reward += min(0.0, 2.0 * scores[key] - 1.0)
+        for key in self.spec["preserve_absent"]:
+            reward += min(0.0, 1.0 - 2.0 * scores[key])
         return float(reward)
 
+    def _fences_held(self, scores) -> bool:
+        return (all(scores[k] >= SATISFIED for k in self.spec["preserve"])
+                and all(scores[k] < SATISFIED for k in self.spec["preserve_absent"]))
+
     # -- gym API --------------------------------------------------------------
-
-    def _seated_on_cube(self, obs) -> bool:
-        """Is the gripper actually resting on A's top face?
-
-        A distance test is not enough: when A ends flush against the back wall,
-        or the stow under-pushes it, the hand comes down on the 6 cm pocket
-        walls instead. That sits ~10 mm from the cube — close enough to score
-        well on `tcp_near`, but there is nothing under the fingers to drag.
-        """
-        cube = prim.cube_pos(obs, "cube_a")
-        tcp = prim.tcp_pos(obs)
-        contact_z = cube[2] + geo.CUBE_HALF + prim._FINGERTIP_OFFSET
-        return (abs(tcp[0] - cube[0]) <= _SEATED_XY
-                and abs(tcp[1] - cube[1]) <= _SEATED_XY
-                and tcp[2] <= contact_z + _SEATED_Z)
-
-    def _handoff(self, episode_seed: int) -> tuple:
-        """The cached post-prefix simulator state for this seed, computed once.
-
-        Invalid handoffs are re-rolled with a fresh scene, as the paper's
-        PushCube pipeline does: a prefix that failed is the executive's problem,
-        not something the policy should be asked to learn from.
-        """
-        if episode_seed not in self._handoffs:
-            attempts = 0
-            for attempt in range(_MAX_PREFIX_ATTEMPTS):
-                attempts = attempt + 1
-                obs, b_error = self._run_prefix(episode_seed + attempt * 10_000)
-                valid = b_error <= _PREFIX_TOLERANCE and self._seated_on_cube(obs)
-                if valid:
-                    break
-            state = self._env.unwrapped.get_state_dict()
-            self._handoffs[episode_seed] = (state, self._regions, b_error, attempts, valid)
-        return self._handoffs[episode_seed]
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
@@ -184,43 +149,42 @@ class StowHoleEnv(gym.Env):
             episode_seed = int(seed)
         else:
             episode_seed = int(self.np_random.choice(self.seed_pool))
-        state, regions, b_error, attempts, valid = self._handoff(episode_seed)
+        state, regions, attempts, valid = self._handoff(episode_seed)
         self._env.unwrapped.set_state_dict(state)
         self._regions = regions
         obs = self._descend_to_start(self._env.unwrapped.get_obs())
         self._obs = obs
         self._steps = 0
-        self._first_satisfied: int | None = None
+        self._first_satisfied = None
         scores = self._scores(obs)
-        info = {"prefix_attempts": attempts, "b_error": b_error,
-                "curriculum": self.curriculum, "scores": scores,
-                "handoff_valid": bool(valid and scores[_ACTIVE] < POSTCONDITION_THRESHOLD)}
-        return self._observation(obs, scores), info
+        info = {"prefix_attempts": attempts, "curriculum": self.curriculum, "scores": scores,
+                "handoff_valid": bool(valid and scores[self.achieve] < SATISFIED)}
+        return self._observation(obs), info
 
     def step(self, action):
-        self._obs, *_ = self._env.step(torch.tensor(policy_command(action)))
+        self._obs, *_ = self._env.step(torch.tensor(skill_io.command(action)))
         self._steps += 1
 
         scores = self._scores(self._obs)
-        reward = self._reward(scores)
-        satisfied = scores[_ACTIVE] >= POSTCONDITION_THRESHOLD
+        satisfied = scores[self.achieve] >= SATISFIED
         if satisfied and self._first_satisfied is None:
             self._first_satisfied = self._steps
-        # The episode is never cut short on success. The active reward is
-        # positive once the predicate holds, so terminating there would end the
-        # reward stream and make stalling just below the threshold the optimal
-        # policy — which is exactly what the first two training runs learned.
-        # The executive stops the operator when its postcondition holds; the
+        # The episode is never cut short on success: see the module docstring.
+        # The executive stops the skill when its postcondition holds; the
         # training horizon is a separate matter.
         truncated = self._steps >= self.max_steps
         info = {
             "scores": scores,
             "postcondition": satisfied,
             "first_satisfied_step": self._first_satisfied,
-            "cube_a_x": float(prim.cube_pos(self._obs, "cube_a")[0]),
-            "fences_held": all(scores[k] >= FENCE_THRESHOLD for k in _FENCES),
+            "object_x": float(prim.cube_pos(self._obs, self.object)[0]),
+            "fences_held": self._fences_held(scores),
         }
-        return self._observation(self._obs, scores), reward, False, truncated, info
+        return self._observation(self._obs), self._reward(scores), False, truncated, info
 
     def close(self):
         self._env.close()
+
+
+def load_spec(path) -> dict:
+    return json.loads(Path(path).read_text())

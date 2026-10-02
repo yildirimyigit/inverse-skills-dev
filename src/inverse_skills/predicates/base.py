@@ -55,6 +55,10 @@ class Predicate(ABC):
     name: str
     args: tuple[str, ...]
     weight: float
+    # Whether the predicate relates the robot to the object named in its first
+    # argument. A planner reads this to decide where a skill acting on that
+    # object can start; it is a property of the vocabulary, not of any task.
+    robot_relative = False
 
     @property
     def key(self) -> str:
@@ -71,6 +75,9 @@ class PredicateRegistry:
 
     def keys(self) -> list[str]:
         return sorted(self._predicates.keys())
+
+    def robot_relative_keys(self) -> list[str]:
+        return sorted(k for k, p in self._predicates.items() if p.robot_relative)
 
     def get(self, key: str) -> Predicate:
         try:

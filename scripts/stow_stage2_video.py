@@ -140,7 +140,7 @@ def main() -> None:
 
     rec = Recorder(env, steps)
     rec.phase = "stowed: the state the forward skill left"
-    rec.note = f"planner: {result.cost[0]} predicate delegated, {result.cost[3]} steps"
+    rec.note = f"planner: {result.cost[0]} predicate delegated, {result.cost[4]} steps"
     rec.hold(2.0, args.fps)
     rec.note = None
 
@@ -176,18 +176,18 @@ def main() -> None:
     raw = rec.last_raw
     rec.close()
 
-    alt = result.alternatives[0] if result.alternatives else ()
+    delegated, collateral, literals, holes, length = result.cost
     card = _card(raw, [
         ("planning with an incomplete library", (245, 245, 245), 0.55),
         ("", _PENDING, 0.45),
-        (f"cost = {result.cost[0]} predicate delegated, {result.cost[1]} literals,", _PENDING, 0.45),
-        (f"       {result.cost[2]} hole, {result.cost[3]} steps", _PENDING, 0.45),
+        (f"cost = {delegated} predicate delegated, {collateral} displaced,", _PENDING, 0.45),
+        (f"       {literals} literals, {holes} hole, {length} steps", _PENDING, 0.45),
         (f"hole at step {result.hole_indices[0] + 1} of {len(steps)}: mid-plan, not last",
          _HOLE, 0.48),
         ("", _PENDING, 0.45),
         ("library only, no holes:  NO PLAN", _FAIL, 0.48),
-        ("same cost, rejected by the late-hole rule:", _PENDING, 0.42),
-        ("   " + _short(" -> ".join(alt[:2])) + " ...", _PENDING, 0.42),
+        ("hole-first would displace B from the mouth:", _PENDING, 0.42),
+        ("   rejected for collateral, not by a tie-break", _PENDING, 0.42),
     ])
     rec.frames.extend([card] * int(4 * args.fps))
 

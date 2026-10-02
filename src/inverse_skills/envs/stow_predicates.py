@@ -30,7 +30,15 @@ CUBE_B = "cube_b"
 _SLOT_TEMP = 0.01          # slot scores saturate a centimetre inside the region
 _CLEAR_TEMP = 0.02         # clear_of_walls ramps over the 7.5 cm the drag covers
 _TCP_NEAR_THRESHOLD = 0.05
-_TCP_NEAR_TEMP = 0.04
+# Calibrated to the state `approach` actually produces: seated on a cube the TCP
+# sits 30.6–32.0 mm from its centre, which scores 0.86 at this temperature but
+# only 0.72 at 40 mm — below the 0.8 at which the planner counts it as holding.
+_TCP_NEAR_TEMP = 0.02
+# Open means wider than any cube in the scene. Holding a 4 cm cube leaves the
+# fingers 36-37 mm apart (measured), which the 40 mm default scored 0.34 — close
+# enough to the threshold that a slightly rotated grasp read as "open".
+# Fully open is 80 mm.
+_GRIPPER_OPEN_WIDTH = 0.06
 
 
 @dataclass(frozen=True)
@@ -71,6 +79,6 @@ def registry() -> PredicateRegistry:
                                temperature=_TCP_NEAR_TEMP),
         TcpNearObjectPredicate(CUBE_B, distance_threshold=_TCP_NEAR_THRESHOLD,
                                temperature=_TCP_NEAR_TEMP),
-        GripperOpenPredicate(),
+        GripperOpenPredicate(min_width=_GRIPPER_OPEN_WIDTH),
         ClearOfWallsPredicate(CUBE_A),
     ])
