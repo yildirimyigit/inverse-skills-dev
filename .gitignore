@@ -29,6 +29,18 @@ artifacts/stow/stage3/1790788534/*
 !artifacts/stow/stage3/1790788534/sac_hole_best.zip
 !artifacts/stow/stage3/1790788534/summary.json
 !artifacts/stow/stage3/1790788534/precondition.json
+# Drawer: the small JSON results (gate, operator, plan, hole spec) are tracked;
+# videos and RL runs are not, except the selected Stage 3 pilot policy (3 MB)
+# with its configuration, summary and evaluation.
+!artifacts/drawer/
+artifacts/drawer/*
+!artifacts/drawer/*.json
+!artifacts/drawer/stage3/
+artifacts/drawer/stage3/*
+!artifacts/drawer/stage3/1792053076/
+artifacts/drawer/stage3/1792053076/*
+!artifacts/drawer/stage3/1792053076/sac_hole_best.zip
+!artifacts/drawer/stage3/1792053076/*.json
 checkpoints/
 logs/
 wandb/
