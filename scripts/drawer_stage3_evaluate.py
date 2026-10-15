@@ -27,13 +27,6 @@ torch.set_num_threads(1)
 TEST_SEEDS = tuple(range(1000, 1020))
 
 
-def tilt_deg(obs) -> float:
-    """Angle between the fingers' pointing direction and straight down."""
-    _, x, y, _ = obs["extra"]["tcp_pose"].squeeze()[3:7].cpu().numpy()   # quaternion w, x, y, z
-    cos_tilt = 2 * (x * x + y * y) - 1   # from the TCP's z-axis, which points along the fingers
-    return round(float(np.degrees(np.arccos(np.clip(cos_tilt, -1.0, 1.0)))), 1)
-
-
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("run_dir", type=Path)
@@ -54,7 +47,7 @@ def main() -> None:
             "grasped": bool(info["postcondition"]),
             "steps": step,
             "opening_at_stop_mm": round(prim.opening(env._obs) * 1000, 1),
-            "tilt_at_stop_deg": tilt_deg(env._obs),
+            "tilt_at_stop_deg": prim.tilt_deg(env._obs),
         }
         after = prim.pull_open(env._env, env._obs)
         episode["pulled_opening_mm"] = round(prim.opening(after) * 1000, 1)

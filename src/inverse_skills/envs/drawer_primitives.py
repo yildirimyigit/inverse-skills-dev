@@ -76,6 +76,13 @@ def gripper_width(obs) -> float:
     return float(qpos[-2] + qpos[-1])
 
 
+def tilt_deg(obs) -> float:
+    """Angle between the fingers' pointing direction and straight down."""
+    _, x, y, _ = obs["extra"]["tcp_pose"].squeeze()[3:7].cpu().numpy()   # quaternion w, x, y, z
+    cos_tilt = 2 * (x * x + y * y) - 1   # from the TCP's z-axis, which points along the fingers
+    return round(float(np.degrees(np.arccos(np.clip(cos_tilt, -1.0, 1.0)))), 1)
+
+
 def obs_to_scene(obs, timestep: int = 0) -> SceneGraph:
     qpos = obs["agent"]["qpos"].squeeze().cpu().numpy()
     tcp = tcp_pos(obs).astype(np.float32)
