@@ -2,9 +2,10 @@
 
 The scripted motions follow the PushCube pipeline scripts step for step
 (`scripts/planrob_pushcube_symbolic_pipeline.py`, `_execute_pick`,
-`_execute_place`, `_forward_demo`). The two stepping helpers are copied from
-`scripts/planrob_inverse_rl_pushcube_demo.py` because the scripts are not an
-importable package.
+`_execute_place`, `_forward_demo`). The gripper motions that know nothing about
+cubes (stepping, reset, lift, retreat) live in `motion.py`, shared with the
+other environments; this module re-exports them, so callers keep writing
+``prim.step_toward(...)``.
 
 Every primitive takes and returns the ManiSkill observation dict so calls
 chain: ``obs = pick(env, obs, "cube_a")``.
@@ -17,14 +18,16 @@ import numpy as np
 import torch
 
 from inverse_skills.core import ObjectState, Pose, Region, RobotState, SceneGraph
+from inverse_skills.envs import motion
 from inverse_skills.envs import stow_cube as geo
+from inverse_skills.envs.motion import lift, step_in_place, step_toward, tcp_pos
+
+# Not used in this module; re-exported so callers keep writing prim.reset(...).
+reset = motion.reset
 
 CUBE_NAMES = ("cube_a", "cube_b")
 _IDENTITY_QUAT = np.array([0.0, 0.0, 0.0, 1.0], dtype=np.float32)
 
-_UNIT_TRAVEL = 0.04        # a unit pd_ee_delta_pos action moves the TCP about this far in one step
-_STALL_TRAVEL = 0.0003     # a step moving less than this counts as no progress
-_STALL_STEPS = 3           # consecutive no-progress steps that end a motion
 _SAFE_Z = 0.12             # travel height: clear of the 6 cm walls and of a held cube
 _PUSH_SCALE = 0.2          # action scaling during pushes, as in the PushCube scripts
 _PUSH_STANDOFF = 0.02      # TCP target sits 1 cm past where the cube seats: the wall (or A) stops
@@ -49,54 +52,7 @@ def make_env(max_episode_steps: int = 3000, render_mode: str | None = None):
     )
 
 
-# ── stepping helpers (copied from the PushCube demo script) ─────────────────
-
-
-def step_toward(env, obs, target_xyz, n_steps: int, tol: float, gripper_cmd: float,
-                scale: float = 1.0):
-    """Move the EEF toward target with optional action scaling; early-exits at tol.
-
-    Unlike the PushCube helper this one is proportional inside the last
-    `_UNIT_TRAVEL`: a full-magnitude command near the target overshoots a
-    tight tolerance and the arm twitches back and forth until it lands.
-
-    It also stops once the TCP has stopped making progress, which happens
-    either because an object blocks it (a push whose cube is already seated
-    against the wall) or because the joint controller has settled at its
-    steady-state error. Without this the loop keeps commanding a target it
-    cannot reach and the arm visibly strains in place.
-    """
-    target_xyz = np.asarray(target_xyz, dtype=np.float64)
-    stalled = 0
-    for _ in range(n_steps):
-        tcp = tcp_pos(obs)
-        delta = (target_xyz - tcp).astype(np.float64)
-        norm = float(np.linalg.norm(delta))
-        if norm < tol:
-            break
-        action = np.zeros(4, dtype=np.float32)
-        action[:3] = (np.clip(delta / _UNIT_TRAVEL, -1.0, 1.0) * scale).astype(np.float32)
-        action[3] = gripper_cmd
-        obs, *_ = env.step(torch.tensor(action))
-        stalled = stalled + 1 if np.linalg.norm(tcp_pos(obs) - tcp) < _STALL_TRAVEL else 0
-        if stalled >= _STALL_STEPS:
-            break
-    return obs
-
-
-def step_in_place(env, obs, n_steps: int, gripper_cmd: float):
-    """No translation, just send a gripper command for n steps (open/close)."""
-    for _ in range(n_steps):
-        a = torch.tensor(np.array([0.0, 0.0, 0.0, gripper_cmd], dtype=np.float32))
-        obs, *_ = env.step(a)
-    return obs
-
-
 # ── observation accessors ───────────────────────────────────────────────────
-
-
-def tcp_pos(obs) -> np.ndarray:
-    return obs["extra"]["tcp_pose"].squeeze()[:3].cpu().numpy().astype(np.float64)
 
 
 def cube_pos(obs, name: str) -> np.ndarray:
@@ -106,14 +62,6 @@ def cube_pos(obs, name: str) -> np.ndarray:
 def src_pos(obs, name: str) -> np.ndarray:
     key = "src_a" if name == "cube_a" else "src_b"
     return obs["extra"][key].squeeze().cpu().numpy().astype(np.float64)
-
-
-def reset(env, seed: int):
-    # A plain reset leaves simulator state behind (contact-solver caches) and
-    # the same seed then stows differently depending on the previous episode.
-    # Reconfiguring costs ~80 ms and makes every episode a pure function of its seed.
-    obs, _ = env.reset(seed=seed, options={"reconfigure": True})
-    return step_in_place(env, obs, 2, gripper_cmd=1.0)  # clear stale grasp flag
 
 
 # ── scene graph ─────────────────────────────────────────────────────────────
@@ -189,15 +137,12 @@ def forward_stow(env, obs):
 
 
 def retreat(env, obs, gripper_cmd: float):
-    """Rise vertically to the travel height if below it, without moving sideways.
+    """Rise straight up to stow's travel height (see motion.retreat).
 
     After a place() the open fingers still straddle the released cube, and a
     diagonal departure would clip it.
     """
-    tcp = tcp_pos(obs)
-    if tcp[2] >= _SAFE_Z:
-        return obs
-    return step_toward(env, obs, [tcp[0], tcp[1], _SAFE_Z], 20, 0.012, gripper_cmd, 1.0)
+    return motion.retreat(env, obs, gripper_cmd, safe_z=_SAFE_Z)
 
 
 def pick(env, obs, name: str):
@@ -246,12 +191,6 @@ def seat_on(env, obs, name: str, depth: float = _PRESS_DEPTH):
     c = cube_pos(obs, name)
     press_z = c[2] + geo.CUBE_HALF + _FINGERTIP_OFFSET - depth
     return step_toward(env, obs, [c[0], c[1], press_z], 20, 0.002, -1.0, _DESCENT_SCALE)
-
-
-def lift(env, obs, height: float = 0.10, gripper_cmd: float = -1.0):
-    up = tcp_pos(obs)
-    up[2] += height
-    return step_toward(env, obs, up, 20, 0.012, gripper_cmd, 1.0)
 
 
 # ── where the primitives aim, and how their outcome is measured ─────────────
