@@ -68,7 +68,8 @@ def main() -> None:
             "state": sorted(state),
             "scores": scores,
             "plan": list(result.actions) if result else None,
-            "candidates": list(result.candidates) if result else None,
+            "capability_gaps": list(result.capability_gaps),
+            "synthesizable_gaps": list(result.synthesizable_gaps),
             "delegated": list(result.delegated) if result else None,
             "hole_indices": list(result.hole_indices) if result else None,
             "cost": list(result.cost) if result else None,
@@ -78,8 +79,9 @@ def main() -> None:
                                      and not result.alternatives),
         })
         print(f"\nseed {seed}: measured state = {', '.join(sorted(state))}")
-        if result is None:
-            print("  no plan")
+        if not result:
+            print(f"  no plan; capability gaps {', '.join(result.capability_gaps) or 'none'}, "
+                  f"of which lack a soft score: {', '.join(result.unsynthesizable_gaps) or 'none'}")
             continue
         for i, action in enumerate(result.actions):
             mark = "  <- learned" if action.startswith("HOLE") else ""
@@ -96,7 +98,9 @@ def main() -> None:
 
     print("\nderived, not given")
     print("  unreachable by the library:", ", ".join(sorted(goal_pos - reachable)))
-    print("  hole candidates:          ", ", ".join(result.candidates))
+    print("  capability gaps:          ", ", ".join(result.capability_gaps))
+    print("  synthesizable (holes):    ", ", ".join(result.synthesizable_gaps))
+    print("  lacking a soft score:     ", ", ".join(result.unsynthesizable_gaps) or "none")
     print("  hole starts from:         ", ", ".join(spec["start"]))
     print("  must preserve:            ", ", ".join(spec["preserve"]))
     print("  must keep false:          ", ", ".join(spec["preserve_absent"]))
@@ -116,6 +120,8 @@ def main() -> None:
         "expected_plan": list(_EXPECTED),
         "all_seeds_match": ok,
         "unreachable": sorted(goal_pos - reachable),
+        "capability_gaps": list(result.capability_gaps),
+        "synthesizable_gaps": list(result.synthesizable_gaps),
         "without_interference_model": [list(blind.actions)]
                                       + [list(a) for a in blind.alternative_names],
         "seeds": rows,

@@ -22,10 +22,18 @@ declares about its own vocabulary and world:
                   objects to an unknown place (leaving a pocket pushes whatever
                   sits in its mouth). They apply to library actions and holes alike.
 
-Which predicates may become holes is derived too: the open conditions — goal
-literals and action preconditions — that the library cannot reach even with
-delete effects ignored. If that relaxation is too optimistic and no plan
-exists, every scored open condition is offered instead.
+Which predicates may become holes is derived too. A hole belongs at an
+irreducible missing capability, never at a literal the library could produce
+once its own missing prerequisites were supplied: a hole there would learn a
+way around an action the library already has. `capability_gaps` finds the
+irreducible ones — literals no action establishes, and cycles whose members can
+each be established only through another member. A capability gap becomes a
+hole only if it is synthesizable: it has the soft score a learned skill's
+objective is built from. If the library and the synthesizable gaps admit no
+plan, the planner returns `NoPlan`, which reports the capability gaps and which
+of them lack a soft score; it never widens the search to other literals.
+(`unrestricted_holes=True` restores the old, unrestricted candidates, for
+ablations and debugging only.)
 
 Plans are ordered lexicographically by
 
@@ -42,7 +50,7 @@ determine is visible instead of being settled by an unstated rule.
 from __future__ import annotations
 
 import heapq
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 
 def predicate_args(key: str) -> tuple[str, ...]:
@@ -111,6 +119,8 @@ class PlanResult:
     expanded: int
     candidates: tuple[str, ...] = ()
     alternatives: tuple[tuple[Action, ...], ...] = ()
+    capability_gaps: tuple[str, ...] = ()
+    synthesizable_gaps: tuple[str, ...] = ()
 
     @property
     def cost(self) -> tuple[int, int, int, int, int]:
@@ -118,8 +128,30 @@ class PlanResult:
                 len(self.hole_indices), len(self.actions))
 
     @property
+    def unsynthesizable_gaps(self) -> tuple[str, ...]:
+        return tuple(g for g in self.capability_gaps if g not in self.synthesizable_gaps)
+
+    @property
     def alternative_names(self) -> tuple[tuple[str, ...], ...]:
         return tuple(tuple(a.name for a in alt) for alt in self.alternatives)
+
+
+@dataclass(frozen=True)
+class NoPlan:
+    """The planner's answer when no plan exists within its limits: the
+    capability gaps that remain, and which of them could be offered as holes.
+    It is falsy, so `if result:` tells a plan from this report."""
+
+    capability_gaps: tuple[str, ...] = ()
+    synthesizable_gaps: tuple[str, ...] = ()
+    candidates: tuple[str, ...] = ()
+
+    def __bool__(self) -> bool:
+        return False
+
+    @property
+    def unsynthesizable_gaps(self) -> tuple[str, ...]:
+        return tuple(g for g in self.capability_gaps if g not in self.synthesizable_gaps)
 
 
 @dataclass
@@ -211,23 +243,112 @@ def open_conditions(domain: Domain, goal_positive) -> frozenset[str]:
     return frozenset(needed)
 
 
+def capability_gaps(domain: Domain, start, goal_positive,
+                    goal_negative=()) -> frozenset[str]:
+    """The irreducible missing capabilities behind a goal: where holes belong.
+
+    Begin with what the goal needs and the library cannot reach, and follow
+    every action that could establish such a literal, or remove a negated goal
+    literal, to its own unreachable prerequisites. A literal is reducible if
+    some action establishes it from prerequisites that can be supplied without
+    it: the gap lies in those prerequisites, not in the literal. It is
+    irreducible if no action establishes it, or if it lies on a cycle where
+    every action establishing a member needs another member and nothing
+    outside the cycle supplies one. Any member of such a cycle would break it,
+    so all of them are returned, and the plan's cost chooses.
+
+    Computed in the delete relaxation: supply the literals nothing establishes,
+    see what becomes reachable, and treat what is still stuck. Every way to
+    establish a stuck literal needs another stuck literal, so the stuck literals
+    form cycles, and the cycles nothing leads out of are irreducible. Supply
+    those too, and repeat until nothing is stuck.
+
+    Because delete effects are ignored, this is a filter on where holes may go,
+    not a feasibility test: the state-space search decides whether a plan
+    exists. A delete interaction can hide a gap from it (a literal that looks
+    reachable but is not), and that limitation is deliberately left alone.
+    """
+    reachable = relaxed_reachable(domain, start)
+    establishers: dict[str, list[frozenset[str]]] = {}
+    for action in domain.actions:
+        for literal in domain.closure(action.add):
+            establishers.setdefault(literal, []).append(action.pre - reachable)
+
+    pending = [p for p in goal_positive if p not in reachable]
+    for action in domain.actions:
+        if domain.removes(action) & set(goal_negative):
+            pending.extend(action.pre - reachable)
+    needed: set[str] = set()
+    while pending:
+        literal = pending.pop()
+        if literal not in needed:
+            needed.add(literal)
+            for missing in establishers.get(literal, ()):
+                pending.extend(missing)
+
+    gaps = {p for p in needed if p not in establishers}
+    while True:
+        supplied = relaxed_reachable(domain, frozenset(start) | domain.closure(gaps))
+        stuck = needed - supplied
+        if not stuck:
+            return frozenset(gaps)
+        needs = {p: {q for missing in establishers[p] for q in missing if q in stuck}
+                 for p in stuck}
+        gaps |= _closed_cycles(needs)
+
+
+def _closed_cycles(needs: dict[str, set[str]]) -> set[str]:
+    """Members of the strongly connected components of `needs` that no edge leaves."""
+    def onward(p: str) -> set[str]:
+        seen: set[str] = set()
+        stack = list(needs[p])
+        while stack:
+            q = stack.pop()
+            if q not in seen:
+                seen.add(q)
+                stack.extend(needs[q])
+        return seen
+
+    reach = {p: onward(p) for p in needs}
+    return {p for p in needs if all(p in reach[q] for q in reach[p])}
+
+
 def plan(domain: Domain, start: frozenset[str], goal_positive,
-         goal_negative=None, *, max_delegated: int = 2,
-         max_length: int = 10) -> PlanResult | None:
-    """Cheapest plan under the lexicographic cost, or None within the limits."""
+         goal_negative=None, *, max_delegated: int = 2, max_length: int = 10,
+         unrestricted_holes: bool = False) -> PlanResult | NoPlan:
+    """Cheapest plan under the lexicographic cost, or a `NoPlan` report.
+
+    Holes are offered only at the synthesizable capability gaps: the capability
+    gaps with a soft score. Both sets are reported either way.
+
+    `unrestricted_holes=True` is for ablations and debugging only: it offers a
+    hole for every unreachable scored open condition and, failing that, for
+    every scored open condition — the planner's behaviour before the gap rule.
+    """
     goal_positive = set(goal_positive)
     goal_negative = set(goal_negative or ())
     reachable = relaxed_reachable(domain, start)
+    gaps = capability_gaps(domain, start, goal_positive, goal_negative)
+    report = {"capability_gaps": tuple(sorted(gaps)),
+              "synthesizable_gaps": tuple(sorted(gaps & domain.scored))}
     needed = open_conditions(domain, goal_positive)
-    candidates = sorted((needed - reachable) & domain.scored) if max_delegated else []
+    if not max_delegated:
+        candidates = []
+    elif unrestricted_holes:
+        candidates = sorted((needed - reachable) & domain.scored)
+    else:
+        candidates = list(report["synthesizable_gaps"])
     result = _search(domain, start, goal_positive, goal_negative, candidates, reachable,
                      max_delegated, max_length)
-    if result is None and max_delegated:
+    if result is None and unrestricted_holes and max_delegated:
         wider = sorted(needed & domain.scored)
         if wider != candidates:
-            result = _search(domain, start, goal_positive, goal_negative, wider, reachable,
-                             max_delegated, max_length)
-    return result
+            candidates = wider
+            result = _search(domain, start, goal_positive, goal_negative, candidates,
+                             reachable, max_delegated, max_length)
+    if result is None:
+        return NoPlan(candidates=tuple(candidates), **report)
+    return replace(result, **report)
 
 
 def _search(domain, start, goal_positive, goal_negative, candidates, reachable,
@@ -242,7 +363,7 @@ def _search(domain, start, goal_positive, goal_negative, candidates, reachable,
         return PlanResult((), (), (), 0, 0, (), 0, tuple(candidates))
 
     counter = 0
-    settled: dict[tuple, tuple] = {}
+    shortest: dict[tuple, int] = {}   # node -> fewest steps it was explored with
     goals: list[tuple[tuple, tuple[Action, ...]]] = []
     best_key: tuple | None = None
     expanded = 0
@@ -252,12 +373,18 @@ def _search(domain, start, goal_positive, goal_negative, candidates, reachable,
         key, _, state, taken, delegated = heapq.heappop(queue)
         if best_key is not None and key > best_key:
             break
+        # A node is the state plus the facts already handed to holes: the only
+        # history the cost of any continuation depends on. Entries leave the
+        # queue in cost order, so an earlier exploration of this node cost no
+        # more than this one. That makes this one redundant, unless it used
+        # fewer steps and so has more of the step limit left.
         node = (state, delegated)
-        if node in settled and settled[node] <= key:
+        length = key[4]
+        if node in shortest and shortest[node] <= length:
             continue
-        settled[node] = key
+        shortest[node] = length
         expanded += 1
-        if key[4] >= max_length:
+        if length >= max_length:
             continue
         for action in actions:
             if not domain.applicable(state, action):

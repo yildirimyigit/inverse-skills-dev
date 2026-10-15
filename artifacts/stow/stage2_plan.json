@@ -22,6 +22,13 @@
     "clear_of_walls(cube_a)",
     "in_region(cube_a,src_a)"
   ],
+  "capability_gaps": [
+    "clear_of_walls(cube_a)",
+    "holding(cube_a)"
+  ],
+  "synthesizable_gaps": [
+    "clear_of_walls(cube_a)"
+  ],
   "without_interference_model": [
     [
       "pick(cube_b)",
@@ -66,9 +73,12 @@
         "pick(cube_a)",
         "place(cube_a,src_a)"
       ],
-      "candidates": [
+      "capability_gaps": [
         "clear_of_walls(cube_a)",
-        "in_region(cube_a,src_a)"
+        "holding(cube_a)"
+      ],
+      "synthesizable_gaps": [
+        "clear_of_walls(cube_a)"
       ],
       "delegated": [
         "clear_of_walls(cube_a)"
@@ -112,9 +122,12 @@
         "pick(cube_a)",
         "place(cube_a,src_a)"
       ],
-      "candidates": [
+      "capability_gaps": [
         "clear_of_walls(cube_a)",
-        "in_region(cube_a,src_a)"
+        "holding(cube_a)"
+      ],
+      "synthesizable_gaps": [
+        "clear_of_walls(cube_a)"
       ],
       "delegated": [
         "clear_of_walls(cube_a)"
@@ -158,9 +171,12 @@
         "pick(cube_a)",
         "place(cube_a,src_a)"
       ],
-      "candidates": [
+      "capability_gaps": [
         "clear_of_walls(cube_a)",
-        "in_region(cube_a,src_a)"
+        "holding(cube_a)"
+      ],
+      "synthesizable_gaps": [
+        "clear_of_walls(cube_a)"
       ],
       "delegated": [
         "clear_of_walls(cube_a)"
@@ -204,9 +220,12 @@
         "pick(cube_a)",
         "place(cube_a,src_a)"
       ],
-      "candidates": [
+      "capability_gaps": [
         "clear_of_walls(cube_a)",
-        "in_region(cube_a,src_a)"
+        "holding(cube_a)"
+      ],
+      "synthesizable_gaps": [
+        "clear_of_walls(cube_a)"
       ],
       "delegated": [
         "clear_of_walls(cube_a)"
@@ -250,9 +269,12 @@
         "pick(cube_a)",
         "place(cube_a,src_a)"
       ],
-      "candidates": [
+      "capability_gaps": [
         "clear_of_walls(cube_a)",
-        "in_region(cube_a,src_a)"
+        "holding(cube_a)"
+      ],
+      "synthesizable_gaps": [
+        "clear_of_walls(cube_a)"
       ],
       "delegated": [
         "clear_of_walls(cube_a)"

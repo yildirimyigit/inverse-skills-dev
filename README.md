@@ -128,7 +128,8 @@ Each stage prints `PASS` or `FAIL` against its own checks. What they verify:
   `pick B → place B → approach A → HOLE[clear_of_walls(A)] → pick A → place A`
   with no equally cheap alternative, and finds no plan at all when holes are
   disallowed. Everything about the hole is derived, not given: which predicate
-  to delegate (the open conditions the library cannot reach), where the learned
+  to delegate (a capability gap the library cannot close even with its other
+  missing prerequisites supplied, and that has a soft score), where the learned
   skill starts (the robot-relative predicates the library can establish), and
   what it must preserve (the causal links spanning it). These are written to
   `hole_spec.json`, the learning problem Stage 3 trains against.
