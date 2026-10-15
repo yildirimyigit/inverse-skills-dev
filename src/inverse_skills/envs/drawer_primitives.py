@@ -26,6 +26,7 @@ import numpy as np
 
 from inverse_skills.core import ObjectState, Pose, RobotState, SceneGraph
 from inverse_skills.envs import drawer_env as geo
+from inverse_skills.envs import drawer_predicates as dp
 from inverse_skills.envs import motion
 from inverse_skills.envs.motion import step_in_place, step_toward, tcp_pos
 
@@ -38,8 +39,12 @@ OPEN_TARGET = 0.15             # pull_open pulls the drawer to this opening
 _PUSH_Y = 0.07
 _PUSH_TCP_Z = 0.085
 _FINGER_HALF_DEPTH = 0.01      # the closed fingers reach about this far ahead of the TCP along x
-_SHUT = 0.003                  # push_close stops once the drawer is this close to shut
+_SATISFIED = 0.8               # the framework's truth threshold for a predicate score
+_CLOSED_STEPS = 2              # push_close stops once drawer_closed has held on this many steps in a row
+_STALL_STEPS = 10              # push_close gives up once the drawer has not closed further for this many steps
+_STALL_M = 0.0005              # (closing by less than this counts as not moving)
 _HELD_BELOW = 0.05             # a gripper narrower than this is treated as closed
+_DRAWER_CLOSED = dp.DrawerClosedPredicate()
 
 
 def make_env(max_episode_steps: int = 3000, render_mode: str | None = None):
@@ -74,6 +79,10 @@ def pinch_force(obs) -> tuple[float, float]:
 def gripper_width(obs) -> float:
     qpos = obs["agent"]["qpos"].squeeze().cpu().numpy()
     return float(qpos[-2] + qpos[-1])
+
+
+def _drawer_closed(obs) -> bool:
+    return _DRAWER_CLOSED.evaluate(obs_to_scene(obs)).score >= _SATISFIED
 
 
 def tilt_deg(obs) -> float:
@@ -124,15 +133,31 @@ def push_close(env, obs):
     obs = motion.retreat(env, obs, gripper_cmd=-1.0, safe_z=TRAVEL_Z)
     obs = step_toward(env, obs, [front_x - 0.06, y, TRAVEL_Z], 60, 0.01, -1.0, 1.0)
     obs = step_toward(env, obs, [front_x - 0.06, y, _PUSH_TCP_Z], 40, 0.005, -1.0, 0.5)
-    # Push one step at a time and stop as soon as the drawer is shut. Pushing on
-    # against the closed cabinet only tips the hand over, and the position-only
-    # controller never straightens it again: the hand would stay tilted for the
-    # rest of the episode, approach and grasp included.
+    # Push one step at a time and stop as soon as the drawer counts as closed:
+    # drawer_closed >= 0.8 on two steps in a row. (On the first such step the
+    # drawer can sit right at the threshold, and it eases back about 1 mm when
+    # the hand backs off.) Pushing on against the closed cabinet only tips the
+    # hand over, and the position-only controller never straightens it again:
+    # the hand would stay tilted for the rest of the episode, approach and
+    # grasp included.
+    # If the drawer stops moving before it counts as closed, the push gives
+    # up. That is a failure, not a success: the drawer is left where it
+    # stopped, and drawer_closed, measured afterwards, says so. (The finger
+    # starts 5 cm in front of the drawer and reaches it in about 5 steps,
+    # well inside the stall window.)
     target_x = closed_front_x - _FINGER_HALF_DEPTH + 0.01
+    closed_steps, closest, still = 0, opening(obs), 0
     for _ in range(120):
-        if opening(obs) <= _SHUT:
-            break
+        closed_steps = closed_steps + 1 if _drawer_closed(obs) else 0
+        if closed_steps == _CLOSED_STEPS:
+            break                       # closed: success
+        if still == _STALL_STEPS:
+            break                       # stopped short of closed: failure
         obs = step_toward(env, obs, [target_x, y, _PUSH_TCP_Z], 1, 0.003, -1.0, 0.3)
+        if opening(obs) < closest - _STALL_M:
+            closest, still = opening(obs), 0
+        else:
+            still += 1
     tcp = tcp_pos(obs)
     obs = step_toward(env, obs, [tcp[0] - 0.04, tcp[1], tcp[2]], 20, 0.005, -1.0, 0.5)
     return go_home(env, obs)
