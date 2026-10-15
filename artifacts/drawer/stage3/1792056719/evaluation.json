@@ -1,0 +1,216 @@
+{
+  "checkpoint": "sac_hole_best",
+  "test_seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015,
+    1016,
+    1017,
+    1018,
+    1019
+  ],
+  "grasp_rate": 1.0,
+  "pull_open_rate": 1.0,
+  "steps_to_grasp": [
+    6,
+    7,
+    9
+  ],
+  "max_opening_at_stop_mm": 0.0,
+  "max_tilt_at_stop_deg": 7.4,
+  "episodes": [
+    {
+      "seed": 1000,
+      "grasped": true,
+      "steps": 7,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 0.6,
+      "pulled_opening_mm": 146.6,
+      "pull_opened": true
+    },
+    {
+      "seed": 1001,
+      "grasped": true,
+      "steps": 6,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 1.7,
+      "pulled_opening_mm": 147.1,
+      "pull_opened": true
+    },
+    {
+      "seed": 1002,
+      "grasped": true,
+      "steps": 8,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 2.0,
+      "pulled_opening_mm": 147.2,
+      "pull_opened": true
+    },
+    {
+      "seed": 1003,
+      "grasped": true,
+      "steps": 8,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 1.8,
+      "pulled_opening_mm": 146.4,
+      "pull_opened": true
+    },
+    {
+      "seed": 1004,
+      "grasped": true,
+      "steps": 7,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 1.7,
+      "pulled_opening_mm": 146.6,
+      "pull_opened": true
+    },
+    {
+      "seed": 1005,
+      "grasped": true,
+      "steps": 7,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 1.5,
+      "pulled_opening_mm": 147.2,
+      "pull_opened": true
+    },
+    {
+      "seed": 1006,
+      "grasped": true,
+      "steps": 7,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 1.9,
+      "pulled_opening_mm": 147.0,
+      "pull_opened": true
+    },
+    {
+      "seed": 1007,
+      "grasped": true,
+      "steps": 8,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 2.2,
+      "pulled_opening_mm": 147.1,
+      "pull_opened": true
+    },
+    {
+      "seed": 1008,
+      "grasped": true,
+      "steps": 7,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 2.4,
+      "pulled_opening_mm": 146.9,
+      "pull_opened": true
+    },
+    {
+      "seed": 1009,
+      "grasped": true,
+      "steps": 6,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 0.4,
+      "pulled_opening_mm": 146.7,
+      "pull_opened": true
+    },
+    {
+      "seed": 1010,
+      "grasped": true,
+      "steps": 9,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 0.3,
+      "pulled_opening_mm": 146.7,
+      "pull_opened": true
+    },
+    {
+      "seed": 1011,
+      "grasped": true,
+      "steps": 7,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 0.1,
+      "pulled_opening_mm": 146.6,
+      "pull_opened": true
+    },
+    {
+      "seed": 1012,
+      "grasped": true,
+      "steps": 7,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 1.3,
+      "pulled_opening_mm": 147.0,
+      "pull_opened": true
+    },
+    {
+      "seed": 1013,
+      "grasped": true,
+      "steps": 8,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 1.0,
+      "pulled_opening_mm": 146.7,
+      "pull_opened": true
+    },
+    {
+      "seed": 1014,
+      "grasped": true,
+      "steps": 9,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 0.8,
+      "pulled_opening_mm": 147.1,
+      "pull_opened": true
+    },
+    {
+      "seed": 1015,
+      "grasped": true,
+      "steps": 8,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 1.6,
+      "pulled_opening_mm": 147.1,
+      "pull_opened": true
+    },
+    {
+      "seed": 1016,
+      "grasped": true,
+      "steps": 7,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 1.9,
+      "pulled_opening_mm": 146.8,
+      "pull_opened": true
+    },
+    {
+      "seed": 1017,
+      "grasped": true,
+      "steps": 9,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 3.4,
+      "pulled_opening_mm": 147.0,
+      "pull_opened": true
+    },
+    {
+      "seed": 1018,
+      "grasped": true,
+      "steps": 8,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 7.4,
+      "pulled_opening_mm": 147.1,
+      "pull_opened": true
+    },
+    {
+      "seed": 1019,
+      "grasped": true,
+      "steps": 7,
+      "opening_at_stop_mm": 0.0,
+      "tilt_at_stop_deg": 0.6,
+      "pulled_opening_mm": 147.1,
+      "pull_opened": true
+    }
+  ]
+}

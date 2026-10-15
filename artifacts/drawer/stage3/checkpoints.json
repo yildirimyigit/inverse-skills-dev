@@ -1,0 +1,75 @@
+{
+  "note": "The Stage 3 checkpoints are kept outside normal Git. Each file is identified by its SHA-256 (check a copy with `sha256sum`). The archive holds all of them under their run folders; extract it at the repository root. Stage 4 uses each run's sac_hole_best.zip, the checkpoint chosen on the validation seeds.",
+  "archive": {
+    "path": "artifacts/drawer/stage3_checkpoints.tar",
+    "bytes": 24811520,
+    "sha256": "90fedcbb185209fcde38ae1bfeccf18eba279e2aea8427622e89ea192ca0ec60"
+  },
+  "load": "stable_baselines3.SAC.load('<run folder>/sac_hole_best', device='cpu')",
+  "verified": "2026-10-15: each run's sac_hole_best.zip, reloaded on CPU, reproduces its evaluation.json exactly (scripts/drawer_stage3_evaluate.py).",
+  "versions": {
+    "python": "3.10.21",
+    "torch": "2.7.1+cu128",
+    "stable_baselines3": "2.8.0",
+    "mani_skill": "3.0.1",
+    "sapien": "3.0.3"
+  },
+  "runs": {
+    "1792053076": {
+      "sac_seed": 0,
+      "selected": "sac_hole_best.zip",
+      "files": {
+        "sac_hole_best.zip": {
+          "bytes": 3099609,
+          "sha256": "4a35a07f8059ab381fddb71ac6c6c2750cb536eaaa8c39fb0c7bd26e77196e0d"
+        },
+        "sac_hole_final.zip": {
+          "bytes": 3099594,
+          "sha256": "29ebbdf43c68034391f00ac03e568ed5930aab2d0ddbd30b57e620b9e8b95c39"
+        }
+      }
+    },
+    "1792056712": {
+      "sac_seed": 1,
+      "selected": "sac_hole_best.zip",
+      "files": {
+        "sac_hole_best.zip": {
+          "bytes": 3099607,
+          "sha256": "0f3d9d0a74608b05df3a1dcbf3a77d37e46ed467ed7876bb5581894940f3bb00"
+        },
+        "sac_hole_final.zip": {
+          "bytes": 3099594,
+          "sha256": "31e996d70207cc459de4eb5a61237e1e1a0e88ac142026d0bfb9270a8dd49e52"
+        }
+      }
+    },
+    "1792056715": {
+      "sac_seed": 2,
+      "selected": "sac_hole_best.zip",
+      "files": {
+        "sac_hole_best.zip": {
+          "bytes": 3099609,
+          "sha256": "c2648db7a8e2c78f5dcc815c78a37218c4fe337052db3227e7250a64cc30563f"
+        },
+        "sac_hole_final.zip": {
+          "bytes": 3099594,
+          "sha256": "86e2014703c8a2486dd8d1abf4e2348c2acff8021a2ccb25a2bcac8ed24d84a8"
+        }
+      }
+    },
+    "1792056719": {
+      "sac_seed": 3,
+      "selected": "sac_hole_best.zip",
+      "files": {
+        "sac_hole_best.zip": {
+          "bytes": 3099612,
+          "sha256": "a5aed26f033891ab298aa2b315aa439021b02982082aa6c6f559d66a838f53ee"
+        },
+        "sac_hole_final.zip": {
+          "bytes": 3099598,
+          "sha256": "ade9a2244c338a42a8710395999aea335814de5df51cb48885e66cf4cdf29010"
+        }
+      }
+    }
+  }
+}
