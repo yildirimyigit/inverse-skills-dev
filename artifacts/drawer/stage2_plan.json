@@ -1,0 +1,324 @@
+{
+  "goal_positive": [
+    "drawer_open(drawer)"
+  ],
+  "goal_negative": [
+    "drawer_closed(drawer)"
+  ],
+  "expected_plan": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+  ],
+  "all_seeds_match": true,
+  "reachable": [
+    "at_handle_standoff(drawer)",
+    "drawer_closed(drawer)"
+  ],
+  "ablations": {
+    "library_only": {
+      "capability_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "synthesizable_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "plan": null
+    },
+    "frontier": {
+      "capability_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "synthesizable_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        3
+      ],
+      "delegated": [
+        "handle_grasped(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 4
+    },
+    "unrestricted": {
+      "capability_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "synthesizable_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        2
+      ],
+      "delegated": [
+        "drawer_open(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "drawer_open(drawer)",
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 3
+    },
+    "with_grasp": {
+      "capability_gaps": [],
+      "synthesizable_gaps": [],
+      "plan": [
+        "approach_handle(drawer)",
+        "grasp_handle(drawer)",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        0,
+        0,
+        0,
+        0,
+        3
+      ],
+      "delegated": [],
+      "hole_indices": [],
+      "candidates": [],
+      "ties": [],
+      "expanded": 3
+    }
+  },
+  "seeds": [
+    {
+      "seed": 0,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.0004274256373434371,
+        "drawer_closed(drawer)": 0.9778282173086909,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 8.326672684688674e-16
+      },
+      "capability_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "synthesizable_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        3
+      ],
+      "delegated": [
+        "handle_grasped(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 4,
+      "matches_expected": true
+    },
+    {
+      "seed": 1,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.0004089924546811785,
+        "drawer_closed(drawer)": 0.9821374314977169,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 5.551115123125783e-16
+      },
+      "capability_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "synthesizable_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        3
+      ],
+      "delegated": [
+        "handle_grasped(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 4,
+      "matches_expected": true
+    },
+    {
+      "seed": 2,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.00038718801752701815,
+        "drawer_closed(drawer)": 0.9863606684496667,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 6.106226635438361e-16
+      },
+      "capability_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "synthesizable_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        3
+      ],
+      "delegated": [
+        "handle_grasped(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 4,
+      "matches_expected": true
+    },
+    {
+      "seed": 3,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.0004089747597950111,
+        "drawer_closed(drawer)": 0.9821412277965276,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 1.7208456881689926e-15
+      },
+      "capability_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "synthesizable_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        3
+      ],
+      "delegated": [
+        "handle_grasped(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 4,
+      "matches_expected": true
+    },
+    {
+      "seed": 4,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.00040216726625297294,
+        "drawer_closed(drawer)": 0.9835557930726371,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 7.216449660063518e-16
+      },
+      "capability_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "synthesizable_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        3
+      ],
+      "delegated": [
+        "handle_grasped(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 4,
+      "matches_expected": true
+    }
+  ]
+}
