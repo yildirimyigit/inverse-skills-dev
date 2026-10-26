@@ -1,0 +1,115 @@
+{
+  "runs": [
+    {
+      "run": "seed0_1793033388",
+      "sac_seed": 0,
+      "best_validation": 1.0,
+      "best_at_step": 25000,
+      "final_validation": 0.4,
+      "final_validation_after_settling": 0.4,
+      "final_validation_failures": {
+        "never_grasped": 5,
+        "out_of_time": 1
+      },
+      "final_validation_max_opening_mm": 200.0,
+      "first_grasp_episode_ends_at_step": 1400,
+      "first_opening_at_step": 18117,
+      "first_held_episode_ends_at_step": 20500,
+      "training_episodes": 300,
+      "training_episodes_grasped": 70,
+      "training_episodes_opened": 62,
+      "training_max_opening_mm": 200.0,
+      "training_best_drawer_open_score": 0.9999938558272289,
+      "training_failures": {
+        "never_grasped": 228,
+        "out_of_time": 5,
+        "grasped_no_pull": 1,
+        "lost_grasp": 4,
+        "opened_then_lost": 7
+      },
+      "training_interactions": 30000,
+      "validation_interactions": 12000,
+      "minutes": 12.2
+    },
+    {
+      "run": "seed1_1793033389",
+      "sac_seed": 1,
+      "best_validation": 1.0,
+      "best_at_step": 17500,
+      "final_validation": 1.0,
+      "final_validation_after_settling": 1.0,
+      "final_validation_failures": {},
+      "final_validation_max_opening_mm": 200.0,
+      "first_grasp_episode_ends_at_step": 5500,
+      "first_opening_at_step": 14460,
+      "first_held_episode_ends_at_step": 14500,
+      "training_episodes": 300,
+      "training_episodes_grasped": 128,
+      "training_episodes_opened": 142,
+      "training_max_opening_mm": 200.0,
+      "training_best_drawer_open_score": 0.9999938558272289,
+      "training_failures": {
+        "never_grasped": 151,
+        "lost_grasp": 5,
+        "out_of_time": 2
+      },
+      "training_interactions": 30000,
+      "validation_interactions": 12000,
+      "minutes": 12.0
+    },
+    {
+      "run": "seed2_1793033392",
+      "sac_seed": 2,
+      "best_validation": 1.0,
+      "best_at_step": 22500,
+      "final_validation": 0.0,
+      "final_validation_after_settling": 0.0,
+      "final_validation_failures": {
+        "never_grasped": 10
+      },
+      "final_validation_max_opening_mm": 13.9,
+      "first_grasp_episode_ends_at_step": 3400,
+      "first_opening_at_step": 16612,
+      "first_held_episode_ends_at_step": 16700,
+      "training_episodes": 300,
+      "training_episodes_grasped": 104,
+      "training_episodes_opened": 107,
+      "training_max_opening_mm": 200.0,
+      "training_best_drawer_open_score": 0.9999938558272289,
+      "training_failures": {
+        "never_grasped": 179,
+        "lost_grasp": 10,
+        "out_of_time": 4
+      },
+      "training_interactions": 30000,
+      "validation_interactions": 12000,
+      "minutes": 11.5
+    },
+    {
+      "run": "seed3_1793033394",
+      "sac_seed": 3,
+      "best_validation": 1.0,
+      "best_at_step": 25000,
+      "final_validation": 1.0,
+      "final_validation_after_settling": 1.0,
+      "final_validation_failures": {},
+      "final_validation_max_opening_mm": 200.0,
+      "first_grasp_episode_ends_at_step": 3000,
+      "first_opening_at_step": 18915,
+      "first_held_episode_ends_at_step": 19000,
+      "training_episodes": 300,
+      "training_episodes_grasped": 85,
+      "training_episodes_opened": 75,
+      "training_max_opening_mm": 200.0,
+      "training_best_drawer_open_score": 0.9999938558272289,
+      "training_failures": {
+        "never_grasped": 201,
+        "lost_grasp": 23,
+        "out_of_time": 1
+      },
+      "training_interactions": 30000,
+      "validation_interactions": 12000,
+      "minutes": 12.0
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "goal_positive": [
+    "drawer_open(drawer)"
+  ],
+  "goal_negative": [
+    "drawer_closed(drawer)"
+  ],
+  "expected_plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+  ],
+  "same_start_as_grasp_hole": true,
+  "all_seeds_match": true,
+  "seeds": [
+    {
+      "seed": 0,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "unrestricted_plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "unrestricted_cost": [
+        1,
+        0,
+        2,
+        1,
+        2
+      ],
+      "frontier_plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "matches_expected": true
+    },
+    {
+      "seed": 1,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "unrestricted_plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "unrestricted_cost": [
+        1,
+        0,
+        2,
+        1,
+        2
+      ],
+      "frontier_plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "matches_expected": true
+    },
+    {
+      "seed": 2,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "unrestricted_plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "unrestricted_cost": [
+        1,
+        0,
+        2,
+        1,
+        2
+      ],
+      "frontier_plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "matches_expected": true
+    },
+    {
+      "seed": 3,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "unrestricted_plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "unrestricted_cost": [
+        1,
+        0,
+        2,
+        1,
+        2
+      ],
+      "frontier_plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "matches_expected": true
+    },
+    {
+      "seed": 4,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "unrestricted_plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "unrestricted_cost": [
+        1,
+        0,
+        2,
+        1,
+        2
+      ],
+      "frontier_plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "matches_expected": true
+    }
+  ]
+}

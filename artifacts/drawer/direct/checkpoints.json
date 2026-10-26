@@ -1,0 +1,78 @@
+{
+  "note": "The direct baseline's checkpoints are kept outside normal Git, like Stage 3's. Each file is identified by its SHA-256 (check a copy with `sha256sum`). The archive holds all of them under their run folders; extract it at the repository root. The final evaluation uses each run's sac_direct_best.zip, the checkpoint chosen on the validation seeds.",
+  "archive": {
+    "path": "artifacts/drawer/direct_checkpoints.tar",
+    "bytes": 24995840,
+    "sha256": "4533833473d9e5fa29a687716d55aa8959be64c0f864d5745f74cc03f7c0d655"
+  },
+  "load": "stable_baselines3.SAC.load('<run folder>/sac_direct_best', device='cpu')",
+  "versions": {
+    "python": "3.10.21",
+    "torch": "2.7.1+cu128",
+    "stable_baselines3": "2.8.0",
+    "mani_skill": "3.0.1",
+    "sapien": "3.0.3"
+  },
+  "runs": {
+    "seed0_1793033388": {
+      "sac_seed": 0,
+      "selected": "sac_direct_best.zip",
+      "best_at_step": 25000,
+      "files": {
+        "sac_direct_best.zip": {
+          "bytes": 3122224,
+          "sha256": "1e8fe616f14a37ec5bab36bb6890fb443093f34d9f7dd66e593c41eb43abc121"
+        },
+        "sac_direct_final.zip": {
+          "bytes": 3122208,
+          "sha256": "73675e152144158d5875d0624429bddad577746dfc13f86bf7779eda4fe4f871"
+        }
+      }
+    },
+    "seed1_1793033389": {
+      "sac_seed": 1,
+      "selected": "sac_direct_best.zip",
+      "best_at_step": 17500,
+      "files": {
+        "sac_direct_best.zip": {
+          "bytes": 3122224,
+          "sha256": "3f5bd0081e6b9ce45cc690add863d399d0ba085e4b0b8f437d2a18118d63a99e"
+        },
+        "sac_direct_final.zip": {
+          "bytes": 3122208,
+          "sha256": "116ffc2318d7234b845ad314b0707c2a7747fd1522cf380a24139420dfb7a0a8"
+        }
+      }
+    },
+    "seed2_1793033392": {
+      "sac_seed": 2,
+      "selected": "sac_direct_best.zip",
+      "best_at_step": 22500,
+      "files": {
+        "sac_direct_best.zip": {
+          "bytes": 3122224,
+          "sha256": "4ce5755af601868807b55d45a305e8371fdefaf4020cef89032f2ab960ef8a12"
+        },
+        "sac_direct_final.zip": {
+          "bytes": 3122208,
+          "sha256": "078d83f143b3856fb7a84e2dd04c98b92468808c9389b802d8ff118519c960ee"
+        }
+      }
+    },
+    "seed3_1793033394": {
+      "sac_seed": 3,
+      "selected": "sac_direct_best.zip",
+      "best_at_step": 25000,
+      "files": {
+        "sac_direct_best.zip": {
+          "bytes": 3122228,
+          "sha256": "9458cecf13116672355bd0c22491f18998ef0343a45292bab6954b57ec293bdb"
+        },
+        "sac_direct_final.zip": {
+          "bytes": 3122212,
+          "sha256": "4df6eff8ae34ca108eb05c25c70bd6d37e078203e8a8710d77c3d952ae135ea2"
+        }
+      }
+    }
+  }
+}

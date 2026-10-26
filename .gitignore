@@ -42,6 +42,17 @@ artifacts/drawer/stage3/*
 !artifacts/drawer/stage3/*/
 artifacts/drawer/stage3/*/*
 !artifacts/drawer/stage3/*/*.json
+# Direct baseline (targeted versus direct learning): tracked the same way, plus
+# its learning-curve figure; checkpoints and videos stay outside normal Git.
+!artifacts/drawer/direct/
+artifacts/drawer/direct/*
+!artifacts/drawer/direct/*.json
+!artifacts/drawer/direct/*.png
+!artifacts/drawer/direct/*/
+artifacts/drawer/direct/*/*
+!artifacts/drawer/direct/*/*.json
+# The paper's figure and table, with the exact data behind them.
+!artifacts/drawer/paper/
 checkpoints/
 logs/
 wandb/
