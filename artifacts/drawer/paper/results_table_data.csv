@@ -1,0 +1,9 @@
+policy,run,first_90_at,stayed_90,best,final,selected_at,successes,configurations,valid_forward,successes_given_valid_forward
+"targeted, SAC seed 0",1792053076,12500,True,1.0,1.0,12500,49,50,49,49
+"targeted, SAC seed 1",1792056712,7500,True,1.0,1.0,7500,49,50,49,49
+"targeted, SAC seed 2",1792056715,10000,True,1.0,1.0,12500,49,50,49,49
+"targeted, SAC seed 3",1792056719,10000,True,1.0,1.0,10000,49,50,49,49
+"direct, SAC seed 0",seed0_1793033388,25000,False,1.0,0.4,25000,49,50,49,49
+"direct, SAC seed 1",seed1_1793033389,17500,True,1.0,1.0,17500,49,50,49,49
+"direct, SAC seed 2",seed2_1793033392,22500,False,1.0,0.0,22500,49,50,49,49
+"direct, SAC seed 3",seed3_1793033394,25000,True,1.0,1.0,25000,49,50,49,49

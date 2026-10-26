@@ -1,0 +1,22 @@
+{
+  "made_by": "python scripts/drawer_paper_results.py",
+  "inputs": {
+    "artifacts/drawer/stage3/1792053076/config.json": "ada662df963a3d487a99443950389cd12ce0da5bd176534b9fa1a79463d4a365",
+    "artifacts/drawer/stage3/1792053076/summary.json": "af1aaab5eee9ab58048f1ab8395948eade6f7e232638293ff263dcf08f022d58",
+    "artifacts/drawer/stage3/1792056712/config.json": "50d795392151e32d17a0657956b44f08ed66b422e41bfa63b819964eb105b626",
+    "artifacts/drawer/stage3/1792056712/summary.json": "bac6dcf938a6eb2f5b3b68e6fb06697a388c076d1528a4ced95113b37e52df5e",
+    "artifacts/drawer/stage3/1792056715/config.json": "6fd9394a84dd970f2f51e30b8b80740c78079448c4168254e8f71118377c4229",
+    "artifacts/drawer/stage3/1792056715/summary.json": "2ee32a2e8bae6c1e18799bc56472fedc339b0bca9d80297168354c4cb092dabb",
+    "artifacts/drawer/stage3/1792056719/config.json": "1252e3697a908a7ad491e025658f17d785aea751bba071bb9a64c6f8667c3d6d",
+    "artifacts/drawer/stage3/1792056719/summary.json": "7b9e5f54cb248976e03163e9cfaddc87f4205544c40161c396c0d82802fe9c8a",
+    "artifacts/drawer/direct/seed0_1793033388/config.json": "de2ffd0f5d7cf03e333e0484f6d1b9c759f3b49576d29894631995673a3327a7",
+    "artifacts/drawer/direct/seed0_1793033388/summary.json": "154c134ecc6a9ecb84b659a82abe6c04a2dce6fe3f2c6118910620e56f66fddb",
+    "artifacts/drawer/direct/seed1_1793033389/config.json": "4ffa5154e7d94dbf1a95635037f11698e4e436ee4267a9b15314f69ab3168ac3",
+    "artifacts/drawer/direct/seed1_1793033389/summary.json": "92991860d917dbba4cc6c6655574dd34e0971b78c0510ef7d1f86b0ea754a5ec",
+    "artifacts/drawer/direct/seed2_1793033392/config.json": "048ee736ef6cb02d26b8c0ff9f1096d7060e7f3f7a4f876fc2e72fe828408015",
+    "artifacts/drawer/direct/seed2_1793033392/summary.json": "7e84e70c624ebac576dc548ec88d0d798a1c0f3dac7bf2cf3a90228cd682471e",
+    "artifacts/drawer/direct/seed3_1793033394/config.json": "38ed6554d3fca8943089d088d4b3b0e8714a9b06ca9c2bb91b27e85e3730c8c4",
+    "artifacts/drawer/direct/seed3_1793033394/summary.json": "0c3b917432c71a9e8f0cf020ed76c746f4dd1a4b6b2d9c2783db7aa3a7bb4ef2",
+    "artifacts/drawer/final_targeted_vs_direct.json": "aa2f36c2fe150ee1566a01af4d23cf6aed28d45a484593e628adc55f431886c1"
+  }
+}

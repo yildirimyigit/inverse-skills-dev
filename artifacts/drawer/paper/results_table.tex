@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{Targeted versus direct learning on the drawer task.}
+\label{tab:drawer-targeted-direct}
+\begin{tabular}{@{}p{0.34\columnwidth}p{0.29\columnwidth}p{0.29\columnwidth}@{}}
+\toprule
+ & Targeted & Direct \\
+\midrule
+Inverse success, valid forward execution & 196/196 (49/49, 49/49, 49/49, 49/49) & 196/196 (49/49, 49/49, 49/49, 49/49) \\
+Full-pipeline success (incl. shared forward failure) & 196/200 (49/50, 49/50, 49/50, 49/50) & 196/200 (49/50, 49/50, 49/50, 49/50) \\
+Interactions to first reach $\geq$90\% validation & 12.5k, 7.5k, 10k, 10k (median 10k) & 25k, 17.5k, 22.5k, 25k (median 23.75k) \\
+Best / final validation (\%) & 100/100, 100/100, 100/100, 100/100 & 100/40, 100/100, 100/0, 100/100 \\
+Stayed $\geq$90\% after first reaching it & 4/4 runs & 2/4 runs \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}\parbox{\columnwidth}{\scriptsize Four SAC runs per method (seeds 0--3, listed in order), each at its validation-selected checkpoint, on the same 50 unseen configurations. The one shared failure is a forward PushClose that did not leave the drawer closed, so no inverse was attempted. Validation: 10 configurations every 2,500 interactions (budget 30k); it scores each method's learned part: the grasp for targeted, the restoration goal for direct. Four runs per method do not support strong statistical claims.}
+\end{table}
