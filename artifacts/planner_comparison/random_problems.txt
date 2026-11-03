@@ -1,0 +1,33 @@
+
+few literals: 20000 problems, up to 5 steps, seed 77
+      40  different holes
+    5699  no plan in either
+     816  plan only in exact mode
+      19  plan only in relaxed mode
+       1  same holes, other plan
+   13425  same plan
+      35  different holes: the causal preference refuses the relaxed plan's holes
+       5  different holes: these holes pass too, and the cost chose between them
+      17  plan only in relaxed mode: the causal preference refuses the relaxed plan's holes
+       2  plan only in relaxed mode: these holes pass, but the plan fails Used or a hole start
+       1  same holes, other plan: these holes pass too, and the cost chose between them
+
+chains: 20000 problems, up to 5 steps, seed 78
+       5  different holes
+    5726  no plan in either
+     642  plan only in exact mode
+       3  plan only in relaxed mode
+   13624  same plan
+       4  different holes: the causal preference refuses the relaxed plan's holes
+       1  different holes: these holes pass too, and the cost chose between them
+       2  plan only in relaxed mode: the causal preference refuses the relaxed plan's holes
+       1  plan only in relaxed mode: these holes pass, but the plan fails Used or a hole start
+
+Larger random domains, each run capped at 5 s. Medians are of the runs that finished.
+  10 literals, 10 actions, relaxed : median      0.13 ms, max      4.0 ms, over the cap 0/300
+  10 literals, 10 actions, exact   : median      0.90 ms, max    118.2 ms, over the cap 0/300
+  16 literals, 16 actions, relaxed : median      0.61 ms, max     15.7 ms, over the cap 0/150
+  16 literals, 16 actions, exact   : median     13.63 ms, max   1110.9 ms, over the cap 0/150
+  24 literals, 24 actions, relaxed : median      4.47 ms, max    292.1 ms, over the cap 0/60
+  24 literals, 24 actions, exact   : median    107.26 ms, max   4123.4 ms, over the cap 7/60
+wrote artifacts/planner_comparison/random_problems.json

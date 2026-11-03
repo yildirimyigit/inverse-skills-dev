@@ -53,6 +53,8 @@ artifacts/drawer/direct/*/*
 !artifacts/drawer/direct/*/*.json
 # The paper's figure and table, with the exact data behind them.
 !artifacts/drawer/paper/
+# The relaxed and exact planners compared: named scenarios and random problems.
+!artifacts/planner_comparison/
 checkpoints/
 logs/
 wandb/

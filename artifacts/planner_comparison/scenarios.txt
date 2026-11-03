@@ -1,0 +1,221 @@
+
+Stow
+  relaxed  pick(cube_b) > place(cube_b,src_b) > approach(cube_a) > HOLE[clear_of_walls(cube_a)] > pick(cube_a) > place(cube_a,src_a)
+           cost (1, 0, 2, 1, 6)  holes clear_of_walls(cube_a)@3  ties listed 0  replays True
+           expanded 44  0.48 ms
+  exact    pick(cube_b) > place(cube_b,src_b) > approach(cube_a) > HOLE[clear_of_walls(cube_a)] > pick(cube_a) > place(cube_a,src_a)
+           cost (1, 0, 2, 1, 6)  holes clear_of_walls(cube_a)@3  ties listed 0  replays True
+           expanded 95  54.29 ms
+  hole starts: same in both modes
+
+Stow, no interference model
+  relaxed  pick(cube_b) > place(cube_b,src_b) > approach(cube_a) > HOLE[clear_of_walls(cube_a)] > pick(cube_a) > place(cube_a,src_a)
+           cost (1, 0, 2, 1, 6)  holes clear_of_walls(cube_a)@3  ties listed 1  replays True
+           expanded 76  0.77 ms
+  exact    pick(cube_b) > place(cube_b,src_b) > approach(cube_a) > HOLE[clear_of_walls(cube_a)] > pick(cube_a) > place(cube_a,src_a)
+           cost (1, 0, 2, 1, 6)  holes clear_of_walls(cube_a)@3  ties listed 1  replays True
+           expanded 127  84.62 ms
+  hole starts: same in both modes
+
+Stow, library alone  {'max_delegated': 0}
+  relaxed  NO PLAN  capability gaps ['clear_of_walls(cube_a)', 'holding(cube_a)']  no soft score ['holding(cube_a)']
+           expanded n/a  0.17 ms
+  exact    NO PLAN within the limits  limits reached ['max_delegated']  no soft score ['holding(cube_a)']  not needed none  refused by the causal preference none  solvable with every hole True
+           expanded 15  2.25 ms
+  hole starts: same in both modes
+
+Stow, clear_of_walls has no soft score
+  relaxed  NO PLAN  capability gaps ['clear_of_walls(cube_a)', 'holding(cube_a)']  no soft score ['clear_of_walls(cube_a)', 'holding(cube_a)']
+           expanded n/a  0.16 ms
+  exact    NO PLAN within the limits  limits reached ['max_delegated', 'max_length']  no soft score ['clear_of_walls(cube_a)', 'holding(cube_a)']  not needed ['gripper_open()', 'in_region(cube_b,src_b)']  refused by the causal preference ['in_region(cube_a,src_a)']  solvable with every hole True
+           expanded 1408  121.83 ms
+  hole starts: same in both modes
+
+Drawer
+  relaxed  approach_handle(drawer) > HOLE[handle_grasped(drawer)] > pull_open(drawer)
+           cost (1, 0, 2, 1, 3)  holes handle_grasped(drawer)@1  ties listed 0  replays True
+           expanded 4  0.03 ms
+  exact    approach_handle(drawer) > HOLE[handle_grasped(drawer)] > pull_open(drawer)
+           cost (1, 0, 2, 1, 3)  holes handle_grasped(drawer)@1  ties listed 0  replays True
+           expanded 4  0.11 ms
+  hole starts: same in both modes
+
+Drawer, library alone  {'max_delegated': 0}
+  relaxed  NO PLAN  capability gaps ['handle_grasped(drawer)']  no soft score none
+           expanded n/a  0.01 ms
+  exact    NO PLAN within the limits  limits reached ['max_delegated']  no soft score none  not needed none  refused by the causal preference none  solvable with every hole True
+           expanded 2  0.06 ms
+  hole starts: same in both modes
+
+Drawer, scripted grasp in the library
+  relaxed  approach_handle(drawer) > grasp_handle(drawer) > pull_open(drawer)
+           cost (0, 0, 0, 0, 3)  holes none  ties listed 0  replays True
+           expanded 3  0.03 ms
+  exact    approach_handle(drawer) > grasp_handle(drawer) > pull_open(drawer)
+           cost (0, 0, 0, 0, 3)  holes none  ties listed 0  replays True
+           expanded 3  0.08 ms
+  hole starts: differ only for holes neither plan uses: {'drawer_closed(drawer)': {'relaxed': ['at_handle_standoff(drawer)', 'handle_grasped(drawer)'], 'exact': [['at_handle_standoff(drawer)'], ['handle_grasped(drawer)']]}, 'drawer_open(drawer)': {'relaxed': ['at_handle_standoff(drawer)', 'handle_grasped(drawer)'], 'exact': [['at_handle_standoff(drawer)'], ['handle_grasped(drawer)']]}}
+
+Drawer, no pull_open in the library
+  relaxed  approach_handle(drawer) > HOLE[drawer_open(drawer)]
+           cost (1, 0, 2, 1, 2)  holes drawer_open(drawer)@1  ties listed 0  replays True
+           expanded 2  0.02 ms
+  exact    approach_handle(drawer) > HOLE[drawer_open(drawer)]
+           cost (1, 0, 2, 1, 2)  holes drawer_open(drawer)@1  ties listed 0  replays True
+           expanded 2  0.04 ms
+  hole starts: same in both modes
+
+Delete interaction (make_q, use)
+  relaxed  NO PLAN  capability gaps none  no soft score none
+           expanded n/a  0.01 ms
+  exact    make_q > HOLE[p] > use
+           cost (1, 0, 1, 1, 3)  holes p@1  ties listed 0  replays True
+           expanded 6  0.18 ms
+  hole starts: same in both modes
+
+Delete interaction, p has no soft score
+  relaxed  NO PLAN  capability gaps none  no soft score none
+           expanded n/a  0.01 ms
+  exact    HOLE[q] > use
+           cost (1, 0, 1, 1, 2)  holes q@0  ties listed 0  replays True
+           expanded 4  0.11 ms
+  hole starts: same in both modes
+
+Delete interaction, q has no soft score
+  relaxed  NO PLAN  capability gaps none  no soft score none
+           expanded n/a  0.01 ms
+  exact    make_q > HOLE[p] > use
+           cost (1, 0, 1, 1, 3)  holes p@1  ties listed 0  replays True
+           expanded 4  0.12 ms
+  hole starts: same in both modes
+
+Delete interaction, only g has a soft score
+  relaxed  NO PLAN  capability gaps none  no soft score none
+           expanded n/a  0.01 ms
+  exact    NO PLAN within the limits  limits reached none  no soft score none  not needed none  refused by the causal preference ['g']  solvable with every hole True
+           expanded 2  0.09 ms
+  hole starts: same in both modes
+
+Consumed shared token
+  relaxed  NO PLAN  capability gaps none  no soft score none
+           expanded n/a  0.01 ms
+  exact    make_p > HOLE[token] > make_q
+           cost (1, 0, 1, 1, 3)  holes token@1  ties listed 1  replays True
+           expanded 11  0.19 ms
+  hole starts: same in both modes
+
+Producer destroys part of the goal
+  relaxed  NO PLAN  capability gaps none  no soft score none
+           expanded n/a  0.01 ms
+  exact    HOLE[p] > use_p
+           cost (1, 0, 1, 1, 2)  holes p@0  ties listed 0  replays True
+           expanded 6  0.12 ms
+  hole starts: same in both modes
+
+Chain of prerequisites
+  relaxed  HOLE[r] > make_p > use_p
+           cost (1, 0, 1, 1, 3)  holes r@0  ties listed 0  replays True
+           expanded 3  0.02 ms
+  exact    HOLE[r] > make_p > use_p
+           cost (1, 0, 1, 1, 3)  holes r@0  ties listed 0  replays True
+           expanded 4  0.15 ms
+  hole starts: same in both modes
+
+Conjunctive prerequisites
+  relaxed  HOLE[q] > HOLE[r] > make
+           cost (2, 0, 2, 2, 3)  holes q@0, r@1  ties listed 0  replays True
+           expanded 4  0.03 ms
+  exact    HOLE[q] > HOLE[r] > make
+           cost (2, 0, 2, 2, 3)  holes q@0, r@1  ties listed 0  replays True
+           expanded 4  0.14 ms
+  hole starts: same in both modes
+
+Pure cycle
+  relaxed  HOLE[g]
+           cost (1, 0, 1, 1, 1)  holes g@0  ties listed 0  replays True
+           expanded 2  0.03 ms
+  exact    HOLE[g]
+           cost (1, 0, 1, 1, 1)  holes g@0  ties listed 0  replays True
+           expanded 2  0.12 ms
+  hole starts: same in both modes
+
+Cycle with a way in
+  relaxed  HOLE[r] > q_from_r > g_from_q
+           cost (1, 0, 1, 1, 3)  holes r@0  ties listed 0  replays True
+           expanded 3  0.02 ms
+  exact    HOLE[r] > q_from_r > g_from_q
+           cost (1, 0, 1, 1, 3)  holes r@0  ties listed 0  replays True
+           expanded 4  0.21 ms
+  hole starts: same in both modes
+
+Negative goal needs a remover
+  relaxed  HOLE[k] > clear_x
+           cost (1, 0, 1, 1, 2)  holes k@0  ties listed 0  replays True
+           expanded 2  0.01 ms
+  exact    HOLE[k] > clear_x
+           cost (1, 0, 1, 1, 2)  holes k@0  ties listed 0  replays True
+           expanded 2  0.03 ms
+  hole starts: same in both modes
+
+Restoring a consumed fact needs r
+  relaxed  NO PLAN  capability gaps none  no soft score none
+           expanded n/a  0.01 ms
+  exact    make_q > HOLE[r] > make_p > use
+           cost (1, 0, 1, 1, 4)  holes r@1  ties listed 0  replays True
+           expanded 10  0.35 ms
+  hole starts: same in both modes
+
+Restoring a consumed fact cannot be learned
+  relaxed  NO PLAN  capability gaps none  no soft score none
+           expanded n/a  0.01 ms
+  exact    HOLE[q] > use
+           cost (1, 0, 1, 1, 2)  holes q@0  ties listed 0  replays True
+           expanded 4  0.15 ms
+  hole starts: same in both modes
+
+Goal producers destroy each other
+  relaxed  NO PLAN  capability gaps none  no soft score none
+           expanded n/a  0.01 ms
+  exact    make_g > HOLE[h]
+           cost (1, 0, 1, 1, 2)  holes h@1  ties listed 1  replays True
+           expanded 11  0.23 ms
+  hole starts: same in both modes
+
+A prerequisite nothing can establish
+  relaxed  NO PLAN  capability gaps ['r']  no soft score ['r']
+           expanded n/a  0.01 ms
+  exact    HOLE[p] > use_p
+           cost (1, 0, 1, 1, 2)  holes p@0  ties listed 0  replays True
+           expanded 2  0.03 ms
+  hole starts: same in both modes
+
+Prerequisites never held together
+  relaxed  NO PLAN  capability gaps none  no soft score none
+           expanded n/a  0.01 ms
+  exact    HOLE[p] > use
+           cost (1, 0, 1, 1, 2)  holes p@0  ties listed 0  replays True
+           expanded 4  0.08 ms
+  hole starts: same in both modes
+
+Hole start: facts that exclude each other
+  relaxed  NO PLAN  capability gaps ['g(o)']  no soft score none
+           expanded n/a  0.02 ms
+  exact    go_near > HOLE[g(o)]
+           cost (1, 0, 1, 1, 2)  holes g(o)@1  ties listed 1  replays True
+           expanded 3  0.06 ms
+  hole starts: DIFFER, so this is not a perfectly controlled comparison: {'g(o)': {'relaxed': ['far(o)', 'near(o)'], 'exact': [['far(o)'], ['near(o)']]}}
+
+Hole start: a fact only the relaxation reaches
+  relaxed  NO PLAN  capability gaps ['g(o)']  no soft score none
+           expanded n/a  0.01 ms
+  exact    HOLE[g(o)]
+           cost (1, 0, 1, 1, 1)  holes g(o)@0  ties listed 0  replays True
+           expanded 2  0.04 ms
+  hole starts: DIFFER, so this is not a perfectly controlled comparison: {'g(o)': {'relaxed': ['near(o)'], 'exact': [[]]}}
+
+26 scenarios: 10 with the same plan, 4 with no plan in either
+  a plan only in exact mode:   ['Delete interaction (make_q, use)', 'Delete interaction, p has no soft score', 'Delete interaction, q has no soft score', 'Consumed shared token', 'Producer destroys part of the goal', 'Restoring a consumed fact needs r', 'Restoring a consumed fact cannot be learned', 'Goal producers destroy each other', 'A prerequisite nothing can establish', 'Prerequisites never held together', 'Hole start: facts that exclude each other', 'Hole start: a fact only the relaxation reaches']
+  a plan only in relaxed mode: none
+  plans differ:                none
+  hole starts differ:          ['Drawer, scripted grasp in the library', 'Hole start: facts that exclude each other', 'Hole start: a fact only the relaxation reaches']
+wrote artifacts/planner_comparison/scenarios.json

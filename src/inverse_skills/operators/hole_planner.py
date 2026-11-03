@@ -315,7 +315,7 @@ def _closed_cycles(needs: dict[str, set[str]]) -> set[str]:
 
 def plan(domain: Domain, start: frozenset[str], goal_positive,
          goal_negative=None, *, max_delegated: int = 2, max_length: int = 10,
-         unrestricted_holes: bool = False) -> PlanResult | NoPlan:
+         unrestricted_holes: bool = False, mode: str = "relaxed") -> PlanResult | NoPlan:
     """Cheapest plan under the lexicographic cost, or a `NoPlan` report.
 
     Holes are offered only at the synthesizable capability gaps: the capability
@@ -324,7 +324,19 @@ def plan(domain: Domain, start: frozenset[str], goal_positive,
     `unrestricted_holes=True` is for ablations and debugging only: it offers a
     hole for every unreachable scored open condition and, failing that, for
     every scored open condition — the planner's behaviour before the gap rule.
+
+    `mode="exact"` is the optional alternative in `exact_hole_planner`: it finds
+    holes during the search with real transitions, and computes no gaps.
     """
+    if mode not in ("relaxed", "exact"):
+        raise ValueError(f"Unknown planning mode '{mode}'")
+    if mode == "exact":
+        if unrestricted_holes:
+            raise ValueError("unrestricted_holes is an option of the relaxed mode only")
+        # Imported here because the exact planner builds on this module.
+        from inverse_skills.operators.exact_hole_planner import plan_exact
+        return plan_exact(domain, start, goal_positive, goal_negative,
+                          max_delegated=max_delegated, max_length=max_length)
     goal_positive = set(goal_positive)
     goal_negative = set(goal_negative or ())
     reachable = relaxed_reachable(domain, start)
