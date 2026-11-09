@@ -23,9 +23,10 @@ declares about its own vocabulary and world:
                   sits in its mouth). They apply to library actions and holes alike.
 
 `plan` has two modes. `mode="exact"`, the default, is in `exact_hole_planner`: it
-judges holes by real transitions during the search. `mode="relaxed"` is this
-module's own gap analysis, below, kept for comparisons and for the
-`unrestricted_holes` ablation. Both use this module's `Domain` and the same cost.
+chooses the holes by real transitions, as the "Minimal Hole Planner" formulation
+defines, and then plans. `mode="relaxed"` is this module's own gap analysis, below,
+kept for comparisons and for the `unrestricted_holes` ablation. Both use this
+module's `Domain` and report the same five cost numbers.
 
 In the relaxed mode, which predicates may become holes is derived in advance. A
 hole belongs at an irreducible missing capability, never at a literal the library
@@ -40,12 +41,13 @@ of them lack a soft score; it never widens the search to other literals.
 (`unrestricted_holes=True` restores the old, unrestricted candidates, for
 ablations and debugging only.)
 
-Plans are ordered lexicographically by
+The relaxed mode orders plans lexicographically by
 
     (predicates delegated, collateral disturbances, literals holes change,
      holes, length)
 
-in words: use the library as much as possible; do not displace objects the plan
+and every result reports these five numbers as `cost`. The exact mode minimizes
+the first, second and fifth only. In words, the relaxed order is: use the library as much as possible; do not displace objects the plan
 is not acting on, because where they end up is unknown; delegate the smallest
 change; then the fewest learned steps; then the shortest plan. Equally cheap
 plans are returned beside the chosen one, so an ordering the model does not
@@ -321,13 +323,15 @@ def _closed_cycles(needs: dict[str, set[str]]) -> set[str]:
 def plan(domain: Domain, start: frozenset[str], goal_positive,
          goal_negative=None, *, max_delegated: int = 2, max_length: int = 10,
          unrestricted_holes: bool = False, mode: str = "exact") -> PlanResult | NoPlan:
-    """Cheapest plan under the lexicographic cost, or a `NoPlan` report.
+    """Cheapest plan under the mode's lexicographic cost, or a `NoPlan` report.
 
-    `mode="exact"`, the default, is in `exact_hole_planner`: it finds holes during
-    the search with real transitions, and computes no gaps.
+    `mode="exact"`, the default, is in `exact_hole_planner`: it chooses the holes by
+    real transitions first, then plans, and computes no gaps. It has no length limit,
+    so `max_length` does not apply to it; `max_delegated` is its learning budget.
 
     `mode="relaxed"` offers holes only at the synthesizable capability gaps: the
-    capability gaps with a soft score. Both sets are reported either way.
+    capability gaps with a soft score. Both sets are reported either way. Its search
+    stops at `max_length` steps.
 
     `unrestricted_holes=True` needs `mode="relaxed"` named, and is for ablations and
     debugging only: it offers a hole for every unreachable scored open condition and,
@@ -340,8 +344,7 @@ def plan(domain: Domain, start: frozenset[str], goal_positive,
             raise ValueError("unrestricted_holes is an option of the relaxed mode only")
         # Imported here because the exact planner builds on this module.
         from inverse_skills.operators.exact_hole_planner import plan_exact
-        return plan_exact(domain, start, goal_positive, goal_negative,
-                          max_delegated=max_delegated, max_length=max_length)
+        return plan_exact(domain, start, goal_positive, goal_negative, max_delegated=max_delegated)
     goal_positive = set(goal_positive)
     goal_negative = set(goal_negative or ())
     reachable = relaxed_reachable(domain, start)

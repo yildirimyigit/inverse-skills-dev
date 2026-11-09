@@ -1,105 +1,76 @@
 """The exact-transition planner: the default mode of `hole_planner.plan`.
 
-The relaxed mode first decides where holes may go (`capability_gaps`, computed
-with delete effects ignored) and then searches. A delete interaction can hide a gap
-from that first step, and the planner then reports no plan. This module decides with
-real transitions instead, with the same `Domain`, the same lexicographic cost and the
-same hole action. It never calls `relaxed_reachable` or `capability_gaps`.
+This module implements the "Minimal Hole Planner" formulation. It judges holes by real
+transitions, with the same `Domain` and the same hole action as the relaxed mode, and it never
+calls `relaxed_reachable` or `capability_gaps`.
 
-A hole stands for a skill somebody must learn, so the holes of a plan must pass two
-separate tests. The first is a fact about the problem. The second is a design choice
-about what to learn, and it is made before the cost is looked at. "What is exact, and
-what is not" below keeps the two apart.
+The model
 
-Exact feasibility and necessity. Run the library and holes for a set of literals R, in
-every order, with every delete effect, and no step limit:
+  Library   The library operators are assumed complete and correct under the modelled
+            transition semantics, `Domain.transition`. That transition applies an action's own
+            add and delete effects together with the domain's world constraints: implications,
+            mutex groups and disturbances. An effect a world constraint gives a library action is
+            that action's effect, and this module reads library effects only through the
+            transition and `Domain.closure`.
+  Holes     A hole for a scored literal l adds l and deletes nothing itself. It runs only while
+            l is false, from a largest set of robot-relative facts about l's object that the
+            library really holds together (`hole_starts`). The world constraints give it its
+            other effects, as they do for library actions.
 
-  Feasible(R)      The goal can be reached that way.
-  Necessary(l, R)  The goal cannot be reached that way once l is taken out of R.
+Definitions, with k = `max_delegated`, the learning budget
 
-If every literal of R is necessary, no subset of R solves the problem, so R is
-subset-minimal. It says nothing about other sets: in a chain r -> p -> goal, {r}, {p} and
-{goal} all pass, and they all have one literal.
+  C           The candidates: scored literals that are goal literals or preconditions of some
+              library action.
+  F(H)        H is feasible: the library and holes for H reach the goal, in any order and at any
+              length. Decided by exhaustive search (`reachable_states`).
+  Minimal     F(H) holds, and F(H - {l}) fails for every l in H.
+  U(l)        The candidates strictly upstream of l. The producer graph has an edge from l to u
+              when a library action adds l, counting what its additions imply, does not need l,
+              and needs u. u is upstream of l when a path leads from l to u and none leads back.
+  Admissible  |H| <= k, H is minimal, and no l in H has a replacement: a set R within
+              (H - {l}) | U(l) with |R| <= k and F(R).
+  Cost        (holes, displaced literals, length), compared lexicographically.
 
-Causal preference. Literal u is upstream of l if a library way of establishing l depends
-on u and u does not depend on l. A way of establishing l is an action that adds it, or one
-that clears something such an action needs absent. It depends on what it needs, and on
-what it uses up, since restoring that is also a repair. See `upstream`. Inside a cycle
-nothing is upstream of anything, because a cycle has no unique root.
+The algorithm. For i = 0, 1, ..., min(k, |C|), collect the admissible sets of size i, and stop at
+the first size that has any. For each of those sets, run a uniform-cost search over the library
+and its holes, ordered by (displaced, length), with no length limit. Return the cheapest plan with
+the equally cheap ones. If no size up to k has an admissible set, return `ExactNoPlan`.
 
-  Upstream repair  A hole for l is refused if the goal can be reached without it, given
-                   holes for the plan's other literals and for every learnable literal
-                   upstream of l. That alternative is judged by real transitions like any
-                   other, so a repair that cannot really work refuses nothing.
-  Last resort      A hole for a goal literal the library can establish replaces an action
-                   that achieves the goal, so it comes last. It is refused if the goal can be
-                   reached by holes for literals that are not such goal literals and do not
-                   depend on it. Such a goal literal also never counts as a repair for a literal
-                   that is not one.
-  Waiting          A hole for a goal literal is also refused if an action establishing it
-                   cannot run as things are, but would run if its prerequisites could be
-                   learned, including ones that cannot. The goal is not what is missing, so
-                   the planner reports it rather than work around the library. This is the
-                   one test that uses holes nobody could learn, and they never enter a plan.
+What is guaranteed
 
-So a goal hole stays possible if nothing establishes the literal, if the actions that do
-cannot run even then, or if they run but destroy other goal literals and no repair
-elsewhere solves that. An upstream literal that cannot be learned is no repair, so a hole
-can go at a learnable literal downstream of it.
+  - A returned plan runs under the transition model and reaches the goal.
+  - Its holes are subset-minimal: no proper subset of them reaches the goal at any length, so
+    every plan for them uses all of them, and the library alone cannot reach the goal. This is
+    not minimum cardinality. The preference can choose more holes than the fewest that reach the
+    goal, though never more than k.
+  - The preference never blocks a plan: if some set of at most k candidates is feasible, an
+    admissible set exists. Upstream is a strict partial order, and every replacement moves to
+    literals strictly lower in it, so refusals cannot go round in a circle.
+  - `ExactNoPlan` is exact relative to the candidate set C, the budget k and the symbolic
+    transition model: it is returned if and only if no set of at most k candidates is feasible.
+    `feasible_with_all_holes` then says whether holes for every candidate would be.
+  - Among the admissible sets of the smallest size, the plan has the least (displaced, length).
 
-The other rules are about plans:
+What is a design choice, not a fact
 
-  Offered          In a state of the search, a hole is offered for a scored literal that
-                   the goal, or a library action that can contribute to the goal, is still
-                   missing. "Can contribute" is a backward walk over actions' preconditions
-                   and effects (`relevant_actions`). It says nothing about what can be reached.
-  Used             A later relevant step, or the goal, must use what the hole established
-                   before it is lost. A hole nothing uses is not accepted.
+  - The upstream preference. It reads positive preconditions only: what a library producer
+    needs, not what it deletes, needs absent or interferes with. It is not a complete
+    causal-dependency analysis, and it does not show that the preferred skill is easier to learn.
+    It decides which subset-minimal set is learned, and its answer can depend on k, because a
+    replacement must fit the budget.
+  - Ties. Plans of equal cost are all reported, except orderings that pass through the same state
+    at the same cost, which are merged into one.
 
-Among the plans that pass, the search returns the cheapest under the lexicographic cost.
-
-Hole starts use `Domain.hole` unchanged, but its `reachable` argument comes from the
-states the library really reaches from the start, not from the relaxation (see
-`hole_starts`). The two modes therefore give a hole the same start unless the
-relaxation claims a fact the library cannot really establish, or two facts the
-library cannot hold together. In that second case the relaxed start can never be
-satisfied, and here the hole gets one start for each set of facts that do hold together.
-
-What is exact, and what is not.
-
-Exact reachability. These are facts about the problem, from exhaustive search of the real
-transitions, and they do not depend on `max_length` or `max_delegated`:
-  - A returned plan runs and reaches the goal.
-  - Its literals are subset-minimal: no smaller set of them solves the problem at any length,
-    and if it has holes, the library alone cannot solve the problem at any length.
-  - `feasible_with_all_holes` False proves the offered holes cannot solve the problem.
-
-Causal preference. These are design choices. They decide which holes are chosen, and they
-prove nothing about what can be solved or learned:
-  - Upstream repair and Last resort refuse a hole only if real holes that can be learned reach
-    the goal by real transitions. No chain of such refusals leads back to where it began, so
-    if some set of holes can reach the goal, one that passes these two tests can too.
-  - Keeping the library's operators is why an upstream repair is preferred. It does not mean
-    the chosen skill is easier to learn, or that it can be learned at all. With `use` needing
-    p and q, and `make_q` consuming p, make_q -> HOLE[p] -> use is chosen although
-    HOLE[q] -> use is cheaper.
-  - Waiting is a counterfactual, not a reachability fact. It asks what would run if holes
-    nobody can learn existed, and it can refuse a goal hole the goal cannot be reached
-    without. So `ExactNoPlan` with `replaceable_holes` and `feasible_with_all_holes` True does
-    not mean the problem cannot be solved. It means this rule, or Used, refused the plans.
-  - The walk behind `upstream` reads preconditions and effects, and ignores what can be reached.
-    Replacing a literal is tested one literal at a time.
-
-Search limits. The returned plan is the cheapest plan passing every rule within the limits,
-and the cheapest at any length if `limits_reached` does not name `max_length`. An
-`ExactNoPlan` that names no limit means no plan passes these rules at any length; one that
-names a limit proves nothing. All of this rests on exhaustive search of finite state spaces,
-which can grow quickly on large domains.
+`ExactPlanResult.cost` keeps the five numbers every planning result reports: holes, displaced
+literals, literals the holes change, hole steps, length. This mode minimizes the first, second and
+fifth, which `ExactPlanResult.planning_cost` gives. The search is exhaustive over finite state
+spaces, so it is exponential in the worst case.
 """
 
 from __future__ import annotations
 
 import heapq
+import itertools
 from dataclasses import dataclass
 
 from inverse_skills.operators.hole_planner import Action, Domain, NoPlan, PlanResult
@@ -107,19 +78,21 @@ from inverse_skills.operators.hole_planner import Action, Domain, NoPlan, PlanRe
 
 @dataclass(frozen=True)
 class HoleContext:
-    """One hole of a plan: what it must do, where it sits, and why it is there."""
+    """One hole of a plan: what it must do, where it sits, and what needs it."""
 
     literal: str                      # the ground predicate it must establish
     index: int                        # its position in the plan
     state_before: frozenset[str]      # the symbolic state immediately before it
-    used_by: str                      # the later step, or "goal", that uses what it establishes
-    used_at: int | None               # that step's position in the plan; None for the goal
-    waiting: tuple[str, ...]          # what was missing this literal in that state: relevant
-                                      # library actions, and "goal" if the goal needs it
+    used_by: str                      # the first later step that needs what it establishes, "goal"
+                                      # if only the goal does, or "none" if neither does: the hole
+                                      # is then needed only for its forced effects
+    used_at: int | None               # that step's position in the plan; None otherwise
+    waiting: tuple[str, ...]          # what needs this literal: the library actions that have it as
+                                      # a precondition, and "goal" if the goal needs it
     prefix: tuple[str, ...]           # the plan up to the hole
     suffix: tuple[str, ...]           # the plan after the hole
     # Each library action that establishes the literal, and what happens if it takes the hole's
-    # place in this plan. The test that it cannot do the job in any order is `Necessary`.
+    # place in this plan. The test that it cannot do the job in any order is minimality.
     library_alternatives: tuple[tuple[str, str], ...] = ()
 
     def to_dict(self) -> dict:
@@ -134,32 +107,35 @@ class HoleContext:
 class ExactPlanResult(PlanResult):
     """A `PlanResult` that also says why each hole is in the plan.
 
-    `candidates` lists the literals holes were offered for during the search. The
-    inherited gap fields stay empty: this mode computes no flat set of gaps. If
-    `limits_reached` does not name `max_length`, the step limit changed nothing and this
-    is the cheapest passing plan at any length.
+    `candidates` is the candidate set C. The inherited gap fields stay empty: this mode computes
+    no flat set of gaps. `limits_reached` is always empty: there is no length limit, and a plan
+    is returned only within the budget.
     """
 
     hole_contexts: tuple[HoleContext, ...] = ()
     limits_reached: tuple[str, ...] = ()
 
+    @property
+    def planning_cost(self) -> tuple[int, int, int]:
+        """The cost this mode minimizes: (holes, displaced literals, length)."""
+        return (len(self.delegated), self.collateral, len(self.actions))
+
 
 @dataclass(frozen=True)
 class ExactNoPlan(NoPlan):
-    """No plan passes the rules within these limits. `limits_reached` names any limit that
-    cut the search short; with one, this proves nothing about the problem.
+    """No set of at most `max_delegated` candidates reaches the goal, at any length.
 
-    `feasible_with_all_holes` is exact and ignores the limits: can the goal be reached at all
-    with the library and holes for every offered literal? False is a proof that these holes
-    cannot solve the problem. True means holes can, and the limits or the rules refused them,
-    so this report is then about the rules, not about whether the problem can be solved.
+    This is exact relative to the candidate set (`candidates`), the budget and the symbolic
+    transition model. `feasible_with_all_holes` says whether holes for every candidate would
+    reach the goal: False means no number of candidate holes can; True means more than
+    `max_delegated` are needed, and `limits_reached` then names "max_delegated".
 
-    `unmet_needs` are literals the goal or a relevant action needs that the library alone
-    never established; `unsynthesizable_needs` are those without a soft score, which no
-    hole can be offered for. The literals of plans that reached the goal but were refused are
-    `unnecessary_holes`, if the goal can be reached without them, or `replaceable_holes`, if
-    they are needed but the causal preference refused them. The inherited gap fields stay
-    empty, as in `ExactPlanResult`.
+    `unmet_needs` are goal literals and library preconditions the library alone never makes
+    true; `unsynthesizable_needs` are those without a soft score, which no hole can be offered
+    for. `max_length` is 0, because there is no length limit. `unnecessary_holes` and
+    `replaceable_holes` are always empty: when some set within the budget is feasible, an
+    admissible one exists, so no plan was refused. They and `expanded` stay for callers that
+    read every field. The inherited gap fields stay empty, as in `ExactPlanResult`.
     """
 
     limits_reached: tuple[str, ...] = ()
@@ -173,34 +149,9 @@ class ExactNoPlan(NoPlan):
     expanded: int = 0
 
 
-def relevant_actions(domain: Domain, goal_positive, goal_negative=()) -> list[Action]:
-    """The library actions that can contribute to the goal, found by working backward.
-
-    An action is relevant if it establishes a literal that is wanted, or removes one that
-    is unwanted; its preconditions then become wanted, and what it needs absent becomes
-    unwanted. This looks only at preconditions and effects, never at what can be reached.
-    """
-    wanted = set(goal_positive)
-    unwanted = set(goal_negative)
-    relevant: list[Action] = []
-    found = True
-    while found:
-        found = False
-        for action in domain.actions:
-            if action in relevant:
-                continue
-            if domain.closure(action.add) & wanted or domain.removes(action) & unwanted:
-                relevant.append(action)
-                wanted |= action.pre
-                unwanted |= action.pre_absent
-                found = True
-    return [action for action in domain.actions if action in relevant]
-
-
 def reachable_states(domain: Domain, start: frozenset[str], holes=()) -> set[frozenset[str]]:
     """Every state reachable from `start` with the library and `holes`, by real transitions,
-    in any order. No step limit applies, so the answer does not depend on the search's limits.
-    A hole is usable only while its literal is missing, as in the search."""
+    in any order. No step limit applies. A hole is usable only while its literal is missing."""
     seen = {start}
     frontier = [start]
     while frontier:
@@ -234,121 +185,148 @@ def hole_starts(domain: Domain, key: str, states) -> list[Action]:
 
 
 def _establishers(domain: Domain, literal: str) -> list[Action]:
-    """The library actions that can establish `literal`. One that already needs it cannot."""
+    """The library actions that add `literal`, counting what their additions imply. One that
+    already needs it does not establish it."""
     return [action for action in domain.actions
             if literal in domain.closure(action.add) and literal not in action.pre]
 
 
-def _ways_of_establishing(domain: Domain, literal: str) -> list[Action]:
-    """Its establishers, and the actions that clear their way by removing what they need absent."""
-    ways = _establishers(domain, literal)
-    pending = list(ways)
-    while pending:
-        blocked = pending.pop()
-        for other in domain.actions:
-            if other not in ways and blocked.pre_absent & domain.removes(other):
-                ways.append(other)
-                pending.append(other)
-    return ways
+def _producer_edges(domain: Domain) -> dict[str, set[str]]:
+    """The producer graph: an edge from l to u when a library action establishes l and needs u.
+    Only positive preconditions are read."""
+    edges: dict[str, set[str]] = {}
+    for action in domain.actions:
+        for literal in domain.closure(action.add) - action.pre:
+            edges.setdefault(literal, set()).update(action.pre)
+    return edges
 
 
-def _dependencies(domain: Domain, literal: str, used_up: bool) -> set[str]:
-    """Every literal a way of establishing `literal` needs, directly or not. With `used_up`,
-    also every literal such a way deletes. This walks over preconditions and effects only."""
+def _below(edges: dict[str, set[str]], literal: str) -> set[str]:
+    """Every literal that a path of one or more edges reaches from `literal`."""
     found: set[str] = set()
     pending = [literal]
     while pending:
-        for action in _ways_of_establishing(domain, pending.pop()):
-            for fact in (action.pre | action.delete if used_up else action.pre):
-                if fact not in found:
-                    found.add(fact)
-                    pending.append(fact)
+        for following in edges.get(pending.pop(), ()):
+            if following not in found:
+                found.add(following)
+                pending.append(following)
     return found
 
 
-def _strict_dependencies(domain: Domain, literal: str, used_up: bool) -> set[str]:
-    """The dependencies of `literal` that do not depend on it in turn. Members of a cycle with
-    it are left out: a cycle has no unique root, so the cost chooses among them."""
-    return {other for other in _dependencies(domain, literal, used_up)
-            if other != literal and literal not in _dependencies(domain, other, used_up)}
-
-
-def prerequisites(domain: Domain, literal: str) -> set[str]:
-    """What establishing `literal` needs, strictly."""
-    return _strict_dependencies(domain, literal, used_up=False)
-
-
 def upstream(domain: Domain, literal: str) -> set[str]:
-    """Where a repair may go instead of a hole for `literal`: what establishing it needs, and
-    what it uses up. Actions that only destroy each other's effects are a cycle in the second
-    sense, so neither is upstream of the other, although neither needs the other. Asked
-    separately, a literal that is needed stays upstream when establishing it destroys its user.
-    A chain of these always ends, because no literal can lead back to itself."""
-    return prerequisites(domain, literal) | _strict_dependencies(domain, literal, used_up=True)
+    """The literals strictly upstream of `literal`: reached from it in the producer graph, with
+    no path back. Members of a cycle are not upstream of each other."""
+    edges = _producer_edges(domain)
+    return {other for other in _below(edges, literal)
+            if other != literal and literal not in _below(edges, other)}
 
 
 class _HoleSets:
-    """What real transitions say about sets of holes. Each answer comes from an exhaustive
-    search with no step limit, so none depends on a plan's ordering or on the search's limits."""
+    """What real transitions say about sets of holes, and which sets the definitions admit.
+    Each answer comes from an exhaustive search with no step limit."""
 
     def __init__(self, domain: Domain, start: frozenset[str], goal_positive: set[str],
-                 goal_negative: set[str], learnable: set[str]):
+                 goal_negative: set[str], budget: int):
         self.domain = domain
         self.start = start
         self.goal_positive = goal_positive
         self.goal_negative = goal_negative
-        self.learnable = learnable
-        self.last_resort = {literal for literal in goal_positive if _establishers(domain, literal)}
+        self.budget = budget
         self.library = library_states(domain, start)
+        self.needs = goal_positive | {literal for action in domain.actions for literal in action.pre}
+        self.candidates = frozenset(self.needs & domain.scored)
+
+        edges = _producer_edges(domain)
+        below: dict[str, set[str]] = {}
+
+        def reached_from(literal: str) -> set[str]:
+            if literal not in below:
+                below[literal] = _below(edges, literal)
+            return below[literal]
+
+        self.upstream = {literal: {other for other in reached_from(literal) & self.candidates
+                                   if other != literal and literal not in reached_from(other)}
+                         for literal in self.candidates}
+        self._starts: dict[str, list[Action]] = {}
         self._reached = {frozenset(): self.library}
-        self._verdicts: dict[frozenset[str], tuple[set[str], set[str]]] = {}
+
+    def holes(self, literals) -> list[Action]:
+        for literal in literals:
+            if literal not in self._starts:
+                self._starts[literal] = hole_starts(self.domain, literal, self.library)
+        return [hole for literal in sorted(literals) for hole in self._starts[literal]]
 
     def states(self, literals) -> set[frozenset[str]]:
         literals = frozenset(literals)
         if literals not in self._reached:
-            holes = [hole for literal in sorted(literals)
-                     for hole in hole_starts(self.domain, literal, self.library)]
-            self._reached[literals] = reachable_states(self.domain, self.start, holes)
+            self._reached[literals] = reachable_states(self.domain, self.start, self.holes(literals))
         return self._reached[literals]
 
     def feasible(self, literals) -> bool:
+        """F: the goal is reachable with the library and holes for `literals`."""
         return any(self.goal_positive <= state and not (self.goal_negative & state)
                    for state in self.states(literals))
 
-    def verdict(self, hole_set: frozenset[str]) -> tuple[set[str], set[str]]:
-        """The literals of `hole_set` that fail exact necessity, and the rest that the causal
-        preference refuses. This depends only on the set, so each set is judged once."""
-        if hole_set not in self._verdicts:
-            unnecessary = {literal for literal in hole_set if self.feasible(hole_set - {literal})}
-            refused = {literal for literal in hole_set - unnecessary
-                       if self.feasible((hole_set - {literal}) | self._repairs_instead_of(literal))
-                       or (literal in self.goal_positive and self._waits(literal, hole_set))}
-            self._verdicts[hole_set] = (unnecessary, refused)
-        return self._verdicts[hole_set]
+    def minimal(self, hole_set: frozenset[str]) -> bool:
+        return self.feasible(hole_set) and not any(self.feasible(hole_set - {literal})
+                                                   for literal in hole_set)
 
-    def _repairs_instead_of(self, literal: str) -> set[str]:
-        """The learnable literals that should be tried before a hole for `literal`."""
-        above = upstream(self.domain, literal) & self.learnable
-        if literal not in self.last_resort:
-            return above - self.last_resort
-        elsewhere = {other for other in self.learnable - self.last_resort
-                     if literal not in _dependencies(self.domain, other, used_up=True)}
-        return above | elsewhere
+    def replaceable(self, hole_set: frozenset[str], literal: str) -> bool:
+        """Some set of at most k literals, drawn from the other holes and the candidates upstream
+        of `literal`, is feasible. Adding holes never makes the goal unreachable, so only the
+        sets of size min(k, |pool|) need a test."""
+        pool = sorted((hole_set - {literal}) | self.upstream[literal])
+        size = min(self.budget, len(pool))
+        return any(self.feasible(chosen) for chosen in itertools.combinations(pool, size))
 
-    def _waits(self, literal: str, hole_set: frozenset[str]) -> bool:
-        """Would an action establishing this goal literal run if its prerequisites could be
-        learned, although it cannot run as things are? This is the one counterfactual here: it
-        uses holes nobody may be able to learn, so it can refuse a hole that is exactly necessary."""
-        others = hole_set - {literal}
-        needed = prerequisites(self.domain, literal)
-        as_things_are = self.states(others | (needed & self.learnable))
-        if_learned = self.states(others | needed)
+    def admissible(self, hole_set: frozenset[str]) -> bool:
+        return (len(hole_set) <= self.budget and self.minimal(hole_set)
+                and not any(self.replaceable(hole_set, literal) for literal in hole_set))
 
-        def runs(states, action):
-            return any(self.domain.applicable(state, action) for state in states)
+    def smallest_admissible_sets(self) -> list[frozenset[str]]:
+        """The admissible sets of the smallest size up to k, or none."""
+        for size in range(min(self.budget, len(self.candidates)) + 1):
+            found = [frozenset(chosen) for chosen in itertools.combinations(sorted(self.candidates), size)
+                     if self.admissible(frozenset(chosen))]
+            if found:
+                return found
+        return []
 
-        return any(runs(if_learned, action) and not runs(as_things_are, action)
-                   for action in _establishers(self.domain, literal))
+
+def _cheapest_plans(domain: Domain, start: frozenset[str], satisfied, holes: list[Action]):
+    """Uniform-cost search over the library and `holes`, ordered by (displaced, length), with no
+    length limit. A node is a state. Returns the least cost, the plans found at that cost, and how
+    many states were expanded. Equally cheap orderings through one state are merged."""
+    queue = [((0, 0), 0, start, ())]
+    settled: set[frozenset[str]] = set()
+    best: tuple[int, int] | None = None
+    plans: list[tuple[Action, ...]] = []
+    expanded = 0
+    counter = 0
+    while queue:
+        key, _, state, taken = heapq.heappop(queue)
+        if best is not None and key > best:
+            break
+        if state in settled:
+            continue
+        settled.add(state)
+        expanded += 1
+        for action in domain.actions + [hole for hole in holes if hole.hole_for not in state]:
+            if not domain.applicable(state, action):
+                continue
+            nxt, displaced = domain.transition(state, action)
+            if nxt == state:
+                continue
+            next_key = (key[0] + len(displaced), key[1] + 1)
+            if satisfied(nxt):
+                if best is None or next_key < best:
+                    best, plans = next_key, []
+                if next_key == best:
+                    plans.append(taken + (action,))
+                continue
+            counter += 1
+            heapq.heappush(queue, (next_key, counter, nxt, taken + (action,)))
+    return best, plans, expanded
 
 
 def _library_alternatives(domain, before, key, suffix) -> tuple[tuple[str, str], ...]:
@@ -372,26 +350,28 @@ def _library_alternatives(domain, before, key, suffix) -> tuple[tuple[str, str],
     return tuple(reasons)
 
 
-def _hole_context(domain, start, steps, index, relevant, goal_positive) -> HoleContext:
+def _hole_context(domain, start, steps, index, goal_positive) -> HoleContext:
     before = start
     for step in steps[:index]:
         before = domain.apply(before, step)
     hole = steps[index]
     key = hole.hole_for
 
-    # Follow what the hole established to its first user, by the rule the search applied.
+    # Follow what the hole established to the first later step that needs it.
     state = domain.apply(before, hole)
     established = (domain.closure(hole.add) - before) & state
-    used_by, used_at = "goal", None
+    used_by, used_at = None, None
     for later in range(index + 1, len(steps)):
         step = steps[later]
-        if established & step.pre and (step in relevant or step.hole_for):
+        if established & step.pre:
             used_by, used_at = step.name, later
             break
         state = domain.apply(state, step)
         established &= state
+    if used_by is None:
+        used_by = "goal" if established & goal_positive else "none"
 
-    waiting = [action.name for action in relevant if key in action.pre]
+    waiting = [action.name for action in domain.actions if key in action.pre]
     if key in goal_positive:
         waiting.append("goal")
     return HoleContext(
@@ -407,11 +387,22 @@ def _hole_context(domain, start, steps, index, relevant, goal_positive) -> HoleC
     )
 
 
+def _literals_the_holes_change(domain: Domain, start: frozenset[str], steps) -> int:
+    """Reported in `cost`, not minimized: the literals each hole step changes, apart from those
+    a disturbance displaces."""
+    state, changed = start, 0
+    for step in steps:
+        nxt, displaced = domain.transition(state, step)
+        if step.hole_for is not None:
+            changed += len((nxt ^ state) - displaced)
+        state = nxt
+    return changed
+
+
 def plan_exact(domain: Domain, start, goal_positive, goal_negative=None, *,
-               max_delegated: int = 2, max_length: int = 10) -> ExactPlanResult | ExactNoPlan:
-    """The cheapest plan under the lexicographic cost whose holes pass the rules in this
-    module's docstring, or an `ExactNoPlan` report. The same as
-    `hole_planner.plan(..., mode="exact")`.
+               max_delegated: int = 2) -> ExactPlanResult | ExactNoPlan:
+    """The cheapest plan whose holes form an admissible set, or an `ExactNoPlan` report, as the
+    module docstring defines them. The same as `hole_planner.plan(..., mode="exact")`.
     """
     start = frozenset(start)
     goal_positive = set(goal_positive)
@@ -423,113 +414,41 @@ def plan_exact(domain: Domain, start, goal_positive, goal_negative=None, *,
     if satisfied(start):
         return ExactPlanResult((), (), (), 0, 0, (), 0)
 
-    relevant = relevant_actions(domain, goal_positive, goal_negative)
-    needs = goal_positive | {literal for action in relevant for literal in action.pre}
-    learnable = needs & domain.scored
-    hole_sets = _HoleSets(domain, start, goal_positive, goal_negative, learnable)
-    holes = {key: hole_starts(domain, key, hole_sets.library) for key in sorted(learnable)}
-
-    counter = 0
-    shortest: dict[tuple, int] = {}   # node -> fewest steps it was explored with
-    goals: list[tuple[tuple, tuple[Action, ...]]] = []
-    best_key: tuple | None = None
-    expanded = 0
-    offered: set[str] = set()
-    limits_reached: set[str] = set()
-    unnecessary_holes: set[str] = set()
-    replaceable_holes: set[str] = set()
-    queue = [((0, 0, 0, 0, 0), counter, start, (), frozenset(), frozenset())]
-
-    while queue:
-        key, _, state, taken, delegated, unused = heapq.heappop(queue)
-        if best_key is not None and key > best_key:
-            break
-        # As in `hole_planner._search`, but whether a plan is accepted also depends on what
-        # holes established that nothing has used yet (`unused`), so that is part of the node.
-        # Necessity and the causal preference depend only on `delegated`, which is too.
-        # So two paths that share a node can finish in exactly the same ways.
-        node = (state, delegated, unused)
-        length = key[4]
-        if node in shortest and shortest[node] <= length:
-            continue
-        shortest[node] = length
-        expanded += 1
-        if length >= max_length:
-            limits_reached.add("max_length")
-            continue
-
-        missing = [literal for literal in holes if literal not in state]
-        offered.update(missing)
-        for action in domain.actions + [hole for literal in missing for hole in holes[literal]]:
-            if not domain.applicable(state, action):
-                continue
-            nxt, collateral = domain.transition(state, action)
-            if nxt == state:
-                continue
-            next_delegated = delegated
-            changed = 0
-            if action.hole_for is not None:
-                next_delegated = delegated | {action.hole_for}
-                if len(next_delegated) > max_delegated:
-                    limits_reached.add("max_delegated")
-                    continue
-                changed = len((nxt ^ state) - collateral)
-
-            # Used: this step uses what it needs. What holes established and nothing has used
-            # yet must survive to the goal, and the goal must need it.
-            is_user = action.hole_for is not None or action in relevant
-            next_unused = {facts & nxt for facts in unused if not (is_user and facts & action.pre)}
-            if action.hole_for is not None:
-                next_unused.add(frozenset(domain.closure(action.add) - state) & nxt)
-
-            next_key = (len(next_delegated), key[1] + len(collateral), key[2] + changed,
-                        key[3] + (action.hole_for is not None), key[4] + 1)
-            next_taken = taken + (action,)
-            if satisfied(nxt):
-                unnecessary, refused = hole_sets.verdict(next_delegated)
-                unnecessary_holes |= unnecessary
-                replaceable_holes |= refused
-                goal_uses_the_rest = all(facts & goal_positive for facts in next_unused)
-                if not unnecessary and not refused and goal_uses_the_rest:
-                    if best_key is None or next_key < best_key:
-                        best_key = next_key
-                    goals.append((next_key, next_taken))
-                continue
-            counter += 1
-            heapq.heappush(queue, (next_key, counter, nxt, next_taken, next_delegated,
-                                   frozenset(next_unused)))
-
-    if best_key is None:
-        library_reached = set().union(*hole_sets.library)
-        unmet = needs - library_reached
-        return ExactNoPlan(candidates=tuple(sorted(offered)),
-                           limits_reached=tuple(sorted(limits_reached)),
+    hole_sets = _HoleSets(domain, start, goal_positive, goal_negative, max_delegated)
+    admissible = hole_sets.smallest_admissible_sets()
+    if not admissible:
+        feasible = hole_sets.feasible(hole_sets.candidates)
+        unmet = hole_sets.needs - set().union(*hole_sets.library)
+        return ExactNoPlan(candidates=tuple(sorted(hole_sets.candidates)),
+                           limits_reached=("max_delegated",) if feasible else (),
                            max_delegated=max_delegated,
-                           max_length=max_length,
                            unmet_needs=tuple(sorted(unmet)),
                            unsynthesizable_needs=tuple(sorted(unmet - domain.scored)),
-                           unnecessary_holes=tuple(sorted(unnecessary_holes)),
-                           replaceable_holes=tuple(sorted(replaceable_holes)),
-                           feasible_with_all_holes=hole_sets.feasible(learnable),
-                           expanded=expanded)
+                           feasible_with_all_holes=feasible)
 
+    best: tuple[int, int] | None = None
     tied: list[tuple[Action, ...]] = []
-    for goal_key, taken in goals:
-        if goal_key == best_key and taken not in tied:
-            tied.append(taken)
+    expanded = 0
+    for hole_set in admissible:
+        cost, plans, explored = _cheapest_plans(domain, start, satisfied, hole_sets.holes(hole_set))
+        expanded += explored
+        if best is None or cost < best:
+            best, tied = cost, []
+        if cost == best:
+            tied.extend(steps for steps in plans if steps not in tied)
+
     chosen = tied[0]
     hole_indices = tuple(i for i, action in enumerate(chosen) if action.hole_for)
     return ExactPlanResult(
         actions=tuple(action.name for action in chosen),
         steps=chosen,
         delegated=tuple(sorted({action.hole_for for action in chosen if action.hole_for})),
-        collateral=best_key[1],
-        hole_literals=best_key[2],
+        collateral=best[0],
+        hole_literals=_literals_the_holes_change(domain, start, chosen),
         hole_indices=hole_indices,
         expanded=expanded,
-        candidates=tuple(sorted(offered)),
+        candidates=tuple(sorted(hole_sets.candidates)),
         alternatives=tuple(tied[1:]),
-        hole_contexts=tuple(_hole_context(domain, start, chosen, i, relevant, goal_positive)
+        hole_contexts=tuple(_hole_context(domain, start, chosen, i, goal_positive)
                             for i in hole_indices),
-        limits_reached=tuple(sorted(limits_reached)),
     )

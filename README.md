@@ -129,6 +129,38 @@ by real transitions. `mean` and `relaxed` stay available by naming them
 and for the direct baseline's `unrestricted_holes`, which only the relaxed mode has.
 `artifacts/default_mode_validation/` holds the comparison of the two configurations.
 
+### How the planner chooses holes
+
+The `exact` mode (`src/inverse_skills/operators/exact_hole_planner.py`) implements the
+"Minimal Hole Planner" formulation. With k = `max_delegated`, the learning budget:
+
+- **Candidates** are the scored literals that are goal literals or preconditions of
+  some library action. Only these can become holes.
+- **Feasible(H)**: the library and holes for H reach the goal, in any order and at any
+  length, decided by exhaustive search of the real transitions.
+- **Admissible**: H has at most k literals, is feasible, no literal can be dropped
+  (subset-minimal), and no literal l has a *replacement*: a set of at most k literals,
+  drawn from H's other literals and the candidates upstream of l, that is feasible.
+  u is upstream of l when a library action that establishes l needs u, directly or
+  through a chain of such actions, and nothing leads back from u to l.
+- **Plan**: among the admissible sets of the smallest size, the plan with the fewest
+  displaced literals, then the fewest steps. There is no length limit. If no set of
+  size up to k is admissible, the answer is no plan.
+
+What this guarantees, and what it does not:
+
+- The library operators are assumed complete and correct under the modelled
+  transition, which applies each action's own effects together with the domain's
+  world constraints (implications, mutual exclusions, disturbances).
+- A plan's holes are subset-minimal: no hole can be dropped. They are not always the
+  fewest possible: the preference can choose two upstream holes over one, within k.
+- "No plan" is exact relative to the candidate set, the budget and the symbolic
+  transition model: it means no set of at most k candidates reaches the goal. The
+  report says whether holes for every candidate would.
+- The upstream preference reads positive preconditions only. It is not a complete
+  causal analysis, and it does not show that the preferred skill is easier to learn;
+  the Drawer's targeted-versus-direct experiment is its evidence.
+
 Each stage prints `PASS` or `FAIL` against its own checks. What they verify:
 
 - **Stage 0** — the scene behaves as designed: the forward skill seats both
@@ -140,8 +172,9 @@ Each stage prints `PASS` or `FAIL` against its own checks. What they verify:
   `pick B → place B → approach A → HOLE[clear_of_walls(A)] → pick A → place A`
   with no equally cheap alternative, and finds no plan at all when holes are
   disallowed. Everything about the hole is derived, not given: which predicate
-  to delegate (one the goal cannot be reached without by real transitions, that has
-  a soft score, and that no learnable prerequisite could replace), where the learned
+  to delegate (an admissible set, as above: one the goal cannot be reached without
+  by real transitions, that has a soft score, and that no learnable literal upstream
+  of it could replace within the budget), where the learned
   skill starts (the robot-relative predicates the library can establish), and
   what it must preserve (the causal links spanning it). These are written to
   `hole_spec.json`, the learning problem Stage 3 trains against.

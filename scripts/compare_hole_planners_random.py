@@ -49,15 +49,15 @@ def category(relaxed, exact) -> str:
     return "plan only in exact mode" if exact else "no plan in either"
 
 
-def reason(kind: str, oracle: Oracle, relaxed) -> str:
+def reason(kind: str, oracle: Oracle, relaxed, max_delegated: int) -> str:
     """Why the exact mode did not return the relaxed plan."""
     holes = set(relaxed.delegated)
     if not oracle.is_minimal(holes):
         return "the goal can be reached without some of the relaxed plan's holes"
-    if not oracle.admissible(holes):
-        return "the causal preference refuses the relaxed plan's holes"
+    if not oracle.admissible(holes, max_delegated):
+        return "the upstream preference refuses the relaxed plan's holes"
     if kind == "plan only in relaxed mode":
-        return "these holes pass, but the plan fails Used or a hole start"
+        return "these holes pass, but a hole start differs"
     return "these holes pass too, and the cost chose between them"
 
 
@@ -73,7 +73,7 @@ def describe_problem(domain, start, goal_positive, goal_negative, max_delegated)
 def describe_case(kind, problem, relaxed, exact) -> dict:
     domain, start, goal_positive, goal_negative, max_delegated = problem
     oracle = Oracle(domain, start, goal_positive, goal_negative)
-    case = {"category": kind, "reason": reason(kind, oracle, relaxed),
+    case = {"category": kind, "reason": reason(kind, oracle, relaxed, max_delegated),
             "actions_needing_their_own_effect": [a.name for a in domain.actions
                                                  if set(a.pre) & oracle.closure(a.add)],
             "relaxed": {"actions": list(relaxed.actions), "cost": list(relaxed.cost),

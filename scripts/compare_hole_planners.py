@@ -187,7 +187,7 @@ def describe(row: dict) -> str:
         return (f"NO PLAN within the limits  limits reached {row['limits_reached'] or 'none'}  "
                 f"no soft score {row['unsynthesizable_needs'] or 'none'}  "
                 f"not needed {row['unnecessary_holes'] or 'none'}  "
-                f"refused by the causal preference {row['replaceable_holes'] or 'none'}  "
+                f"refused by the upstream preference {row['replaceable_holes'] or 'none'}  "
                 f"solvable with every hole {row['feasible_with_all_holes']}")
     return (f"NO PLAN  capability gaps {row['capability_gaps'] or 'none'}  "
             f"no soft score {row['unsynthesizable_gaps'] or 'none'}")
