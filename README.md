@@ -117,6 +117,18 @@ The extracted operator and a trained policy are committed under
 | 3 | `python scripts/stow_stage3_train.py --timesteps 120000` | ~17 min (GPU) | `artifacts/stow/stage3/<run id>/` |
 | 4 | `python scripts/stow_stage4_execute.py artifacts/stow/stage3/1790788534/sac_hole_best` | ~15 min | `artifacts/stow/stage4_execution.json`, `artifacts/stow/learned_operator.json` |
 
+Saved results are never overwritten: a stage stops if its output file exists. To
+run a stage again, give it new output paths with `--out` (and `--spec-out` or
+`--learned-out` where it has them), and point later stages at them with
+`--operator` and `--spec`.
+
+Operators are extracted with `min_max`, which asks every demonstration to show each
+condition and transition, and plans are made by the `exact` mode, which judges holes
+by real transitions. `mean` and `relaxed` stay available by naming them
+(`OperatorExtractionConfig(mode="mean")`, `plan(..., mode="relaxed")`), for comparisons
+and for the direct baseline's `unrestricted_holes`, which only the relaxed mode has.
+`artifacts/default_mode_validation/` holds the comparison of the two configurations.
+
 Each stage prints `PASS` or `FAIL` against its own checks. What they verify:
 
 - **Stage 0** — the scene behaves as designed: the forward skill seats both
@@ -128,8 +140,8 @@ Each stage prints `PASS` or `FAIL` against its own checks. What they verify:
   `pick B → place B → approach A → HOLE[clear_of_walls(A)] → pick A → place A`
   with no equally cheap alternative, and finds no plan at all when holes are
   disallowed. Everything about the hole is derived, not given: which predicate
-  to delegate (a capability gap the library cannot close even with its other
-  missing prerequisites supplied, and that has a soft score), where the learned
+  to delegate (one the goal cannot be reached without by real transitions, that has
+  a soft score, and that no learnable prerequisite could replace), where the learned
   skill starts (the robot-relative predicates the library can establish), and
   what it must preserve (the causal links spanning it). These are written to
   `hole_spec.json`, the learning problem Stage 3 trains against.
@@ -137,7 +149,10 @@ Each stage prints `PASS` or `FAIL` against its own checks. What they verify:
   checkpoint is selected on the operator's contract (postcondition established
   *and* fences intact).
 - **Stage 4** — the learned skill is first modelled from its own executions by
-  the same extractor that modelled the forward skill, and joins the library.
+  the same extractor that modelled the forward skill, and joins the library. Each
+  execution must start at the handoff the plan predicts, checked before the policy
+  runs (`operators/handoff.py`); a scene that fails is replaced by the next and
+  recorded, and what the policy then does never decides whether a run is kept.
   The executive then runs the full plan and the ablations — library only, the
   ordering a planner without the interference model cannot rule out, and the
   re-planned inverse using the learned operator — checking every step's
@@ -155,7 +170,7 @@ Supporting scripts:
 python scripts/stow_planner_demo.py          # planner on a complete vs incomplete library (no GPU)
 python scripts/stow_pick_limit.py            # measures the grasp limit that calibrates X_CLEAR
 python scripts/stow_stage3_precondition.py artifacts/stow/stage3/1790788534/sac_hole_best
-python -m pytest -q                          # 39 tests, no GPU needed
+python -m pytest -q                          # no GPU needed
 ```
 
 Every stage has a matching `stow_stage<N>_video.py` that renders an annotated
@@ -180,3 +195,7 @@ seed is the re-planned condition's one failure: A ends outside the learned
 operator's measured precondition, and the executive declines to run it there.
 Two seeds' forward pushes fall short of the stowed state and are re-rolled,
 since an inverse is only defined once the forward skill has happened.
+
+Handoff validity is reported apart from these results: 9 of the 10 evaluation
+seeds give a valid handoff (not the seed above), and 10 of the 11 scenes that
+reached the handoff while the learned skill's demonstrations were collected.

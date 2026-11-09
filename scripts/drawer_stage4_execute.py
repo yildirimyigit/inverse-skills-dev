@@ -125,7 +125,7 @@ def episode(env, seed: int, forward, goal, condition: str, policy, spec) -> dict
     if condition == "library_only":
         no_holes = hp.plan(domain, state, *goal, max_delegated=0)
         row["plan_without_holes"] = list(no_holes.actions) if no_holes else None
-        row["capability_gaps"] = list(no_holes.capability_gaps)
+        row["unmet_needs"] = list(no_holes.unmet_needs)
         steps = [s for s in steps if s.hole_for is None]
     row["executed_steps"] = [s.name for s in steps]
     row["grasp_step"] = next((s.name for s in steps if spec["achieve"] in s.add), None)
@@ -188,6 +188,8 @@ def main() -> None:
     ap.add_argument("--stage3", type=Path, default=Path("artifacts/drawer/stage3"))
     ap.add_argument("--out", type=Path, default=Path("artifacts/drawer/stage4_execution.json"))
     args = ap.parse_args()
+    if args.out.exists():
+        raise SystemExit(f"{args.out} exists; saved results are never overwritten. Choose another --out.")
 
     forward = forward_effects(args.operator)
     goal = dd.goal_from_operator(args.operator)

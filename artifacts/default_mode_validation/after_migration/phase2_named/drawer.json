@@ -1,0 +1,3526 @@
+{
+  "made_by": "PYTHONNOUSERSITE=1 python scripts/validate_modes_planning.py drawer",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "measured": [
+    {
+      "seed": 0,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.0005479126614870711,
+        "drawer_closed(drawer)": 0.927185125068321,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 1.2212453270876722e-15
+      },
+      "saved_state_same": true,
+      "largest_score_difference_from_saved": 0.05064309224036989
+    },
+    {
+      "seed": 1,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.0004089924546811785,
+        "drawer_closed(drawer)": 0.9821374314977169,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 5.551115123125783e-16
+      },
+      "saved_state_same": true,
+      "largest_score_difference_from_saved": 0.0
+    },
+    {
+      "seed": 2,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.00038718801752701815,
+        "drawer_closed(drawer)": 0.9863606684496667,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 6.106226635438361e-16
+      },
+      "saved_state_same": true,
+      "largest_score_difference_from_saved": 0.0
+    },
+    {
+      "seed": 3,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.0004068995703536138,
+        "drawer_closed(drawer)": 0.9825821067240432,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 1.7208456881689926e-15
+      },
+      "saved_state_same": true,
+      "largest_score_difference_from_saved": 0.0004408789275156533
+    },
+    {
+      "seed": 4,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.00040216726625297294,
+        "drawer_closed(drawer)": 0.9835557930726371,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 7.216449660063518e-16
+      },
+      "saved_state_same": true,
+      "largest_score_difference_from_saved": 0.0
+    }
+  ],
+  "goals": {
+    "mean": {
+      "positive": [
+        "drawer_open(drawer)"
+      ],
+      "negative": [
+        "drawer_closed(drawer)"
+      ]
+    },
+    "min_max": {
+      "positive": [
+        "drawer_open(drawer)"
+      ],
+      "negative": [
+        "drawer_closed(drawer)"
+      ]
+    },
+    "saved": {
+      "positive": [
+        "drawer_open(drawer)"
+      ],
+      "negative": [
+        "drawer_closed(drawer)"
+      ]
+    },
+    "all_same": true,
+    "from_todays_push": {
+      "mean": {
+        "positive": [
+          "drawer_open(drawer)"
+        ],
+        "negative": [
+          "drawer_closed(drawer)"
+        ]
+      },
+      "min_max": {
+        "positive": [
+          "drawer_open(drawer)"
+        ],
+        "negative": [
+          "drawer_closed(drawer)"
+        ]
+      }
+    }
+  },
+  "configs": {
+    "mean+relaxed": {
+      "frontier, seed 0": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "PlanResult",
+          "candidates": [
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "synthesizable_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "expanded": 4
+        }
+      },
+      "frontier, seed 1": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "PlanResult",
+          "candidates": [
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "synthesizable_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "expanded": 4
+        }
+      },
+      "frontier, seed 2": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "PlanResult",
+          "candidates": [
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "synthesizable_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "expanded": 4
+        }
+      },
+      "frontier, seed 3": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "PlanResult",
+          "candidates": [
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "synthesizable_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "expanded": 4
+        }
+      },
+      "frontier, seed 4": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "PlanResult",
+          "candidates": [
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "synthesizable_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "expanded": 4
+        }
+      },
+      "library only": {
+        "found": false,
+        "actions": null,
+        "hole_positions": null,
+        "delegated": null,
+        "hole_starts": null,
+        "cost": null,
+        "tied_plans": null,
+        "specs": [],
+        "diagnostics": {
+          "result_type": "NoPlan",
+          "candidates": [],
+          "capability_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "synthesizable_gaps": [
+            "handle_grasped(drawer)"
+          ]
+        }
+      },
+      "scripted grasp": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "grasp_handle(drawer)",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [],
+        "delegated": [],
+        "hole_starts": {},
+        "cost": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [],
+        "diagnostics": {
+          "result_type": "PlanResult",
+          "candidates": [],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 3
+        }
+      }
+    },
+    "min_max+relaxed": {
+      "frontier, seed 0": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "PlanResult",
+          "candidates": [
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "synthesizable_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "expanded": 4
+        }
+      },
+      "frontier, seed 1": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "PlanResult",
+          "candidates": [
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "synthesizable_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "expanded": 4
+        }
+      },
+      "frontier, seed 2": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "PlanResult",
+          "candidates": [
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "synthesizable_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "expanded": 4
+        }
+      },
+      "frontier, seed 3": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "PlanResult",
+          "candidates": [
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "synthesizable_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "expanded": 4
+        }
+      },
+      "frontier, seed 4": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "PlanResult",
+          "candidates": [
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "synthesizable_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "expanded": 4
+        }
+      },
+      "library only": {
+        "found": false,
+        "actions": null,
+        "hole_positions": null,
+        "delegated": null,
+        "hole_starts": null,
+        "cost": null,
+        "tied_plans": null,
+        "specs": [],
+        "diagnostics": {
+          "result_type": "NoPlan",
+          "candidates": [],
+          "capability_gaps": [
+            "handle_grasped(drawer)"
+          ],
+          "synthesizable_gaps": [
+            "handle_grasped(drawer)"
+          ]
+        }
+      },
+      "scripted grasp": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "grasp_handle(drawer)",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [],
+        "delegated": [],
+        "hole_starts": {},
+        "cost": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [],
+        "diagnostics": {
+          "result_type": "PlanResult",
+          "candidates": [],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 3
+        }
+      }
+    },
+    "mean+exact": {
+      "frontier, seed 0": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "ExactPlanResult",
+          "candidates": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 4,
+          "limits_reached": [],
+          "hole_contexts": [
+            {
+              "literal": "handle_grasped(drawer)",
+              "index": 1,
+              "state_before": [
+                "at_handle_standoff(drawer)",
+                "drawer_closed(drawer)"
+              ],
+              "used_by": "pull_open(drawer)",
+              "used_at": 2,
+              "waiting": [
+                "pull_open(drawer)"
+              ],
+              "prefix": [
+                "approach_handle(drawer)"
+              ],
+              "suffix": [
+                "pull_open(drawer)"
+              ],
+              "library_alternatives": []
+            }
+          ]
+        }
+      },
+      "frontier, seed 1": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "ExactPlanResult",
+          "candidates": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 4,
+          "limits_reached": [],
+          "hole_contexts": [
+            {
+              "literal": "handle_grasped(drawer)",
+              "index": 1,
+              "state_before": [
+                "at_handle_standoff(drawer)",
+                "drawer_closed(drawer)"
+              ],
+              "used_by": "pull_open(drawer)",
+              "used_at": 2,
+              "waiting": [
+                "pull_open(drawer)"
+              ],
+              "prefix": [
+                "approach_handle(drawer)"
+              ],
+              "suffix": [
+                "pull_open(drawer)"
+              ],
+              "library_alternatives": []
+            }
+          ]
+        }
+      },
+      "frontier, seed 2": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "ExactPlanResult",
+          "candidates": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 4,
+          "limits_reached": [],
+          "hole_contexts": [
+            {
+              "literal": "handle_grasped(drawer)",
+              "index": 1,
+              "state_before": [
+                "at_handle_standoff(drawer)",
+                "drawer_closed(drawer)"
+              ],
+              "used_by": "pull_open(drawer)",
+              "used_at": 2,
+              "waiting": [
+                "pull_open(drawer)"
+              ],
+              "prefix": [
+                "approach_handle(drawer)"
+              ],
+              "suffix": [
+                "pull_open(drawer)"
+              ],
+              "library_alternatives": []
+            }
+          ]
+        }
+      },
+      "frontier, seed 3": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "ExactPlanResult",
+          "candidates": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 4,
+          "limits_reached": [],
+          "hole_contexts": [
+            {
+              "literal": "handle_grasped(drawer)",
+              "index": 1,
+              "state_before": [
+                "at_handle_standoff(drawer)",
+                "drawer_closed(drawer)"
+              ],
+              "used_by": "pull_open(drawer)",
+              "used_at": 2,
+              "waiting": [
+                "pull_open(drawer)"
+              ],
+              "prefix": [
+                "approach_handle(drawer)"
+              ],
+              "suffix": [
+                "pull_open(drawer)"
+              ],
+              "library_alternatives": []
+            }
+          ]
+        }
+      },
+      "frontier, seed 4": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "ExactPlanResult",
+          "candidates": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 4,
+          "limits_reached": [],
+          "hole_contexts": [
+            {
+              "literal": "handle_grasped(drawer)",
+              "index": 1,
+              "state_before": [
+                "at_handle_standoff(drawer)",
+                "drawer_closed(drawer)"
+              ],
+              "used_by": "pull_open(drawer)",
+              "used_at": 2,
+              "waiting": [
+                "pull_open(drawer)"
+              ],
+              "prefix": [
+                "approach_handle(drawer)"
+              ],
+              "suffix": [
+                "pull_open(drawer)"
+              ],
+              "library_alternatives": []
+            }
+          ]
+        }
+      },
+      "library only": {
+        "found": false,
+        "actions": null,
+        "hole_positions": null,
+        "delegated": null,
+        "hole_starts": null,
+        "cost": null,
+        "tied_plans": null,
+        "specs": [],
+        "diagnostics": {
+          "result_type": "ExactNoPlan",
+          "candidates": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 2,
+          "limits_reached": [
+            "max_delegated"
+          ],
+          "unmet_needs": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "unsynthesizable_needs": [],
+          "unnecessary_holes": [],
+          "replaceable_holes": [],
+          "feasible_with_all_holes": true
+        }
+      },
+      "scripted grasp": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "grasp_handle(drawer)",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [],
+        "delegated": [],
+        "hole_starts": {},
+        "cost": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [],
+        "diagnostics": {
+          "result_type": "ExactPlanResult",
+          "candidates": [
+            "at_handle_standoff(drawer)",
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 3,
+          "limits_reached": [],
+          "hole_contexts": []
+        }
+      }
+    },
+    "min_max+exact": {
+      "frontier, seed 0": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "ExactPlanResult",
+          "candidates": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 4,
+          "limits_reached": [],
+          "hole_contexts": [
+            {
+              "literal": "handle_grasped(drawer)",
+              "index": 1,
+              "state_before": [
+                "at_handle_standoff(drawer)",
+                "drawer_closed(drawer)"
+              ],
+              "used_by": "pull_open(drawer)",
+              "used_at": 2,
+              "waiting": [
+                "pull_open(drawer)"
+              ],
+              "prefix": [
+                "approach_handle(drawer)"
+              ],
+              "suffix": [
+                "pull_open(drawer)"
+              ],
+              "library_alternatives": []
+            }
+          ]
+        }
+      },
+      "frontier, seed 1": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "ExactPlanResult",
+          "candidates": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 4,
+          "limits_reached": [],
+          "hole_contexts": [
+            {
+              "literal": "handle_grasped(drawer)",
+              "index": 1,
+              "state_before": [
+                "at_handle_standoff(drawer)",
+                "drawer_closed(drawer)"
+              ],
+              "used_by": "pull_open(drawer)",
+              "used_at": 2,
+              "waiting": [
+                "pull_open(drawer)"
+              ],
+              "prefix": [
+                "approach_handle(drawer)"
+              ],
+              "suffix": [
+                "pull_open(drawer)"
+              ],
+              "library_alternatives": []
+            }
+          ]
+        }
+      },
+      "frontier, seed 2": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "ExactPlanResult",
+          "candidates": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 4,
+          "limits_reached": [],
+          "hole_contexts": [
+            {
+              "literal": "handle_grasped(drawer)",
+              "index": 1,
+              "state_before": [
+                "at_handle_standoff(drawer)",
+                "drawer_closed(drawer)"
+              ],
+              "used_by": "pull_open(drawer)",
+              "used_at": 2,
+              "waiting": [
+                "pull_open(drawer)"
+              ],
+              "prefix": [
+                "approach_handle(drawer)"
+              ],
+              "suffix": [
+                "pull_open(drawer)"
+              ],
+              "library_alternatives": []
+            }
+          ]
+        }
+      },
+      "frontier, seed 3": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "ExactPlanResult",
+          "candidates": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 4,
+          "limits_reached": [],
+          "hole_contexts": [
+            {
+              "literal": "handle_grasped(drawer)",
+              "index": 1,
+              "state_before": [
+                "at_handle_standoff(drawer)",
+                "drawer_closed(drawer)"
+              ],
+              "used_by": "pull_open(drawer)",
+              "used_at": 2,
+              "waiting": [
+                "pull_open(drawer)"
+              ],
+              "prefix": [
+                "approach_handle(drawer)"
+              ],
+              "suffix": [
+                "pull_open(drawer)"
+              ],
+              "library_alternatives": []
+            }
+          ]
+        }
+      },
+      "frontier, seed 4": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [
+          1
+        ],
+        "delegated": [
+          "handle_grasped(drawer)"
+        ],
+        "hole_starts": {
+          "handle_grasped(drawer)": [
+            "at_handle_standoff(drawer)"
+          ]
+        },
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [
+          {
+            "hole": "HOLE[handle_grasped(drawer)]",
+            "achieve": "handle_grasped(drawer)",
+            "object": "drawer",
+            "start": [
+              "at_handle_standoff(drawer)"
+            ],
+            "preserve": [],
+            "preserve_absent": [],
+            "prefix": [
+              {
+                "name": "approach_handle(drawer)",
+                "pre": [],
+                "pre_absent": [],
+                "add": [
+                  "at_handle_standoff(drawer)"
+                ],
+                "delete": [],
+                "hole_for": null
+              }
+            ],
+            "suffix": [
+              {
+                "name": "pull_open(drawer)",
+                "pre": [
+                  "handle_grasped(drawer)"
+                ],
+                "pre_absent": [],
+                "add": [
+                  "drawer_open(drawer)"
+                ],
+                "delete": [
+                  "handle_grasped(drawer)"
+                ],
+                "hole_for": null
+              }
+            ],
+            "plan": [
+              "approach_handle(drawer)",
+              "HOLE[handle_grasped(drawer)]",
+              "pull_open(drawer)"
+            ],
+            "hole_index": 1,
+            "cost": [
+              1,
+              0,
+              2,
+              1,
+              3
+            ]
+          }
+        ],
+        "diagnostics": {
+          "result_type": "ExactPlanResult",
+          "candidates": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 4,
+          "limits_reached": [],
+          "hole_contexts": [
+            {
+              "literal": "handle_grasped(drawer)",
+              "index": 1,
+              "state_before": [
+                "at_handle_standoff(drawer)",
+                "drawer_closed(drawer)"
+              ],
+              "used_by": "pull_open(drawer)",
+              "used_at": 2,
+              "waiting": [
+                "pull_open(drawer)"
+              ],
+              "prefix": [
+                "approach_handle(drawer)"
+              ],
+              "suffix": [
+                "pull_open(drawer)"
+              ],
+              "library_alternatives": []
+            }
+          ]
+        }
+      },
+      "library only": {
+        "found": false,
+        "actions": null,
+        "hole_positions": null,
+        "delegated": null,
+        "hole_starts": null,
+        "cost": null,
+        "tied_plans": null,
+        "specs": [],
+        "diagnostics": {
+          "result_type": "ExactNoPlan",
+          "candidates": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 2,
+          "limits_reached": [
+            "max_delegated"
+          ],
+          "unmet_needs": [
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "unsynthesizable_needs": [],
+          "unnecessary_holes": [],
+          "replaceable_holes": [],
+          "feasible_with_all_holes": true
+        }
+      },
+      "scripted grasp": {
+        "found": true,
+        "actions": [
+          "approach_handle(drawer)",
+          "grasp_handle(drawer)",
+          "pull_open(drawer)"
+        ],
+        "hole_positions": [],
+        "delegated": [],
+        "hole_starts": {},
+        "cost": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "tied_plans": [],
+        "replays_to_goal": true,
+        "specs": [],
+        "diagnostics": {
+          "result_type": "ExactPlanResult",
+          "candidates": [
+            "at_handle_standoff(drawer)",
+            "drawer_open(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "capability_gaps": [],
+          "synthesizable_gaps": [],
+          "expanded": 3,
+          "limits_reached": [],
+          "hole_contexts": []
+        }
+      }
+    }
+  },
+  "comparisons_with_mean_relaxed": {
+    "min_max+relaxed": {
+      "frontier, seed 0": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [],
+        "diagnostic_differences": {}
+      },
+      "frontier, seed 1": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [],
+        "diagnostic_differences": {}
+      },
+      "frontier, seed 2": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [],
+        "diagnostic_differences": {}
+      },
+      "frontier, seed 3": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [],
+        "diagnostic_differences": {}
+      },
+      "frontier, seed 4": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [],
+        "diagnostic_differences": {}
+      },
+      "library only": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [],
+        "diagnostic_differences": {}
+      },
+      "scripted grasp": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [],
+        "diagnostic_differences": {}
+      }
+    },
+    "mean+exact": {
+      "frontier, seed 0": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "capability_gaps",
+          "hole_contexts",
+          "limits_reached",
+          "result_type",
+          "synthesizable_gaps"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "capability_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "hole_contexts": {
+            "baseline": "<absent>",
+            "this": [
+              {
+                "literal": "handle_grasped(drawer)",
+                "index": 1,
+                "state_before": [
+                  "at_handle_standoff(drawer)",
+                  "drawer_closed(drawer)"
+                ],
+                "used_by": "pull_open(drawer)",
+                "used_at": 2,
+                "waiting": [
+                  "pull_open(drawer)"
+                ],
+                "prefix": [
+                  "approach_handle(drawer)"
+                ],
+                "suffix": [
+                  "pull_open(drawer)"
+                ],
+                "library_alternatives": []
+              }
+            ]
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "PlanResult",
+            "this": "ExactPlanResult"
+          },
+          "synthesizable_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          }
+        }
+      },
+      "frontier, seed 1": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "capability_gaps",
+          "hole_contexts",
+          "limits_reached",
+          "result_type",
+          "synthesizable_gaps"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "capability_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "hole_contexts": {
+            "baseline": "<absent>",
+            "this": [
+              {
+                "literal": "handle_grasped(drawer)",
+                "index": 1,
+                "state_before": [
+                  "at_handle_standoff(drawer)",
+                  "drawer_closed(drawer)"
+                ],
+                "used_by": "pull_open(drawer)",
+                "used_at": 2,
+                "waiting": [
+                  "pull_open(drawer)"
+                ],
+                "prefix": [
+                  "approach_handle(drawer)"
+                ],
+                "suffix": [
+                  "pull_open(drawer)"
+                ],
+                "library_alternatives": []
+              }
+            ]
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "PlanResult",
+            "this": "ExactPlanResult"
+          },
+          "synthesizable_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          }
+        }
+      },
+      "frontier, seed 2": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "capability_gaps",
+          "hole_contexts",
+          "limits_reached",
+          "result_type",
+          "synthesizable_gaps"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "capability_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "hole_contexts": {
+            "baseline": "<absent>",
+            "this": [
+              {
+                "literal": "handle_grasped(drawer)",
+                "index": 1,
+                "state_before": [
+                  "at_handle_standoff(drawer)",
+                  "drawer_closed(drawer)"
+                ],
+                "used_by": "pull_open(drawer)",
+                "used_at": 2,
+                "waiting": [
+                  "pull_open(drawer)"
+                ],
+                "prefix": [
+                  "approach_handle(drawer)"
+                ],
+                "suffix": [
+                  "pull_open(drawer)"
+                ],
+                "library_alternatives": []
+              }
+            ]
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "PlanResult",
+            "this": "ExactPlanResult"
+          },
+          "synthesizable_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          }
+        }
+      },
+      "frontier, seed 3": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "capability_gaps",
+          "hole_contexts",
+          "limits_reached",
+          "result_type",
+          "synthesizable_gaps"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "capability_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "hole_contexts": {
+            "baseline": "<absent>",
+            "this": [
+              {
+                "literal": "handle_grasped(drawer)",
+                "index": 1,
+                "state_before": [
+                  "at_handle_standoff(drawer)",
+                  "drawer_closed(drawer)"
+                ],
+                "used_by": "pull_open(drawer)",
+                "used_at": 2,
+                "waiting": [
+                  "pull_open(drawer)"
+                ],
+                "prefix": [
+                  "approach_handle(drawer)"
+                ],
+                "suffix": [
+                  "pull_open(drawer)"
+                ],
+                "library_alternatives": []
+              }
+            ]
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "PlanResult",
+            "this": "ExactPlanResult"
+          },
+          "synthesizable_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          }
+        }
+      },
+      "frontier, seed 4": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "capability_gaps",
+          "hole_contexts",
+          "limits_reached",
+          "result_type",
+          "synthesizable_gaps"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "capability_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "hole_contexts": {
+            "baseline": "<absent>",
+            "this": [
+              {
+                "literal": "handle_grasped(drawer)",
+                "index": 1,
+                "state_before": [
+                  "at_handle_standoff(drawer)",
+                  "drawer_closed(drawer)"
+                ],
+                "used_by": "pull_open(drawer)",
+                "used_at": 2,
+                "waiting": [
+                  "pull_open(drawer)"
+                ],
+                "prefix": [
+                  "approach_handle(drawer)"
+                ],
+                "suffix": [
+                  "pull_open(drawer)"
+                ],
+                "library_alternatives": []
+              }
+            ]
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "PlanResult",
+            "this": "ExactPlanResult"
+          },
+          "synthesizable_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          }
+        }
+      },
+      "library only": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "capability_gaps",
+          "expanded",
+          "feasible_with_all_holes",
+          "limits_reached",
+          "replaceable_holes",
+          "result_type",
+          "synthesizable_gaps",
+          "unmet_needs",
+          "unnecessary_holes",
+          "unsynthesizable_needs"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [],
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "capability_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "expanded": {
+            "baseline": "<absent>",
+            "this": 2
+          },
+          "feasible_with_all_holes": {
+            "baseline": "<absent>",
+            "this": true
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": [
+              "max_delegated"
+            ]
+          },
+          "replaceable_holes": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "NoPlan",
+            "this": "ExactNoPlan"
+          },
+          "synthesizable_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "unmet_needs": {
+            "baseline": "<absent>",
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "unnecessary_holes": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "unsynthesizable_needs": {
+            "baseline": "<absent>",
+            "this": []
+          }
+        }
+      },
+      "scripted grasp": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "hole_contexts",
+          "limits_reached",
+          "result_type"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [],
+            "this": [
+              "at_handle_standoff(drawer)",
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "hole_contexts": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "PlanResult",
+            "this": "ExactPlanResult"
+          }
+        }
+      }
+    },
+    "min_max+exact": {
+      "frontier, seed 0": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "capability_gaps",
+          "hole_contexts",
+          "limits_reached",
+          "result_type",
+          "synthesizable_gaps"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "capability_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "hole_contexts": {
+            "baseline": "<absent>",
+            "this": [
+              {
+                "literal": "handle_grasped(drawer)",
+                "index": 1,
+                "state_before": [
+                  "at_handle_standoff(drawer)",
+                  "drawer_closed(drawer)"
+                ],
+                "used_by": "pull_open(drawer)",
+                "used_at": 2,
+                "waiting": [
+                  "pull_open(drawer)"
+                ],
+                "prefix": [
+                  "approach_handle(drawer)"
+                ],
+                "suffix": [
+                  "pull_open(drawer)"
+                ],
+                "library_alternatives": []
+              }
+            ]
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "PlanResult",
+            "this": "ExactPlanResult"
+          },
+          "synthesizable_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          }
+        }
+      },
+      "frontier, seed 1": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "capability_gaps",
+          "hole_contexts",
+          "limits_reached",
+          "result_type",
+          "synthesizable_gaps"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "capability_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "hole_contexts": {
+            "baseline": "<absent>",
+            "this": [
+              {
+                "literal": "handle_grasped(drawer)",
+                "index": 1,
+                "state_before": [
+                  "at_handle_standoff(drawer)",
+                  "drawer_closed(drawer)"
+                ],
+                "used_by": "pull_open(drawer)",
+                "used_at": 2,
+                "waiting": [
+                  "pull_open(drawer)"
+                ],
+                "prefix": [
+                  "approach_handle(drawer)"
+                ],
+                "suffix": [
+                  "pull_open(drawer)"
+                ],
+                "library_alternatives": []
+              }
+            ]
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "PlanResult",
+            "this": "ExactPlanResult"
+          },
+          "synthesizable_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          }
+        }
+      },
+      "frontier, seed 2": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "capability_gaps",
+          "hole_contexts",
+          "limits_reached",
+          "result_type",
+          "synthesizable_gaps"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "capability_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "hole_contexts": {
+            "baseline": "<absent>",
+            "this": [
+              {
+                "literal": "handle_grasped(drawer)",
+                "index": 1,
+                "state_before": [
+                  "at_handle_standoff(drawer)",
+                  "drawer_closed(drawer)"
+                ],
+                "used_by": "pull_open(drawer)",
+                "used_at": 2,
+                "waiting": [
+                  "pull_open(drawer)"
+                ],
+                "prefix": [
+                  "approach_handle(drawer)"
+                ],
+                "suffix": [
+                  "pull_open(drawer)"
+                ],
+                "library_alternatives": []
+              }
+            ]
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "PlanResult",
+            "this": "ExactPlanResult"
+          },
+          "synthesizable_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          }
+        }
+      },
+      "frontier, seed 3": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "capability_gaps",
+          "hole_contexts",
+          "limits_reached",
+          "result_type",
+          "synthesizable_gaps"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "capability_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "hole_contexts": {
+            "baseline": "<absent>",
+            "this": [
+              {
+                "literal": "handle_grasped(drawer)",
+                "index": 1,
+                "state_before": [
+                  "at_handle_standoff(drawer)",
+                  "drawer_closed(drawer)"
+                ],
+                "used_by": "pull_open(drawer)",
+                "used_at": 2,
+                "waiting": [
+                  "pull_open(drawer)"
+                ],
+                "prefix": [
+                  "approach_handle(drawer)"
+                ],
+                "suffix": [
+                  "pull_open(drawer)"
+                ],
+                "library_alternatives": []
+              }
+            ]
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "PlanResult",
+            "this": "ExactPlanResult"
+          },
+          "synthesizable_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          }
+        }
+      },
+      "frontier, seed 4": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "capability_gaps",
+          "hole_contexts",
+          "limits_reached",
+          "result_type",
+          "synthesizable_gaps"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "capability_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "hole_contexts": {
+            "baseline": "<absent>",
+            "this": [
+              {
+                "literal": "handle_grasped(drawer)",
+                "index": 1,
+                "state_before": [
+                  "at_handle_standoff(drawer)",
+                  "drawer_closed(drawer)"
+                ],
+                "used_by": "pull_open(drawer)",
+                "used_at": 2,
+                "waiting": [
+                  "pull_open(drawer)"
+                ],
+                "prefix": [
+                  "approach_handle(drawer)"
+                ],
+                "suffix": [
+                  "pull_open(drawer)"
+                ],
+                "library_alternatives": []
+              }
+            ]
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "PlanResult",
+            "this": "ExactPlanResult"
+          },
+          "synthesizable_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          }
+        }
+      },
+      "library only": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "capability_gaps",
+          "expanded",
+          "feasible_with_all_holes",
+          "limits_reached",
+          "replaceable_holes",
+          "result_type",
+          "synthesizable_gaps",
+          "unmet_needs",
+          "unnecessary_holes",
+          "unsynthesizable_needs"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [],
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "capability_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "expanded": {
+            "baseline": "<absent>",
+            "this": 2
+          },
+          "feasible_with_all_holes": {
+            "baseline": "<absent>",
+            "this": true
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": [
+              "max_delegated"
+            ]
+          },
+          "replaceable_holes": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "NoPlan",
+            "this": "ExactNoPlan"
+          },
+          "synthesizable_gaps": {
+            "baseline": [
+              "handle_grasped(drawer)"
+            ],
+            "this": []
+          },
+          "unmet_needs": {
+            "baseline": "<absent>",
+            "this": [
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "unnecessary_holes": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "unsynthesizable_needs": {
+            "baseline": "<absent>",
+            "this": []
+          }
+        }
+      },
+      "scripted grasp": {
+        "same_plan": true,
+        "same_learning_problem": true,
+        "plan_differences": {},
+        "behavioural_spec_differences": {},
+        "other_spec_differences": {},
+        "diagnostic_fields_differing": [
+          "candidates",
+          "hole_contexts",
+          "limits_reached",
+          "result_type"
+        ],
+        "diagnostic_differences": {
+          "candidates": {
+            "baseline": [],
+            "this": [
+              "at_handle_standoff(drawer)",
+              "drawer_open(drawer)",
+              "handle_grasped(drawer)"
+            ]
+          },
+          "hole_contexts": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "limits_reached": {
+            "baseline": "<absent>",
+            "this": []
+          },
+          "result_type": {
+            "baseline": "PlanResult",
+            "this": "ExactPlanResult"
+          }
+        }
+      }
+    }
+  },
+  "stage2_spec_files": {
+    "mean+relaxed": {
+      "file": "artifacts/default_mode_validation/after_migration/phase2_named/drawer_mean_relaxed_hole_spec.json",
+      "bytes_equal_saved": true
+    },
+    "min_max+relaxed": {
+      "file": "artifacts/default_mode_validation/after_migration/phase2_named/drawer_min_max_relaxed_hole_spec.json",
+      "bytes_equal_saved": true
+    },
+    "mean+exact": {
+      "file": "artifacts/default_mode_validation/after_migration/phase2_named/drawer_mean_exact_hole_spec.json",
+      "bytes_equal_saved": true
+    },
+    "min_max+exact": {
+      "file": "artifacts/default_mode_validation/after_migration/phase2_named/drawer_min_max_exact_hole_spec.json",
+      "bytes_equal_saved": true
+    }
+  },
+  "saved_spec": "artifacts/drawer/hole_spec.json",
+  "exact_keeps_library_around_the_hole": {
+    "mean+exact": [
+      {
+        "hole": "HOLE[handle_grasped(drawer)]",
+        "library_before": [
+          "approach_handle(drawer)"
+        ],
+        "library_after": [
+          "pull_open(drawer)"
+        ],
+        "prefix_and_suffix_are_all_library": true
+      }
+    ],
+    "min_max+exact": [
+      {
+        "hole": "HOLE[handle_grasped(drawer)]",
+        "library_before": [
+          "approach_handle(drawer)"
+        ],
+        "library_after": [
+          "pull_open(drawer)"
+        ],
+        "prefix_and_suffix_are_all_library": true
+      }
+    ]
+  },
+  "direct_baseline": {
+    "mean": {
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        2
+      ],
+      "spec_bytes_equal_saved": true
+    },
+    "min_max": {
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        2
+      ],
+      "spec_bytes_equal_saved": true
+    },
+    "exact_mode": "refused: unrestricted_holes is an option of the relaxed mode only"
+  }
+}

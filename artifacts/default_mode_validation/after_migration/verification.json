@@ -1,0 +1,291 @@
+{
+  "made_by": "PYTHONNOUSERSITE=1 python scripts/validate_handoff.py after-migration",
+  "all_passed": true,
+  "checks": [
+    {
+      "check": "extraction default is min_max",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "planning default is exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "the extractor's code differs from the commit before the migration only in the default",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "the relaxed planner's code differs from that commit only in the default",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "the exact planner's code is the same as at that commit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow Stage 1 by default equals min_max named: operator, weights, scores",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow Stage 1's own checks pass",
+      "passed": true,
+      "detail": {
+        "pre_matches": true,
+        "add_matches": true,
+        "del_matches": true,
+        "no_tcp_near_terms": true
+      }
+    },
+    {
+      "check": "stow Stage 1 used min_max",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow inverse goal equals the saved one",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer Stage 1 by default equals min_max named: operator, weights, scores",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer Stage 1's own checks pass",
+      "passed": true,
+      "detail": {
+        "pre_matches": true,
+        "add_matches": true,
+        "del_matches": true,
+        "no_robot_terms": true
+      }
+    },
+    {
+      "check": "drawer Stage 1 used min_max",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer inverse goal equals the saved one",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow Stage 2's own check passes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow Stage 2 seed 0 by default equals min_max + exact named, with its hole contexts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow Stage 2 seed 1 by default equals min_max + exact named, with its hole contexts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow Stage 2 seed 2 by default equals min_max + exact named, with its hole contexts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow Stage 2 seed 3 by default equals min_max + exact named, with its hole contexts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow Stage 2 seed 4 by default equals min_max + exact named, with its hole contexts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow hole_spec.json by default is byte-identical to the saved one",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer Stage 2's own check passes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer Stage 2 seed 0 by default equals min_max + exact named, with its hole contexts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer Stage 2 seed 1 by default equals min_max + exact named, with its hole contexts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer Stage 2 seed 2 by default equals min_max + exact named, with its hole contexts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer Stage 2 seed 3 by default equals min_max + exact named, with its hole contexts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer Stage 2 seed 4 by default equals min_max + exact named, with its hole contexts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer hole_spec.json by default is byte-identical to the saved one",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer ablation library_only: no plan",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer ablation with_grasp equals the named run",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer ablation unrestricted keeps its meaning: same plan, cost and gaps as saved",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "direct baseline spec is byte-identical to the saved one",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "direct baseline plan file equals the saved one",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow Stage 3 input: spec byte-identical to saved, environment fits every checkpoint, handoffs valid",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer Stage 3 input: spec byte-identical to saved, environment fits every checkpoint, handoffs valid",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow Stage 4 by default equals min_max + exact named, value for value",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "check": "stow Stage 4 by default equals the saved results, value for value",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "check": "stow Stage 4's own check passes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow learned operator used min_max",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow learned action equals the saved action",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "stow learned action has the expected Pre, Add and Del",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "drawer Stage 4 by default equals min_max + exact named, apart from the library-only report's field",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "check": "drawer Stage 4 by default equals the saved results, apart from the library-only report's field",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "check": "drawer Stage 4 used the exact mode: its library-only rows report unmet needs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "named scenarios: the two modes compare as before",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "check": "random problems: every count and saved case as before",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "check": "earlier extractor comparison reproduces stage1_replay_scores.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "earlier extractor comparison reproduces stage1_extractor_comparison.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "planner demo: same plans, costs and hole positions",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "the original failure still reproduces with the check bypassed",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "named extraction, stow: unchanged by the new defaults",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "named extraction, drawer_original: unchanged by the new defaults",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "named extraction, drawer_current: unchanged by the new defaults",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "named planning, stow: all four combinations unchanged by the new defaults",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "named planning, drawer: all four combinations unchanged by the new defaults",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "test suite: 221 passed in 6.06s",
+      "passed": true,
+      "detail": "221 passed in 6.06s"
+    }
+  ]
+}

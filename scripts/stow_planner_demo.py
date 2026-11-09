@@ -125,6 +125,8 @@ def main() -> None:
     ap.add_argument("--operator", type=Path, default=Path("artifacts/stow/stage1_operator.json"))
     ap.add_argument("--out", type=Path, default=Path("artifacts/stow/planner_demo.json"))
     args = ap.parse_args()
+    if args.out.exists():
+        raise SystemExit(f"{args.out} exists; saved results are never overwritten. Choose another --out.")
 
     goal_pos, goal_neg = sd.goal_from_operator(args.operator)
     start = sd.stowed_state()

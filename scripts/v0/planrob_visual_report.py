@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 
-from inverse_skills.operators import OperatorExtractor, RestorationObjective
+from inverse_skills.operators import OperatorExtractionConfig, OperatorExtractor, RestorationObjective
 from inverse_skills.operators.toy_planner import ToyInversePlanner
 from inverse_skills.toy.domains import (
     build_predicate_registry,
@@ -78,7 +78,7 @@ def _make_scenario_figure(out_path: Path) -> None:
     # Build push case
     rollouts = make_push_rollouts_executable()
     registry = build_predicate_registry()
-    extraction = OperatorExtractor(registry).extract("push_to_target", rollouts)
+    extraction = OperatorExtractor(registry, OperatorExtractionConfig(mode="mean")).extract("push_to_target", rollouts)
     objective = RestorationObjective(extraction.operator, registry)
     planner = ToyInversePlanner(PrimitiveLibrary(), objective)
 
@@ -137,7 +137,7 @@ def _make_predicate_figure(out_path: Path) -> None:
     for label, gen_fn, reg_fn, skill_name in skill_configs:
         rollouts  = gen_fn()
         registry  = reg_fn()
-        operator  = OperatorExtractor(registry).extract(skill_name, rollouts).operator
+        operator  = OperatorExtractor(registry, OperatorExtractionConfig(mode="mean")).extract(skill_name, rollouts).operator
         objective = RestorationObjective(operator, registry)
         fwd_final = rollouts[0].last()
         per_term  = {term.key: objective.term_score(term, fwd_final) for term in objective.terms}

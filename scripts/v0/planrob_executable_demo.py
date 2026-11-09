@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from inverse_skills.operators import OperatorExtractor, RestorationObjective, ToyInversePlanner
+from inverse_skills.operators import OperatorExtractionConfig, OperatorExtractor, RestorationObjective, ToyInversePlanner
 from inverse_skills.toy import (
     PrimitiveLibrary,
     build_predicate_registry,
@@ -14,7 +14,7 @@ from inverse_skills.toy import (
 
 def run_case(skill_name: str, rollouts) -> dict:
     registry = build_predicate_registry()
-    extraction = OperatorExtractor(registry).extract(skill_name, rollouts)
+    extraction = OperatorExtractor(registry, OperatorExtractionConfig(mode="mean")).extract(skill_name, rollouts)
     objective = RestorationObjective(extraction.operator, registry)
     planner = ToyInversePlanner(PrimitiveLibrary(), objective)
     result = planner.plan(rollouts[0].last(), max_depth=3)

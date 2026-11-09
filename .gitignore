@@ -55,6 +55,8 @@ artifacts/drawer/direct/*/*
 !artifacts/drawer/paper/
 # The relaxed and exact planners compared: named scenarios and random problems.
 !artifacts/planner_comparison/
+# mean + relaxed against min_max + exact on the real pipelines: results and report.
+!artifacts/default_mode_validation/
 checkpoints/
 logs/
 wandb/

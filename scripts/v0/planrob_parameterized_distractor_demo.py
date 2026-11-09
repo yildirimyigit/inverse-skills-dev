@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from inverse_skills.operators import OperatorExtractor, OperatorParameterizer
+from inverse_skills.operators import OperatorExtractionConfig, OperatorExtractor, OperatorParameterizer
 from inverse_skills.toy import (
     build_predicate_registry_with_distractor,
     make_push_rollouts_executable_named_with_distractor,
@@ -24,7 +24,7 @@ def run_case(*, skill_name: str, object_name: str, source_name: str, target_name
         target_name=target_name,
         distractor_name=distractor_name,
     )
-    learned = OperatorExtractor(registry).extract(skill_name, rollouts)
+    learned = OperatorExtractor(registry, OperatorExtractionConfig(mode="mean")).extract(skill_name, rollouts)
     template = OperatorParameterizer().parameterize(learned.operator, rollouts[0])
     return {
         "object_name": object_name,

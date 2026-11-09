@@ -1,0 +1,421 @@
+{
+  "made_by": "PYTHONNOUSERSITE=1 python scripts/validate_handoff.py investigate",
+  "spec_start": [
+    "tcp_near(cube_a)"
+  ],
+  "traces": [
+    {
+      "seed": 2003,
+      "forward_rerolls": 0,
+      "steps": [
+        {
+          "step": "after the forward skill",
+          "cube_a_x_mm": 127.9241144657135,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.9730072444960884,
+            "clear_of_walls(cube_a)": 0.14277732748450045,
+            "in_region(cube_b,mouth)": 0.953996945761326,
+            "in_region(cube_b,src_b)": 1.3877787807814457e-15,
+            "tcp_near(cube_a)": 0.00018239997327862412,
+            "gripper_open()": 0.9759753659606714
+          },
+          "predicted_true": [
+            "gripper_open()",
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,mouth)"
+          ],
+          "differs_from_prediction": []
+        },
+        {
+          "step": "pick(cube_b)",
+          "executive_checks_before": {
+            "true": [],
+            "false": []
+          },
+          "executive_checks_after": "cube z 114mm",
+          "executive_says_ok": true,
+          "attempts": 1,
+          "cube_a_x_mm": 127.92383134365082,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.97300575726438,
+            "clear_of_walls(cube_a)": 0.14278079270602723,
+            "in_region(cube_b,mouth)": 0.00016342600340857327,
+            "in_region(cube_b,src_b)": 3.3306690738754696e-16,
+            "tcp_near(cube_a)": 0.004820819281346589,
+            "gripper_open()": 0.009496638851357986
+          },
+          "predicted_true": [
+            "in_region(cube_a,pocket)",
+            "tcp_near(cube_b)"
+          ],
+          "differs_from_prediction": []
+        },
+        {
+          "step": "place(cube_b,src_b)",
+          "executive_checks_before": {
+            "true": [],
+            "false": []
+          },
+          "executive_checks_after": "in_region 0.98",
+          "executive_says_ok": true,
+          "attempts": 1,
+          "cube_a_x_mm": 127.92384624481201,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.9730058355417193,
+            "clear_of_walls(cube_a)": 0.14278061032419936,
+            "in_region(cube_b,mouth)": 3.7192471324942744e-15,
+            "in_region(cube_b,src_b)": 0.9813561284798533,
+            "tcp_near(cube_a)": 7.594398887533771e-09,
+            "gripper_open()": 0.9820067287393521
+          },
+          "predicted_true": [
+            "gripper_open()",
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_b)"
+          ],
+          "differs_from_prediction": []
+        },
+        {
+          "step": "approach(cube_a)",
+          "executive_checks_before": {
+            "true": [],
+            "false": []
+          },
+          "executive_checks_after": "seated",
+          "executive_says_ok": true,
+          "attempts": 1,
+          "cube_a_x_mm": 129.9648880958557,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.9668275853266954,
+            "clear_of_walls(cube_a)": 0.11957206768010281,
+            "in_region(cube_b,mouth)": 3.7192471324942744e-15,
+            "in_region(cube_b,src_b)": 0.9813545130441959,
+            "tcp_near(cube_a)": 0.8734798173838739,
+            "gripper_open()": 6.144174602207286e-06
+          },
+          "predicted_true": [
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_a)"
+          ],
+          "differs_from_prediction": []
+        }
+      ],
+      "training_env_would_accept": true
+    },
+    {
+      "seed": 2004,
+      "forward_rerolls": 0,
+      "steps": [
+        {
+          "step": "after the forward skill",
+          "cube_a_x_mm": 129.985511302948,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.9709867785269323,
+            "clear_of_walls(cube_a)": 0.11935512799651737,
+            "in_region(cube_b,mouth)": 0.922874840077373,
+            "in_region(cube_b,src_b)": 4.440892098500626e-15,
+            "tcp_near(cube_a)": 0.00012823939264350326,
+            "gripper_open()": 0.9759755406571753
+          },
+          "predicted_true": [
+            "gripper_open()",
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,mouth)"
+          ],
+          "differs_from_prediction": []
+        },
+        {
+          "step": "pick(cube_b)",
+          "executive_checks_before": {
+            "true": [],
+            "false": []
+          },
+          "executive_checks_after": "cube z 107mm",
+          "executive_says_ok": true,
+          "attempts": 1,
+          "cube_a_x_mm": 115.07409811019897,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.7339623203880169,
+            "clear_of_walls(cube_a)": 0.37580092230869605,
+            "in_region(cube_b,mouth)": 0.000578097631529384,
+            "in_region(cube_b,src_b)": 9.992007221626409e-16,
+            "tcp_near(cube_a)": 0.027131082945236917,
+            "gripper_open()": 0.008836005037197114
+          },
+          "predicted_true": [
+            "in_region(cube_a,pocket)",
+            "tcp_near(cube_b)"
+          ],
+          "differs_from_prediction": [
+            "in_region(cube_a,pocket)"
+          ]
+        },
+        {
+          "step": "place(cube_b,src_b)",
+          "executive_checks_before": {
+            "true": [],
+            "false": []
+          },
+          "executive_checks_after": "in_region 0.96",
+          "executive_says_ok": true,
+          "attempts": 1,
+          "cube_a_x_mm": 102.55759209394455,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.18414976106700953,
+            "clear_of_walls(cube_a)": 0.6779225034493894,
+            "in_region(cube_b,mouth)": 8.1601392309949e-15,
+            "in_region(cube_b,src_b)": 0.956280440199162,
+            "tcp_near(cube_a)": 2.0808251616211138e-07,
+            "gripper_open()": 0.9820066234205422
+          },
+          "predicted_true": [
+            "gripper_open()",
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_b)"
+          ],
+          "differs_from_prediction": [
+            "in_region(cube_a,pocket)"
+          ]
+        },
+        {
+          "step": "approach(cube_a)",
+          "executive_checks_before": {
+            "true": [],
+            "false": []
+          },
+          "executive_checks_after": "seated",
+          "executive_says_ok": true,
+          "attempts": 1,
+          "cube_a_x_mm": 113.44204843044281,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.6656130867115873,
+            "clear_of_walls(cube_a)": 0.4147884333786369,
+            "in_region(cube_b,mouth)": 8.1601392309949e-15,
+            "in_region(cube_b,src_b)": 0.9562779481708695,
+            "tcp_near(cube_a)": 0.8701513082321926,
+            "gripper_open()": 6.144174602207286e-06
+          },
+          "predicted_true": [
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_a)"
+          ],
+          "differs_from_prediction": [
+            "in_region(cube_a,pocket)"
+          ]
+        }
+      ],
+      "training_env_would_accept": true
+    },
+    {
+      "seed": 1000,
+      "forward_rerolls": 0,
+      "steps": [
+        {
+          "step": "after the forward skill",
+          "cube_a_x_mm": 129.98519837856293,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.9745750500933388,
+            "clear_of_walls(cube_a)": 0.1193584171676792,
+            "in_region(cube_b,mouth)": 0.9604194876241456,
+            "in_region(cube_b,src_b)": 3.3306690738754696e-15,
+            "tcp_near(cube_a)": 0.00016313218791719208,
+            "gripper_open()": 0.9759753659606714
+          },
+          "predicted_true": [
+            "gripper_open()",
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,mouth)"
+          ],
+          "differs_from_prediction": []
+        },
+        {
+          "step": "pick(cube_b)",
+          "executive_checks_before": {
+            "true": [],
+            "false": []
+          },
+          "executive_checks_after": "cube z 114mm",
+          "executive_says_ok": true,
+          "attempts": 1,
+          "cube_a_x_mm": 129.98521327972412,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.974575345474666,
+            "clear_of_walls(cube_a)": 0.11935826053870424,
+            "in_region(cube_b,mouth)": 0.00016080016665631636,
+            "in_region(cube_b,src_b)": 7.216449660063518e-16,
+            "tcp_near(cube_a)": 0.004172979124392129,
+            "gripper_open()": 0.009168366030705033
+          },
+          "predicted_true": [
+            "in_region(cube_a,pocket)",
+            "tcp_near(cube_b)"
+          ],
+          "differs_from_prediction": []
+        },
+        {
+          "step": "place(cube_b,src_b)",
+          "executive_checks_before": {
+            "true": [],
+            "false": []
+          },
+          "executive_checks_after": "in_region 0.98",
+          "executive_says_ok": true,
+          "attempts": 1,
+          "cube_a_x_mm": 129.9852728843689,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.974575345474666,
+            "clear_of_walls(cube_a)": 0.1193576340245811,
+            "in_region(cube_b,mouth)": 7.827072323607354e-15,
+            "in_region(cube_b,src_b)": 0.9812755099771844,
+            "tcp_near(cube_a)": 8.896477055042595e-09,
+            "gripper_open()": 0.9820066234205422
+          },
+          "predicted_true": [
+            "gripper_open()",
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_b)"
+          ],
+          "differs_from_prediction": []
+        },
+        {
+          "step": "approach(cube_a)",
+          "executive_checks_before": {
+            "true": [],
+            "false": []
+          },
+          "executive_checks_after": "seated",
+          "executive_says_ok": true,
+          "attempts": 1,
+          "cube_a_x_mm": 129.95831668376923,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.9745477221033754,
+            "clear_of_walls(cube_a)": 0.11964126524685204,
+            "in_region(cube_b,mouth)": 7.827072323607354e-15,
+            "in_region(cube_b,src_b)": 0.9812739835246418,
+            "tcp_near(cube_a)": 0.8717168589246955,
+            "gripper_open()": 6.144174602207286e-06
+          },
+          "predicted_true": [
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_a)"
+          ],
+          "differs_from_prediction": []
+        }
+      ],
+      "training_env_would_accept": true
+    },
+    {
+      "seed": 1002,
+      "forward_rerolls": 0,
+      "steps": [
+        {
+          "step": "after the forward skill",
+          "cube_a_x_mm": 129.98226284980774,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.9528867351444976,
+            "clear_of_walls(cube_a)": 0.11938927654120679,
+            "in_region(cube_b,mouth)": 0.9213667742244269,
+            "in_region(cube_b,src_b)": 7.216449660063518e-16,
+            "tcp_near(cube_a)": 0.00013712643536362146,
+            "gripper_open()": 0.9759755406571753
+          },
+          "predicted_true": [
+            "gripper_open()",
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,mouth)"
+          ],
+          "differs_from_prediction": []
+        },
+        {
+          "step": "pick(cube_b)",
+          "executive_checks_before": {
+            "true": [],
+            "false": []
+          },
+          "executive_checks_after": "cube z 107mm",
+          "executive_says_ok": true,
+          "attempts": 1,
+          "cube_a_x_mm": 114.85157161951065,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.725182168534999,
+            "clear_of_walls(cube_a)": 0.3810350782775838,
+            "in_region(cube_b,mouth)": 0.0005621322305935927,
+            "in_region(cube_b,src_b)": 1.6653345369377348e-16,
+            "tcp_near(cube_a)": 0.03887524315302798,
+            "gripper_open()": 0.008900056666963363
+          },
+          "predicted_true": [
+            "in_region(cube_a,pocket)",
+            "tcp_near(cube_b)"
+          ],
+          "differs_from_prediction": [
+            "in_region(cube_a,pocket)"
+          ]
+        },
+        {
+          "step": "place(cube_b,src_b)",
+          "executive_checks_before": {
+            "true": [],
+            "false": []
+          },
+          "executive_checks_after": "in_region 0.96",
+          "executive_says_ok": true,
+          "attempts": 1,
+          "cube_a_x_mm": 90.43972194194794,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.01960721863771675,
+            "clear_of_walls(cube_a)": 0.8761024265626138,
+            "in_region(cube_b,mouth)": 1.4988010832439613e-15,
+            "in_region(cube_b,src_b)": 0.9593690705099862,
+            "tcp_near(cube_a)": 2.8929286227663553e-07,
+            "gripper_open()": 0.9820066760800228
+          },
+          "predicted_true": [
+            "gripper_open()",
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_b)"
+          ],
+          "differs_from_prediction": [
+            "clear_of_walls(cube_a)",
+            "in_region(cube_a,pocket)"
+          ]
+        },
+        {
+          "step": "approach(cube_a)",
+          "executive_checks_before": {
+            "true": [],
+            "false": []
+          },
+          "executive_checks_after": "seated",
+          "executive_says_ok": true,
+          "attempts": 1,
+          "cube_a_x_mm": 97.13954478502274,
+          "scores": {
+            "in_region(cube_a,pocket)": 0.07095634345277052,
+            "clear_of_walls(cube_a)": 0.7834771005892672,
+            "in_region(cube_b,mouth)": 1.4988010832439613e-15,
+            "in_region(cube_b,src_b)": 0.9593666308777717,
+            "tcp_near(cube_a)": 0.8712481163252463,
+            "gripper_open()": 6.144174602207286e-06
+          },
+          "predicted_true": [
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_a)"
+          ],
+          "differs_from_prediction": [
+            "in_region(cube_a,pocket)"
+          ]
+        }
+      ],
+      "training_env_would_accept": true
+    }
+  ]
+}

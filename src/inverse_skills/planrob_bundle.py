@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 
 from inverse_skills.core import Pose
-from inverse_skills.operators.extractor import OperatorExtractor
+from inverse_skills.operators.extractor import OperatorExtractionConfig, OperatorExtractor
 from inverse_skills.operators.parameterized import OperatorParameterizer
 from inverse_skills.operators.restoration import RestorationObjective
 from inverse_skills.operators.toy_planner import ToyInversePlanner
@@ -33,10 +33,13 @@ from inverse_skills.toy.generators import (
 from inverse_skills.toy.primitives import PrimitiveLibrary
 from inverse_skills.toy.simulator import ToyTabletopSimulator
 
+# The workshop paper's results were extracted with the mean rule.
+PUBLISHED_RULE = OperatorExtractionConfig(mode="mean")
+
 
 def _run_executable_case(skill_name: str, rollouts) -> dict:
     registry = build_predicate_registry()
-    extraction = OperatorExtractor(registry).extract(skill_name, rollouts)
+    extraction = OperatorExtractor(registry, PUBLISHED_RULE).extract(skill_name, rollouts)
     objective = RestorationObjective(extraction.operator, registry)
     planner = ToyInversePlanner(PrimitiveLibrary(), objective)
     result = planner.plan(rollouts[0].last(), max_depth=3)
@@ -66,7 +69,7 @@ def _per_predicate_scores(objective: RestorationObjective, scene) -> dict[str, f
 def _run_grasp_hold_case() -> dict:
     rollouts = make_grasp_hold_rollouts_executable()
     registry = build_predicate_registry_grasp_hold()
-    extraction = OperatorExtractor(registry).extract("grasp_hold", rollouts)
+    extraction = OperatorExtractor(registry, PUBLISHED_RULE).extract("grasp_hold", rollouts)
     objective = RestorationObjective(extraction.operator, registry)
     planner = ToyInversePlanner(PrimitiveLibrary(), objective)
     result = planner.plan(rollouts[0].last(), max_depth=3)
@@ -94,7 +97,7 @@ def _run_parameterized_case(*, skill_name: str, object_name: str, source_name: s
         skill_name=skill_name,
     )
     registry = build_predicate_registry(object_name, source_name, target_name)
-    learned = OperatorExtractor(registry).extract(skill_name, rollouts)
+    learned = OperatorExtractor(registry, PUBLISHED_RULE).extract(skill_name, rollouts)
     template = OperatorParameterizer().parameterize(learned.operator, rollouts[0])
     return {
         "object_name": object_name,
@@ -126,7 +129,7 @@ def _run_parameterized_distractor_case(
         target_name=target_name,
         distractor_name=distractor_name,
     )
-    learned = OperatorExtractor(registry).extract(skill_name, rollouts)
+    learned = OperatorExtractor(registry, PUBLISHED_RULE).extract(skill_name, rollouts)
     template = OperatorParameterizer().parameterize(learned.operator, rollouts[0])
     return {
         "object_name": object_name,
@@ -139,7 +142,7 @@ def _run_parameterized_distractor_case(
 
 
 def _run_two_phase_case(skill_name: str, rollouts, registry, max_depth: int) -> dict:
-    operator = OperatorExtractor(registry).extract(skill_name, rollouts).operator
+    operator = OperatorExtractor(registry, PUBLISHED_RULE).extract(skill_name, rollouts).operator
     objective = RestorationObjective(operator, registry)
     planner = ToyInversePlanner(PrimitiveLibrary(), objective)
     result = two_phase_inverse(planner, rollouts[0].last(), max_depth=max_depth)

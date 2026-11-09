@@ -5,6 +5,11 @@ forward skill entered the framework: its own executions are handed to the
 operator extractor, and what comes back — preconditions, add and delete
 effects — becomes a library action. Nothing about it is written by hand.
 
+An execution counts as a demonstration of that operator only if it starts at the
+handoff the plan predicts, which is checked before the policy runs (see
+`operators/handoff.py`). A scene that fails the check is replaced by the next one
+and recorded. What the policy then does never decides whether a run is kept.
+
 Conditions, on the same seeds:
 
   full                  the planned inverse, the hole filled by the learned skill
@@ -21,6 +26,10 @@ episode must start in the state the plan was made for. When the forward push
 falls short (it occasionally leaves A outside the pocket's seat), the scene is
 re-rolled, as the hole environment does for its handoffs, and the re-roll is
 reported rather than hidden.
+
+How often a scene really gives a valid handoff is reported apart from the
+conditions' success, both for the demonstrations and on the evaluation seeds. The
+evaluation does not re-roll for it: those seeds run as they always have.
 
 Writes artifacts/stow/learned_operator.json and artifacts/stow/stage4_execution.json.
 """
@@ -43,6 +52,13 @@ from inverse_skills.envs.stow_hole_env import load_spec
 from inverse_skills.logging.rollout import ForwardRollout
 from inverse_skills.operators import hole_planner as hp
 from inverse_skills.operators.extractor import OperatorExtractor
+from inverse_skills.operators.handoff import (
+    Prepared,
+    collect_demonstrations,
+    handoff_conditions,
+    handoff_violations,
+    summarize_attempts,
+)
 from inverse_skills.operators.hole_planner import Action
 
 torch.set_num_threads(1)
@@ -51,44 +67,95 @@ EXTRACTION_SEEDS = tuple(range(2000, 2010))   # disjoint from the evaluation see
 _MAX_FORWARD_ATTEMPTS = 5
 
 
+def measured_scores(obs, regions) -> dict[str, float]:
+    return {k: float(r.score) for k, r in sp.registry().evaluate_all(prim.obs_to_scene(obs, regions)).items()}
+
+
 def measured(obs, regions) -> frozenset[str]:
-    registry = sp.registry()
-    scene = prim.obs_to_scene(obs, regions)
-    return hp.symbolic_state({k: float(r.score) for k, r in registry.evaluate_all(scene).items()})
+    return hp.symbolic_state(measured_scores(obs, regions))
+
+
+def forward_once(env, scene_seed: int):
+    """The forward skill in one scene. Returns the observation and regions."""
+    obs = prim.reset(env, scene_seed)
+    regions = prim.regions(obs)
+    return prim.forward_stow(env, obs), regions
 
 
 def stowed(env, seed: int, expected: frozenset[str]):
     """The scene the forward skill leaves for this seed, re-rolled until it is the
     state the plan starts from. Returns the observation, regions and re-rolls."""
     for attempt in range(_MAX_FORWARD_ATTEMPTS):
-        obs = prim.reset(env, seed + attempt * 10_000)
-        regions = prim.regions(obs)
-        obs = prim.forward_stow(env, obs)
+        obs, regions = forward_once(env, seed + attempt * 10_000)
         if measured(obs, regions) == expected:
             return obs, regions, attempt
     raise RuntimeError(f"seed {seed}: the forward skill never produced the planned start")
 
 
-def learn_operator(env, model, spec: dict, seeds, planned_start) -> tuple[Action, dict]:
-    """Model the learned skill from its own executions, as a demonstration would be."""
+def run_prefix(env, obs, prefix: list[Action], regions):
+    """The known prefix, checked by the executive. Returns the observation and why it failed, if it did."""
+    obs, report = ex.execute_plan(env, obs, prefix, regions=regions)
+    failed = next((s for s in report.steps if not s.ok), None)
+    if failed is not None:
+        return obs, f"{failed.action}: {failed.detail}"
+    return obs, None if len(report.steps) == len(prefix) else f"stopped after {len(report.steps)} steps"
+
+
+def learn_operator(env, model, spec: dict, seeds, planned_start, domain) -> tuple[Action, dict]:
+    """Model the learned skill from its own executions, as a demonstration would be.
+
+    Each execution starts at a valid handoff, checked before the policy runs. A scene that
+    fails, in the forward skill, the prefix or the handoff, is replaced by the next and recorded.
+    """
     prefix = [Action.from_dict(a) for a in spec["prefix"]]
     registry = sp.registry()
     name = f"learned:{spec['achieve']}"
-    rollouts = []
-    for seed in seeds:
-        obs, regions, _ = stowed(env, seed, planned_start)
-        obs, report = ex.execute_plan(env, obs, prefix, regions=regions)
-        if len(report.steps) != len(prefix) or not all(s.ok for s in report.steps):
-            continue
+    conditions = handoff_conditions(domain, planned_start, spec)
+
+    def prepare(scene_seed: int) -> Prepared:
+        obs, regions = forward_once(env, scene_seed)
+        left_behind = measured(obs, regions)
+        if left_behind != planned_start:
+            return Prepared(failed_stage="forward", reason="differs from the planned start: "
+                            + ", ".join(sorted(left_behind ^ planned_start)))
+        obs, failure = run_prefix(env, obs, prefix, regions)
+        if failure:
+            return Prepared(failed_stage="prefix", reason=failure)
+        return Prepared(scores=measured_scores(obs, regions), context=(obs, regions))
+
+    def demonstrate(scene_seed: int, context) -> ForwardRollout:
+        obs, regions = context
         before = prim.obs_to_scene(obs, regions)
         obs = ex.run_learned(env, obs, model, spec["achieve"], regions, registry)
         after = prim.obs_to_scene(obs, regions, timestep=1)
-        rollouts.append(ForwardRollout(skill_name=name, demo_id=f"run_{seed}", scenes=[before, after]))
+        return ForwardRollout(skill_name=name, demo_id=f"run_{scene_seed}", scenes=[before, after])
+
+    rollouts, attempts = collect_demonstrations(seeds, conditions, prepare, demonstrate)
     extracted = OperatorExtractor(registry).extract(name, rollouts)
     action = hp.learned_action(spec["achieve"], extracted.operator)
     return action, {"rollouts": len(rollouts), "seeds": list(seeds),
+                    "scene_seeds": [a.scene_seed for a in attempts if a.stage == "valid"],
+                    "handoff_conditions": conditions.to_dict(),
+                    "handoff_attempts": [a.to_dict() for a in attempts],
+                    "handoff_summary": summarize_attempts(attempts),
                     "operator": extracted.operator.to_dict(), "scores": extracted.scores,
                     "action": action.to_dict()}
+
+
+def survey_handoffs(env, spec: dict, seeds, planned_start, domain) -> dict:
+    """Would each seed pass the handoff check? Measured only: no policy runs and nothing is
+    re-rolled for it, so this is the raw rate behind the conditions' results."""
+    prefix = [Action.from_dict(a) for a in spec["prefix"]]
+    conditions = handoff_conditions(domain, planned_start, spec)
+    rows = []
+    for seed in seeds:
+        obs, regions, rerolls = stowed(env, seed, planned_start)
+        obs, failure = run_prefix(env, obs, prefix, regions)
+        scores = measured_scores(obs, regions)
+        violations = [failure] if failure else handoff_violations(conditions, scores)
+        rows.append({"seed": seed, "forward_rerolls": rerolls, "valid": not violations, "violations": violations,
+                     "scores": {p: scores[p] for p in sorted(conditions.hold | conditions.absent)}})
+    return {"conditions": conditions.to_dict(), "seeds": rows, "valid": sum(row["valid"] for row in rows), "of": len(rows)}
 
 
 def main() -> None:
@@ -101,6 +168,9 @@ def main() -> None:
     ap.add_argument("--out", type=Path, default=Path("artifacts/stow/stage4_execution.json"))
     ap.add_argument("--learned-out", type=Path, default=Path("artifacts/stow/learned_operator.json"))
     args = ap.parse_args()
+    for path in (args.out, args.learned_out):
+        if path.exists():
+            raise SystemExit(f"{path} exists; saved results are never overwritten. Choose another --out and --learned-out.")
 
     model = SAC.load(args.checkpoint, device="cuda")
     spec = load_spec(args.spec)
@@ -119,7 +189,15 @@ def main() -> None:
 
     print(f"learning the model of LEARNED[{spec['achieve']}] from its executions "
           f"on seeds {EXTRACTION_SEEDS[0]}-{EXTRACTION_SEEDS[-1]}")
-    learned, learned_record = learn_operator(env, model, spec, EXTRACTION_SEEDS, start)
+    learned, learned_record = learn_operator(env, model, spec, EXTRACTION_SEEDS, start, domain)
+    print(f"  handoff must have true: {', '.join(learned_record['handoff_conditions']['hold'])}; "
+          f"false: {', '.join(learned_record['handoff_conditions']['absent'])}")
+    for attempt in learned_record["handoff_attempts"]:
+        if attempt["stage"] != "valid":
+            print(f"  seed {attempt['seed']}, scene {attempt['scene_seed']}: {attempt['stage']} failed, "
+                  f"replaced: {', '.join(attempt['reasons'])}")
+    print(f"  raw handoff validity: {learned_record['handoff_summary']['valid_handoffs']} of "
+          f"{learned_record['handoff_summary']['reached_the_handoff']} scenes that reached the handoff")
     print(f"  from {learned_record['rollouts']} runs:")
     print(f"    pre   {', '.join(sorted(learned.pre))}")
     print(f"    add   {', '.join(sorted(learned.add))}")
@@ -156,6 +234,9 @@ def main() -> None:
                   + (f"; forward skill re-rolled {rerolls}x" if rerolls else ""))
             for line in diverged:
                 print(f"      model != world after {line}")
+
+    # Apart from the results above: how often the evaluation seeds really give a valid handoff.
+    evaluation_handoffs = survey_handoffs(env, spec, args.seeds, start, domain)
     env.close()
 
     print(f"\n{'condition':22s} {'goal met':>9} {'mean A err':>11} {'mean B err':>11} {'diverging steps':>16}")
@@ -173,11 +254,16 @@ def main() -> None:
               and summary["library_only"]["goal_met_rate"] == 0.0
               and summary["relearned"]["goal_met_rate"] >= 0.8
               and spec["achieve"] in learned.add)
+    print(f"\nraw handoff validity, evaluation seeds: {evaluation_handoffs['valid']} of {evaluation_handoffs['of']}")
+    for row in evaluation_handoffs["seeds"]:
+        if not row["valid"]:
+            print(f"  seed {row['seed']}: {', '.join(row['violations'])}")
     print("\nSTAGE 4:", "PASS" if passed else "FAIL")
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps({
         "plans": {name: [s.name for s in steps] for name, (steps, _) in conditions.items()},
         "learned_action": learned.to_dict(),
+        "handoff_validity": {"demonstrations": learned_record["handoff_summary"], "evaluation_seeds": evaluation_handoffs},
         "summary": summary, "results": results, "passed": passed}, indent=2))
     print(f"wrote {args.out}")
 

@@ -138,8 +138,21 @@ def test_min_max_terms_carry_the_weakest_evidence_and_their_own_extractor_name()
     assert op.metadata == {"num_rollouts": 2, "extractor": "first_last_score_min_max_v0"}
 
 
-def test_the_mean_mode_is_the_default_and_unchanged() -> None:
-    assert OperatorExtractionConfig().mode == "mean"
+def test_min_max_is_the_default() -> None:
+    assert OperatorExtractionConfig().mode == "min_max"
+    table = {"p": [(0.99, 0.99)] * 4 + [(0.1, 0.1)]}    # only the averages make this a precondition
+    rollouts = [ForwardRollout(skill_name="skill", demo_id=f"demo_{i}",
+                               scenes=[_scene({"p": start}), _scene({"p": end})])
+                for i, (start, end) in enumerate(table["p"])]
+    registry = PredicateRegistry([_Scripted("p")])
+    by_default = OperatorExtractor(registry).extract("skill", rollouts)
+    named = OperatorExtractor(registry, OperatorExtractionConfig(mode="min_max")).extract("skill", rollouts)
+    assert by_default.operator.to_dict() == named.operator.to_dict()
+    assert by_default.operator.preconditions == []
+    assert by_default.operator.metadata["extractor"] == "first_last_score_min_max_v0"
+
+
+def test_the_mean_mode_stays_available_when_it_is_named_and_is_unchanged() -> None:
     # Hand-computed from the averaging rule: Pre if the start average >= 0.8;
     # Add / Del if the average rises / falls by >= 0.35.
     table = {"p": [(0.99, 0.99)] * 4 + [(0.1, 0.1)],    # start average 0.812

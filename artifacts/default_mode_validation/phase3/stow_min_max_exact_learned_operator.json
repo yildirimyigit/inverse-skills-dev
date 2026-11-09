@@ -1,0 +1,109 @@
+{
+  "rollouts": 10,
+  "seeds": [
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+  ],
+  "operator": {
+    "skill_name": "learned:clear_of_walls(cube_a)",
+    "preconditions": [
+      {
+        "key": "in_region(cube_b,src_b)",
+        "weight": 0.9562779481708695,
+        "polarity": "positive"
+      },
+      {
+        "key": "tcp_near(cube_a)",
+        "weight": 0.8608048575908288,
+        "polarity": "positive"
+      }
+    ],
+    "add_effects": [],
+    "delete_effects": [],
+    "inverse_target_terms": [
+      {
+        "key": "in_region(cube_b,src_b)",
+        "weight": 0.9562779481708695,
+        "polarity": "positive"
+      },
+      {
+        "key": "tcp_near(cube_a)",
+        "weight": 0.8608048575908288,
+        "polarity": "positive"
+      }
+    ],
+    "metadata": {
+      "num_rollouts": 10,
+      "extractor": "first_last_score_min_max_v0"
+    }
+  },
+  "scores": {
+    "clear_of_walls(cube_a)": {
+      "start_min": 0.11941810573828349,
+      "start_max": 0.4147884333786369,
+      "end_min": 0.8310662876983075,
+      "end_max": 0.8807535397236932
+    },
+    "gripper_open()": {
+      "start_min": 6.144174602207286e-06,
+      "start_max": 6.144174602207286e-06,
+      "end_min": 6.144174602207286e-06,
+      "end_max": 6.144174602207286e-06
+    },
+    "in_region(cube_a,pocket)": {
+      "start_min": 0.6656130867115873,
+      "start_max": 0.9756146985757933,
+      "end_min": 0.018000864190913568,
+      "end_max": 0.039680498600925485
+    },
+    "in_region(cube_a,src_a)": {
+      "start_min": 1.0892975410570216e-10,
+      "start_max": 7.113416689019658e-09,
+      "end_min": 3.152225333535874e-07,
+      "end_max": 1.2916423083320083e-06
+    },
+    "in_region(cube_b,mouth)": {
+      "start_min": 3.7192471324942744e-15,
+      "start_max": 1.6486811915683575e-14,
+      "end_min": 3.7192471324942744e-15,
+      "end_max": 1.6486811915683575e-14
+    },
+    "in_region(cube_b,src_b)": {
+      "start_min": 0.9562779481708695,
+      "start_max": 0.9813545130441959,
+      "end_min": 0.9562779481708695,
+      "end_max": 0.9813545130441959
+    },
+    "tcp_near(cube_a)": {
+      "start_min": 0.8608048575908288,
+      "start_max": 0.8752108683391236,
+      "end_min": 0.8557294161338345,
+      "end_max": 0.8783912764750763
+    },
+    "tcp_near(cube_b)": {
+      "start_min": 4.2334310501601635e-09,
+      "start_max": 6.840405047947584e-08,
+      "end_min": 1.811980930854773e-07,
+      "end_max": 4.626946542019006e-07
+    }
+  },
+  "action": {
+    "name": "LEARNED[clear_of_walls(cube_a)]",
+    "pre": [
+      "in_region(cube_b,src_b)",
+      "tcp_near(cube_a)"
+    ],
+    "pre_absent": [],
+    "add": [],
+    "delete": [],
+    "hole_for": null
+  }
+}

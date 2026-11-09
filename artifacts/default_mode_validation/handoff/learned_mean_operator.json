@@ -1,0 +1,140 @@
+{
+  "seeds": [
+    2000,
+    12001,
+    2002,
+    2003,
+    12004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+  ],
+  "operator": {
+    "skill_name": "learned:clear_of_walls(cube_a)",
+    "preconditions": [
+      {
+        "key": "in_region(cube_a,pocket)",
+        "weight": 0.9667167195812969,
+        "polarity": "positive"
+      },
+      {
+        "key": "in_region(cube_b,src_b)",
+        "weight": 0.9794045957792973,
+        "polarity": "positive"
+      },
+      {
+        "key": "tcp_near(cube_a)",
+        "weight": 0.8705535302809058,
+        "polarity": "positive"
+      }
+    ],
+    "add_effects": [
+      {
+        "key": "clear_of_walls(cube_a)",
+        "weight": 0.7510549332976061,
+        "polarity": "positive"
+      }
+    ],
+    "delete_effects": [
+      {
+        "key": "in_region(cube_a,pocket)",
+        "weight": 0.9448140110927212,
+        "polarity": "positive"
+      }
+    ],
+    "inverse_target_terms": [
+      {
+        "key": "clear_of_walls(cube_a)",
+        "weight": 0.7510549332976061,
+        "polarity": "negative"
+      },
+      {
+        "key": "in_region(cube_a,pocket)",
+        "weight": 0.9667167195812969,
+        "polarity": "positive"
+      },
+      {
+        "key": "in_region(cube_b,src_b)",
+        "weight": 0.9794045957792973,
+        "polarity": "positive"
+      },
+      {
+        "key": "tcp_near(cube_a)",
+        "weight": 0.8705535302809058,
+        "polarity": "positive"
+      }
+    ],
+    "metadata": {
+      "num_rollouts": 10,
+      "extractor": "first_last_score_delta_v0"
+    }
+  },
+  "scores": {
+    "clear_of_walls(cube_a)": {
+      "start_mean": 0.11981050930475161,
+      "end_mean": 0.8708654426023577,
+      "delta": 0.7510549332976061,
+      "abs_delta": 0.7510549332976061
+    },
+    "gripper_open()": {
+      "start_mean": 6.144174602207286e-06,
+      "end_mean": 6.144174602207286e-06,
+      "delta": 0.0,
+      "abs_delta": 0.0
+    },
+    "in_region(cube_a,pocket)": {
+      "start_mean": 0.9667167195812969,
+      "end_mean": 0.02190270848857569,
+      "delta": -0.9448140110927212,
+      "abs_delta": 0.9448140110927212
+    },
+    "in_region(cube_a,src_a)": {
+      "start_mean": 2.754339867294675e-10,
+      "end_mean": 6.597799560748018e-07,
+      "delta": 6.595045220880724e-07,
+      "abs_delta": 6.595045220880724e-07
+    },
+    "in_region(cube_b,mouth)": {
+      "start_mean": 1.0341727474383334e-14,
+      "end_mean": 1.0341727474383334e-14,
+      "delta": 0.0,
+      "abs_delta": 0.0
+    },
+    "in_region(cube_b,src_b)": {
+      "start_mean": 0.9794045957792973,
+      "end_mean": 0.9794045957792973,
+      "delta": 0.0,
+      "abs_delta": 0.0
+    },
+    "tcp_near(cube_a)": {
+      "start_mean": 0.8705535302809058,
+      "end_mean": 0.8706915467089529,
+      "delta": 0.00013801642804711634,
+      "abs_delta": 0.00013801642804711634
+    },
+    "tcp_near(cube_b)": {
+      "start_mean": 6.168230293202015e-09,
+      "end_mean": 3.9541905201834205e-07,
+      "delta": 3.8925082172514e-07,
+      "abs_delta": 3.8925082172514e-07
+    }
+  },
+  "action": {
+    "name": "LEARNED[clear_of_walls(cube_a)]",
+    "pre": [
+      "in_region(cube_a,pocket)",
+      "in_region(cube_b,src_b)",
+      "tcp_near(cube_a)"
+    ],
+    "pre_absent": [],
+    "add": [
+      "clear_of_walls(cube_a)"
+    ],
+    "delete": [
+      "in_region(cube_a,pocket)"
+    ],
+    "hole_for": null
+  }
+}

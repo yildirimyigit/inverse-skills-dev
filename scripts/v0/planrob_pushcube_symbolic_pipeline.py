@@ -70,7 +70,7 @@ import gymnasium as gym  # noqa: E402
 
 from inverse_skills.core import Region  # noqa: E402
 from inverse_skills.logging.rollout import ForwardRollout  # noqa: E402
-from inverse_skills.operators.extractor import OperatorExtractor  # noqa: E402
+from inverse_skills.operators.extractor import OperatorExtractionConfig, OperatorExtractor  # noqa: E402
 from inverse_skills.operators.restoration import RestorationObjective  # noqa: E402
 from inverse_skills.operators.toy_planner import ToyInversePlanner  # noqa: E402
 from inverse_skills.predicates import (  # noqa: E402
@@ -296,7 +296,7 @@ def main() -> None:
         print(f"  demo seed={seed:<5} cube_init=({cube_init[0]:+.3f},{cube_init[1]:+.3f})"
               f"  push_dx={dx * 100:.1f} cm")
 
-    result = OperatorExtractor(registry).extract("push", rollouts)
+    result = OperatorExtractor(registry, OperatorExtractionConfig(mode="mean")).extract("push", rollouts)
     operator = result.operator
     print("\n  per-predicate scores (mean over demos):")
     print(f"    {'predicate':<26} {'start':>8} {'end':>8} {'delta':>8}")

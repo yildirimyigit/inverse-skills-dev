@@ -1,6 +1,6 @@
-"""An optional exact-transition alternative to the hole planner's gap analysis.
+"""The exact-transition planner: the default mode of `hole_planner.plan`.
 
-`hole_planner.plan` first decides where holes may go (`capability_gaps`, computed
+The relaxed mode first decides where holes may go (`capability_gaps`, computed
 with delete effects ignored) and then searches. A delete interaction can hide a gap
 from that first step, and the planner then reports no plan. This module decides with
 real transitions instead, with the same `Domain`, the same lexicographic cost and the

@@ -1,4 +1,4 @@
-"""The optional exact-transition planner, and proof that it leaves the default planner alone.
+"""The exact-transition planner, which is the default, and proof that the relaxed mode is left alone.
 
 The sections A to J follow the task that asked for this mode. Later sections pin the rules
 for holes: exact necessity, and the causal preference that is separate from it. Every plan is
@@ -16,6 +16,7 @@ import dataclasses
 import inspect
 import itertools
 import random
+from functools import partial
 from typing import NamedTuple
 
 import pytest
@@ -59,6 +60,9 @@ def act(name, pre=(), add=(), delete=(), absent=()) -> Action:
 
 def exact(domain, start, goal_pos, goal_neg=(), **limits):
     return plan(domain, frozenset(start), set(goal_pos), set(goal_neg), mode="exact", **limits)
+
+
+relaxed = partial(plan, mode="relaxed")
 
 
 def replay(domain, start, steps):
@@ -120,18 +124,33 @@ def drawer_without_pull() -> Domain:
     return domain
 
 
-# A. The default planner is unchanged
+# A. The default is the exact mode, and the relaxed mode stays available when it is named
 
-def test_a_the_relaxed_planner_is_the_default():
+def test_a_the_exact_planner_is_the_default():
     for domain, start, goal in ((sd.domain(), sd.stowed_state(), STOW_GOAL),
                                 (dd.domain(), DRAWER_START, DRAWER_GOAL)):
         default = plan(domain, start, *goal)
-        assert default == plan(domain, start, *goal, mode="relaxed")
-        assert type(default) is PlanResult
-    assert type(plan(delete_interaction(), frozenset({"p"}), {"g"})) is NoPlan
+        assert default == plan(domain, start, *goal, mode="exact")
+        assert type(default) is ExactPlanResult
+    assert type(plan(delete_interaction(), frozenset({"p"}), {"g"})) is ExactPlanResult
 
 
-def test_a_the_default_result_types_gain_no_fields():
+def test_a_the_relaxed_mode_stays_available_when_it_is_named():
+    for domain, start, goal in ((sd.domain(), sd.stowed_state(), STOW_GOAL),
+                                (dd.domain(), DRAWER_START, DRAWER_GOAL)):
+        assert type(relaxed(domain, start, *goal)) is PlanResult
+    assert type(relaxed(delete_interaction(), frozenset({"p"}), {"g"})) is NoPlan
+
+
+def test_a_the_unrestricted_ablation_needs_the_relaxed_mode_named():
+    """The direct baseline's spec comes from this option, so it must not change meaning quietly."""
+    with pytest.raises(ValueError, match="relaxed mode only"):
+        plan(dd.domain(), DRAWER_START, *DRAWER_GOAL, unrestricted_holes=True)
+    direct = plan(dd.domain(), DRAWER_START, *DRAWER_GOAL, mode="relaxed", unrestricted_holes=True)
+    assert direct.actions == ("approach_handle(drawer)", "HOLE[drawer_open(drawer)]")
+
+
+def test_a_the_relaxed_result_types_gain_no_fields():
     assert [f.name for f in dataclasses.fields(PlanResult)] == [
         "actions", "steps", "delegated", "collateral", "hole_literals", "hole_indices", "expanded",
         "candidates", "alternatives", "capability_gaps", "synthesizable_gaps"]
@@ -159,7 +178,7 @@ def test_a_exact_results_still_work_as_the_results_callers_know():
 def test_b_the_hidden_gap_gets_a_causally_justified_hole():
     domain = delete_interaction()
     assert "g" in relaxed_reachable(domain, frozenset({"p"}))
-    assert not plan(domain, frozenset({"p"}), {"g"})        # default: no plan, as before
+    assert not relaxed(domain, frozenset({"p"}), {"g"})     # relaxed: no plan, as before
 
     result = exact(domain, {"p"}, {"g"})
     assert result.actions == ("make_q", "HOLE[p]", "use")    # keeps make_q, which HOLE[q] replaces
@@ -175,7 +194,7 @@ def test_b_the_hidden_gap_gets_a_causally_justified_hole():
 def test_b_the_exact_mode_is_not_the_unrestricted_ablation():
     domain = delete_interaction()
     # With every open condition on offer, the shortest plan just delegates the goal.
-    assert plan(domain, frozenset({"p"}), {"g"}, unrestricted_holes=True).actions == ("HOLE[g]",)
+    assert relaxed(domain, frozenset({"p"}), {"g"}, unrestricted_holes=True).actions == ("HOLE[g]",)
     assert "HOLE[g]" not in exact(domain, {"p"}, {"g"}).actions
 
 
@@ -195,7 +214,7 @@ def test_b_either_prerequisite_is_learned_if_the_other_cannot_be():
 def test_b_the_goal_hole_is_not_a_fallback():
     """Neither prerequisite can be learned, so the only hole left is the goal itself. `use`
     would run if they could be, so the planner reports it rather than work around an action the
-    library has, as the default planner does for its own unsynthesizable gaps."""
+    library has, as the relaxed mode does for its own unsynthesizable gaps."""
     result = exact(delete_interaction(scored=("g",)), {"p"}, {"g"})
     assert isinstance(result, ExactNoPlan)
     assert result.replaceable_holes == ("g",) and result.limits_reached == ()
@@ -203,12 +222,12 @@ def test_b_the_goal_hole_is_not_a_fallback():
 
 
 def test_b_a_consumed_shared_resource():
-    """Both actions consume the one token. The default finds no gap; here the token is what
+    """Both actions consume the one token. The relaxed mode finds no gap; here the token is what
     is missing, and the library does the rest."""
     domain = Domain(actions=[act("make_p", {"token"}, {"p"}, {"token"}),
                              act("make_q", {"token"}, {"q"}, {"token"})],
                     scored=frozenset({"token", "p", "q"}))
-    assert not plan(domain, frozenset({"token"}), {"p", "q"})
+    assert not relaxed(domain, frozenset({"token"}), {"p", "q"})
     result = exact(domain, {"token"}, {"p", "q"})
     assert result.delegated == ("token",) and result.cost == (1, 0, 1, 1, 3)
     assert set(result.alternative_names) | {result.actions} == {
@@ -226,7 +245,7 @@ def test_b_a_producer_that_destroys_part_of_the_goal_is_unusable():
     assert_valid(domain, {"z"}, result, {"g", "z"})
 
 
-def test_a_the_cost_order_is_the_defaults():
+def test_a_the_cost_order_is_the_relaxed_modes():
     """Plans here delegate two literals, displace nothing and change three literals. The next
     term decides: two holes win over three, although they take a longer plan. c and e form a
     cycle, so the causal preference leaves all these plans to the cost. No random problem in
@@ -241,7 +260,7 @@ def test_a_the_cost_order_is_the_defaults():
     result = exact(domain, (), {"d", "e", "f"})
     assert result.cost == (2, 0, 3, 2, 5)
     assert_valid(domain, (), result, {"d", "e", "f"})
-    assert result.cost == plan(domain, frozenset(), {"d", "e", "f"}).cost
+    assert result.cost == relaxed(domain, frozenset(), {"d", "e", "f"}).cost
 
 
 # C. A library that can already do it
@@ -277,11 +296,11 @@ def test_d_the_drawer_learns_the_grasp_and_reuses_pull_open():
     assert result.hole_contexts[0].library_alternatives == ()    # nothing in the library grasps
 
 
-def test_d_stow_gets_the_plan_the_default_gets():
+def test_d_stow_gets_the_plan_the_relaxed_mode_gets():
     domain = sd.domain()
     result = exact(domain, sd.stowed_state(), *STOW_GOAL)
     assert result.actions == STOW_PLAN
-    assert result.cost == plan(domain, sd.stowed_state(), *STOW_GOAL).cost
+    assert result.cost == relaxed(domain, sd.stowed_state(), *STOW_GOAL).cost
     assert result.alternatives == ()
     assert_valid(domain, sd.stowed_state(), result, *STOW_GOAL)
 
@@ -292,7 +311,7 @@ def test_d_stow_gets_the_plan_the_default_gets():
 ], ids=["stow", "drawer"])
 def test_d_both_modes_give_rl_the_same_learning_problem(domain, start, goal):
     assert (hole_spec(domain, start, exact(domain, start, *goal), *goal)
-            == hole_spec(domain, start, plan(domain, start, *goal), *goal))
+            == hole_spec(domain, start, relaxed(domain, start, *goal), *goal))
 
 
 def test_d_a_chain_is_repaired_at_its_root():
@@ -301,7 +320,7 @@ def test_d_a_chain_is_repaired_at_its_root():
     domain = Domain(actions=[act("use_p", {"p"}, {"g"}), act("make_p", {"r"}, {"p"})],
                     scored=frozenset({"p", "r", "g"}))
     assert exact(domain, (), {"g"}).actions == ("HOLE[r]", "make_p", "use_p")
-    assert exact(domain, (), {"g"}).actions == plan(domain, frozenset(), {"g"}).actions
+    assert exact(domain, (), {"g"}).actions == relaxed(domain, frozenset(), {"g"}).actions
 
 
 def test_d_conjunctive_prerequisites_are_learned_not_their_product():
@@ -326,7 +345,7 @@ def test_e_the_drawer_learns_the_opening_when_nothing_can_pull():
     assert result.actions == ("approach_handle(drawer)", f"HOLE[{OPEN}]")
     assert_valid(domain, DRAWER_START, result, *DRAWER_GOAL)
     assert (hole_spec(domain, DRAWER_START, result, *DRAWER_GOAL)
-            == hole_spec(domain, DRAWER_START, plan(domain, DRAWER_START, *DRAWER_GOAL), *DRAWER_GOAL))
+            == hole_spec(domain, DRAWER_START, relaxed(domain, DRAWER_START, *DRAWER_GOAL), *DRAWER_GOAL))
 
 
 def test_e_a_declared_implication_counts_as_a_producer():
@@ -347,7 +366,7 @@ def test_f_a_pure_cycle_gets_a_hole():
     domain = Domain(actions=[act("p_from_q", {"q"}, {"p"}), act("q_from_p", {"p"}, {"q"})],
                     scored=frozenset({"p", "q"}))
     result = exact(domain, (), {"p"})
-    assert result.actions == plan(domain, frozenset(), {"p"}).actions == ("HOLE[p]",)
+    assert result.actions == relaxed(domain, frozenset(), {"p"}).actions == ("HOLE[p]",)
     # q_from_p needs p, and p_from_q needs q: neither can replace a hole for the other.
     reasons = dict(result.hole_contexts[0].library_alternatives)
     assert "cannot run here" in reasons["p_from_q"]
@@ -363,7 +382,7 @@ def test_f_a_cycle_that_leads_into_another_cycle_is_broken_at_the_last():
     domain = Domain(actions=[act("p_from_q", {"q"}, {"p"}), act("q_from_p", {"p"}, {"q"}),
                              act("q_from_x", {"x"}, {"q"}), act("x_from_y", {"y"}, {"x"}),
                              act("y_from_x", {"x"}, {"y"})], scored=frozenset({"p", "q", "x", "y"}))
-    assert exact(domain, (), {"p"}).actions == plan(domain, frozenset(), {"p"}).actions
+    assert exact(domain, (), {"p"}).actions == relaxed(domain, frozenset(), {"p"}).actions
 
 
 def test_f_stows_cycle_runs_through_a_literal_that_cannot_be_learned():
@@ -388,12 +407,12 @@ def test_f_an_action_that_needs_its_own_effect_does_not_establish_it():
 
 
 def test_f_an_action_that_needs_its_own_effect_is_not_a_cycle():
-    """A difference between the modes. `make_f` needs f, so nothing can establish f. The default
+    """A difference between the modes. `make_f` needs f, so nothing can establish f. The relaxed mode
     planner sees d and f as a cycle and delegates d. Here `make_d` is waiting for f, which cannot be
     learned, so it reports no plan, as for any other goal producer waiting on a prerequisite."""
     domain = Domain(actions=[act("make_f", {"d", "f"}, {"f"}), act("make_d", {"f"}, {"d"})],
                     scored=frozenset({"d"}))
-    assert plan(domain, frozenset(), {"d"}).actions == ("HOLE[d]",)
+    assert relaxed(domain, frozenset(), {"d"}).actions == ("HOLE[d]",)
     result = exact(domain, (), {"d"})
     assert isinstance(result, ExactNoPlan) and result.replaceable_holes == ("d",)
 
@@ -416,7 +435,7 @@ def test_g_a_goal_without_a_score_gets_no_hole():
 
 
 def test_g_stow_without_the_score_reports_it_and_delegates_nothing_else():
-    """As in the default planner: no hole for clear_of_walls(A) means no plan, not a hole for
+    """As in the relaxed mode: no hole for clear_of_walls(A) means no plan, not a hole for
     another literal that the library has an action for."""
     domain = sd.domain()
     domain.scored = domain.scored - {"clear_of_walls(cube_a)"}
@@ -441,7 +460,7 @@ def test_h_the_exact_mode_never_calls_the_relaxed_analysis(monkeypatch, domain, 
     monkeypatch.setattr(hole_planner, "relaxed_reachable", forbidden)
     monkeypatch.setattr(hole_planner, "capability_gaps", forbidden)
     with pytest.raises(AssertionError, match="relaxed analysis was called"):
-        plan(domain, start, *goal)          # the patch is live: the default mode needs them
+        plan(domain, start, *goal, mode="relaxed")          # the patch is live: this mode needs them
     assert plan(domain, start, *goal, mode="exact").actions == expected
 
 
@@ -517,13 +536,13 @@ def test_i_a_hole_can_remove_a_negative_goal_through_a_mutex():
 
 
 def test_i_a_negative_only_goal_with_no_library_gets_no_hole():
-    """LIMITATION, shared with the default planner: a hole only makes a literal true, and a
+    """LIMITATION, shared with the relaxed mode: a hole only makes a literal true, and a
     hole for a mutex partner would be a delete in disguise, so none is offered."""
     domain = Domain(actions=[], scored=frozenset({"x", "y"}), mutex_groups=[frozenset({"x", "y"})])
     assert isinstance(exact(domain, {"x"}, (), {"x"}), ExactNoPlan)
 
 
-def test_i_a_disturbance_orders_the_plan_as_in_the_default():
+def test_i_a_disturbance_orders_the_plan_as_in_the_relaxed_mode():
     """Freeing A sweeps through the mouth, so B is moved out of the way first."""
     domain = sd.domain()
     states = assert_valid(domain, sd.stowed_state(),
@@ -626,7 +645,7 @@ def test_j_a_plan_says_whether_the_step_limit_could_have_hidden_a_cheaper_one():
 
 
 def test_j_a_shorter_way_to_an_explored_state_is_still_explored():
-    """The default planner's step-limit regression, in this mode too."""
+    """The relaxed mode's step-limit regression, in this mode too."""
     long_way = [act("long1", {"start"}, {"step1"}, {"start", "object_in_place"})]
     long_way += [act(f"long{i}", {f"step{i - 1}"}, {f"step{i}"}, {f"step{i - 1}"}) for i in range(2, 8)]
     long_way.append(act("long8", {"step7"}, {"middle"}, {"step7"}))
@@ -641,11 +660,11 @@ def test_j_a_shorter_way_to_an_explored_state_is_still_explored():
 
 # Hole starts, without the relaxation
 
-def test_hole_starts_are_the_defaults_on_stow_and_the_drawer():
+def test_hole_starts_are_the_relaxed_modes_on_stow_and_the_drawer():
     for domain, start in ((sd.domain(), sd.stowed_state()), (dd.domain(), DRAWER_START)):
         for key in sorted(domain.scored):
-            default = domain.hole(key, relaxed_reachable(domain, start))
-            assert hole_starts(domain, key, library_states(domain, start)) == [default], key
+            by_relaxed = domain.hole(key, relaxed_reachable(domain, start))
+            assert hole_starts(domain, key, library_states(domain, start)) == [by_relaxed], key
 
 
 def test_an_approach_cannot_be_skipped():
@@ -655,12 +674,12 @@ def test_an_approach_cannot_be_skipped():
 
 
 def test_facts_that_exclude_each_other_give_one_start_each():
-    """The default planner's limitation: its start asks for both near and far, which can
+    """The relaxed mode's limitation: its start asks for both near and far, which can
     never hold, so it finds no plan. Here each is a start of its own, and neither is skipped."""
     domain = Domain(actions=[act("go_near", add={"near(o)"}), act("go_far", add={"far(o)"})],
                     scored=frozenset({"done(o)"}), robot_relative=frozenset({"near(o)", "far(o)"}),
                     mutex_groups=[frozenset({"near(o)", "far(o)"})])
-    assert isinstance(plan(domain, frozenset(), {"done(o)"}), NoPlan)
+    assert isinstance(relaxed(domain, frozenset(), {"done(o)"}), NoPlan)
     assert domain.hole("done(o)", relaxed_reachable(domain, frozenset())).pre == {"near(o)", "far(o)"}
 
     starts = hole_starts(domain, "done(o)", library_states(domain, frozenset()))
@@ -683,13 +702,13 @@ def test_facts_the_library_holds_only_apart_are_not_a_conjunction():
 
 def test_a_fact_only_the_relaxation_can_reach_is_not_a_start():
     """A difference between the modes, on purpose. The relaxation says `prep` can run, so the
-    default's hole must wait for near(o), which never comes, and it finds no plan. The
+    relaxed mode's hole must wait for near(o), which never comes, and it finds no plan. The
     library really cannot get there, so here the hole does not wait for it."""
     domain = Domain(actions=[act("make_b", {"a"}, {"b"}, {"a"}), act("prep", {"a", "b"}, {"near(o)"})],
                     scored=frozenset({"fixed(o)"}), robot_relative=frozenset({"near(o)"}))
     start = frozenset({"a"})
     assert domain.hole("fixed(o)", relaxed_reachable(domain, start)).pre == {"near(o)"}
-    assert isinstance(plan(domain, start, {"fixed(o)"}), NoPlan)
+    assert isinstance(relaxed(domain, start, {"fixed(o)"}), NoPlan)
     result = exact(domain, start, {"fixed(o)"})
     assert result.actions == ("HOLE[fixed(o)]",) and result.steps[0].pre == frozenset()
 
@@ -780,7 +799,7 @@ def test_ordering_a_library_action_can_run_before_the_hole_that_would_block_it()
                     scored=frozenset({"a", "d", "f"}))
     result = exact(domain, (), {"g"})
     assert result.actions == ("HOLE[f]", "make_a", "HOLE[d]", "finish")
-    assert result.actions == plan(domain, frozenset(), {"g"}).actions
+    assert result.actions == relaxed(domain, frozenset(), {"g"}).actions
     assert_valid(domain, (), result, {"g"})
 
 
@@ -953,7 +972,7 @@ def test_cycle_of_three_can_be_broken_anywhere():
                              act("c_from_a", {"a"}, {"c"})], scored=frozenset({"a", "b", "c"}))
     assert Oracle(domain, (), {"a"}).minimal_sets() == {frozenset({"a"}), frozenset({"b"}), frozenset({"c"})}
     assert exact(domain, (), {"a"}).actions == ("HOLE[a]",)
-    assert exact(domain, (), {"a"}).actions == plan(domain, frozenset(), {"a"}).actions
+    assert exact(domain, (), {"a"}).actions == relaxed(domain, frozenset(), {"a"}).actions
 
 
 # False rejection caused by counterfactual prerequisite supply
@@ -969,11 +988,11 @@ def test_false_rejection_prerequisites_the_library_never_holds_together():
 
 
 def test_false_rejection_a_prerequisite_nothing_can_establish():
-    """r can never be established, so `make_p` can never run, and p is really needed. The default
+    """r can never be established, so `make_p` can never run, and p is really needed. The relaxed mode
     planner reports no plan here: it allows holes only at r. A difference between the modes."""
     domain = Domain(actions=[act("use_p", {"p"}, {"g"}), act("make_p", {"r"}, {"p"})], scored=frozenset({"p"}))
     assert exact(domain, (), {"g"}).actions == ("HOLE[p]", "use_p")
-    assert isinstance(plan(domain, frozenset(), {"g"}), NoPlan)
+    assert isinstance(relaxed(domain, frozenset(), {"g"}), NoPlan)
 
 
 def test_false_rejection_what_learning_a_prerequisite_would_really_take():
@@ -1008,7 +1027,7 @@ def test_false_rejection_an_order_that_cannot_help_without_its_prerequisite():
                     scored=frozenset({"a", "d"}))
     result = exact(domain, (), {"g"})
     assert result.delegated == ("a", "d") and result.actions[-1] == "finish"
-    assert isinstance(plan(domain, frozenset(), {"g"}), NoPlan)
+    assert isinstance(relaxed(domain, frozenset(), {"g"}), NoPlan)
 
 
 # Subset-minimal holes and alternative causal repairs
@@ -1030,7 +1049,7 @@ def test_minimal_the_drawer_has_two_and_the_cost_alone_would_choose_wrongly():
     result = exact(domain, DRAWER_START, *DRAWER_GOAL)
     assert result.delegated == (GRASPED,)
     # The plan the preference refused is shorter, so the cost alone would have taken it.
-    assert plan(drawer_without_pull(), DRAWER_START, *DRAWER_GOAL).cost < result.cost
+    assert relaxed(drawer_without_pull(), DRAWER_START, *DRAWER_GOAL).cost < result.cost
 
 
 def test_minimal_a_larger_upstream_set_beats_a_smaller_one():
@@ -1110,7 +1129,7 @@ def test_each_set_of_holes_is_judged_once(monkeypatch):
 
 
 def test_tied_plans_through_one_node_can_be_under_reported():
-    """LIMITATION, shared with the default planner: equally cheap plans that merge at a node
+    """LIMITATION, shared with the relaxed mode: equally cheap plans that merge at a node
     are reported as one. The chosen plan and its cost are unaffected. Here two orders tie and
     one is listed; on random problems about 7 percent of tied plans went unreported."""
     domain = Domain(actions=[act("a", (), {"x"}), act("b", (), {"y"}), act("c", {"x", "y"}, {"g"})])
@@ -1119,13 +1138,13 @@ def test_tied_plans_through_one_node_can_be_under_reported():
     assert len(Oracle(domain, (), {"g"}).best_plans(2, 5)[1]) == 2
 
 
-def test_tied_orderings_are_reported_as_by_the_default():
+def test_tied_orderings_are_reported_as_by_the_relaxed_mode():
     """Without the interference model, stow has three tied orderings, and both modes list two."""
     domain = sd.domain(interference=False)
-    default = plan(domain, sd.stowed_state(), *STOW_GOAL)
+    by_relaxed = relaxed(domain, sd.stowed_state(), *STOW_GOAL)
     result = exact(domain, sd.stowed_state(), *STOW_GOAL)
-    assert result.cost == default.cost and result.actions == default.actions
-    assert len(default.alternatives) == len(result.alternatives) == 1
+    assert result.cost == by_relaxed.cost and result.actions == by_relaxed.actions
+    assert len(by_relaxed.alternatives) == len(result.alternatives) == 1
     assert len(Oracle(domain, sd.stowed_state(), *STOW_GOAL).best_plans(2, 6)[1]) == 3
 
 

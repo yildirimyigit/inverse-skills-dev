@@ -1,0 +1,434 @@
+{
+  "made_by": "PYTHONNOUSERSITE=1 python scripts/validate_handoff.py survey",
+  "conditions": {
+    "hold": [
+      "in_region(cube_a,pocket)",
+      "in_region(cube_b,src_b)",
+      "tcp_near(cube_a)"
+    ],
+    "absent": [
+      "clear_of_walls(cube_a)",
+      "in_region(cube_b,mouth)"
+    ]
+  },
+  "seeds": [
+    {
+      "seed": 0,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11994450988051958,
+        "in_region(cube_a,pocket)": 0.9629804531545108,
+        "in_region(cube_b,mouth)": 3.83026943495679e-15,
+        "in_region(cube_b,src_b)": 0.9813068471225073,
+        "tcp_near(cube_a)": 0.8701193575815896
+      }
+    },
+    {
+      "seed": 1,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.1203655920546553,
+        "in_region(cube_a,pocket)": 0.9720157436948051,
+        "in_region(cube_b,mouth)": 8.049116928532385e-15,
+        "in_region(cube_b,src_b)": 0.9743670889461733,
+        "tcp_near(cube_a)": 0.8775340193714439
+      }
+    },
+    {
+      "seed": 2,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11953959911864065,
+        "in_region(cube_a,pocket)": 0.9596344541033944,
+        "in_region(cube_b,mouth)": 1.1213252548714081e-14,
+        "in_region(cube_b,src_b)": 0.9798349448273173,
+        "tcp_near(cube_a)": 0.8657485106652856
+      }
+    },
+    {
+      "seed": 3,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11991808710075824,
+        "in_region(cube_a,pocket)": 0.9626413296695698,
+        "in_region(cube_b,mouth)": 5.495603971894525e-15,
+        "in_region(cube_b,src_b)": 0.9800691776056444,
+        "tcp_near(cube_a)": 0.8764254640792268
+      }
+    },
+    {
+      "seed": 4,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11936217631638285,
+        "in_region(cube_a,pocket)": 0.9737987511954818,
+        "in_region(cube_b,mouth)": 4.218847493575595e-15,
+        "in_region(cube_b,src_b)": 0.9763687756399764,
+        "tcp_near(cube_a)": 0.8652808517625225
+      }
+    },
+    {
+      "seed": 5,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11977426556452919,
+        "in_region(cube_a,pocket)": 0.968502568476199,
+        "in_region(cube_b,mouth)": 1.9761969838327786e-14,
+        "in_region(cube_b,src_b)": 0.9807142643695159,
+        "tcp_near(cube_a)": 0.8664648625570304
+      }
+    },
+    {
+      "seed": 6,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11961521402996711,
+        "in_region(cube_a,pocket)": 0.9739014841530373,
+        "in_region(cube_b,mouth)": 2.3370194668359545e-14,
+        "in_region(cube_b,src_b)": 0.9813139868630107,
+        "tcp_near(cube_a)": 0.8699904768380993
+      }
+    },
+    {
+      "seed": 7,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11960140573445671,
+        "in_region(cube_a,pocket)": 0.9682488698348688,
+        "in_region(cube_b,mouth)": 1.1823875212257917e-14,
+        "in_region(cube_b,src_b)": 0.9792345625220387,
+        "tcp_near(cube_a)": 0.863967939161955
+      }
+    },
+    {
+      "seed": 8,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.12006866984984255,
+        "in_region(cube_a,pocket)": 0.9611998617374764,
+        "in_region(cube_b,mouth)": 2.070565940925917e-14,
+        "in_region(cube_b,src_b)": 0.9789059130441703,
+        "tcp_near(cube_a)": 0.869837722011598
+      }
+    },
+    {
+      "seed": 9,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11974033599951833,
+        "in_region(cube_a,pocket)": 0.9816597644508728,
+        "in_region(cube_b,mouth)": 8.548717289613705e-15,
+        "in_region(cube_b,src_b)": 0.9744596054687269,
+        "tcp_near(cube_a)": 0.8702236881220748
+      }
+    },
+    {
+      "seed": 10,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11986415620276597,
+        "in_region(cube_a,pocket)": 0.9809931962376677,
+        "in_region(cube_b,mouth)": 5.828670879282072e-15,
+        "in_region(cube_b,src_b)": 0.9813484726887145,
+        "tcp_near(cube_a)": 0.8774176502140347
+      }
+    },
+    {
+      "seed": 11,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11981228910943242,
+        "in_region(cube_a,pocket)": 0.9809743981794392,
+        "in_region(cube_b,mouth)": 2.2593038551121936e-14,
+        "in_region(cube_b,src_b)": 0.9801039601796435,
+        "tcp_near(cube_a)": 0.877510056422714
+      }
+    },
+    {
+      "seed": 12,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11957332265668225,
+        "in_region(cube_a,pocket)": 0.9699447790219315,
+        "in_region(cube_b,mouth)": 7.605027718682322e-15,
+        "in_region(cube_b,src_b)": 0.9746768229335381,
+        "tcp_near(cube_a)": 0.8744552189614235
+      }
+    },
+    {
+      "seed": 13,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11990566384116741,
+        "in_region(cube_a,pocket)": 0.9758822929249809,
+        "in_region(cube_b,mouth)": 1.6042722705833512e-14,
+        "in_region(cube_b,src_b)": 0.9791049065945041,
+        "tcp_near(cube_a)": 0.8766483862097018
+      }
+    },
+    {
+      "seed": 14,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11953944228418184,
+        "in_region(cube_a,pocket)": 0.9669287649066223,
+        "in_region(cube_b,mouth)": 2.1593837828959295e-14,
+        "in_region(cube_b,src_b)": 0.9746758482739537,
+        "tcp_near(cube_a)": 0.8732613770276694
+      }
+    },
+    {
+      "seed": 15,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11975635725917927,
+        "in_region(cube_a,pocket)": 0.9776491041978791,
+        "in_region(cube_b,mouth)": 1.5654144647214707e-14,
+        "in_region(cube_b,src_b)": 0.9788974805260965,
+        "tcp_near(cube_a)": 0.8743835490944658
+      }
+    },
+    {
+      "seed": 16,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11946292828354638,
+        "in_region(cube_a,pocket)": 0.9747860285851212,
+        "in_region(cube_b,mouth)": 2.1038726316646716e-14,
+        "in_region(cube_b,src_b)": 0.981163971003201,
+        "tcp_near(cube_a)": 0.8662731538129744
+      }
+    },
+    {
+      "seed": 17,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.1200615854992948,
+        "in_region(cube_a,pocket)": 0.9802062963709827,
+        "in_region(cube_b,mouth)": 1.7430501486614958e-14,
+        "in_region(cube_b,src_b)": 0.9809301840528537,
+        "tcp_near(cube_a)": 0.86505292150785
+      }
+    },
+    {
+      "seed": 18,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.12000523841269722,
+        "in_region(cube_a,pocket)": 0.9776922231414426,
+        "in_region(cube_b,mouth)": 6.439293542825908e-15,
+        "in_region(cube_b,src_b)": 0.976213859432915,
+        "tcp_near(cube_a)": 0.8777344932806628
+      }
+    },
+    {
+      "seed": 19,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11964173609707529,
+        "in_region(cube_a,pocket)": 0.9674963569411215,
+        "in_region(cube_b,mouth)": 1.9317880628477724e-14,
+        "in_region(cube_b,src_b)": 0.9740198461929579,
+        "tcp_near(cube_a)": 0.8746271327871156
+      }
+    },
+    {
+      "seed": 20,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11994875686768314,
+        "in_region(cube_a,pocket)": 0.9636249474719351,
+        "in_region(cube_b,mouth)": 1.8096635301390052e-14,
+        "in_region(cube_b,src_b)": 0.9730370310479286,
+        "tcp_near(cube_a)": 0.8673934216965057
+      }
+    },
+    {
+      "seed": 21,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.12002695609250924,
+        "in_region(cube_a,pocket)": 0.9773401160710538,
+        "in_region(cube_b,mouth)": 3.3306690738754696e-15,
+        "in_region(cube_b,src_b)": 0.9813302991513135,
+        "tcp_near(cube_a)": 0.8760960430531095
+      }
+    },
+    {
+      "seed": 22,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11979594713485969,
+        "in_region(cube_a,pocket)": 0.9770586506124782,
+        "in_region(cube_b,mouth)": 6.050715484207103e-15,
+        "in_region(cube_b,src_b)": 0.9812691843295063,
+        "tcp_near(cube_a)": 0.8694041758152268
+      }
+    },
+    {
+      "seed": 23,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11995253207641937,
+        "in_region(cube_a,pocket)": 0.9748175064230958,
+        "in_region(cube_b,mouth)": 7.327471962526033e-15,
+        "in_region(cube_b,src_b)": 0.9789025358164917,
+        "tcp_near(cube_a)": 0.8739130846530703
+      }
+    },
+    {
+      "seed": 24,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11972164687041698,
+        "in_region(cube_a,pocket)": 0.9795059465948497,
+        "in_region(cube_b,mouth)": 3.83026943495679e-15,
+        "in_region(cube_b,src_b)": 0.9754140349918469,
+        "tcp_near(cube_a)": 0.8679490420991239
+      }
+    },
+    {
+      "seed": 25,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11944913518260236,
+        "in_region(cube_a,pocket)": 0.974874124835343,
+        "in_region(cube_b,mouth)": 3.7192471324942744e-15,
+        "in_region(cube_b,src_b)": 0.9758172376688778,
+        "tcp_near(cube_a)": 0.86755239662164
+      }
+    },
+    {
+      "seed": 26,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.1197767791960308,
+        "in_region(cube_a,pocket)": 0.9727648764152979,
+        "in_region(cube_b,mouth)": 2.4591439995447217e-14,
+        "in_region(cube_b,src_b)": 0.9763222821540871,
+        "tcp_near(cube_a)": 0.8642867533978406
+      }
+    },
+    {
+      "seed": 27,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.1203843679594847,
+        "in_region(cube_a,pocket)": 0.9554095704997079,
+        "in_region(cube_b,mouth)": 9.825473767932635e-15,
+        "in_region(cube_b,src_b)": 0.9782218586379945,
+        "tcp_near(cube_a)": 0.8777727676026194
+      }
+    },
+    {
+      "seed": 28,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11955183275433029,
+        "in_region(cube_a,pocket)": 0.9700224279019551,
+        "in_region(cube_b,mouth)": 1.1934897514720433e-14,
+        "in_region(cube_b,src_b)": 0.9798596027378101,
+        "tcp_near(cube_a)": 0.8679928642562028
+      }
+    },
+    {
+      "seed": 29,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.12057858637872482,
+        "in_region(cube_a,pocket)": 0.960352407849751,
+        "in_region(cube_b,mouth)": 2.0594637106796654e-14,
+        "in_region(cube_b,src_b)": 0.9817658414171796,
+        "tcp_near(cube_a)": 0.8782302794541974
+      }
+    },
+    {
+      "seed": 30,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.12068702397689945,
+        "in_region(cube_a,pocket)": 0.9537802693282307,
+        "in_region(cube_b,mouth)": 7.549516567451064e-15,
+        "in_region(cube_b,src_b)": 0.9808339965092564,
+        "tcp_near(cube_a)": 0.8652333804436699
+      }
+    },
+    {
+      "seed": 31,
+      "forward_rerolls": 0,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11983350512193552,
+        "in_region(cube_a,pocket)": 0.9802924047360329,
+        "in_region(cube_b,mouth)": 5.495603971894525e-15,
+        "in_region(cube_b,src_b)": 0.9806263678134263,
+        "tcp_near(cube_a)": 0.8768510316473834
+      }
+    }
+  ],
+  "valid": 32,
+  "of": 32
+}

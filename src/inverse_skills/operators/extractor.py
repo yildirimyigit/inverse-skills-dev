@@ -14,9 +14,10 @@ class OperatorExtractionConfig:
     precondition_threshold: float = 0.80
     effect_delta_threshold: float = 0.35
     min_abs_effect_delta: float = 0.15
-    # "mean" thresholds the scores averaged over the demonstrations. "min_max" asks
-    # every demonstration to show the condition or the transition (_extract_min_max).
-    mode: Literal["mean", "min_max"] = "mean"
+    # "min_max" asks every demonstration to show the condition or the transition
+    # (_extract_min_max). "mean" thresholds the scores averaged over the demonstrations:
+    # the earlier rule, kept for comparisons and for the workshop paper's experiments.
+    mode: Literal["mean", "min_max"] = "min_max"
     true_threshold: float = 0.80   # min_max: a score at or above this counts as true
     false_threshold: float = 0.20  # min_max: a score at or below this counts as false
 

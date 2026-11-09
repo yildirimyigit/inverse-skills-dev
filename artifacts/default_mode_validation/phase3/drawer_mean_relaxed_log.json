@@ -1,0 +1,2842 @@
+{
+ "domain": "drawer",
+ "tag": "mean_relaxed",
+ "operator_from": "mean",
+ "learned_extraction": null,
+ "planner": "relaxed",
+ "operator": "artifacts/default_mode_validation/phase1/drawer_original_mean_operator.json",
+ "spec": "artifacts/default_mode_validation/phase2/drawer_mean_relaxed_hole_spec.json",
+ "plan_calls": [
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {
+    "max_delegated": 0
+   },
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "NoPlan",
+   "actions": null
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  },
+  {
+   "mode": "relaxed",
+   "limits": {},
+   "start": [
+    "drawer_closed(drawer)"
+   ],
+   "result": "PlanResult",
+   "actions": [
+    "approach_handle(drawer)",
+    "grasp_handle(drawer)",
+    "pull_open(drawer)"
+   ]
+  }
+ ],
+ "handoffs": [
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04534706473350525,
+    0.008043879643082619,
+    0.9748644828796387,
+    0.9998788833618164,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "02e633aadf803d49ce6294e8230cc88790eadad8e4f39c15c9b43de4bd09210f"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04551209509372711,
+    0.00011689029633998871,
+    0.9736542701721191,
+    0.9998793005943298,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "722ae27e263742ab32b1ca7e5490bc4d1797e4956a1b04b050d56c3ecfa8650b"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04578351974487305,
+    0.008283937349915504,
+    0.974069356918335,
+    0.9998803734779358,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "7ac2ad96ad8e9b1fe4df5037d57fd52851c3630df77122a32369fafb5713d803"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.0458034873008728,
+    0.006189350970089436,
+    0.9753965139389038,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "1f91d5398f1c7d9fea09634467a507be92658159b38fe2907f7046da701f7edf"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04543319344520569,
+    0.007905950769782066,
+    0.9740127325057983,
+    0.9998793005943298,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b4f9085b1974a766a718b518c2bcd143d9bee6be73d80f2dfa3e6882992a34c8"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04590056836605072,
+    0.002556941471993923,
+    0.9749393463134766,
+    0.9998791813850403,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "912e46d2197cdc4e477ac2b1559dc39a25d2a1180fe80b011cddd110db40ade6"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.045672282576560974,
+    0.005504402797669172,
+    0.9735090732574463,
+    0.9998794794082642,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "ca41243abeb5893c32a58843b4847d71abc1bdb152b7ed3fd63fde1ba9f6eeb4"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.045730918645858765,
+    0.002938259858638048,
+    0.9737081527709961,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "4a8517a9c8ffdde8d0d33237057f58b8c66f885655dcdc920d5938c08ef4a79a"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04570774734020233,
+    0.0019481219351291656,
+    0.9739513397216797,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "4a475418ede57a423c3402b0251ebe5a71ee48df480b34f490b1eb7b9bc03ab9"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04576340317726135,
+    0.005841623060405254,
+    0.9744833707809448,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "67287f2251ac9cf968a90963ef98f2f270a9571b7d3ee89d9383b8426f72848e"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04555806517601013,
+    0.0009644357487559319,
+    0.9734494686126709,
+    0.9998795390129089,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b245f3d22de67545ad5ac20bfea407648df59aaa460d4a850bd83dd1b41fdba1"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04555016756057739,
+    0.00828019343316555,
+    0.9747238159179688,
+    0.9998791813850403,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b8965a9410ebac89085fc083266ccd207e5a06361b1bf450c47d0c0c52fb710b"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04576250910758972,
+    0.0016171392053365707,
+    0.9747474193572998,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "874870076507ae0160ec6eca52805962c4426bd9853697b7fcae9e0720cb57d2"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04541754722595215,
+    0.003022284945473075,
+    0.9731359481811523,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "6bb1879a9f45144a5c48e14c9f1c9b84666fa46877e9bdfba504b63f3d48f262"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04580259323120117,
+    0.0041955094784498215,
+    0.9742755889892578,
+    0.9998791813850403,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "2897f1eea08c786e3ee3413fbb4439fd83c8053fd5e2c425647bc7acb1807885"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04522442817687988,
+    0.002659284509718418,
+    0.973357081413269,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "902130a222384267eca678d063584c7b71acb0b46482f9608cf540cc17adf997"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.045624375343322754,
+    0.006113734561949968,
+    0.9742767810821533,
+    0.9998788833618164,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b18c3eed016f300b2a104ff6dd80fe1ffccb8380812cc3a1f8e6a14cb4c54afa"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04577226936817169,
+    0.007763677276670933,
+    0.9744913578033447,
+    0.9998796582221985,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "7bb9f144448e2dd27eb9a2c99ea7a52714340c7b64310586790696dc8afb4480"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04538320004940033,
+    0.007914351299405098,
+    0.9735249280929565,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "1a56a2bbb943e2d15a689ce443a94c7f24046a49f3c8cc367800e115d819812c"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04585959017276764,
+    0.003665550611913204,
+    0.9747661352157593,
+    0.9998793005943298,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "e55ff7ba1b5ac0106d0d6245861e8ba77d292ffb3523ae7a0bdb056b72802e55"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04534706473350525,
+    0.008043879643082619,
+    0.9748644828796387,
+    0.9998788833618164,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "02e633aadf803d49ce6294e8230cc88790eadad8e4f39c15c9b43de4bd09210f"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04551209509372711,
+    0.00011689029633998871,
+    0.9736542701721191,
+    0.9998793005943298,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "722ae27e263742ab32b1ca7e5490bc4d1797e4956a1b04b050d56c3ecfa8650b"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04578351974487305,
+    0.008283937349915504,
+    0.974069356918335,
+    0.9998803734779358,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "7ac2ad96ad8e9b1fe4df5037d57fd52851c3630df77122a32369fafb5713d803"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.0458034873008728,
+    0.006189350970089436,
+    0.9753965139389038,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "1f91d5398f1c7d9fea09634467a507be92658159b38fe2907f7046da701f7edf"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04543319344520569,
+    0.007905950769782066,
+    0.9740127325057983,
+    0.9998793005943298,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b4f9085b1974a766a718b518c2bcd143d9bee6be73d80f2dfa3e6882992a34c8"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04590056836605072,
+    0.002556941471993923,
+    0.9749393463134766,
+    0.9998791813850403,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "912e46d2197cdc4e477ac2b1559dc39a25d2a1180fe80b011cddd110db40ade6"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.045672282576560974,
+    0.005504402797669172,
+    0.9735090732574463,
+    0.9998794794082642,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "ca41243abeb5893c32a58843b4847d71abc1bdb152b7ed3fd63fde1ba9f6eeb4"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.045730918645858765,
+    0.002938259858638048,
+    0.9737081527709961,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "4a8517a9c8ffdde8d0d33237057f58b8c66f885655dcdc920d5938c08ef4a79a"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04570774734020233,
+    0.0019481219351291656,
+    0.9739513397216797,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "4a475418ede57a423c3402b0251ebe5a71ee48df480b34f490b1eb7b9bc03ab9"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04576340317726135,
+    0.005841623060405254,
+    0.9744833707809448,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "67287f2251ac9cf968a90963ef98f2f270a9571b7d3ee89d9383b8426f72848e"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04555806517601013,
+    0.0009644357487559319,
+    0.9734494686126709,
+    0.9998795390129089,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b245f3d22de67545ad5ac20bfea407648df59aaa460d4a850bd83dd1b41fdba1"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04555016756057739,
+    0.00828019343316555,
+    0.9747238159179688,
+    0.9998791813850403,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b8965a9410ebac89085fc083266ccd207e5a06361b1bf450c47d0c0c52fb710b"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04576250910758972,
+    0.0016171392053365707,
+    0.9747474193572998,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "874870076507ae0160ec6eca52805962c4426bd9853697b7fcae9e0720cb57d2"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04541754722595215,
+    0.003022284945473075,
+    0.9731359481811523,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "6bb1879a9f45144a5c48e14c9f1c9b84666fa46877e9bdfba504b63f3d48f262"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04580259323120117,
+    0.0041955094784498215,
+    0.9742755889892578,
+    0.9998791813850403,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "2897f1eea08c786e3ee3413fbb4439fd83c8053fd5e2c425647bc7acb1807885"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04522442817687988,
+    0.002659284509718418,
+    0.973357081413269,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "902130a222384267eca678d063584c7b71acb0b46482f9608cf540cc17adf997"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.045624375343322754,
+    0.006113734561949968,
+    0.9742767810821533,
+    0.9998788833618164,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b18c3eed016f300b2a104ff6dd80fe1ffccb8380812cc3a1f8e6a14cb4c54afa"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04577226936817169,
+    0.007763677276670933,
+    0.9744913578033447,
+    0.9998796582221985,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "7bb9f144448e2dd27eb9a2c99ea7a52714340c7b64310586790696dc8afb4480"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04538320004940033,
+    0.007914351299405098,
+    0.9735249280929565,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "1a56a2bbb943e2d15a689ce443a94c7f24046a49f3c8cc367800e115d819812c"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04585959017276764,
+    0.003665550611913204,
+    0.9747661352157593,
+    0.9998793005943298,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "e55ff7ba1b5ac0106d0d6245861e8ba77d292ffb3523ae7a0bdb056b72802e55"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04534706473350525,
+    0.008043879643082619,
+    0.9748644828796387,
+    0.9998788833618164,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "02e633aadf803d49ce6294e8230cc88790eadad8e4f39c15c9b43de4bd09210f"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04551209509372711,
+    0.00011689029633998871,
+    0.9736542701721191,
+    0.9998793005943298,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "722ae27e263742ab32b1ca7e5490bc4d1797e4956a1b04b050d56c3ecfa8650b"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04578351974487305,
+    0.008283937349915504,
+    0.974069356918335,
+    0.9998803734779358,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "7ac2ad96ad8e9b1fe4df5037d57fd52851c3630df77122a32369fafb5713d803"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.0458034873008728,
+    0.006189350970089436,
+    0.9753965139389038,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "1f91d5398f1c7d9fea09634467a507be92658159b38fe2907f7046da701f7edf"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04543319344520569,
+    0.007905950769782066,
+    0.9740127325057983,
+    0.9998793005943298,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b4f9085b1974a766a718b518c2bcd143d9bee6be73d80f2dfa3e6882992a34c8"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04590056836605072,
+    0.002556941471993923,
+    0.9749393463134766,
+    0.9998791813850403,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "912e46d2197cdc4e477ac2b1559dc39a25d2a1180fe80b011cddd110db40ade6"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.045672282576560974,
+    0.005504402797669172,
+    0.9735090732574463,
+    0.9998794794082642,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "ca41243abeb5893c32a58843b4847d71abc1bdb152b7ed3fd63fde1ba9f6eeb4"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.045730918645858765,
+    0.002938259858638048,
+    0.9737081527709961,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "4a8517a9c8ffdde8d0d33237057f58b8c66f885655dcdc920d5938c08ef4a79a"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04570774734020233,
+    0.0019481219351291656,
+    0.9739513397216797,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "4a475418ede57a423c3402b0251ebe5a71ee48df480b34f490b1eb7b9bc03ab9"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04576340317726135,
+    0.005841623060405254,
+    0.9744833707809448,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "67287f2251ac9cf968a90963ef98f2f270a9571b7d3ee89d9383b8426f72848e"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04555806517601013,
+    0.0009644357487559319,
+    0.9734494686126709,
+    0.9998795390129089,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b245f3d22de67545ad5ac20bfea407648df59aaa460d4a850bd83dd1b41fdba1"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04555016756057739,
+    0.00828019343316555,
+    0.9747238159179688,
+    0.9998791813850403,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b8965a9410ebac89085fc083266ccd207e5a06361b1bf450c47d0c0c52fb710b"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04576250910758972,
+    0.0016171392053365707,
+    0.9747474193572998,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "874870076507ae0160ec6eca52805962c4426bd9853697b7fcae9e0720cb57d2"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04541754722595215,
+    0.003022284945473075,
+    0.9731359481811523,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "6bb1879a9f45144a5c48e14c9f1c9b84666fa46877e9bdfba504b63f3d48f262"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04580259323120117,
+    0.0041955094784498215,
+    0.9742755889892578,
+    0.9998791813850403,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "2897f1eea08c786e3ee3413fbb4439fd83c8053fd5e2c425647bc7acb1807885"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04522442817687988,
+    0.002659284509718418,
+    0.973357081413269,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "902130a222384267eca678d063584c7b71acb0b46482f9608cf540cc17adf997"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.045624375343322754,
+    0.006113734561949968,
+    0.9742767810821533,
+    0.9998788833618164,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b18c3eed016f300b2a104ff6dd80fe1ffccb8380812cc3a1f8e6a14cb4c54afa"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04577226936817169,
+    0.007763677276670933,
+    0.9744913578033447,
+    0.9998796582221985,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "7bb9f144448e2dd27eb9a2c99ea7a52714340c7b64310586790696dc8afb4480"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04538320004940033,
+    0.007914351299405098,
+    0.9735249280929565,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "1a56a2bbb943e2d15a689ce443a94c7f24046a49f3c8cc367800e115d819812c"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04585959017276764,
+    0.003665550611913204,
+    0.9747661352157593,
+    0.9998793005943298,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "e55ff7ba1b5ac0106d0d6245861e8ba77d292ffb3523ae7a0bdb056b72802e55"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04534706473350525,
+    0.008043879643082619,
+    0.9748644828796387,
+    0.9998788833618164,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "02e633aadf803d49ce6294e8230cc88790eadad8e4f39c15c9b43de4bd09210f"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04551209509372711,
+    0.00011689029633998871,
+    0.9736542701721191,
+    0.9998793005943298,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "722ae27e263742ab32b1ca7e5490bc4d1797e4956a1b04b050d56c3ecfa8650b"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04578351974487305,
+    0.008283937349915504,
+    0.974069356918335,
+    0.9998803734779358,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "7ac2ad96ad8e9b1fe4df5037d57fd52851c3630df77122a32369fafb5713d803"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.0458034873008728,
+    0.006189350970089436,
+    0.9753965139389038,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "1f91d5398f1c7d9fea09634467a507be92658159b38fe2907f7046da701f7edf"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04543319344520569,
+    0.007905950769782066,
+    0.9740127325057983,
+    0.9998793005943298,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b4f9085b1974a766a718b518c2bcd143d9bee6be73d80f2dfa3e6882992a34c8"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04590056836605072,
+    0.002556941471993923,
+    0.9749393463134766,
+    0.9998791813850403,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "912e46d2197cdc4e477ac2b1559dc39a25d2a1180fe80b011cddd110db40ade6"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.045672282576560974,
+    0.005504402797669172,
+    0.9735090732574463,
+    0.9998794794082642,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "ca41243abeb5893c32a58843b4847d71abc1bdb152b7ed3fd63fde1ba9f6eeb4"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.045730918645858765,
+    0.002938259858638048,
+    0.9737081527709961,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "4a8517a9c8ffdde8d0d33237057f58b8c66f885655dcdc920d5938c08ef4a79a"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04570774734020233,
+    0.0019481219351291656,
+    0.9739513397216797,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "4a475418ede57a423c3402b0251ebe5a71ee48df480b34f490b1eb7b9bc03ab9"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04576340317726135,
+    0.005841623060405254,
+    0.9744833707809448,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "67287f2251ac9cf968a90963ef98f2f270a9571b7d3ee89d9383b8426f72848e"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04555806517601013,
+    0.0009644357487559319,
+    0.9734494686126709,
+    0.9998795390129089,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b245f3d22de67545ad5ac20bfea407648df59aaa460d4a850bd83dd1b41fdba1"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04555016756057739,
+    0.00828019343316555,
+    0.9747238159179688,
+    0.9998791813850403,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b8965a9410ebac89085fc083266ccd207e5a06361b1bf450c47d0c0c52fb710b"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04576250910758972,
+    0.0016171392053365707,
+    0.9747474193572998,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "874870076507ae0160ec6eca52805962c4426bd9853697b7fcae9e0720cb57d2"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04541754722595215,
+    0.003022284945473075,
+    0.9731359481811523,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "6bb1879a9f45144a5c48e14c9f1c9b84666fa46877e9bdfba504b63f3d48f262"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04580259323120117,
+    0.0041955094784498215,
+    0.9742755889892578,
+    0.9998791813850403,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "2897f1eea08c786e3ee3413fbb4439fd83c8053fd5e2c425647bc7acb1807885"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04522442817687988,
+    0.002659284509718418,
+    0.973357081413269,
+    0.9998791217803955,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "902130a222384267eca678d063584c7b71acb0b46482f9608cf540cc17adf997"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.045624375343322754,
+    0.006113734561949968,
+    0.9742767810821533,
+    0.9998788833618164,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "b18c3eed016f300b2a104ff6dd80fe1ffccb8380812cc3a1f8e6a14cb4c54afa"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04577226936817169,
+    0.007763677276670933,
+    0.9744913578033447,
+    0.9998796582221985,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "7bb9f144448e2dd27eb9a2c99ea7a52714340c7b64310586790696dc8afb4480"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04538320004940033,
+    0.007914351299405098,
+    0.9735249280929565,
+    0.9998793601989746,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "1a56a2bbb943e2d15a689ce443a94c7f24046a49f3c8cc367800e115d819812c"
+  },
+  {
+   "label": "handle_grasped(drawer)",
+   "observation": [
+    -1.0,
+    -0.04585959017276764,
+    0.003665550611913204,
+    0.9747661352157593,
+    0.9998793005943298,
+    0.0,
+    0.0
+   ],
+   "sim_state_sha256": "e55ff7ba1b5ac0106d0d6245861e8ba77d292ffb3523ae7a0bdb056b72802e55"
+  }
+ ],
+ "command": [
+  "scripts/drawer_stage4_execute.py",
+  "--spec",
+  "artifacts/default_mode_validation/phase2/drawer_mean_relaxed_hole_spec.json",
+  "--operator",
+  "artifacts/default_mode_validation/phase1/drawer_original_mean_operator.json",
+  "--out",
+  "artifacts/default_mode_validation/phase3/drawer_mean_relaxed.json"
+ ]
+}

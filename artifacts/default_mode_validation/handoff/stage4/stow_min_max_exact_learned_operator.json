@@ -1,0 +1,341 @@
+{
+  "rollouts": 10,
+  "seeds": [
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+  ],
+  "scene_seeds": [
+    2000,
+    12001,
+    2002,
+    2003,
+    12004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+  ],
+  "handoff_conditions": {
+    "hold": [
+      "in_region(cube_a,pocket)",
+      "in_region(cube_b,src_b)",
+      "tcp_near(cube_a)"
+    ],
+    "absent": [
+      "clear_of_walls(cube_a)",
+      "in_region(cube_b,mouth)"
+    ]
+  },
+  "handoff_attempts": [
+    {
+      "seed": 2000,
+      "number": 0,
+      "scene_seed": 2000,
+      "stage": "valid",
+      "reasons": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.12012299519734188,
+        "in_region(cube_a,pocket)": 0.954933973989808,
+        "in_region(cube_b,mouth)": 9.492406860545088e-15,
+        "in_region(cube_b,src_b)": 0.9789148190022028,
+        "tcp_near(cube_a)": 0.8752108683391236
+      }
+    },
+    {
+      "seed": 2001,
+      "number": 0,
+      "scene_seed": 2001,
+      "stage": "forward",
+      "reasons": [
+        "differs from the planned start: in_region(cube_a,pocket), in_region(cube_b,mouth)"
+      ],
+      "scores": {}
+    },
+    {
+      "seed": 2001,
+      "number": 1,
+      "scene_seed": 12001,
+      "stage": "valid",
+      "reasons": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11977850734412437,
+        "in_region(cube_a,pocket)": 0.9579146750605788,
+        "in_region(cube_b,mouth)": 6.5503158452884236e-15,
+        "in_region(cube_b,src_b)": 0.9811252601439113,
+        "tcp_near(cube_a)": 0.8608048575908288
+      }
+    },
+    {
+      "seed": 2002,
+      "number": 0,
+      "scene_seed": 2002,
+      "stage": "valid",
+      "reasons": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11991698626071495,
+        "in_region(cube_a,pocket)": 0.9718801472679179,
+        "in_region(cube_b,mouth)": 4.551914400963142e-15,
+        "in_region(cube_b,src_b)": 0.9761769035003458,
+        "tcp_near(cube_a)": 0.8731319614501571
+      }
+    },
+    {
+      "seed": 2003,
+      "number": 0,
+      "scene_seed": 2003,
+      "stage": "valid",
+      "reasons": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11957206768010281,
+        "in_region(cube_a,pocket)": 0.9668275853266954,
+        "in_region(cube_b,mouth)": 3.7192471324942744e-15,
+        "in_region(cube_b,src_b)": 0.9813545130441959,
+        "tcp_near(cube_a)": 0.8734798173838739
+      }
+    },
+    {
+      "seed": 2004,
+      "number": 0,
+      "scene_seed": 2004,
+      "stage": "handoff",
+      "reasons": [
+        "in_region(cube_a,pocket) should hold, score 0.6656"
+      ],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.4147884333786369,
+        "in_region(cube_a,pocket)": 0.6656130867115873,
+        "in_region(cube_b,mouth)": 8.1601392309949e-15,
+        "in_region(cube_b,src_b)": 0.9562779481708695,
+        "tcp_near(cube_a)": 0.8701513082321926
+      }
+    },
+    {
+      "seed": 2004,
+      "number": 1,
+      "scene_seed": 12004,
+      "stage": "valid",
+      "reasons": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.12012740514208542,
+        "in_region(cube_a,pocket)": 0.9708031267460127,
+        "in_region(cube_b,mouth)": 2.375877272697835e-14,
+        "in_region(cube_b,src_b)": 0.98128593861023,
+        "tcp_near(cube_a)": 0.8790400269241451
+      }
+    },
+    {
+      "seed": 2005,
+      "number": 0,
+      "scene_seed": 2005,
+      "stage": "valid",
+      "reasons": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.1200258543893557,
+        "in_region(cube_a,pocket)": 0.9672296564290098,
+        "in_region(cube_b,mouth)": 8.659739592076221e-15,
+        "in_region(cube_b,src_b)": 0.975228326731248,
+        "tcp_near(cube_a)": 0.8742239866049282
+      }
+    },
+    {
+      "seed": 2006,
+      "number": 0,
+      "scene_seed": 2006,
+      "stage": "valid",
+      "reasons": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11962086327517668,
+        "in_region(cube_a,pocket)": 0.9738290550239042,
+        "in_region(cube_b,mouth)": 1.5487611193520934e-14,
+        "in_region(cube_b,src_b)": 0.9808663587945079,
+        "tcp_near(cube_a)": 0.862833824869903
+      }
+    },
+    {
+      "seed": 2007,
+      "number": 0,
+      "scene_seed": 2007,
+      "stage": "valid",
+      "reasons": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11991399831031119,
+        "in_region(cube_a,pocket)": 0.9638582213472162,
+        "in_region(cube_b,mouth)": 4.773959005888173e-15,
+        "in_region(cube_b,src_b)": 0.9765280700862979,
+        "tcp_near(cube_a)": 0.8736628454063438
+      }
+    },
+    {
+      "seed": 2008,
+      "number": 0,
+      "scene_seed": 2008,
+      "stage": "valid",
+      "reasons": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11941810573828349,
+        "in_region(cube_a,pocket)": 0.9642760560460322,
+        "in_region(cube_b,mouth)": 9.936496070395151e-15,
+        "in_region(cube_b,src_b)": 0.9813443810644111,
+        "tcp_near(cube_a)": 0.8678457668767372
+      }
+    },
+    {
+      "seed": 2009,
+      "number": 0,
+      "scene_seed": 2009,
+      "stage": "valid",
+      "reasons": [],
+      "scores": {
+        "clear_of_walls(cube_a)": 0.11960830971001957,
+        "in_region(cube_a,pocket)": 0.9756146985757933,
+        "in_region(cube_b,mouth)": 1.6486811915683575e-14,
+        "in_region(cube_b,src_b)": 0.9812213868156224,
+        "tcp_near(cube_a)": 0.8653013473630163
+      }
+    }
+  ],
+  "handoff_summary": {
+    "attempts": 12,
+    "failed_forward": 1,
+    "failed_prefix": 0,
+    "reached_the_handoff": 11,
+    "invalid_handoffs": 1,
+    "valid_handoffs": 10,
+    "raw_handoff_validity": 0.9090909090909091
+  },
+  "operator": {
+    "skill_name": "learned:clear_of_walls(cube_a)",
+    "preconditions": [
+      {
+        "key": "in_region(cube_a,pocket)",
+        "weight": 0.954933973989808,
+        "polarity": "positive"
+      },
+      {
+        "key": "in_region(cube_b,src_b)",
+        "weight": 0.975228326731248,
+        "polarity": "positive"
+      },
+      {
+        "key": "tcp_near(cube_a)",
+        "weight": 0.8608048575908288,
+        "polarity": "positive"
+      }
+    ],
+    "add_effects": [
+      {
+        "key": "clear_of_walls(cube_a)",
+        "weight": 0.7109388825562221,
+        "polarity": "positive"
+      }
+    ],
+    "delete_effects": [
+      {
+        "key": "in_region(cube_a,pocket)",
+        "weight": 0.9152534753888825,
+        "polarity": "positive"
+      }
+    ],
+    "inverse_target_terms": [
+      {
+        "key": "clear_of_walls(cube_a)",
+        "weight": 0.7109388825562221,
+        "polarity": "negative"
+      },
+      {
+        "key": "in_region(cube_a,pocket)",
+        "weight": 0.954933973989808,
+        "polarity": "positive"
+      },
+      {
+        "key": "in_region(cube_b,src_b)",
+        "weight": 0.975228326731248,
+        "polarity": "positive"
+      },
+      {
+        "key": "tcp_near(cube_a)",
+        "weight": 0.8608048575908288,
+        "polarity": "positive"
+      }
+    ],
+    "metadata": {
+      "num_rollouts": 10,
+      "extractor": "first_last_score_min_max_v0"
+    }
+  },
+  "scores": {
+    "clear_of_walls(cube_a)": {
+      "start_min": 0.11941810573828349,
+      "start_max": 0.12012740514208542,
+      "end_min": 0.8310662876983075,
+      "end_max": 0.8807535397236932
+    },
+    "gripper_open()": {
+      "start_min": 6.144174602207286e-06,
+      "start_max": 6.144174602207286e-06,
+      "end_min": 6.144174602207286e-06,
+      "end_max": 6.144174602207286e-06
+    },
+    "in_region(cube_a,pocket)": {
+      "start_min": 0.954933973989808,
+      "start_max": 0.9756146985757933,
+      "end_min": 0.018000864190913568,
+      "end_max": 0.039680498600925485
+    },
+    "in_region(cube_a,src_a)": {
+      "start_min": 1.0892975410570216e-10,
+      "start_max": 5.529451341246272e-10,
+      "end_min": 3.152225333535874e-07,
+      "end_max": 1.2916423083320083e-06
+    },
+    "in_region(cube_b,mouth)": {
+      "start_min": 3.7192471324942744e-15,
+      "start_max": 2.375877272697835e-14,
+      "end_min": 3.7192471324942744e-15,
+      "end_max": 2.375877272697835e-14
+    },
+    "in_region(cube_b,src_b)": {
+      "start_min": 0.975228326731248,
+      "start_max": 0.9813545130441959,
+      "end_min": 0.975228326731248,
+      "end_max": 0.9813545130441959
+    },
+    "tcp_near(cube_a)": {
+      "start_min": 0.8608048575908288,
+      "start_max": 0.8790400269241451,
+      "end_min": 0.8592277429055698,
+      "end_max": 0.8783912764750763
+    },
+    "tcp_near(cube_b)": {
+      "start_min": 4.2334310501601635e-09,
+      "start_max": 1.2590378073440434e-08,
+      "end_min": 2.4272068982478245e-07,
+      "end_max": 7.946155893834295e-07
+    }
+  },
+  "action": {
+    "name": "LEARNED[clear_of_walls(cube_a)]",
+    "pre": [
+      "in_region(cube_a,pocket)",
+      "in_region(cube_b,src_b)",
+      "tcp_near(cube_a)"
+    ],
+    "pre_absent": [],
+    "add": [
+      "clear_of_walls(cube_a)"
+    ],
+    "delete": [
+      "in_region(cube_a,pocket)"
+    ],
+    "hole_for": null
+  }
+}

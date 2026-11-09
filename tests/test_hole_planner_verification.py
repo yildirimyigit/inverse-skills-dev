@@ -14,17 +14,22 @@ prerequisites, a negated goal that needs a remover, and the delete relaxation.
 
 from __future__ import annotations
 
+from functools import partial
+
 import pytest
 
+from inverse_skills.operators import hole_planner
 from inverse_skills.operators.hole_planner import (
     Action,
     Disturbance,
     Domain,
     NoPlan,
     hole_spec,
-    plan,
     relaxed_reachable,
 )
+
+# These tests verify the relaxed mode, which stays available, so every call names it.
+plan = partial(hole_planner.plan, mode="relaxed")
 
 
 def replay(domain: Domain, start, steps) -> tuple[frozenset[str], tuple[int, ...]]:

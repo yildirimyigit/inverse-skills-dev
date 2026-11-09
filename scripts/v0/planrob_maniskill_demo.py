@@ -33,7 +33,7 @@ with warnings.catch_warnings():
 
 from inverse_skills.core import ObjectState, Pose, Region, RobotState, SceneGraph
 from inverse_skills.logging import ForwardRollout
-from inverse_skills.operators import OperatorExtractor, RestorationObjective
+from inverse_skills.operators import OperatorExtractionConfig, OperatorExtractor, RestorationObjective
 from inverse_skills.operators.toy_planner import ToyInversePlanner
 from inverse_skills.predicates import GripperOpenPredicate, HoldingPredicate, InRegionPredicate, PredicateRegistry
 from inverse_skills.toy.primitives import PrimitiveLibrary
@@ -181,7 +181,7 @@ def main() -> None:
         HoldingPredicate("cube"),
     ])
 
-    extraction = OperatorExtractor(registry).extract("pick_cube", rollouts)
+    extraction = OperatorExtractor(registry, OperatorExtractionConfig(mode="mean")).extract("pick_cube", rollouts)
     operator   = extraction.operator
 
     print("\nExtracted forward operator (ManiSkill3 physics, PickCube-v1):")

@@ -3,14 +3,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from inverse_skills.operators import OperatorExtractor, RestorationObjective
+from inverse_skills.operators import OperatorExtractionConfig, OperatorExtractor, RestorationObjective
 from inverse_skills.toy import build_predicate_registry, make_pick_place_rollouts
 
 
 def main() -> None:
     rollouts = make_pick_place_rollouts(num_rollouts=3)
     registry = build_predicate_registry()
-    result = OperatorExtractor(registry).extract("pick_place", rollouts)
+    result = OperatorExtractor(registry, OperatorExtractionConfig(mode="mean")).extract("pick_place", rollouts)
     objective = RestorationObjective(result.operator, registry)
 
     print("Learned operator:")

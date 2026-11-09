@@ -9,7 +9,7 @@ same environment. It records every demonstration's start and end score for every
 Before anything is compared, the replay's averages must reproduce the saved averages to within
 TOLERANCE. If they do not, the replay is not the same demonstrations: the scores are written
 with the mismatch and nothing is compared. If they do, the operator is extracted twice from the
-replayed demonstrations, by the default mean rule and by the min/max rule, and every difference
+replayed demonstrations, by the mean rule and by the min/max rule, and every difference
 is listed with the scores behind it.
 
 Run from the repository root with PYTHONNOUSERSITE=1 (stray ~/.local packages break ManiSkill).
@@ -74,8 +74,8 @@ def main() -> None:
     for p in predicates:
         print(f"{p:26s}" + "".join(f"{d['start'][p]:8.3f} ->{d['end'][p]:6.3f}" for d in demonstrations))
 
-    # Check: the default (mean) extractor on the replay must give back the saved averages.
-    mean_result = OperatorExtractor(registry).extract("stow", rollouts)
+    # Check: the mean extractor on the replay must give back the saved averages.
+    mean_result = OperatorExtractor(registry, OperatorExtractionConfig(mode="mean")).extract("stow", rollouts)
     differences = {f"{p} {which}": mean_result.scores[p][which] - saved["scores"][p][which]
                    for p in predicates for which in ("start_mean", "end_mean")}
     largest = max(abs(d) for d in differences.values())

@@ -1,8 +1,9 @@
 """Direct baseline, step 1: the learning problem, derived by the existing planner.
 
 From the scene the forward push leaves (seeds 0-4, as in Stage 2), the planner
-is run with `unrestricted_holes=True`, its ablation option that lets any
-unreachable scored fact become a hole. It delegates the whole goal,
+is run in its relaxed mode with `unrestricted_holes=True`, the ablation option that
+lets any unreachable scored fact become a hole, and which the exact mode does not
+have. It delegates the whole goal,
 drawer_open, after approach_handle. hp.hole_spec turns that plan into the
 learning problem, exactly as Stage 2 did for the grasp hole. Nothing in the
 spec is written by hand.
@@ -37,6 +38,9 @@ def main() -> None:
     ap.add_argument("--grasp-spec", type=Path, default=Path("artifacts/drawer/hole_spec.json"))
     ap.add_argument("--out-dir", type=Path, default=Path("artifacts/drawer/direct"))
     args = ap.parse_args()
+    for name in ("plan_direct.json", "hole_spec_direct.json"):
+        if (args.out_dir / name).exists():
+            raise SystemExit(f"{args.out_dir / name} exists; saved results are never overwritten. Choose another --out-dir.")
 
     goal_pos, goal_neg = dd.goal_from_operator(args.operator)
     domain = dd.domain()
@@ -48,7 +52,7 @@ def main() -> None:
         scores = {k: float(r.score) for k, r in registry.evaluate_all(prim.obs_to_scene(obs)).items()}
         state = hp.symbolic_state(scores)
         states.append(state)
-        direct = hp.plan(domain, state, goal_pos, goal_neg, unrestricted_holes=True)
+        direct = hp.plan(domain, state, goal_pos, goal_neg, mode="relaxed", unrestricted_holes=True)
         frontier = hp.plan(domain, state, goal_pos, goal_neg)
         rows.append({"seed": seed, "state": sorted(state),
                      "unrestricted_plan": list(direct.actions) if direct else None,
@@ -61,7 +65,7 @@ def main() -> None:
     env.close()
 
     start = states[0]
-    direct = hp.plan(domain, start, goal_pos, goal_neg, unrestricted_holes=True)
+    direct = hp.plan(domain, start, goal_pos, goal_neg, mode="relaxed", unrestricted_holes=True)
     spec = hp.hole_spec(domain, start, direct, goal_pos, goal_neg)
     grasp_spec = load_spec(args.grasp_spec)
     same_start = spec["start"] == grasp_spec["start"] and spec["prefix"] == grasp_spec["prefix"]

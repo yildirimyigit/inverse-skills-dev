@@ -1,5 +1,6 @@
 import ast
 import inspect
+from functools import partial
 
 from inverse_skills.envs import stow_domain as sd
 from inverse_skills.operators import hole_planner
@@ -12,11 +13,13 @@ from inverse_skills.operators.hole_planner import (
     derive_fences,
     hole_spec,
     learned_action,
-    plan,
     relaxed_reachable,
     symbolic_state,
 )
 from inverse_skills.operators.schema import LearnedOperator, PredicateTerm
+
+# These tests verify the relaxed mode, which stays available, so every call names it.
+plan = partial(hole_planner.plan, mode="relaxed")
 
 STOW_GOAL_POS = {"clear_of_walls(cube_a)", "gripper_open()",
                  "in_region(cube_a,src_a)", "in_region(cube_b,src_b)"}

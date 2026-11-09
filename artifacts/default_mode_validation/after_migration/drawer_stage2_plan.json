@@ -1,0 +1,428 @@
+{
+  "goal_positive": [
+    "drawer_open(drawer)"
+  ],
+  "goal_negative": [
+    "drawer_closed(drawer)"
+  ],
+  "expected_plan": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+  ],
+  "all_seeds_match": true,
+  "reachable": [
+    "at_handle_standoff(drawer)",
+    "drawer_closed(drawer)"
+  ],
+  "ablations": {
+    "library_only": {
+      "plan": null,
+      "unmet_needs": [
+        "drawer_open(drawer)",
+        "handle_grasped(drawer)"
+      ],
+      "feasible_with_all_holes": true
+    },
+    "frontier": {
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        3
+      ],
+      "delegated": [
+        "handle_grasped(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "drawer_open(drawer)",
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 4,
+      "hole_contexts": [
+        {
+          "literal": "handle_grasped(drawer)",
+          "index": 1,
+          "state_before": [
+            "at_handle_standoff(drawer)",
+            "drawer_closed(drawer)"
+          ],
+          "used_by": "pull_open(drawer)",
+          "used_at": 2,
+          "waiting": [
+            "pull_open(drawer)"
+          ],
+          "prefix": [
+            "approach_handle(drawer)"
+          ],
+          "suffix": [
+            "pull_open(drawer)"
+          ],
+          "library_alternatives": []
+        }
+      ]
+    },
+    "unrestricted": {
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        2
+      ],
+      "delegated": [
+        "drawer_open(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "drawer_open(drawer)",
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 3,
+      "capability_gaps": [
+        "handle_grasped(drawer)"
+      ],
+      "synthesizable_gaps": [
+        "handle_grasped(drawer)"
+      ]
+    },
+    "with_grasp": {
+      "plan": [
+        "approach_handle(drawer)",
+        "grasp_handle(drawer)",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        0,
+        0,
+        0,
+        0,
+        3
+      ],
+      "delegated": [],
+      "hole_indices": [],
+      "candidates": [
+        "at_handle_standoff(drawer)",
+        "drawer_open(drawer)",
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 3,
+      "hole_contexts": []
+    }
+  },
+  "seeds": [
+    {
+      "seed": 0,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.0005479126614870711,
+        "drawer_closed(drawer)": 0.927185125068321,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 1.2212453270876722e-15
+      },
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        3
+      ],
+      "delegated": [
+        "handle_grasped(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "drawer_open(drawer)",
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 4,
+      "hole_contexts": [
+        {
+          "literal": "handle_grasped(drawer)",
+          "index": 1,
+          "state_before": [
+            "at_handle_standoff(drawer)",
+            "drawer_closed(drawer)"
+          ],
+          "used_by": "pull_open(drawer)",
+          "used_at": 2,
+          "waiting": [
+            "pull_open(drawer)"
+          ],
+          "prefix": [
+            "approach_handle(drawer)"
+          ],
+          "suffix": [
+            "pull_open(drawer)"
+          ],
+          "library_alternatives": []
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "seed": 1,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.0004089924546811785,
+        "drawer_closed(drawer)": 0.9821374314977169,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 5.551115123125783e-16
+      },
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        3
+      ],
+      "delegated": [
+        "handle_grasped(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "drawer_open(drawer)",
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 4,
+      "hole_contexts": [
+        {
+          "literal": "handle_grasped(drawer)",
+          "index": 1,
+          "state_before": [
+            "at_handle_standoff(drawer)",
+            "drawer_closed(drawer)"
+          ],
+          "used_by": "pull_open(drawer)",
+          "used_at": 2,
+          "waiting": [
+            "pull_open(drawer)"
+          ],
+          "prefix": [
+            "approach_handle(drawer)"
+          ],
+          "suffix": [
+            "pull_open(drawer)"
+          ],
+          "library_alternatives": []
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "seed": 2,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.00038718801752701815,
+        "drawer_closed(drawer)": 0.9863606684496667,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 6.106226635438361e-16
+      },
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        3
+      ],
+      "delegated": [
+        "handle_grasped(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "drawer_open(drawer)",
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 4,
+      "hole_contexts": [
+        {
+          "literal": "handle_grasped(drawer)",
+          "index": 1,
+          "state_before": [
+            "at_handle_standoff(drawer)",
+            "drawer_closed(drawer)"
+          ],
+          "used_by": "pull_open(drawer)",
+          "used_at": 2,
+          "waiting": [
+            "pull_open(drawer)"
+          ],
+          "prefix": [
+            "approach_handle(drawer)"
+          ],
+          "suffix": [
+            "pull_open(drawer)"
+          ],
+          "library_alternatives": []
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "seed": 3,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.0004068995703536138,
+        "drawer_closed(drawer)": 0.9825821067240432,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 1.7208456881689926e-15
+      },
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        3
+      ],
+      "delegated": [
+        "handle_grasped(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "drawer_open(drawer)",
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 4,
+      "hole_contexts": [
+        {
+          "literal": "handle_grasped(drawer)",
+          "index": 1,
+          "state_before": [
+            "at_handle_standoff(drawer)",
+            "drawer_closed(drawer)"
+          ],
+          "used_by": "pull_open(drawer)",
+          "used_at": 2,
+          "waiting": [
+            "pull_open(drawer)"
+          ],
+          "prefix": [
+            "approach_handle(drawer)"
+          ],
+          "suffix": [
+            "pull_open(drawer)"
+          ],
+          "library_alternatives": []
+        }
+      ],
+      "matches_expected": true
+    },
+    {
+      "seed": 4,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "scores": {
+        "drawer_open(drawer)": 0.00040216726625297294,
+        "drawer_closed(drawer)": 0.9835557930726371,
+        "at_handle_standoff(drawer)": 0.0,
+        "handle_grasped(drawer)": 7.216449660063518e-16
+      },
+      "plan": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        3
+      ],
+      "delegated": [
+        "handle_grasped(drawer)"
+      ],
+      "hole_indices": [
+        1
+      ],
+      "candidates": [
+        "drawer_open(drawer)",
+        "handle_grasped(drawer)"
+      ],
+      "ties": [],
+      "expanded": 4,
+      "hole_contexts": [
+        {
+          "literal": "handle_grasped(drawer)",
+          "index": 1,
+          "state_before": [
+            "at_handle_standoff(drawer)",
+            "drawer_closed(drawer)"
+          ],
+          "used_by": "pull_open(drawer)",
+          "used_at": 2,
+          "waiting": [
+            "pull_open(drawer)"
+          ],
+          "prefix": [
+            "approach_handle(drawer)"
+          ],
+          "suffix": [
+            "pull_open(drawer)"
+          ],
+          "library_alternatives": []
+        }
+      ],
+      "matches_expected": true
+    }
+  ]
+}

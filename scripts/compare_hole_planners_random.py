@@ -98,7 +98,7 @@ def compare_on_random_problems(name, make_problem, seed) -> dict:
         domain, start, goal_positive, goal_negative = make_problem(rng)
         max_delegated = rng.choice([1, 2])
         limits = {"max_delegated": max_delegated, "max_length": MAX_LENGTH}
-        relaxed = hp.plan(domain, frozenset(start), set(goal_positive), set(goal_negative), **limits)
+        relaxed = hp.plan(domain, frozenset(start), set(goal_positive), set(goal_negative), mode="relaxed", **limits)
         exact = hp.plan(domain, frozenset(start), set(goal_positive), set(goal_negative), mode="exact", **limits)
         kind = category(relaxed, exact)
         counts[kind] += 1

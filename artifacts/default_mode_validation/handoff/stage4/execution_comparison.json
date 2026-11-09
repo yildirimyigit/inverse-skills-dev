@@ -1,0 +1,1663 @@
+{
+  "final_evaluation": {
+    "imports_the_planner": false,
+    "imports_the_extractor": false,
+    "reads_the_goal_from": "artifacts/drawer/stage1_operator.json, through dd.goal_from_operator",
+    "goal_in_its_saved_results": [
+      [
+        "drawer_open(drawer)"
+      ],
+      [
+        "drawer_closed(drawer)"
+      ]
+    ],
+    "goal_by_mode": {
+      "mean": [
+        [
+          "drawer_open(drawer)"
+        ],
+        [
+          "drawer_closed(drawer)"
+        ]
+      ],
+      "min_max": [
+        [
+          "drawer_open(drawer)"
+        ],
+        [
+          "drawer_closed(drawer)"
+        ]
+      ]
+    },
+    "goal_unchanged_by_extraction": true
+  },
+  "domains": {
+    "stow": {
+      "saved_file": "artifacts/stow/stage4_execution.json",
+      "runs": {
+        "mean_relaxed": {
+          "summary": {
+            "full": {
+              "goal_met_rate": 1.0,
+              "mean_a_err_mm": 1.5300051937562407,
+              "mean_b_err_mm": 0.8137089935661462,
+              "diverging_steps": 3
+            },
+            "library_only": {
+              "goal_met_rate": 0.0,
+              "mean_a_err_mm": 128.10355812839617,
+              "mean_b_err_mm": 0.8137089935661462,
+              "diverging_steps": 3
+            },
+            "without_interference": {
+              "goal_met_rate": 0.3,
+              "mean_a_err_mm": 51.3349944892464,
+              "mean_b_err_mm": 89.43757420629379,
+              "diverging_steps": 30
+            },
+            "relearned": {
+              "goal_met_rate": 0.9,
+              "mean_a_err_mm": 11.599824147349732,
+              "mean_b_err_mm": 0.8137089935661462,
+              "diverging_steps": 3
+            }
+          },
+          "plans": {
+            "full": [
+              "pick(cube_b)",
+              "place(cube_b,src_b)",
+              "approach(cube_a)",
+              "HOLE[clear_of_walls(cube_a)]",
+              "pick(cube_a)",
+              "place(cube_a,src_a)"
+            ],
+            "library_only": [
+              "pick(cube_b)",
+              "place(cube_b,src_b)",
+              "approach(cube_a)",
+              "pick(cube_a)",
+              "place(cube_a,src_a)"
+            ],
+            "without_interference": [
+              "approach(cube_a)",
+              "HOLE[clear_of_walls(cube_a)]",
+              "pick(cube_a)",
+              "place(cube_a,src_a)",
+              "pick(cube_b)",
+              "place(cube_b,src_b)"
+            ],
+            "relearned": [
+              "pick(cube_b)",
+              "place(cube_b,src_b)",
+              "approach(cube_a)",
+              "LEARNED[clear_of_walls(cube_a)]",
+              "pick(cube_a)",
+              "place(cube_a,src_a)"
+            ]
+          },
+          "passed": true,
+          "differing_leaves_from_saved": 0,
+          "differing_leaves_from_mean_relaxed": 0,
+          "differences_from_saved": {},
+          "differences_from_mean_relaxed": {},
+          "planner_modes_used": [
+            "relaxed"
+          ],
+          "plan_call_results": [
+            "PlanResult"
+          ],
+          "handoffs": 38,
+          "handoffs_identical_to_mean_relaxed": true,
+          "shared_handoffs_identical_to_mean_relaxed": true
+        },
+        "min_max_exact": {
+          "summary": {
+            "full": {
+              "goal_met_rate": 1.0,
+              "mean_a_err_mm": 1.5300051937562407,
+              "mean_b_err_mm": 0.8137089935661462,
+              "diverging_steps": 3
+            },
+            "library_only": {
+              "goal_met_rate": 0.0,
+              "mean_a_err_mm": 128.10355812839617,
+              "mean_b_err_mm": 0.8137089935661462,
+              "diverging_steps": 3
+            },
+            "without_interference": {
+              "goal_met_rate": 0.3,
+              "mean_a_err_mm": 51.3349944892464,
+              "mean_b_err_mm": 89.43757420629379,
+              "diverging_steps": 30
+            },
+            "relearned": {
+              "goal_met_rate": 0.9,
+              "mean_a_err_mm": 11.599824147349732,
+              "mean_b_err_mm": 0.8137089935661462,
+              "diverging_steps": 3
+            }
+          },
+          "plans": {
+            "full": [
+              "pick(cube_b)",
+              "place(cube_b,src_b)",
+              "approach(cube_a)",
+              "HOLE[clear_of_walls(cube_a)]",
+              "pick(cube_a)",
+              "place(cube_a,src_a)"
+            ],
+            "library_only": [
+              "pick(cube_b)",
+              "place(cube_b,src_b)",
+              "approach(cube_a)",
+              "pick(cube_a)",
+              "place(cube_a,src_a)"
+            ],
+            "without_interference": [
+              "approach(cube_a)",
+              "HOLE[clear_of_walls(cube_a)]",
+              "pick(cube_a)",
+              "place(cube_a,src_a)",
+              "pick(cube_b)",
+              "place(cube_b,src_b)"
+            ],
+            "relearned": [
+              "pick(cube_b)",
+              "place(cube_b,src_b)",
+              "approach(cube_a)",
+              "LEARNED[clear_of_walls(cube_a)]",
+              "pick(cube_a)",
+              "place(cube_a,src_a)"
+            ]
+          },
+          "passed": true,
+          "differing_leaves_from_saved": 0,
+          "differing_leaves_from_mean_relaxed": 0,
+          "differences_from_saved": {},
+          "differences_from_mean_relaxed": {},
+          "planner_modes_used": [
+            "exact"
+          ],
+          "plan_call_results": [
+            "ExactPlanResult"
+          ],
+          "handoffs": 38,
+          "handoffs_identical_to_mean_relaxed": true,
+          "shared_handoffs_identical_to_mean_relaxed": true
+        }
+      },
+      "per_seed": {
+        "saved": {
+          "full": [
+            {
+              "seed": 1000,
+              "goal_met": true,
+              "a_err_mm": 1.0691477226418549,
+              "b_err_mm": 0.2749812161601146,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1001,
+              "goal_met": true,
+              "a_err_mm": 1.4212581508550177,
+              "b_err_mm": 0.32087654104861324,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1002,
+              "goal_met": true,
+              "a_err_mm": 1.663983715255319,
+              "b_err_mm": 4.1950210586381615,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1003,
+              "goal_met": true,
+              "a_err_mm": 2.3010024961820728,
+              "b_err_mm": 0.08918812773013429,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1004,
+              "goal_met": true,
+              "a_err_mm": 1.552779999579235,
+              "b_err_mm": 0.9159557002919214,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1005,
+              "goal_met": true,
+              "a_err_mm": 1.7673207899428391,
+              "b_err_mm": 0.11749981605742513,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1006,
+              "goal_met": true,
+              "a_err_mm": 0.580459170286094,
+              "b_err_mm": 0.8819778987103776,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1007,
+              "goal_met": true,
+              "a_err_mm": 1.6312273919854456,
+              "b_err_mm": 0.8588657653027868,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1008,
+              "goal_met": true,
+              "a_err_mm": 1.5441873687866174,
+              "b_err_mm": 0.16607660996721835,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1009,
+              "goal_met": true,
+              "a_err_mm": 1.7686851320479107,
+              "b_err_mm": 0.31664720175470906,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            }
+          ],
+          "library_only": [
+            {
+              "seed": 1000,
+              "goal_met": false,
+              "a_err_mm": 131.77051757818637,
+              "b_err_mm": 0.2749812161601146,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1001,
+              "goal_met": false,
+              "a_err_mm": 132.75299748087622,
+              "b_err_mm": 0.32087654104861324,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1002,
+              "goal_met": false,
+              "a_err_mm": 102.36217325119023,
+              "b_err_mm": 4.1950210586381615,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1003,
+              "goal_met": false,
+              "a_err_mm": 134.55043918863447,
+              "b_err_mm": 0.08918812773013429,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1004,
+              "goal_met": false,
+              "a_err_mm": 125.19454522624177,
+              "b_err_mm": 0.9159557002919214,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1005,
+              "goal_met": false,
+              "a_err_mm": 127.31841894532172,
+              "b_err_mm": 0.11749981605742513,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1006,
+              "goal_met": false,
+              "a_err_mm": 132.52550507385774,
+              "b_err_mm": 0.8819778987103776,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1007,
+              "goal_met": false,
+              "a_err_mm": 130.6012409622961,
+              "b_err_mm": 0.8588657653027868,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1008,
+              "goal_met": false,
+              "a_err_mm": 133.0906351480163,
+              "b_err_mm": 0.16607660996721835,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1009,
+              "goal_met": false,
+              "a_err_mm": 130.86910842934088,
+              "b_err_mm": 0.31664720175470906,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            }
+          ],
+          "without_interference": [
+            {
+              "seed": 1000,
+              "goal_met": false,
+              "a_err_mm": 124.2918018906571,
+              "b_err_mm": 148.33022919811737,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.00",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1001,
+              "goal_met": true,
+              "a_err_mm": 8.07707866019757,
+              "b_err_mm": 3.853325209435732,
+              "rerolls": 1,
+              "retries": 1,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1002,
+              "goal_met": false,
+              "a_err_mm": 135.1097798690539,
+              "b_err_mm": 194.13491587013038,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 0,
+              "steps": 1,
+              "failed_at": "approach(cube_a): not seated on the cube",
+              "diverging_steps": 1
+            },
+            {
+              "seed": 1003,
+              "goal_met": false,
+              "a_err_mm": 34.79210293584885,
+              "b_err_mm": 6.074399007439534,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 5
+            },
+            {
+              "seed": 1004,
+              "goal_met": false,
+              "a_err_mm": 72.49353142531825,
+              "b_err_mm": 141.94191257580408,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.00",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1005,
+              "goal_met": false,
+              "a_err_mm": 20.789487365156624,
+              "b_err_mm": 150.1116322206347,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.47",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1006,
+              "goal_met": false,
+              "a_err_mm": 45.18791048572788,
+              "b_err_mm": 181.24556324749005,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.01",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1007,
+              "goal_met": false,
+              "a_err_mm": 59.331291465727396,
+              "b_err_mm": 66.24718771150064,
+              "rerolls": 1,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.00",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1008,
+              "goal_met": true,
+              "a_err_mm": 8.100301012989034,
+              "b_err_mm": 1.2409677926144747,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1009,
+              "goal_met": true,
+              "a_err_mm": 5.176659781787383,
+              "b_err_mm": 1.1956092297708338,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 3
+            }
+          ],
+          "relearned": [
+            {
+              "seed": 1000,
+              "goal_met": true,
+              "a_err_mm": 1.0691477226418549,
+              "b_err_mm": 0.2749812161601146,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1001,
+              "goal_met": true,
+              "a_err_mm": 1.4212581508550177,
+              "b_err_mm": 0.32087654104861324,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1002,
+              "goal_met": false,
+              "a_err_mm": 102.36217325119023,
+              "b_err_mm": 4.1950210586381615,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "LEARNED[clear_of_walls(cube_a)]: precondition not met: in_region(cube_a,pocket)",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1003,
+              "goal_met": true,
+              "a_err_mm": 2.3010024961820728,
+              "b_err_mm": 0.08918812773013429,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1004,
+              "goal_met": true,
+              "a_err_mm": 1.552779999579235,
+              "b_err_mm": 0.9159557002919214,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1005,
+              "goal_met": true,
+              "a_err_mm": 1.7673207899428391,
+              "b_err_mm": 0.11749981605742513,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1006,
+              "goal_met": true,
+              "a_err_mm": 0.580459170286094,
+              "b_err_mm": 0.8819778987103776,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1007,
+              "goal_met": true,
+              "a_err_mm": 1.6312273919854456,
+              "b_err_mm": 0.8588657653027868,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1008,
+              "goal_met": true,
+              "a_err_mm": 1.5441873687866174,
+              "b_err_mm": 0.16607660996721835,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1009,
+              "goal_met": true,
+              "a_err_mm": 1.7686851320479107,
+              "b_err_mm": 0.31664720175470906,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            }
+          ]
+        },
+        "mean_relaxed": {
+          "full": [
+            {
+              "seed": 1000,
+              "goal_met": true,
+              "a_err_mm": 1.0691477226418549,
+              "b_err_mm": 0.2749812161601146,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1001,
+              "goal_met": true,
+              "a_err_mm": 1.4212581508550177,
+              "b_err_mm": 0.32087654104861324,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1002,
+              "goal_met": true,
+              "a_err_mm": 1.663983715255319,
+              "b_err_mm": 4.1950210586381615,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1003,
+              "goal_met": true,
+              "a_err_mm": 2.3010024961820728,
+              "b_err_mm": 0.08918812773013429,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1004,
+              "goal_met": true,
+              "a_err_mm": 1.552779999579235,
+              "b_err_mm": 0.9159557002919214,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1005,
+              "goal_met": true,
+              "a_err_mm": 1.7673207899428391,
+              "b_err_mm": 0.11749981605742513,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1006,
+              "goal_met": true,
+              "a_err_mm": 0.580459170286094,
+              "b_err_mm": 0.8819778987103776,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1007,
+              "goal_met": true,
+              "a_err_mm": 1.6312273919854456,
+              "b_err_mm": 0.8588657653027868,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1008,
+              "goal_met": true,
+              "a_err_mm": 1.5441873687866174,
+              "b_err_mm": 0.16607660996721835,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1009,
+              "goal_met": true,
+              "a_err_mm": 1.7686851320479107,
+              "b_err_mm": 0.31664720175470906,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            }
+          ],
+          "library_only": [
+            {
+              "seed": 1000,
+              "goal_met": false,
+              "a_err_mm": 131.77051757818637,
+              "b_err_mm": 0.2749812161601146,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1001,
+              "goal_met": false,
+              "a_err_mm": 132.75299748087622,
+              "b_err_mm": 0.32087654104861324,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1002,
+              "goal_met": false,
+              "a_err_mm": 102.36217325119023,
+              "b_err_mm": 4.1950210586381615,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1003,
+              "goal_met": false,
+              "a_err_mm": 134.55043918863447,
+              "b_err_mm": 0.08918812773013429,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1004,
+              "goal_met": false,
+              "a_err_mm": 125.19454522624177,
+              "b_err_mm": 0.9159557002919214,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1005,
+              "goal_met": false,
+              "a_err_mm": 127.31841894532172,
+              "b_err_mm": 0.11749981605742513,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1006,
+              "goal_met": false,
+              "a_err_mm": 132.52550507385774,
+              "b_err_mm": 0.8819778987103776,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1007,
+              "goal_met": false,
+              "a_err_mm": 130.6012409622961,
+              "b_err_mm": 0.8588657653027868,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1008,
+              "goal_met": false,
+              "a_err_mm": 133.0906351480163,
+              "b_err_mm": 0.16607660996721835,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1009,
+              "goal_met": false,
+              "a_err_mm": 130.86910842934088,
+              "b_err_mm": 0.31664720175470906,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            }
+          ],
+          "without_interference": [
+            {
+              "seed": 1000,
+              "goal_met": false,
+              "a_err_mm": 124.2918018906571,
+              "b_err_mm": 148.33022919811737,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.00",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1001,
+              "goal_met": true,
+              "a_err_mm": 8.07707866019757,
+              "b_err_mm": 3.853325209435732,
+              "rerolls": 1,
+              "retries": 1,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1002,
+              "goal_met": false,
+              "a_err_mm": 135.1097798690539,
+              "b_err_mm": 194.13491587013038,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 0,
+              "steps": 1,
+              "failed_at": "approach(cube_a): not seated on the cube",
+              "diverging_steps": 1
+            },
+            {
+              "seed": 1003,
+              "goal_met": false,
+              "a_err_mm": 34.79210293584885,
+              "b_err_mm": 6.074399007439534,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 5
+            },
+            {
+              "seed": 1004,
+              "goal_met": false,
+              "a_err_mm": 72.49353142531825,
+              "b_err_mm": 141.94191257580408,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.00",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1005,
+              "goal_met": false,
+              "a_err_mm": 20.789487365156624,
+              "b_err_mm": 150.1116322206347,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.47",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1006,
+              "goal_met": false,
+              "a_err_mm": 45.18791048572788,
+              "b_err_mm": 181.24556324749005,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.01",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1007,
+              "goal_met": false,
+              "a_err_mm": 59.331291465727396,
+              "b_err_mm": 66.24718771150064,
+              "rerolls": 1,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.00",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1008,
+              "goal_met": true,
+              "a_err_mm": 8.100301012989034,
+              "b_err_mm": 1.2409677926144747,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1009,
+              "goal_met": true,
+              "a_err_mm": 5.176659781787383,
+              "b_err_mm": 1.1956092297708338,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 3
+            }
+          ],
+          "relearned": [
+            {
+              "seed": 1000,
+              "goal_met": true,
+              "a_err_mm": 1.0691477226418549,
+              "b_err_mm": 0.2749812161601146,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1001,
+              "goal_met": true,
+              "a_err_mm": 1.4212581508550177,
+              "b_err_mm": 0.32087654104861324,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1002,
+              "goal_met": false,
+              "a_err_mm": 102.36217325119023,
+              "b_err_mm": 4.1950210586381615,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "LEARNED[clear_of_walls(cube_a)]: precondition not met: in_region(cube_a,pocket)",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1003,
+              "goal_met": true,
+              "a_err_mm": 2.3010024961820728,
+              "b_err_mm": 0.08918812773013429,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1004,
+              "goal_met": true,
+              "a_err_mm": 1.552779999579235,
+              "b_err_mm": 0.9159557002919214,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1005,
+              "goal_met": true,
+              "a_err_mm": 1.7673207899428391,
+              "b_err_mm": 0.11749981605742513,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1006,
+              "goal_met": true,
+              "a_err_mm": 0.580459170286094,
+              "b_err_mm": 0.8819778987103776,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1007,
+              "goal_met": true,
+              "a_err_mm": 1.6312273919854456,
+              "b_err_mm": 0.8588657653027868,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1008,
+              "goal_met": true,
+              "a_err_mm": 1.5441873687866174,
+              "b_err_mm": 0.16607660996721835,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1009,
+              "goal_met": true,
+              "a_err_mm": 1.7686851320479107,
+              "b_err_mm": 0.31664720175470906,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            }
+          ]
+        },
+        "min_max_exact": {
+          "full": [
+            {
+              "seed": 1000,
+              "goal_met": true,
+              "a_err_mm": 1.0691477226418549,
+              "b_err_mm": 0.2749812161601146,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1001,
+              "goal_met": true,
+              "a_err_mm": 1.4212581508550177,
+              "b_err_mm": 0.32087654104861324,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1002,
+              "goal_met": true,
+              "a_err_mm": 1.663983715255319,
+              "b_err_mm": 4.1950210586381615,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1003,
+              "goal_met": true,
+              "a_err_mm": 2.3010024961820728,
+              "b_err_mm": 0.08918812773013429,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1004,
+              "goal_met": true,
+              "a_err_mm": 1.552779999579235,
+              "b_err_mm": 0.9159557002919214,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1005,
+              "goal_met": true,
+              "a_err_mm": 1.7673207899428391,
+              "b_err_mm": 0.11749981605742513,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1006,
+              "goal_met": true,
+              "a_err_mm": 0.580459170286094,
+              "b_err_mm": 0.8819778987103776,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1007,
+              "goal_met": true,
+              "a_err_mm": 1.6312273919854456,
+              "b_err_mm": 0.8588657653027868,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1008,
+              "goal_met": true,
+              "a_err_mm": 1.5441873687866174,
+              "b_err_mm": 0.16607660996721835,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1009,
+              "goal_met": true,
+              "a_err_mm": 1.7686851320479107,
+              "b_err_mm": 0.31664720175470906,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            }
+          ],
+          "library_only": [
+            {
+              "seed": 1000,
+              "goal_met": false,
+              "a_err_mm": 131.77051757818637,
+              "b_err_mm": 0.2749812161601146,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1001,
+              "goal_met": false,
+              "a_err_mm": 132.75299748087622,
+              "b_err_mm": 0.32087654104861324,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1002,
+              "goal_met": false,
+              "a_err_mm": 102.36217325119023,
+              "b_err_mm": 4.1950210586381615,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1003,
+              "goal_met": false,
+              "a_err_mm": 134.55043918863447,
+              "b_err_mm": 0.08918812773013429,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1004,
+              "goal_met": false,
+              "a_err_mm": 125.19454522624177,
+              "b_err_mm": 0.9159557002919214,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1005,
+              "goal_met": false,
+              "a_err_mm": 127.31841894532172,
+              "b_err_mm": 0.11749981605742513,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1006,
+              "goal_met": false,
+              "a_err_mm": 132.52550507385774,
+              "b_err_mm": 0.8819778987103776,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1007,
+              "goal_met": false,
+              "a_err_mm": 130.6012409622961,
+              "b_err_mm": 0.8588657653027868,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1008,
+              "goal_met": false,
+              "a_err_mm": 133.0906351480163,
+              "b_err_mm": 0.16607660996721835,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1009,
+              "goal_met": false,
+              "a_err_mm": 130.86910842934088,
+              "b_err_mm": 0.31664720175470906,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "pick(cube_a): precondition not met: clear_of_walls(cube_a)",
+              "diverging_steps": 0
+            }
+          ],
+          "without_interference": [
+            {
+              "seed": 1000,
+              "goal_met": false,
+              "a_err_mm": 124.2918018906571,
+              "b_err_mm": 148.33022919811737,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.00",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1001,
+              "goal_met": true,
+              "a_err_mm": 8.07707866019757,
+              "b_err_mm": 3.853325209435732,
+              "rerolls": 1,
+              "retries": 1,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1002,
+              "goal_met": false,
+              "a_err_mm": 135.1097798690539,
+              "b_err_mm": 194.13491587013038,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 0,
+              "steps": 1,
+              "failed_at": "approach(cube_a): not seated on the cube",
+              "diverging_steps": 1
+            },
+            {
+              "seed": 1003,
+              "goal_met": false,
+              "a_err_mm": 34.79210293584885,
+              "b_err_mm": 6.074399007439534,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 5
+            },
+            {
+              "seed": 1004,
+              "goal_met": false,
+              "a_err_mm": 72.49353142531825,
+              "b_err_mm": 141.94191257580408,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.00",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1005,
+              "goal_met": false,
+              "a_err_mm": 20.789487365156624,
+              "b_err_mm": 150.1116322206347,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.47",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1006,
+              "goal_met": false,
+              "a_err_mm": 45.18791048572788,
+              "b_err_mm": 181.24556324749005,
+              "rerolls": 0,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.01",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1007,
+              "goal_met": false,
+              "a_err_mm": 59.331291465727396,
+              "b_err_mm": 66.24718771150064,
+              "rerolls": 1,
+              "retries": 2,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "place(cube_a,src_a): in_region 0.00",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1008,
+              "goal_met": true,
+              "a_err_mm": 8.100301012989034,
+              "b_err_mm": 1.2409677926144747,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1009,
+              "goal_met": true,
+              "a_err_mm": 5.176659781787383,
+              "b_err_mm": 1.1956092297708338,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 3
+            }
+          ],
+          "relearned": [
+            {
+              "seed": 1000,
+              "goal_met": true,
+              "a_err_mm": 1.0691477226418549,
+              "b_err_mm": 0.2749812161601146,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1001,
+              "goal_met": true,
+              "a_err_mm": 1.4212581508550177,
+              "b_err_mm": 0.32087654104861324,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1002,
+              "goal_met": false,
+              "a_err_mm": 102.36217325119023,
+              "b_err_mm": 4.1950210586381615,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 3,
+              "steps": 4,
+              "failed_at": "LEARNED[clear_of_walls(cube_a)]: precondition not met: in_region(cube_a,pocket)",
+              "diverging_steps": 3
+            },
+            {
+              "seed": 1003,
+              "goal_met": true,
+              "a_err_mm": 2.3010024961820728,
+              "b_err_mm": 0.08918812773013429,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1004,
+              "goal_met": true,
+              "a_err_mm": 1.552779999579235,
+              "b_err_mm": 0.9159557002919214,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1005,
+              "goal_met": true,
+              "a_err_mm": 1.7673207899428391,
+              "b_err_mm": 0.11749981605742513,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1006,
+              "goal_met": true,
+              "a_err_mm": 0.580459170286094,
+              "b_err_mm": 0.8819778987103776,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1007,
+              "goal_met": true,
+              "a_err_mm": 1.6312273919854456,
+              "b_err_mm": 0.8588657653027868,
+              "rerolls": 1,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1008,
+              "goal_met": true,
+              "a_err_mm": 1.5441873687866174,
+              "b_err_mm": 0.16607660996721835,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            },
+            {
+              "seed": 1009,
+              "goal_met": true,
+              "a_err_mm": 1.7686851320479107,
+              "b_err_mm": 0.31664720175470906,
+              "rerolls": 0,
+              "retries": 0,
+              "steps_run_ok": 6,
+              "steps": 6,
+              "failed_at": null,
+              "diverging_steps": 0
+            }
+          ]
+        }
+      }
+    }
+  }
+}

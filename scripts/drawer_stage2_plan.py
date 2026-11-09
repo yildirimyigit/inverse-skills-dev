@@ -9,8 +9,9 @@ it must preserve are all derived, and printed so they can be checked.
 
 Ablations, from the same measured state:
   library_only    the known actions, no holes allowed
-  frontier        the normal planner: holes only at capability gaps
-  unrestricted    any unreachable scored fact may become a hole (experiments only)
+  frontier        the planner as it stands, in its default exact mode
+  unrestricted    any unreachable scored fact may become a hole: the relaxed mode's ablation,
+                  named as such, because the exact mode has no such option (experiments only)
   with_grasp      Stage 0's scripted grasp added as a known action
 
 Writes artifacts/drawer/stage2_plan.json and artifacts/drawer/hole_spec.json,
@@ -27,6 +28,7 @@ from inverse_skills.envs import drawer_domain as dd
 from inverse_skills.envs import drawer_predicates as dp
 from inverse_skills.envs import drawer_primitives as prim
 from inverse_skills.operators import hole_planner as hp
+from inverse_skills.operators.exact_hole_planner import ExactNoPlan, ExactPlanResult
 
 # The plan we expect. A check on the planner's output, never an input to it.
 _EXPECTED = ("approach_handle(drawer)", "HOLE[handle_grasped(drawer)]", "pull_open(drawer)")
@@ -40,14 +42,19 @@ def measured_state(env, seed: int, registry) -> tuple[frozenset[str], dict[str, 
 
 
 def summary(result) -> dict:
-    row = {"capability_gaps": list(result.capability_gaps),
-           "synthesizable_gaps": list(result.synthesizable_gaps)}
-    if not result:
-        row["plan"] = None
-        return row
-    row.update(plan=list(result.actions), cost=list(result.cost), delegated=list(result.delegated),
-               hole_indices=list(result.hole_indices), candidates=list(result.candidates),
-               ties=[list(a) for a in result.alternative_names], expanded=result.expanded)
+    """A plan, or why there is none, in the terms of the mode that made it: the exact mode reports
+    each hole's context or the needs left unmet, the relaxed mode its capability gaps."""
+    row = {"plan": list(result.actions) if result else None}
+    if result:
+        row.update(cost=list(result.cost), delegated=list(result.delegated),
+                   hole_indices=list(result.hole_indices), candidates=list(result.candidates),
+                   ties=[list(a) for a in result.alternative_names], expanded=result.expanded)
+    if isinstance(result, ExactPlanResult):
+        row["hole_contexts"] = [context.to_dict() for context in result.hole_contexts]
+    elif isinstance(result, ExactNoPlan):
+        row.update(unmet_needs=list(result.unmet_needs), feasible_with_all_holes=result.feasible_with_all_holes)
+    else:
+        row.update(capability_gaps=list(result.capability_gaps), synthesizable_gaps=list(result.synthesizable_gaps))
     return row
 
 
@@ -59,6 +66,9 @@ def main() -> None:
     ap.add_argument("--out", type=Path, default=Path("artifacts/drawer/stage2_plan.json"))
     ap.add_argument("--spec-out", type=Path, default=Path("artifacts/drawer/hole_spec.json"))
     args = ap.parse_args()
+    for path in (args.out, args.spec_out):
+        if path.exists():
+            raise SystemExit(f"{path} exists; saved results are never overwritten. Choose another --out and --spec-out.")
 
     goal_pos, goal_neg = dd.goal_from_operator(args.operator)
     domain = dd.domain()
@@ -89,8 +99,9 @@ def main() -> None:
 
     print("\nderived, not given")
     print("  reachable by the library: ", ", ".join(sorted(reachable)))
-    print("  capability gaps:          ", ", ".join(frontier.capability_gaps))
-    print("  synthesizable (holes):    ", ", ".join(frontier.synthesizable_gaps))
+    print("  delegated to learning:    ", ", ".join(frontier.delegated))
+    for context in frontier.hole_contexts:
+        print(f"    {context.literal}: missing for {', '.join(context.waiting)}; first used by {context.used_by}")
     print("  hole starts from:         ", ", ".join(spec["start"]),
           f"  (robot-relative facts about the drawer: {', '.join(robot_facts)};"
           f" of these the library can reach: {', '.join(p for p in robot_facts if p in reachable)})")
@@ -100,14 +111,14 @@ def main() -> None:
     ablations = {
         "library_only": summary(hp.plan(domain, start, goal_pos, goal_neg, max_delegated=0)),
         "frontier": summary(frontier),
-        "unrestricted": summary(hp.plan(domain, start, goal_pos, goal_neg, unrestricted_holes=True)),
+        "unrestricted": summary(hp.plan(domain, start, goal_pos, goal_neg, mode="relaxed", unrestricted_holes=True)),
         "with_grasp": summary(hp.plan(dd.domain(extra_actions=[dd.scripted_grasp()]),
                                       start, goal_pos, goal_neg)),
     }
     print("\nablations")
     for name, row in ablations.items():
         plan = " -> ".join(row["plan"]) if row["plan"] else "no plan"
-        print(f"  {name:13s} {plan:75s} cost {row.get('cost')}  gaps {row['capability_gaps']}")
+        print(f"  {name:13s} {plan:75s} cost {row.get('cost')}")
 
     ok = all(row["matches_expected"] for row in rows)
     print("\nSTAGE 2:", "PASS" if ok else "FAIL")

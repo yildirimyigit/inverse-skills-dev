@@ -47,6 +47,9 @@ def main() -> None:
     ap.add_argument("--out", type=Path, default=Path("artifacts/stow/stage2_plan.json"))
     ap.add_argument("--spec-out", type=Path, default=Path("artifacts/stow/hole_spec.json"))
     args = ap.parse_args()
+    for path in (args.out, args.spec_out):
+        if path.exists():
+            raise SystemExit(f"{path} exists; saved results are never overwritten. Choose another --out and --spec-out.")
 
     goal_pos, goal_neg = sd.goal_from_operator(args.operator)
     domain = sd.domain()
@@ -68,20 +71,21 @@ def main() -> None:
             "state": sorted(state),
             "scores": scores,
             "plan": list(result.actions) if result else None,
-            "capability_gaps": list(result.capability_gaps),
-            "synthesizable_gaps": list(result.synthesizable_gaps),
+            "candidates": list(result.candidates),
             "delegated": list(result.delegated) if result else None,
             "hole_indices": list(result.hole_indices) if result else None,
             "cost": list(result.cost) if result else None,
             "ties": [list(a) for a in result.alternative_names] if result else None,
-            "expanded": result.expanded if result else None,
+            "expanded": result.expanded,
+            "hole_contexts": [context.to_dict() for context in result.hole_contexts] if result else None,
+            "unmet_needs": None if result else list(result.unmet_needs),
             "matches_expected": bool(result and result.actions == _EXPECTED
                                      and not result.alternatives),
         })
         print(f"\nseed {seed}: measured state = {', '.join(sorted(state))}")
         if not result:
-            print(f"  no plan; capability gaps {', '.join(result.capability_gaps) or 'none'}, "
-                  f"of which lack a soft score: {', '.join(result.unsynthesizable_gaps) or 'none'}")
+            print(f"  no plan; unmet needs {', '.join(result.unmet_needs) or 'none'}, "
+                  f"of which lack a soft score: {', '.join(result.unsynthesizable_needs) or 'none'}")
             continue
         for i, action in enumerate(result.actions):
             mark = "  <- learned" if action.startswith("HOLE") else ""
@@ -98,9 +102,9 @@ def main() -> None:
 
     print("\nderived, not given")
     print("  unreachable by the library:", ", ".join(sorted(goal_pos - reachable)))
-    print("  capability gaps:          ", ", ".join(result.capability_gaps))
-    print("  synthesizable (holes):    ", ", ".join(result.synthesizable_gaps))
-    print("  lacking a soft score:     ", ", ".join(result.unsynthesizable_gaps) or "none")
+    print("  delegated to learning:    ", ", ".join(result.delegated))
+    for context in result.hole_contexts:
+        print(f"    {context.literal}: missing for {', '.join(context.waiting)}; first used by {context.used_by}")
     print("  hole starts from:         ", ", ".join(spec["start"]))
     print("  must preserve:            ", ", ".join(spec["preserve"]))
     print("  must keep false:          ", ", ".join(spec["preserve_absent"]))
@@ -120,8 +124,8 @@ def main() -> None:
         "expected_plan": list(_EXPECTED),
         "all_seeds_match": ok,
         "unreachable": sorted(goal_pos - reachable),
-        "capability_gaps": list(result.capability_gaps),
-        "synthesizable_gaps": list(result.synthesizable_gaps),
+        "delegated": list(result.delegated),
+        "hole_contexts": [context.to_dict() for context in result.hole_contexts],
         "without_interference_model": [list(blind.actions)]
                                       + [list(a) for a in blind.alternative_names],
         "seeds": rows,

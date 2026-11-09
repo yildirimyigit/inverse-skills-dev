@@ -1,0 +1,61 @@
+{
+  "spec": "artifacts/default_mode_validation/phase2/stow_min_max_exact_hole_spec.json",
+  "bytes_equal_saved_spec": true,
+  "learning_fields": {
+    "achieve": "clear_of_walls(cube_a)",
+    "object": "cube_a",
+    "start": [
+      "tcp_near(cube_a)"
+    ],
+    "preserve": [
+      "in_region(cube_b,src_b)"
+    ],
+    "preserve_absent": [
+      "in_region(cube_b,mouth)"
+    ]
+  },
+  "prefix": [
+    "pick(cube_b)",
+    "place(cube_b,src_b)",
+    "approach(cube_a)"
+  ],
+  "suffix": [
+    "pick(cube_a)",
+    "place(cube_a,src_a)"
+  ],
+  "checkpoints": [
+    {
+      "checkpoint": "artifacts/stow/stage3/1790788534/sac_hole_best",
+      "observation_space_fits": true,
+      "action_space_fits": true,
+      "observation_shape": [
+        4
+      ],
+      "action_shape": [
+        2
+      ]
+    }
+  ],
+  "resets": [
+    {
+      "seed": 1000,
+      "handoff_valid": true,
+      "observation_shape": [
+        4
+      ],
+      "start_literals_scores": {
+        "tcp_near(cube_a)": 0.8690312979073025
+      }
+    },
+    {
+      "seed": 1002,
+      "handoff_valid": true,
+      "observation_shape": [
+        4
+      ],
+      "start_literals_scores": {
+        "tcp_near(cube_a)": 0.8664849041398583
+      }
+    }
+  ]
+}

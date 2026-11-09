@@ -3,10 +3,10 @@
 Each demonstration spans the whole forward skill: the first scene is the world
 before the push (drawer open, arm at its start pose, gripper open), the last is
 the world it leaves behind (drawer shut, arm back home, gripper open). The
-existing OperatorExtractor turns these scenes into preconditions, add effects
-and delete effects, with no drawer-specific rule; the generic inversion rule
-(preconditions + delete effects + the negation of each add effect) then gives
-the goal the inverse must restore.
+existing OperatorExtractor, with its default min_max rule, turns these scenes
+into preconditions, add effects and delete effects, with no drawer-specific rule;
+the generic inversion rule (preconditions + delete effects + the negation of each
+add effect) then gives the goal the inverse must restore.
 
 The goal is symbolic. drawer_open holds for any opening that scores at least
 0.8 (about 94 mm or more); the inverse must make that predicate true again. It
@@ -51,6 +51,8 @@ def main() -> None:
                     default=[0, 1, 2, 3, 4])
     ap.add_argument("--out", type=Path, default=Path("artifacts/drawer/stage1_operator.json"))
     args = ap.parse_args()
+    if args.out.exists():
+        raise SystemExit(f"{args.out} exists; saved results are never overwritten. Choose another --out.")
 
     env = prim.make_env()
     demos = [demonstrate(env, seed) for seed in args.seeds]
@@ -64,10 +66,10 @@ def main() -> None:
 
     print(f"{len(rollouts)} demonstrations, seeds {args.seeds}, drawer starting "
           f"{min(start_openings_mm)}-{max(start_openings_mm)} mm open\n")
-    print(f"{'predicate':28s} {'start':>7} {'end':>7} {'delta':>7}")
+    print(f"{'predicate':28s} {'start min':>9} {'start max':>9} {'end min':>9} {'end max':>9}")
     for key in registry.keys():
         s = result.scores[key]
-        print(f"{key:28s} {s['start_mean']:7.3f} {s['end_mean']:7.3f} {s['delta']:+7.3f}")
+        print(f"{key:28s} {s['start_min']:9.3f} {s['start_max']:9.3f} {s['end_min']:9.3f} {s['end_max']:9.3f}")
 
     pre = {t.key for t in operator.preconditions}
     add = {t.key for t in operator.add_effects}

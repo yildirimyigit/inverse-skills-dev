@@ -22,10 +22,15 @@ declares about its own vocabulary and world:
                   objects to an unknown place (leaving a pocket pushes whatever
                   sits in its mouth). They apply to library actions and holes alike.
 
-Which predicates may become holes is derived too. A hole belongs at an
-irreducible missing capability, never at a literal the library could produce
-once its own missing prerequisites were supplied: a hole there would learn a
-way around an action the library already has. `capability_gaps` finds the
+`plan` has two modes. `mode="exact"`, the default, is in `exact_hole_planner`: it
+judges holes by real transitions during the search. `mode="relaxed"` is this
+module's own gap analysis, below, kept for comparisons and for the
+`unrestricted_holes` ablation. Both use this module's `Domain` and the same cost.
+
+In the relaxed mode, which predicates may become holes is derived in advance. A
+hole belongs at an irreducible missing capability, never at a literal the library
+could produce once its own missing prerequisites were supplied: a hole there would
+learn a way around an action the library already has. `capability_gaps` finds the
 irreducible ones — literals no action establishes, and cycles whose members can
 each be established only through another member. A capability gap becomes a
 hole only if it is synthesizable: it has the soft score a learned skill's
@@ -315,18 +320,18 @@ def _closed_cycles(needs: dict[str, set[str]]) -> set[str]:
 
 def plan(domain: Domain, start: frozenset[str], goal_positive,
          goal_negative=None, *, max_delegated: int = 2, max_length: int = 10,
-         unrestricted_holes: bool = False, mode: str = "relaxed") -> PlanResult | NoPlan:
+         unrestricted_holes: bool = False, mode: str = "exact") -> PlanResult | NoPlan:
     """Cheapest plan under the lexicographic cost, or a `NoPlan` report.
 
-    Holes are offered only at the synthesizable capability gaps: the capability
-    gaps with a soft score. Both sets are reported either way.
+    `mode="exact"`, the default, is in `exact_hole_planner`: it finds holes during
+    the search with real transitions, and computes no gaps.
 
-    `unrestricted_holes=True` is for ablations and debugging only: it offers a
-    hole for every unreachable scored open condition and, failing that, for
-    every scored open condition — the planner's behaviour before the gap rule.
+    `mode="relaxed"` offers holes only at the synthesizable capability gaps: the
+    capability gaps with a soft score. Both sets are reported either way.
 
-    `mode="exact"` is the optional alternative in `exact_hole_planner`: it finds
-    holes during the search with real transitions, and computes no gaps.
+    `unrestricted_holes=True` needs `mode="relaxed"` named, and is for ablations and
+    debugging only: it offers a hole for every unreachable scored open condition and,
+    failing that, for every scored open condition — the behaviour before the gap rule.
     """
     if mode not in ("relaxed", "exact"):
         raise ValueError(f"Unknown planning mode '{mode}'")

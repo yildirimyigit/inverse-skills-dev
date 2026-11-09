@@ -1,0 +1,199 @@
+{
+  "made_by": "PYTHONNOUSERSITE=1 python scripts/validate_handoff.py drawer",
+  "conditions": {
+    "hold": [
+      "at_handle_standoff(drawer)"
+    ],
+    "absent": [
+      "handle_grasped(drawer)"
+    ]
+  },
+  "not_required": [
+    "drawer_closed(drawer)",
+    "drawer_open(drawer)"
+  ],
+  "seeds": [
+    {
+      "seed": 2000,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991698375990403,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2001,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991670953181244,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2002,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991625654030795,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2003,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991622311860802,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2004,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991684075405318,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2005,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991606043428438,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2006,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.999164424854235,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2007,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991634452028125,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2008,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991638324702422,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2009,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991629019795208,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2010,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991663298307509,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2011,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.999166461390728,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2012,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991629169353362,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2013,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991686675090796,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2014,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991622461538701,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2015,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991718695850196,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2016,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991652244046763,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2017,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991627536532318,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2018,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991692379171845,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    },
+    {
+      "seed": 2019,
+      "valid": true,
+      "violations": [],
+      "scores": {
+        "at_handle_standoff(drawer)": 0.9991612914226223,
+        "handle_grasped(drawer)": 0.11920292202211757
+      }
+    }
+  ],
+  "valid": 20,
+  "of": 20
+}

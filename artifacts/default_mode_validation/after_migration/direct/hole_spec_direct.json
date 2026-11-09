@@ -1,0 +1,35 @@
+{
+  "hole": "HOLE[drawer_open(drawer)]",
+  "achieve": "drawer_open(drawer)",
+  "object": "drawer",
+  "start": [
+    "at_handle_standoff(drawer)"
+  ],
+  "preserve": [],
+  "preserve_absent": [],
+  "prefix": [
+    {
+      "name": "approach_handle(drawer)",
+      "pre": [],
+      "pre_absent": [],
+      "add": [
+        "at_handle_standoff(drawer)"
+      ],
+      "delete": [],
+      "hole_for": null
+    }
+  ],
+  "suffix": [],
+  "plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+  ],
+  "hole_index": 1,
+  "cost": [
+    1,
+    0,
+    2,
+    1,
+    2
+  ]
+}

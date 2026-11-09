@@ -6,8 +6,9 @@ retracted, gripper open). Cutting anywhere inside the skill would sample the
 TCP mid-contact and turn tcp_near into a spurious effect, as the PushCube
 pipeline found.
 
-Prints the per-predicate score table and the extracted operator, checks it
-against what the scene is designed to mean, and writes
+The default min_max rule asks every demonstration to show each condition and
+transition. Prints the per-predicate score table and the extracted operator,
+checks it against what the scene is designed to mean, and writes
 artifacts/stow/stage1_operator.json.
 """
 
@@ -44,6 +45,8 @@ def main() -> None:
                     default=[0, 1, 2, 3, 4])
     ap.add_argument("--out", type=Path, default=Path("artifacts/stow/stage1_operator.json"))
     args = ap.parse_args()
+    if args.out.exists():
+        raise SystemExit(f"{args.out} exists; saved results are never overwritten. Choose another --out.")
 
     env = prim.make_env()
     rollouts = [demonstrate(env, seed) for seed in args.seeds]
@@ -54,10 +57,10 @@ def main() -> None:
     operator = result.operator
 
     print(f"{len(rollouts)} demonstrations, seeds {args.seeds}\n")
-    print(f"{'predicate':28s} {'start':>7} {'end':>7} {'delta':>7}")
+    print(f"{'predicate':28s} {'start min':>9} {'start max':>9} {'end min':>9} {'end max':>9}")
     for key in registry.keys():
         s = result.scores[key]
-        print(f"{key:28s} {s['start_mean']:7.3f} {s['end_mean']:7.3f} {s['delta']:+7.3f}")
+        print(f"{key:28s} {s['start_min']:9.3f} {s['start_max']:9.3f} {s['end_min']:9.3f} {s['end_max']:9.3f}")
 
     pre = {t.key for t in operator.preconditions}
     add = {t.key for t in operator.add_effects}

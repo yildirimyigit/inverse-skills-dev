@@ -1,0 +1,9886 @@
+{
+ "made_by": "python scripts/compare_hole_planners_random.py",
+ "results": [
+  {
+   "generator": "few literals",
+   "seed": 77,
+   "problems": 20000,
+   "counts": {
+    "different holes": 40,
+    "no plan in either": 5699,
+    "plan only in exact mode": 816,
+    "plan only in relaxed mode": 19,
+    "same holes, other plan": 1,
+    "same plan": 13425
+   },
+   "reasons": [
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "count": 35
+    },
+    {
+     "category": "different holes",
+     "reason": "these holes pass too, and the cost chose between them",
+     "count": 5
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "count": 17
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "these holes pass, but the plan fails Used or a hole start",
+     "count": 2
+    },
+    {
+     "category": "same holes, other plan",
+     "reason": "these holes pass too, and the cost chose between them",
+     "count": 1
+    }
+   ],
+   "cases": [
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act1",
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "e",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "b(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e",
+         "f"
+        ],
+        "delete": [
+         "a(o)",
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "e"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "a(o)",
+         "b(o)"
+        ],
+        "pre_absent": [
+         "a(o)"
+        ],
+        "add": [
+         "b(o)",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)",
+       "b(o)"
+      ],
+      "mutex_groups": [
+       [
+        "a(o)",
+        "e"
+       ]
+      ],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[f]",
+       "act0"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "these holes pass, but the plan fails Used or a hole start",
+     "actions_needing_their_own_effect": [],
+     "relaxed": {
+      "actions": [
+       "HOLE[a(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       2,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)"
+      ]
+     },
+     "problem": {
+      "start": [
+       "c(o)",
+       "e",
+       "f"
+      ],
+      "goal_positive": [
+       "f"
+      ],
+      "goal_negative": [
+       "c(o)"
+      ],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "a(o)",
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e",
+         "f"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "c(o)"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [
+       [
+        "a(o)",
+        "c(o)"
+       ]
+      ],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "e",
+        "clobbers": [
+         "e"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [],
+      "replaceable_holes": [],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[e]",
+       "HOLE[f]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       2
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "e",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "f"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)"
+      ],
+      "mutex_groups": [
+       [
+        "c(o)",
+        "d"
+       ]
+      ],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [
+       "max_delegated"
+      ],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "f"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act4"
+     ],
+     "relaxed": {
+      "actions": [
+       "act3",
+       "HOLE[f]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "capability_gaps": [
+       "c(o)",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "d"
+      ],
+      "goal_positive": [
+       "b(o)",
+       "d",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "e"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "c(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "e",
+       "f"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [
+       [
+        "b(o)",
+        "c(o)"
+       ]
+      ],
+      "implications": {
+       "f": [
+        "d"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "f"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act2",
+      "act3",
+      "act5",
+      "act6"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "d"
+      ],
+      "goal_positive": [
+       "b(o)",
+       "d"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "d"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "d",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "d"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "c(o)",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {
+       "f": [
+        "c(o)"
+       ]
+      },
+      "disturbances": [
+       {
+        "trigger": "c(o)",
+        "clobbers": [
+         "d"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "actions": [
+       "act1",
+       "HOLE[f]",
+       "act4",
+       "act0",
+       "act3"
+      ],
+      "cost": [
+       1,
+       1,
+       1,
+       1,
+       5
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1",
+      "act2",
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[e]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "c(o)",
+       "e",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "e"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "c(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "e"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "e"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "e"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "c(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {
+       "c(o)": [
+        "e"
+       ]
+      },
+      "disturbances": [
+       {
+        "trigger": "e",
+        "clobbers": [
+         "e"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "actions": [
+       "HOLE[f]",
+       "act4"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "c(o)",
+       "d"
+      ]
+     },
+     "problem": {
+      "start": [
+       "e"
+      ],
+      "goal_positive": [
+       "b(o)",
+       "e"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "d"
+      ],
+      "robot_relative": [
+       "c(o)"
+      ],
+      "mutex_groups": [
+       [
+        "c(o)",
+        "d"
+       ]
+      ],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [
+       "d"
+      ],
+      "replaceable_holes": [
+       "b(o)"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1",
+      "act5",
+      "act6"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]",
+       "act3",
+       "HOLE[f]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       3
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "d",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "d",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "e"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "e",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "c(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "d"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "a(o)",
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [
+       [
+        "a(o)",
+        "c(o)"
+       ]
+      ],
+      "implications": {
+       "a(o)": [
+        "d"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[c(o)]",
+       "HOLE[f]",
+       "act5"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       3
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[d]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "d"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "d",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "d",
+       "e"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "d"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1",
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[f]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "e",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "d"
+      ],
+      "goal_positive": [
+       "d",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [
+         "b(o)",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "d",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {
+       "e": [
+        "b(o)"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[e]",
+       "act2"
+      ],
+      "cost": [
+       1,
+       0,
+       2,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "b(o)"
+      ],
+      "goal_negative": [
+       "f"
+      ],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "e"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[f]",
+       "act2"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act2",
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[c(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "c(o)"
+      ]
+     },
+     "problem": {
+      "start": [
+       "b(o)",
+       "e",
+       "f"
+      ],
+      "goal_positive": [
+       "b(o)",
+       "c(o)",
+       "e"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [
+         "a(o)"
+        ],
+        "add": [
+         "a(o)",
+         "b(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)",
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[a(o)]",
+       "act0",
+       "HOLE[e]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       3
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "these holes pass too, and the cost chose between them",
+     "actions_needing_their_own_effect": [],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]",
+       "act1"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "c(o)"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "d"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "e",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "e",
+         "f"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "e"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "c(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "e",
+        "clobbers": [
+         "f"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "actions": [
+       "HOLE[d]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act1",
+      "act2",
+      "act4"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[a(o)]",
+       "act0",
+       "act2",
+       "HOLE[a(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       2,
+       2,
+       4
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "d",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "a(o)",
+       "e"
+      ],
+      "goal_negative": [
+       "d"
+      ],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "d",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "d",
+         "e"
+        ],
+        "pre_absent": [
+         "f"
+        ],
+        "add": [
+         "b(o)",
+         "d"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [
+         "a(o)",
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "a(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "d"
+        ],
+        "delete": [
+         "a(o)",
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [
+         "d"
+        ],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "d",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "c(o)",
+       "d",
+       "e"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {
+       "e": [
+        "b(o)"
+       ]
+      },
+      "disturbances": [
+       {
+        "trigger": "e",
+        "clobbers": [
+         "d"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [
+       "max_delegated",
+       "max_length"
+      ],
+      "unnecessary_holes": [
+       "a(o)",
+       "d",
+       "e"
+      ],
+      "replaceable_holes": [
+       "a(o)"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act3",
+      "act4",
+      "act5"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[c(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "c(o)",
+       "d",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "c(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [],
+        "pre_absent": [
+         "b(o)"
+        ],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "b(o)",
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "d"
+        ],
+        "delete": [
+         "a(o)",
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "d",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "c(o)",
+         "e"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "c(o)"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {
+       "e": [
+        "b(o)"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "c(o)"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act2",
+      "act3",
+      "act4"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]",
+       "act5"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "e"
+      ],
+      "goal_positive": [
+       "a(o)",
+       "e",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "c(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "c(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [
+         "a(o)",
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [
+       [
+        "b(o)",
+        "c(o)"
+       ]
+      ],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "b(o)",
+        "clobbers": [
+         "b(o)"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "actions": [
+       "HOLE[c(o)]",
+       "act3",
+       "act1"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       3
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act1",
+      "act4",
+      "act5"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[c(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "c(o)",
+       "d",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [
+       "f"
+      ],
+      "goal_positive": [
+       "c(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "d",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [
+         "b(o)"
+        ],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e",
+         "f"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "b(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "d"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "e"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[d]",
+       "act0"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1",
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[f]",
+       "act3",
+       "HOLE[b(o)]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       3
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "b(o)",
+       "d",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "d",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "a(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "a(o)",
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "d",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[a(o)]",
+       "HOLE[b(o)]",
+       "act4",
+       "act2"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       4
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act3",
+      "act4"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[e]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "c(o)",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "e"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "a(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [],
+        "pre_absent": [
+         "f"
+        ],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "e"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "c(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "d",
+       "e"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [
+       [
+        "b(o)",
+        "d"
+       ]
+      ],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "act2",
+       "HOLE[c(o)]",
+       "act4",
+       "act3"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       4
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "act0",
+       "HOLE[e]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "e",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "a(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [
+         "e"
+        ],
+        "add": [
+         "e",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "e"
+      ],
+      "robot_relative": [
+       "a(o)",
+       "b(o)"
+      ],
+      "mutex_groups": [
+       [
+        "a(o)",
+        "b(o)"
+       ]
+      ],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "act0",
+       "HOLE[a(o)]",
+       "act1"
+      ],
+      "cost": [
+       1,
+       0,
+       2,
+       1,
+       3
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act2",
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "a(o)",
+       "e"
+      ],
+      "goal_positive": [
+       "a(o)",
+       "b(o)",
+       "e"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "a(o)",
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e",
+         "f"
+        ],
+        "delete": [
+         "a(o)",
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "e"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [
+       [
+        "b(o)",
+        "f"
+       ]
+      ],
+      "implications": {
+       "a(o)": [
+        "f"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "b(o)"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]",
+       "HOLE[f]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       2
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "c(o)",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "a(o)"
+      ],
+      "goal_positive": [
+       "a(o)",
+       "b(o)",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [
+         "b(o)"
+        ],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [
+         "c(o)"
+        ],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "c(o)"
+      ],
+      "mutex_groups": [
+       [
+        "d",
+        "e"
+       ]
+      ],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "b(o)"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1",
+      "act2",
+      "act3",
+      "act4",
+      "act5"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[c(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "c(o)"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "c(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)",
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "b(o)"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [
+         "a(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "a(o)",
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [
+         "a(o)"
+        ],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)",
+       "b(o)"
+      ],
+      "mutex_groups": [
+       [
+        "b(o)",
+        "f"
+       ]
+      ],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "c(o)",
+        "clobbers": [
+         "c(o)"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "actions": [
+       "HOLE[b(o)]",
+       "act5"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1",
+      "act2",
+      "act3",
+      "act4",
+      "act5",
+      "act6"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[f]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "e",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "b(o)"
+      ],
+      "goal_positive": [
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)",
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [
+         "b(o)"
+        ],
+        "add": [
+         "b(o)",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [
+         "a(o)",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "a(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "a(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [
+         "f"
+        ],
+        "add": [
+         "a(o)",
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[a(o)]",
+       "act0"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act3",
+      "act5"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[c(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "c(o)",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "c(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [
+         "a(o)",
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "a(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "c(o)",
+       "e"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[a(o)]",
+       "HOLE[e]",
+       "act4"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       3
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act2",
+      "act4"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "e",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "b(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "e",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [
+         "a(o)"
+        ],
+        "add": [
+         "a(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "c(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[f]",
+       "act1",
+       "act4"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       3
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act4"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[f]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "c(o)",
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "b(o)",
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "b(o)",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "d",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [
+       [
+        "a(o)",
+        "b(o)"
+       ]
+      ],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[a(o)]",
+       "act2",
+       "act4",
+       "act5"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       4
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[c(o)]",
+       "HOLE[f]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       2
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "c(o)",
+       "e",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "d"
+      ],
+      "goal_positive": [
+       "c(o)",
+       "d",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "c(o)",
+       "d",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)"
+      ],
+      "mutex_groups": [
+       [
+        "b(o)",
+        "c(o)"
+       ]
+      ],
+      "implications": {
+       "e": [
+        "f"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[b(o)]",
+       "HOLE[f]",
+       "act2"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       3
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[d]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "e"
+      ],
+      "goal_positive": [
+       "d"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "a(o)",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "e"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {
+       "f": [
+        "f"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[f]",
+       "act1"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act2",
+      "act3",
+      "act4",
+      "act6"
+     ],
+     "relaxed": {
+      "actions": [
+       "act1",
+       "HOLE[b(o)]",
+       "act3"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       3
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "d",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "a(o)",
+       "b(o)",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "d",
+         "e"
+        ],
+        "pre_absent": [
+         "d"
+        ],
+        "add": [
+         "a(o)",
+         "d"
+        ],
+        "delete": [
+         "b(o)",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [
+         "a(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "e"
+        ],
+        "delete": [
+         "a(o)",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "a(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "d"
+        ],
+        "delete": [
+         "a(o)",
+         "e"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [
+       "f"
+      ],
+      "replaceable_holes": [
+       "b(o)"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act1",
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[f]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "c(o)",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "b(o)",
+       "d"
+      ],
+      "goal_positive": [
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "c(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [
+       [
+        "b(o)",
+        "d"
+       ]
+      ],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[c(o)]",
+       "act3"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[f]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "c(o)",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "e"
+      ],
+      "goal_positive": [
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "c(o)",
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[c(o)]",
+       "act1"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1",
+      "act2",
+      "act3",
+      "act5"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[d]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "c(o)",
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "d"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [
+         "d"
+        ],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "d",
+         "f"
+        ],
+        "pre_absent": [
+         "a(o)"
+        ],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "c(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "d",
+       "f"
+      ],
+      "robot_relative": [
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "d",
+        "clobbers": [
+         "f"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [
+       "max_delegated"
+      ],
+      "unnecessary_holes": [
+       "a(o)",
+       "f"
+      ],
+      "replaceable_holes": [
+       "d"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act2",
+      "act4",
+      "act5"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[a(o)]",
+       "act1",
+       "HOLE[c(o)]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       3
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "c(o)",
+       "d",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "a(o)",
+       "c(o)",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "d",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e",
+         "f"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "a(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "d"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "e",
+        "clobbers": [
+         "c(o)"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "actions": [
+       "HOLE[a(o)]",
+       "act3",
+       "HOLE[d]",
+       "act2"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       4
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "these holes pass too, and the cost chose between them",
+     "actions_needing_their_own_effect": [
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[c(o)]",
+       "act0",
+       "act1"
+      ],
+      "cost": [
+       1,
+       0,
+       2,
+       1,
+       3
+      ],
+      "capability_gaps": [
+       "c(o)"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "d",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "c(o)",
+       "d",
+       "e"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {
+       "c(o)": [
+        "e"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[e]",
+       "act0",
+       "act1"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       3
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[c(o)]",
+       "act1"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "c(o)",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [
+         "c(o)",
+         "f"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[e]",
+       "act0",
+       "act1"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       3
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act2",
+      "act3",
+      "act5",
+      "act6"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[d]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "d"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "b(o)",
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [
+         "f"
+        ],
+        "add": [
+         "c(o)",
+         "e"
+        ],
+        "delete": [
+         "d",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "d",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "c(o)",
+       "d",
+       "e"
+      ],
+      "robot_relative": [
+       "b(o)"
+      ],
+      "mutex_groups": [
+       [
+        "d",
+        "f"
+       ]
+      ],
+      "implications": {
+       "e": [
+        "d"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[e]"
+      ],
+      "cost": [
+       1,
+       0,
+       2,
+       1,
+       1
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act2",
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[c(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "c(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "c(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "d"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "a(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "b(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "c(o)",
+       "d"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "b(o)",
+        "clobbers": [
+         "f"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [
+       "max_delegated"
+      ],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "c(o)"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "these holes pass too, and the cost chose between them",
+     "actions_needing_their_own_effect": [
+      "act2",
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[a(o)]",
+       "act3"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "c(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "b(o)"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "b(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "e"
+      ],
+      "robot_relative": [
+       "a(o)",
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {
+       "b(o)": [
+        "c(o)"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[c(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1",
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[d]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "d"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "d"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "c(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "c(o)",
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {
+       "d": [
+        "d"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[b(o)]",
+       "act3"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act2",
+      "act4"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[e]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "c(o)",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "e"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [
+         "b(o)"
+        ],
+        "add": [
+         "a(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "e"
+      ],
+      "robot_relative": [
+       "a(o)",
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [
+       [
+        "a(o)",
+        "c(o)"
+       ]
+      ],
+      "implications": {
+       "a(o)": [
+        "e"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[c(o)]",
+       "act4"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act3",
+      "act5"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[d]",
+       "act0",
+       "act4"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       3
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "d"
+      ]
+     },
+     "problem": {
+      "start": [
+       "e",
+       "f"
+      ],
+      "goal_positive": [
+       "b(o)",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "a(o)",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)",
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "a(o)",
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "b(o)",
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [
+         "d",
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {
+       "e": [
+        "b(o)"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "act4",
+       "HOLE[e]"
+      ],
+      "cost": [
+       1,
+       0,
+       2,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "these holes pass too, and the cost chose between them",
+     "actions_needing_their_own_effect": [
+      "act1",
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]",
+       "HOLE[f]",
+       "act3"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       3
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "e",
+       "f"
+      ],
+      "goal_negative": [
+       "c(o)"
+      ],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "e"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "e",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [
+         "b(o)"
+        ],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "f",
+        "clobbers": [
+         "e"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "actions": [
+       "HOLE[f]",
+       "HOLE[e]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1",
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[f]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "c(o)",
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "e"
+      ],
+      "goal_positive": [
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "d"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "c(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "d",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "f"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[a(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "d",
+       "e"
+      ],
+      "goal_positive": [
+       "a(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "c(o)",
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "f"
+        ],
+        "pre_absent": [
+         "a(o)"
+        ],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [
+         "d",
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [
+       [
+        "e",
+        "f"
+       ]
+      ],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "f",
+        "clobbers": [
+         "a(o)"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "actions": [
+       "HOLE[f]",
+       "act0"
+      ],
+      "cost": [
+       1,
+       0,
+       2,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "these holes pass, but the plan fails Used or a hole start",
+     "actions_needing_their_own_effect": [],
+     "relaxed": {
+      "actions": [
+       "act2",
+       "act3",
+       "HOLE[a(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       2,
+       1,
+       3
+      ],
+      "capability_gaps": [
+       "a(o)"
+      ]
+     },
+     "problem": {
+      "start": [
+       "d",
+       "f"
+      ],
+      "goal_positive": [
+       "b(o)",
+       "c(o)"
+      ],
+      "goal_negative": [
+       "d"
+      ],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [
+         "a(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "c(o)",
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "b(o)",
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "b(o)",
+         "e"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)"
+      ],
+      "mutex_groups": [
+       [
+        "a(o)",
+        "d"
+       ]
+      ],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "a(o)",
+        "clobbers": [
+         "a(o)"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [
+       "max_delegated",
+       "max_length"
+      ],
+      "unnecessary_holes": [
+       "b(o)",
+       "c(o)"
+      ],
+      "replaceable_holes": [],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "same holes, other plan",
+     "reason": "these holes pass too, and the cost chose between them",
+     "actions_needing_their_own_effect": [
+      "act0"
+     ],
+     "relaxed": {
+      "actions": [
+       "act1",
+       "HOLE[f]",
+       "act2",
+       "HOLE[c(o)]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       4
+      ],
+      "capability_gaps": [
+       "c(o)",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "b(o)",
+       "d"
+      ],
+      "goal_positive": [
+       "c(o)",
+       "d",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "d"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "d",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)",
+       "b(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[c(o)]",
+       "HOLE[f]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1",
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[c(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "c(o)",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [
+       "b(o)",
+       "d"
+      ],
+      "goal_positive": [
+       "b(o)",
+       "c(o)",
+       "d"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "d",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "e"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "d",
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "b(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "c(o)"
+      ],
+      "robot_relative": [
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "b(o)",
+        "clobbers": [
+         "e"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "c(o)"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1",
+      "act5"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]"
+      ],
+      "cost": [
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)"
+      ]
+     },
+     "problem": {
+      "start": [
+       "c(o)",
+       "d"
+      ],
+      "goal_positive": [
+       "b(o)",
+       "d"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)",
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [
+         "c(o)"
+        ],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "a(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "c(o)",
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "c(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "d"
+        ],
+        "delete": [
+         "a(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "d"
+        ],
+        "delete": [
+         "a(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)"
+      ],
+      "robot_relative": [
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "b(o)",
+        "clobbers": [
+         "c(o)"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "actions": [
+       "HOLE[a(o)]",
+       "act6"
+      ],
+      "cost": [
+       1,
+       1,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1",
+      "act2",
+      "act4",
+      "act5",
+      "act6"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[b(o)]",
+       "act0"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "capability_gaps": [
+       "b(o)",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [
+       "f"
+      ],
+      "goal_positive": [
+       "b(o)",
+       "c(o)",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "b(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "e"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "b(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "c(o)",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {
+       "f": [
+        "e"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [
+       "c(o)"
+      ],
+      "replaceable_holes": [
+       "b(o)"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act1",
+      "act2",
+      "act5"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[f]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "e"
+      ],
+      "goal_positive": [
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "b(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "c(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "b(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "f"
+        ],
+        "delete": [
+         "a(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "d",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)",
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {
+       "a(o)": [
+        "d"
+       ]
+      },
+      "disturbances": [
+       {
+        "trigger": "c(o)",
+        "clobbers": [
+         "b(o)"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "actions": [
+       "HOLE[d]",
+       "act3"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[c(o)]",
+       "HOLE[d]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       2
+      ],
+      "capability_gaps": [
+       "c(o)",
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "a(o)",
+       "b(o)"
+      ],
+      "goal_positive": [
+       "b(o)",
+       "c(o)",
+       "d"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [
+         "c(o)"
+        ],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "d",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [],
+        "pre_absent": [
+         "a(o)"
+        ],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)",
+       "b(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[d]",
+       "HOLE[f]",
+       "act3"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       3
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "these holes pass too, and the cost chose between them",
+     "actions_needing_their_own_effect": [
+      "act2",
+      "act6"
+     ],
+     "relaxed": {
+      "actions": [
+       "act1",
+       "HOLE[a(o)]",
+       "act3"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       3
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "e"
+      ]
+     },
+     "problem": {
+      "start": [
+       "d"
+      ],
+      "goal_positive": [
+       "c(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "c(o)",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "c(o)"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d",
+         "f"
+        ],
+        "delete": [
+         "c(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "d",
+         "e"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "a(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "act1",
+       "HOLE[c(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act1"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[d]",
+       "HOLE[f]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       2
+      ],
+      "capability_gaps": [
+       "c(o)",
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "d",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "d",
+         "f"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "c(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "d"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "b(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [
+       [
+        "d",
+        "e"
+       ]
+      ],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "f",
+        "clobbers": [
+         "f"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "d"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act1"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[a(o)]",
+       "HOLE[f]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       2
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "b(o)"
+      ],
+      "goal_positive": [
+       "a(o)",
+       "b(o)",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [
+         "a(o)"
+        ],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)",
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "d",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "b(o)"
+        ],
+        "delete": [
+         "f"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "d",
+       "f"
+      ],
+      "robot_relative": [
+       "b(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[a(o)]",
+       "HOLE[d]",
+       "act2"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       3
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act2"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[c(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "c(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "d"
+        ],
+        "delete": [
+         "a(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "b(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "d",
+       "e"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "d",
+        "clobbers": [
+         "b(o)"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [
+       "max_delegated"
+      ],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "c(o)"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act1",
+      "act2",
+      "act4"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[a(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "d"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "a(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [
+         "d"
+        ],
+        "add": [
+         "a(o)",
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "c(o)"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "d"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {
+       "d": [
+        "d"
+       ]
+      },
+      "disturbances": [
+       {
+        "trigger": "c(o)",
+        "clobbers": [
+         "c(o)"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "actions": [
+       "HOLE[d]",
+       "act3",
+       "HOLE[c(o)]",
+       "act0"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       4
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act1",
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[a(o)]",
+       "HOLE[d]",
+       "act0"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       3
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "d"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "c(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [
+         "b(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "b(o)"
+        ],
+        "pre_absent": [
+         "c(o)"
+        ],
+        "add": [
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "b(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "b(o)"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "b(o)",
+       "c(o)",
+       "d"
+      ],
+      "robot_relative": [
+       "b(o)",
+       "c(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": [
+       {
+        "trigger": "a(o)",
+        "clobbers": [
+         "c(o)"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "actions": [
+       "HOLE[b(o)]",
+       "act2",
+       "HOLE[a(o)]",
+       "act0"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       4
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0",
+      "act3",
+      "act5"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[a(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "d"
+      ]
+     },
+     "problem": {
+      "start": [
+       "c(o)",
+       "e",
+       "f"
+      ],
+      "goal_positive": [
+       "a(o)",
+       "c(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "a(o)",
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "d"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "e"
+        ],
+        "delete": [
+         "a(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "d",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "c(o)"
+        ],
+        "delete": [
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "a(o)",
+         "c(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [
+         "a(o)",
+         "e"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "c(o)",
+         "f"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "c(o)",
+       "d",
+       "e",
+       "f"
+      ],
+      "robot_relative": [
+       "a(o)"
+      ],
+      "mutex_groups": [
+       [
+        "c(o)",
+        "d"
+       ]
+      ],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[d]",
+       "act2"
+      ],
+      "cost": [
+       1,
+       0,
+       2,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act1",
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[a(o)]",
+       "act2"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "capability_gaps": [
+       "a(o)",
+       "d",
+       "f"
+      ]
+     },
+     "problem": {
+      "start": [
+       "e"
+      ],
+      "goal_positive": [
+       "a(o)",
+       "f"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "a(o)",
+         "f"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)",
+         "e"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "a(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "f"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "d",
+         "f"
+        ],
+        "pre_absent": [
+         "d"
+        ],
+        "add": [
+         "d",
+         "e"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "d"
+        ],
+        "pre_absent": [],
+        "add": [
+         "a(o)"
+        ],
+        "delete": [
+         "d"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "a(o)",
+       "e",
+       "f"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {
+       "f": [
+        "e"
+       ]
+      },
+      "disturbances": [
+       {
+        "trigger": "e",
+        "clobbers": [
+         "f"
+        ]
+       }
+      ]
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [
+       "max_delegated"
+      ],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "a(o)"
+      ],
+      "feasible_with_all_holes": true
+     }
+    }
+   ]
+  },
+  {
+   "generator": "chains",
+   "seed": 78,
+   "problems": 20000,
+   "counts": {
+    "different holes": 5,
+    "no plan in either": 5726,
+    "plan only in exact mode": 642,
+    "plan only in relaxed mode": 3,
+    "same plan": 13624
+   },
+   "reasons": [
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "count": 4
+    },
+    {
+     "category": "different holes",
+     "reason": "these holes pass too, and the cost chose between them",
+     "count": 1
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "count": 2
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "these holes pass, but the plan fails Used or a hole start",
+     "count": 1
+    }
+   ],
+   "cases": [
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act2",
+      "act5"
+     ],
+     "relaxed": {
+      "actions": [
+       "act0",
+       "HOLE[l5]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "capability_gaps": [
+       "l0",
+       "l2",
+       "l3(o)",
+       "l5"
+      ]
+     },
+     "problem": {
+      "start": [
+       "l1(o)"
+      ],
+      "goal_positive": [
+       "l5",
+       "l6(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "l6(o)"
+        ],
+        "delete": [
+         "l1(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "l7(o)"
+        ],
+        "delete": [
+         "l4(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "l3(o)",
+         "l5"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l3(o)",
+         "l7(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "l0",
+         "l2"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l5"
+        ],
+        "delete": [
+         "l2"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "l3(o)",
+         "l5"
+        ],
+        "pre_absent": [
+         "l0"
+        ],
+        "add": [
+         "l6(o)"
+        ],
+        "delete": [
+         "l3(o)",
+         "l5"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "l2",
+         "l3(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l2",
+         "l4(o)"
+        ],
+        "delete": [
+         "l5",
+         "l6(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "l0",
+       "l2",
+       "l3(o)",
+       "l5",
+       "l7(o)"
+      ],
+      "robot_relative": [
+       "l3(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "act0",
+       "HOLE[l0]",
+       "HOLE[l2]",
+       "act3"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       4
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act3"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[l3]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "l0(o)",
+       "l1",
+       "l3"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "l3"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "l6(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "l0(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l1"
+        ],
+        "delete": [
+         "l0(o)",
+         "l2"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "l0(o)"
+        ],
+        "pre_absent": [
+         "l4"
+        ],
+        "add": [
+         "l1",
+         "l5(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "l0(o)",
+         "l3"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l0(o)",
+         "l4"
+        ],
+        "delete": [
+         "l6(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "l4"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l5(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "l1"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l3"
+        ],
+        "delete": [
+         "l2"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "l0(o)",
+         "l1"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l2"
+        ],
+        "delete": [
+         "l0(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "l1",
+       "l2",
+       "l3",
+       "l4"
+      ],
+      "robot_relative": [
+       "l6(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[l1]",
+       "act5"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0"
+     ],
+     "relaxed": {
+      "actions": [
+       "act3",
+       "HOLE[l1]",
+       "HOLE[l2]",
+       "act2",
+       "act4"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       5
+      ],
+      "capability_gaps": [
+       "l0(o)",
+       "l1",
+       "l2"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "l6"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "l0(o)",
+         "l1"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l0(o)",
+         "l4"
+        ],
+        "delete": [
+         "l1"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "l0(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l1"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "l1",
+         "l2"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l3(o)"
+        ],
+        "delete": [
+         "l7"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [],
+        "pre_absent": [
+         "l0(o)"
+        ],
+        "add": [
+         "l7"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "l2",
+         "l3(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l6"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "l1",
+         "l3(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l6"
+        ],
+        "delete": [
+         "l0(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "l0(o)",
+       "l1",
+       "l2",
+       "l3(o)",
+       "l4",
+       "l6"
+      ],
+      "robot_relative": [],
+      "mutex_groups": [],
+      "implications": {
+       "l1": [
+        "l7"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[l0(o)]",
+       "act1",
+       "HOLE[l2]",
+       "act2",
+       "act4"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       5
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "these holes pass, but the plan fails Used or a hole start",
+     "actions_needing_their_own_effect": [],
+     "relaxed": {
+      "actions": [
+       "HOLE[l5]",
+       "act0",
+       "HOLE[l5]"
+      ],
+      "cost": [
+       1,
+       0,
+       3,
+       2,
+       3
+      ],
+      "capability_gaps": [
+       "l5"
+      ]
+     },
+     "problem": {
+      "start": [
+       "l0(o)"
+      ],
+      "goal_positive": [
+       "l5",
+       "l6"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [],
+        "pre_absent": [
+         "l0(o)"
+        ],
+        "add": [
+         "l6"
+        ],
+        "delete": [
+         "l1(o)",
+         "l5"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "l0(o)",
+         "l3(o)"
+        ],
+        "pre_absent": [
+         "l6"
+        ],
+        "add": [
+         "l4(o)"
+        ],
+        "delete": [
+         "l3(o)",
+         "l5"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "l3(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l0(o)",
+         "l6"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "l0(o)",
+       "l1(o)",
+       "l2(o)",
+       "l3(o)",
+       "l4(o)",
+       "l5",
+       "l6"
+      ],
+      "robot_relative": [
+       "l2(o)",
+       "l4(o)"
+      ],
+      "mutex_groups": [
+       [
+        "l0(o)",
+        "l5"
+       ]
+      ],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [
+       "max_delegated"
+      ],
+      "unnecessary_holes": [],
+      "replaceable_holes": [],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act0"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[l3]",
+       "act6"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "capability_gaps": [
+       "l0(o)",
+       "l1",
+       "l2(o)",
+       "l3",
+       "l4(o)",
+       "l5(o)"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "l3",
+       "l5(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "l0(o)",
+         "l2(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l0(o)",
+         "l3"
+        ],
+        "delete": [
+         "l2(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "l0(o)"
+        ],
+        "pre_absent": [
+         "l6(o)"
+        ],
+        "add": [
+         "l2(o)"
+        ],
+        "delete": [
+         "l4(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "l0(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l1"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "l0(o)",
+         "l2(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l5(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "l0(o)",
+         "l1"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l2(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [
+         "l4(o)",
+         "l5(o)"
+        ],
+        "pre_absent": [
+         "l1"
+        ],
+        "add": [
+         "l2(o)",
+         "l6(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [
+         "l3"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l5(o)"
+        ],
+        "delete": [
+         "l0(o)"
+        ],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "l1",
+       "l2(o)",
+       "l3",
+       "l6(o)"
+      ],
+      "robot_relative": [
+       "l5(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [
+       "max_delegated"
+      ],
+      "unnecessary_holes": [],
+      "replaceable_holes": [
+       "l3"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act1"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[l4]",
+       "HOLE[l6]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       2
+      ],
+      "capability_gaps": [
+       "l1",
+       "l2(o)",
+       "l4",
+       "l6"
+      ]
+     },
+     "problem": {
+      "start": [
+       "l0"
+      ],
+      "goal_positive": [
+       "l4",
+       "l6"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "l1",
+         "l2(o)"
+        ],
+        "pre_absent": [
+         "l4"
+        ],
+        "add": [
+         "l3"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "l1",
+         "l6"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l1",
+         "l7"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "l1",
+         "l3"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l5(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "l0",
+         "l1"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l2(o)"
+        ],
+        "delete": [
+         "l0"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "l2(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l6"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "l0",
+       "l2(o)",
+       "l3",
+       "l4",
+       "l5(o)",
+       "l6",
+       "l7"
+      ],
+      "robot_relative": [
+       "l5(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {
+       "l3": [
+        "l3"
+       ]
+      },
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[l2(o)]",
+       "act4",
+       "HOLE[l4]"
+      ],
+      "cost": [
+       2,
+       0,
+       2,
+       2,
+       3
+      ],
+      "tied_with_the_relaxed_plan": false
+     }
+    },
+    {
+     "category": "plan only in relaxed mode",
+     "reason": "the causal preference refuses the relaxed plan's holes",
+     "actions_needing_their_own_effect": [
+      "act4"
+     ],
+     "relaxed": {
+      "actions": [
+       "HOLE[l3(o)]"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       1
+      ],
+      "capability_gaps": [
+       "l0(o)",
+       "l1",
+       "l3(o)"
+      ]
+     },
+     "problem": {
+      "start": [],
+      "goal_positive": [
+       "l3(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 2,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "l0(o)",
+         "l3(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l5"
+        ],
+        "delete": [
+         "l2"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [
+         "l2",
+         "l5"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l6(o)"
+        ],
+        "delete": [
+         "l0(o)",
+         "l2"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "l4(o)"
+        ],
+        "pre_absent": [
+         "l0(o)"
+        ],
+        "add": [
+         "l6(o)"
+        ],
+        "delete": [
+         "l0(o)",
+         "l4(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "l0(o)",
+         "l1"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l3(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "l1",
+         "l3(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l1",
+         "l4(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act5",
+        "pre": [],
+        "pre_absent": [
+         "l4(o)"
+        ],
+        "add": [
+         "l6(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act6",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "l2"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "l0(o)",
+       "l2",
+       "l3(o)",
+       "l4(o)",
+       "l5",
+       "l6(o)"
+      ],
+      "robot_relative": [
+       "l0(o)"
+      ],
+      "mutex_groups": [
+       [
+        "l2",
+        "l5"
+       ]
+      ],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "no_plan": true,
+      "limits_reached": [],
+      "unnecessary_holes": [
+       "l0(o)"
+      ],
+      "replaceable_holes": [
+       "l3(o)"
+      ],
+      "feasible_with_all_holes": true
+     }
+    },
+    {
+     "category": "different holes",
+     "reason": "these holes pass too, and the cost chose between them",
+     "actions_needing_their_own_effect": [],
+     "relaxed": {
+      "actions": [
+       "HOLE[l3]",
+       "act4"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "capability_gaps": [
+       "l1(o)",
+       "l3"
+      ]
+     },
+     "problem": {
+      "start": [
+       "l0"
+      ],
+      "goal_positive": [
+       "l4(o)"
+      ],
+      "goal_negative": [],
+      "max_delegated": 1,
+      "max_length": 5,
+      "actions": [
+       {
+        "name": "act0",
+        "pre": [
+         "l1(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l2(o)"
+        ],
+        "delete": [
+         "l6",
+         "l7(o)"
+        ],
+        "hole_for": null
+       },
+       {
+        "name": "act1",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+         "l5"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act2",
+        "pre": [
+         "l2(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l4(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act3",
+        "pre": [
+         "l1(o)"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l6"
+        ],
+        "delete": [],
+        "hole_for": null
+       },
+       {
+        "name": "act4",
+        "pre": [
+         "l0",
+         "l3"
+        ],
+        "pre_absent": [],
+        "add": [
+         "l4(o)"
+        ],
+        "delete": [],
+        "hole_for": null
+       }
+      ],
+      "scored": [
+       "l0",
+       "l2(o)",
+       "l3",
+       "l4(o)",
+       "l5",
+       "l6",
+       "l7(o)"
+      ],
+      "robot_relative": [
+       "l1(o)"
+      ],
+      "mutex_groups": [],
+      "implications": {},
+      "disturbances": []
+     },
+     "exact": {
+      "actions": [
+       "HOLE[l2(o)]",
+       "act2"
+      ],
+      "cost": [
+       1,
+       0,
+       1,
+       1,
+       2
+      ],
+      "tied_with_the_relaxed_plan": true
+     }
+    }
+   ]
+  }
+ ],
+ "large_domains": [
+  {
+   "literals": 10,
+   "actions": 10,
+   "problems": 300,
+   "time_cap_s": 5,
+   "relaxed": {
+    "median_ms": 0.11444200026744511,
+    "max_ms": 3.5552110020944383,
+    "over_cap": 0
+   },
+   "exact": {
+    "median_ms": 0.7699515008425806,
+    "max_ms": 115.35163000007742,
+    "over_cap": 0
+   }
+  },
+  {
+   "literals": 16,
+   "actions": 16,
+   "problems": 150,
+   "time_cap_s": 5,
+   "relaxed": {
+    "median_ms": 0.4946605004079174,
+    "max_ms": 13.367378000111785,
+    "over_cap": 0
+   },
+   "exact": {
+    "median_ms": 12.185835001218948,
+    "max_ms": 1046.4918350007792,
+    "over_cap": 0
+   }
+  },
+  {
+   "literals": 24,
+   "actions": 24,
+   "problems": 60,
+   "time_cap_s": 5,
+   "relaxed": {
+    "median_ms": 4.121570500501548,
+    "max_ms": 249.6902710008726,
+    "over_cap": 0
+   },
+   "exact": {
+    "median_ms": 141.01800400021602,
+    "max_ms": 3443.331937000039,
+    "over_cap": 7
+   }
+  }
+ ]
+}
