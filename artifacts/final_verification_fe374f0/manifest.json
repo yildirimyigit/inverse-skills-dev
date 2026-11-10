@@ -1,0 +1,1863 @@
+{
+ "about": "Final verification of the minimal hole planner at fe374f0, run 2026-11-09; see REPORT.md. Made by make_manifest.py from the files in this folder, with nothing rerun. Files with kept_in_git false stay local; their checksums let a copy or a rerun be checked.",
+ "planner": {
+  "branch": "feature/exact-hole-planner",
+  "commit": "fe374f0037b24071f8381b8a93ad92a21f11564d",
+  "tracked_changes": [],
+  "files": {
+   "inverse_skills.operators.hole_planner": {
+    "file": "src/inverse_skills/operators/hole_planner.py",
+    "git_blob_on_disk": "5c119dad6b10fcb0af341a0836e791e2d06c9cb9",
+    "git_blob_at_HEAD": "5c119dad6b10fcb0af341a0836e791e2d06c9cb9",
+    "sha256": "d7a7a2a92ef4bc6dd76672035c3f7633dee28d3ee24b0eca4cceb99390160bb3"
+   },
+   "inverse_skills.operators.exact_hole_planner": {
+    "file": "src/inverse_skills/operators/exact_hole_planner.py",
+    "git_blob_on_disk": "c94a795c7411a32fedcdecc3d01b6f256064378a",
+    "git_blob_at_HEAD": "c94a795c7411a32fedcdecc3d01b6f256064378a",
+    "sha256": "acdda9be08e7940506581c6acbeb442e4e0988143593d4875dff6cc8a6d9f1d8"
+   }
+  },
+  "plan_default_mode": "exact",
+  "plan_exact_parameters": [
+   "domain",
+   "start",
+   "goal_positive",
+   "goal_negative",
+   "max_delegated"
+  ]
+ },
+ "environment": {
+  "python": "3.10.21",
+  "executable": "/opt/conda/envs/inverse-skills/bin/python",
+  "machine": "3b873064237d",
+  "PYTHONNOUSERSITE": "1",
+  "PYTHONPATH": "/workspace/inverse-skills-dev/src",
+  "packages": {
+   "numpy": "2.2.6",
+   "torch": "2.7.1+cu128",
+   "mani-skill": "3.0.1",
+   "sapien": "3.0.3",
+   "stable-baselines3": "2.8.0",
+   "gymnasium": "1.2.3"
+  }
+ },
+ "runs": [
+  {
+   "run": "stow_stage1",
+   "record": "provenance/stow_stage1.json",
+   "command": [
+    "python",
+    "scripts/stow_stage1_extract.py",
+    "--out",
+    "artifacts/final_verification_fe374f0/stow_stage1_operator.json"
+   ],
+   "started": "2026-11-09 19:07:45",
+   "seconds": 3.5,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 0,
+    "answered_by": {},
+    "by_call_site": {}
+   }
+  },
+  {
+   "run": "drawer_stage1",
+   "record": "provenance/drawer_stage1.json",
+   "command": [
+    "python",
+    "scripts/drawer_stage1_extract.py",
+    "--out",
+    "artifacts/final_verification_fe374f0/drawer_stage1_operator.json"
+   ],
+   "started": "2026-11-09 19:07:49",
+   "seconds": 3.3,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 0,
+    "answered_by": {},
+    "by_call_site": {}
+   }
+  },
+  {
+   "run": "smoke_drawer_stage2",
+   "record": "provenance/smoke_drawer_stage2.json",
+   "command": [
+    "python",
+    "scripts/drawer_stage2_plan.py",
+    "--seeds",
+    "0",
+    "--operator",
+    "artifacts/final_verification_fe374f0/drawer_stage1_operator.json",
+    "--out",
+    "artifacts/final_verification_fe374f0/smoke/drawer_stage2_plan.json",
+    "--spec-out",
+    "artifacts/final_verification_fe374f0/smoke/drawer_hole_spec.json"
+   ],
+   "started": "2026-11-09 19:07:53",
+   "seconds": 2.2,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 5,
+    "answered_by": {
+     "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 4,
+     "relaxed planner (hole_planner, mode='relaxed')": 1
+    },
+    "by_call_site": {
+     "drawer_stage2_plan.py:112": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     },
+     "drawer_stage2_plan.py:114": {
+      "calls": 1,
+      "answered_by": {
+       "relaxed planner (hole_planner, mode='relaxed')": 1
+      }
+     },
+     "drawer_stage2_plan.py:115": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     },
+     "drawer_stage2_plan.py:85": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     },
+     "drawer_stage2_plan.py:96": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     }
+    }
+   }
+  },
+  {
+   "run": "smoke_drawer_stage4",
+   "record": "provenance/smoke_drawer_stage4.json",
+   "command": [
+    "python",
+    "scripts/drawer_stage4_execute.py",
+    "--seeds",
+    "2000",
+    "--operator",
+    "artifacts/final_verification_fe374f0/drawer_stage1_operator.json",
+    "--spec",
+    "artifacts/final_verification_fe374f0/smoke/drawer_hole_spec.json",
+    "--out",
+    "artifacts/final_verification_fe374f0/smoke/drawer_stage4.json"
+   ],
+   "started": "2026-11-09 19:07:56",
+   "seconds": 5.0,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 7,
+    "answered_by": {
+     "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 7
+    },
+    "by_call_site": {
+     "drawer_stage4_execute.py:119": {
+      "calls": 6,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 6
+      }
+     },
+     "drawer_stage4_execute.py:126": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     }
+    }
+   }
+  },
+  {
+   "run": "smoke_final",
+   "record": "provenance/smoke_final.json",
+   "command": [
+    "python",
+    "scripts/drawer_final_evaluate.py",
+    "--seeds",
+    "3000",
+    "--workers",
+    "2",
+    "--operator",
+    "artifacts/final_verification_fe374f0/drawer_stage1_operator.json",
+    "--out",
+    "artifacts/final_verification_fe374f0/smoke/drawer_final_targeted_vs_direct.json"
+   ],
+   "started": "2026-11-09 19:08:02",
+   "seconds": 9.9,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 0,
+    "answered_by": {},
+    "by_call_site": {}
+   }
+  },
+  {
+   "run": "stow_stage2",
+   "record": "provenance/stow_stage2.json",
+   "command": [
+    "python",
+    "scripts/stow_stage2_plan.py",
+    "--operator",
+    "artifacts/final_verification_fe374f0/stow_stage1_operator.json",
+    "--out",
+    "artifacts/final_verification_fe374f0/stow_stage2_plan.json",
+    "--spec-out",
+    "artifacts/final_verification_fe374f0/stow_hole_spec.json"
+   ],
+   "started": "2026-11-09 19:09:06",
+   "seconds": 3.2,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 8,
+    "answered_by": {
+     "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 8
+    },
+    "by_call_site": {
+     "stow_stage2_plan.py:101": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     },
+     "stow_stage2_plan.py:113": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     },
+     "stow_stage2_plan.py:68": {
+      "calls": 5,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 5
+      }
+     },
+     "stow_stage2_plan.py:99": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     }
+    }
+   }
+  },
+  {
+   "run": "drawer_stage2",
+   "record": "provenance/drawer_stage2.json",
+   "command": [
+    "python",
+    "scripts/drawer_stage2_plan.py",
+    "--operator",
+    "artifacts/final_verification_fe374f0/drawer_stage1_operator.json",
+    "--out",
+    "artifacts/final_verification_fe374f0/drawer_stage2_plan.json",
+    "--spec-out",
+    "artifacts/final_verification_fe374f0/drawer_hole_spec.json"
+   ],
+   "started": "2026-11-09 19:09:10",
+   "seconds": 3.3,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 9,
+    "answered_by": {
+     "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 8,
+     "relaxed planner (hole_planner, mode='relaxed')": 1
+    },
+    "by_call_site": {
+     "drawer_stage2_plan.py:112": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     },
+     "drawer_stage2_plan.py:114": {
+      "calls": 1,
+      "answered_by": {
+       "relaxed planner (hole_planner, mode='relaxed')": 1
+      }
+     },
+     "drawer_stage2_plan.py:115": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     },
+     "drawer_stage2_plan.py:85": {
+      "calls": 5,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 5
+      }
+     },
+     "drawer_stage2_plan.py:96": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     }
+    }
+   }
+  },
+  {
+   "run": "direct_spec",
+   "record": "provenance/direct_spec.json",
+   "command": [
+    "python",
+    "scripts/drawer_direct_spec.py",
+    "--operator",
+    "artifacts/final_verification_fe374f0/drawer_stage1_operator.json",
+    "--grasp-spec",
+    "artifacts/final_verification_fe374f0/drawer_hole_spec.json",
+    "--out-dir",
+    "artifacts/final_verification_fe374f0/direct"
+   ],
+   "started": "2026-11-09 19:09:14",
+   "seconds": 2.9,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 11,
+    "answered_by": {
+     "relaxed planner (hole_planner, mode='relaxed')": 6,
+     "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 5
+    },
+    "by_call_site": {
+     "drawer_direct_spec.py:55": {
+      "calls": 5,
+      "answered_by": {
+       "relaxed planner (hole_planner, mode='relaxed')": 5
+      }
+     },
+     "drawer_direct_spec.py:56": {
+      "calls": 5,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 5
+      }
+     },
+     "drawer_direct_spec.py:68": {
+      "calls": 1,
+      "answered_by": {
+       "relaxed planner (hole_planner, mode='relaxed')": 1
+      }
+     }
+    }
+   }
+  },
+  {
+   "run": "stow_stage3_input",
+   "record": "provenance/stow_stage3_input.json",
+   "command": [
+    "python",
+    "scripts/validate_modes_execution.py",
+    "stage3-input",
+    "stow",
+    "--spec",
+    "artifacts/final_verification_fe374f0/stow_hole_spec.json",
+    "--out-dir",
+    "artifacts/final_verification_fe374f0"
+   ],
+   "started": "2026-11-09 19:09:18",
+   "seconds": 3.9,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 0,
+    "answered_by": {},
+    "by_call_site": {}
+   }
+  },
+  {
+   "run": "drawer_stage3_input",
+   "record": "provenance/drawer_stage3_input.json",
+   "command": [
+    "python",
+    "scripts/validate_modes_execution.py",
+    "stage3-input",
+    "drawer",
+    "--spec",
+    "artifacts/final_verification_fe374f0/drawer_hole_spec.json",
+    "--out-dir",
+    "artifacts/final_verification_fe374f0"
+   ],
+   "started": "2026-11-09 19:09:23",
+   "seconds": 3.4,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 0,
+    "answered_by": {},
+    "by_call_site": {}
+   }
+  },
+  {
+   "run": "stow_planner_demo",
+   "record": "provenance/stow_planner_demo.json",
+   "command": [
+    "python",
+    "scripts/stow_planner_demo.py",
+    "--operator",
+    "artifacts/final_verification_fe374f0/stow_stage1_operator.json",
+    "--out",
+    "artifacts/final_verification_fe374f0/stow_planner_demo.json"
+   ],
+   "started": "2026-11-09 19:09:27",
+   "seconds": 1.6,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 4,
+    "answered_by": {
+     "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 4
+    },
+    "by_call_site": {
+     "stow_planner_demo.py:85": {
+      "calls": 2,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 2
+      }
+     },
+     "stow_planner_demo.py:88": {
+      "calls": 2,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 2
+      }
+     }
+    }
+   }
+  },
+  {
+   "run": "drawer_final",
+   "record": "provenance/drawer_final.json",
+   "command": [
+    "python",
+    "scripts/drawer_final_evaluate.py",
+    "--operator",
+    "artifacts/final_verification_fe374f0/drawer_stage1_operator.json",
+    "--out",
+    "artifacts/final_verification_fe374f0/drawer_final_targeted_vs_direct.json"
+   ],
+   "started": "2026-11-09 19:09:29",
+   "seconds": 45.6,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 0,
+    "answered_by": {},
+    "by_call_site": {}
+   }
+  },
+  {
+   "run": "drawer_stage4",
+   "record": "provenance/drawer_stage4.json",
+   "command": [
+    "python",
+    "scripts/drawer_stage4_execute.py",
+    "--operator",
+    "artifacts/final_verification_fe374f0/drawer_stage1_operator.json",
+    "--spec",
+    "artifacts/final_verification_fe374f0/drawer_hole_spec.json",
+    "--out",
+    "artifacts/final_verification_fe374f0/drawer_stage4.json"
+   ],
+   "started": "2026-11-09 19:09:29",
+   "seconds": 47.1,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 140,
+    "answered_by": {
+     "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 140
+    },
+    "by_call_site": {
+     "drawer_stage4_execute.py:119": {
+      "calls": 120,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 120
+      }
+     },
+     "drawer_stage4_execute.py:126": {
+      "calls": 20,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 20
+      }
+     }
+    }
+   }
+  },
+  {
+   "run": "stow_stage4",
+   "record": "provenance/stow_stage4.json",
+   "command": [
+    "python",
+    "scripts/stow_stage4_execute.py",
+    "artifacts/stow/stage3/1790788534/sac_hole_best",
+    "--operator",
+    "artifacts/final_verification_fe374f0/stow_stage1_operator.json",
+    "--spec",
+    "artifacts/final_verification_fe374f0/stow_hole_spec.json",
+    "--out",
+    "artifacts/final_verification_fe374f0/stow_stage4.json",
+    "--learned-out",
+    "artifacts/final_verification_fe374f0/stow_learned_operator.json"
+   ],
+   "started": "2026-11-09 19:09:29",
+   "seconds": 45.7,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 3,
+    "answered_by": {
+     "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 3
+    },
+    "by_call_site": {
+     "stow_stage4_execute.py:182": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     },
+     "stow_stage4_execute.py:186": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     },
+     "stow_stage4_execute.py:207": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     }
+    }
+   }
+  },
+  {
+   "run": "compare_with_saved",
+   "record": "provenance/compare_with_saved.json",
+   "command": [
+    "python",
+    "artifacts/final_verification_fe374f0/compare_with_saved.py"
+   ],
+   "started": "2026-11-09 19:10:57",
+   "seconds": 0.0,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 0,
+    "answered_by": {},
+    "by_call_site": {}
+   }
+  },
+  {
+   "run": "planning_checks",
+   "record": "provenance/planning_checks.json",
+   "command": [
+    "python",
+    "artifacts/final_verification_fe374f0/planning_checks.py"
+   ],
+   "started": "2026-11-09 19:11:44",
+   "seconds": 1.8,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 701,
+    "answered_by": {
+     "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 701
+    },
+    "by_call_site": {
+     "planning_checks.py:106": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     },
+     "planning_checks.py:107": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     },
+     "planning_checks.py:110": {
+      "calls": 1,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 1
+      }
+     },
+     "planning_checks.py:132": {
+      "calls": 80,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 80
+      }
+     },
+     "planning_checks.py:46": {
+      "calls": 30,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 30
+      }
+     },
+     "planning_checks.py:58": {
+      "calls": 480,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 480
+      }
+     },
+     "planning_checks.py:89": {
+      "calls": 108,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 108
+      }
+     }
+    }
+   }
+  },
+  {
+   "run": "direct_from_minimal_planner",
+   "record": "provenance/direct_from_minimal_planner.json",
+   "command": [
+    "python",
+    "artifacts/final_verification_fe374f0/direct_from_minimal_planner.py"
+   ],
+   "started": "2026-11-09 19:12:56",
+   "seconds": 1.6,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 10,
+    "answered_by": {
+     "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 10
+    },
+    "by_call_site": {
+     "direct_from_minimal_planner.py:45": {
+      "calls": 10,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 10
+      }
+     }
+    }
+   }
+  },
+  {
+   "run": "worked_example_check",
+   "record": "provenance/worked_example_check.json",
+   "command": [
+    "python",
+    "artifacts/final_verification_fe374f0/worked_example_check.py"
+   ],
+   "started": "2026-11-09 19:15:05",
+   "seconds": 1.7,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 6,
+    "answered_by": {
+     "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 6
+    },
+    "by_call_site": {
+     "worked_example_check.py:46": {
+      "calls": 6,
+      "answered_by": {
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 6
+      }
+     }
+    }
+   }
+  },
+  {
+   "run": "planner_comparison_scenarios",
+   "record": "provenance/planner_comparison_scenarios.json",
+   "command": [
+    "python",
+    "scripts/compare_hole_planners.py",
+    "--out",
+    "artifacts/final_verification_fe374f0/planner_comparison_scenarios.json"
+   ],
+   "started": "2026-11-09 19:18:05",
+   "seconds": 1.9,
+   "outcome": "finished",
+   "checks_passed": true,
+   "planner_calls": {
+    "total": 364,
+    "answered_by": {
+     "relaxed planner (hole_planner, mode='relaxed')": 182,
+     "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 182
+    },
+    "by_call_site": {
+     "compare_hole_planners.py:127": {
+      "calls": 364,
+      "answered_by": {
+       "relaxed planner (hole_planner, mode='relaxed')": 182,
+       "minimal exact planner (exact_hole_planner.plan_exact, fe374f0)": 182
+      }
+     }
+    }
+   }
+  }
+ ],
+ "result_summaries": {
+  "stow_stage4.json": {
+   "seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009
+   ],
+   "summary": {
+    "full": {
+     "goal_met_rate": 1.0,
+     "mean_a_err_mm": 1.5300051937562407,
+     "mean_b_err_mm": 0.8137089935661462,
+     "diverging_steps": 3
+    },
+    "library_only": {
+     "goal_met_rate": 0.0,
+     "mean_a_err_mm": 128.10355812839617,
+     "mean_b_err_mm": 0.8137089935661462,
+     "diverging_steps": 3
+    },
+    "without_interference": {
+     "goal_met_rate": 0.3,
+     "mean_a_err_mm": 51.3349944892464,
+     "mean_b_err_mm": 89.43757420629379,
+     "diverging_steps": 30
+    },
+    "relearned": {
+     "goal_met_rate": 0.9,
+     "mean_a_err_mm": 11.599824147349732,
+     "mean_b_err_mm": 0.8137089935661462,
+     "diverging_steps": 3
+    }
+   },
+   "passed": true,
+   "handoff_validity": {
+    "evaluation_seeds": {
+     "conditions": {
+      "hold": [
+       "in_region(cube_a,pocket)",
+       "in_region(cube_b,src_b)",
+       "tcp_near(cube_a)"
+      ],
+      "absent": [
+       "clear_of_walls(cube_a)",
+       "in_region(cube_b,mouth)"
+      ]
+     },
+     "valid": 9,
+     "of": 10
+    },
+    "demonstrations": {
+     "attempts": 12,
+     "failed_forward": 1,
+     "failed_prefix": 0,
+     "reached_the_handoff": 11,
+     "invalid_handoffs": 1,
+     "valid_handoffs": 10,
+     "raw_handoff_validity": 0.9090909090909091
+    }
+   }
+  },
+  "drawer_stage4.json": {
+   "seeds": [
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019
+   ],
+   "summary": {
+    "learned, SAC seed 0": {
+     "forward_effects_measured": 20,
+     "restored": 20,
+     "grasp_effect_achieved": 20,
+     "grasp_control_steps": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+     ],
+     "pull_open_succeeded": 20,
+     "goal_met": 20,
+     "failed_transitions": {},
+     "recovery_attempts": 0,
+     "model_vs_world_differences": 0,
+     "max_drawer_moved_before_pull_mm": 3.0,
+     "max_tilt_after_grasp_deg": 5.1,
+     "final_opening_mm": [
+      146.5,
+      147.2
+     ],
+     "inverse_control_steps": [
+      42,
+      43,
+      43
+     ]
+    },
+    "learned, SAC seed 1": {
+     "forward_effects_measured": 20,
+     "restored": 20,
+     "grasp_effect_achieved": 20,
+     "grasp_control_steps": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "pull_open_succeeded": 20,
+     "goal_met": 20,
+     "failed_transitions": {},
+     "recovery_attempts": 0,
+     "model_vs_world_differences": 0,
+     "max_drawer_moved_before_pull_mm": 3.0,
+     "max_tilt_after_grasp_deg": 4.9,
+     "final_opening_mm": [
+      146.6,
+      147.2
+     ],
+     "inverse_control_steps": [
+      41,
+      42,
+      42
+     ]
+    },
+    "learned, SAC seed 2": {
+     "forward_effects_measured": 20,
+     "restored": 20,
+     "grasp_effect_achieved": 20,
+     "grasp_control_steps": [
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10
+     ],
+     "pull_open_succeeded": 20,
+     "goal_met": 20,
+     "failed_transitions": {},
+     "recovery_attempts": 0,
+     "model_vs_world_differences": 0,
+     "max_drawer_moved_before_pull_mm": 0.8,
+     "max_tilt_after_grasp_deg": 6.2,
+     "final_opening_mm": [
+      147.1,
+      147.6
+     ],
+     "inverse_control_steps": [
+      46,
+      46,
+      46
+     ]
+    },
+    "learned, SAC seed 3": {
+     "forward_effects_measured": 20,
+     "restored": 20,
+     "grasp_effect_achieved": 20,
+     "grasp_control_steps": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+     ],
+     "pull_open_succeeded": 20,
+     "goal_met": 20,
+     "failed_transitions": {},
+     "recovery_attempts": 0,
+     "model_vs_world_differences": 0,
+     "max_drawer_moved_before_pull_mm": 4.6,
+     "max_tilt_after_grasp_deg": 5.7,
+     "final_opening_mm": [
+      146.7,
+      147.2
+     ],
+     "inverse_control_steps": [
+      43,
+      43,
+      43
+     ]
+    },
+    "library_only": {
+     "forward_effects_measured": 20,
+     "restored": 0,
+     "grasp_effect_achieved": 0,
+     "grasp_control_steps": [],
+     "pull_open_succeeded": 0,
+     "goal_met": 0,
+     "failed_transitions": {
+      "pull_open(drawer): precondition not met: handle_grasped(drawer)": 20
+     },
+     "recovery_attempts": 0,
+     "model_vs_world_differences": 0,
+     "max_drawer_moved_before_pull_mm": 0.0,
+     "max_tilt_after_grasp_deg": null,
+     "final_opening_mm": [
+      0.7,
+      4.6
+     ],
+     "inverse_control_steps": [
+      9,
+      9,
+      9
+     ]
+    },
+    "scripted_grasp": {
+     "forward_effects_measured": 20,
+     "restored": 20,
+     "grasp_effect_achieved": 20,
+     "grasp_control_steps": [
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19
+     ],
+     "pull_open_succeeded": 20,
+     "goal_met": 20,
+     "failed_transitions": {},
+     "recovery_attempts": 0,
+     "model_vs_world_differences": 0,
+     "max_drawer_moved_before_pull_mm": 0.0,
+     "max_tilt_after_grasp_deg": 5.8,
+     "final_opening_mm": [
+      147.2,
+      147.4
+     ],
+     "inverse_control_steps": [
+      55,
+      55,
+      55
+     ]
+    }
+   }
+  },
+  "drawer_final_targeted_vs_direct.json": {
+   "seeds": [
+    3000,
+    3001,
+    3002,
+    3003,
+    3004,
+    3005,
+    3006,
+    3007,
+    3008,
+    3009,
+    3010,
+    3011,
+    3012,
+    3013,
+    3014,
+    3015,
+    3016,
+    3017,
+    3018,
+    3019,
+    3020,
+    3021,
+    3022,
+    3023,
+    3024,
+    3025,
+    3026,
+    3027,
+    3028,
+    3029,
+    3030,
+    3031,
+    3032,
+    3033,
+    3034,
+    3035,
+    3036,
+    3037,
+    3038,
+    3039,
+    3040,
+    3041,
+    3042,
+    3043,
+    3044,
+    3045,
+    3046,
+    3047,
+    3048,
+    3049
+   ],
+   "protocol": {
+    "grasp_steps": 40,
+    "direct_steps": 100,
+    "settle_steps": 10,
+    "success": "drawer_open and not drawer_closed after settling",
+    "press_n": 10.0
+   },
+   "checkpoints": {
+    "targeted, SAC seed 0": {
+     "method": "targeted",
+     "path": "artifacts/drawer/stage3/1792053076/sac_hole_best.zip",
+     "sha256": "4a35a07f8059ab381fddb71ac6c6c2750cb536eaaa8c39fb0c7bd26e77196e0d"
+    },
+    "targeted, SAC seed 1": {
+     "method": "targeted",
+     "path": "artifacts/drawer/stage3/1792056712/sac_hole_best.zip",
+     "sha256": "0f3d9d0a74608b05df3a1dcbf3a77d37e46ed467ed7876bb5581894940f3bb00"
+    },
+    "targeted, SAC seed 2": {
+     "method": "targeted",
+     "path": "artifacts/drawer/stage3/1792056715/sac_hole_best.zip",
+     "sha256": "c2648db7a8e2c78f5dcc815c78a37218c4fe337052db3227e7250a64cc30563f"
+    },
+    "targeted, SAC seed 3": {
+     "method": "targeted",
+     "path": "artifacts/drawer/stage3/1792056719/sac_hole_best.zip",
+     "sha256": "a5aed26f033891ab298aa2b315aa439021b02982082aa6c6f559d66a838f53ee"
+    },
+    "direct, SAC seed 0": {
+     "method": "direct",
+     "path": "artifacts/drawer/direct/seed0_1793033388/sac_direct_best.zip",
+     "sha256": "1e8fe616f14a37ec5bab36bb6890fb443093f34d9f7dd66e593c41eb43abc121"
+    },
+    "direct, SAC seed 1": {
+     "method": "direct",
+     "path": "artifacts/drawer/direct/seed1_1793033389/sac_direct_best.zip",
+     "sha256": "3f5bd0081e6b9ce45cc690add863d399d0ba085e4b0b8f437d2a18118d63a99e"
+    },
+    "direct, SAC seed 2": {
+     "method": "direct",
+     "path": "artifacts/drawer/direct/seed2_1793033392/sac_direct_best.zip",
+     "sha256": "4ce5755af601868807b55d45a305e8371fdefaf4020cef89032f2ab960ef8a12"
+    },
+    "direct, SAC seed 3": {
+     "method": "direct",
+     "path": "artifacts/drawer/direct/seed3_1793033394/sac_direct_best.zip",
+     "sha256": "9458cecf13116672355bd0c22491f18998ef0343a45292bab6954b57ec293bdb"
+    }
+   },
+   "start_states_identical": true,
+   "summary": {
+    "targeted, SAC seed 0": {
+     "success": 49,
+     "configurations": 50,
+     "failures": {
+      "the push or the approach did not reach the handoff state": 1
+     },
+     "steps_to_goal": [
+      13,
+      13,
+      14
+     ],
+     "steps_total": [
+      33,
+      33,
+      34
+     ],
+     "final_opening_mm": [
+      146.4,
+      146.7,
+      147.2
+     ],
+     "how_drawer_was_moved": {
+      "two-finger pinch": 49
+     }
+    },
+    "targeted, SAC seed 1": {
+     "success": 49,
+     "configurations": 50,
+     "failures": {
+      "the push or the approach did not reach the handoff state": 1
+     },
+     "steps_to_goal": [
+      13,
+      13,
+      13
+     ],
+     "steps_total": [
+      32,
+      33,
+      33
+     ],
+     "final_opening_mm": [
+      146.6,
+      147.2,
+      147.3
+     ],
+     "how_drawer_was_moved": {
+      "two-finger pinch": 49
+     }
+    },
+    "targeted, SAC seed 2": {
+     "success": 49,
+     "configurations": 50,
+     "failures": {
+      "the push or the approach did not reach the handoff state": 1
+     },
+     "steps_to_goal": [
+      16,
+      17,
+      17
+     ],
+     "steps_total": [
+      37,
+      37,
+      37
+     ],
+     "final_opening_mm": [
+      146.9,
+      147.2,
+      147.6
+     ],
+     "how_drawer_was_moved": {
+      "two-finger pinch": 49
+     }
+    },
+    "targeted, SAC seed 3": {
+     "success": 49,
+     "configurations": 50,
+     "failures": {
+      "the push or the approach did not reach the handoff state": 1
+     },
+     "steps_to_goal": [
+      14,
+      14,
+      14
+     ],
+     "steps_total": [
+      34,
+      34,
+      34
+     ],
+     "final_opening_mm": [
+      146.7,
+      146.8,
+      147.2
+     ],
+     "how_drawer_was_moved": {
+      "two-finger pinch": 49
+     }
+    },
+    "direct, SAC seed 0": {
+     "success": 49,
+     "configurations": 50,
+     "failures": {
+      "the push or the approach did not reach the handoff state": 1
+     },
+     "steps_to_goal": [
+      19,
+      19,
+      20
+     ],
+     "steps_total": [
+      19,
+      19,
+      20
+     ],
+     "final_opening_mm": [
+      94.1,
+      95.1,
+      97.1
+     ],
+     "how_drawer_was_moved": {
+      "two-finger pinch": 32,
+      "one-finger press": 17
+     }
+    },
+    "direct, SAC seed 1": {
+     "success": 49,
+     "configurations": 50,
+     "failures": {
+      "the push or the approach did not reach the handoff state": 1
+     },
+     "steps_to_goal": [
+      14,
+      14,
+      15
+     ],
+     "steps_total": [
+      14,
+      14,
+      15
+     ],
+     "final_opening_mm": [
+      94.5,
+      98.3,
+      101.9
+     ],
+     "how_drawer_was_moved": {
+      "one-finger press": 45,
+      "two-finger pinch": 4
+     }
+    },
+    "direct, SAC seed 2": {
+     "success": 49,
+     "configurations": 50,
+     "failures": {
+      "the push or the approach did not reach the handoff state": 1
+     },
+     "steps_to_goal": [
+      13,
+      13,
+      14
+     ],
+     "steps_total": [
+      13,
+      13,
+      14
+     ],
+     "final_opening_mm": [
+      95.2,
+      97.2,
+      109.3
+     ],
+     "how_drawer_was_moved": {
+      "two-finger pinch": 24,
+      "one-finger press": 25
+     }
+    },
+    "direct, SAC seed 3": {
+     "success": 49,
+     "configurations": 50,
+     "failures": {
+      "the push or the approach did not reach the handoff state": 1
+     },
+     "steps_to_goal": [
+      14,
+      15,
+      15
+     ],
+     "steps_total": [
+      14,
+      15,
+      15
+     ],
+     "final_opening_mm": [
+      95.0,
+      106.3,
+      108.3
+     ],
+     "how_drawer_was_moved": {
+      "one-finger press": 49
+     }
+    }
+   }
+  },
+  "planning_checks.json": {
+   "summary": {
+    "from_recorded_starts": {
+     "states": 510,
+     "same_plan": 510,
+     "distinct_states": 2,
+     "differ": []
+    },
+    "after_the_learned_step": {
+     "runs": 110,
+     "checked": 108,
+     "replan_is_the_remaining_steps": 108,
+     "replans_with_a_hole": 0,
+     "measured_differs_from_predicted": 9,
+     "not_checked": [
+      {
+       "condition": "without_interference",
+       "seed": 1002,
+       "checked": false,
+       "why_not": "the learned step did not run or did not succeed"
+      },
+      {
+       "condition": "relearned",
+       "seed": 1002,
+       "checked": false,
+       "why_not": "the learned step did not run or did not succeed"
+      }
+     ],
+     "differ": []
+    }
+   }
+  }
+ },
+ "files": {
+  "REPORT.md": {
+   "bytes": 20252,
+   "sha256": "98bcbaa18ea2162d5e4c98986a81d0ea76e32eee172dd0a6e65749a2b162b8e0",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "compare_with_saved.py": {
+   "bytes": 5886,
+   "sha256": "4a2738cb6a0a10af41fc216c3b7ed8d1307f1ef35a0f673742a778bc8e08d980",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "comparison.json": {
+   "bytes": 31040,
+   "sha256": "8f5e6a26b0b63f183a7428ee80fdb82f185fbab4de9fa858f3c7d27d647981a0",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "direct/hole_spec_direct.json": {
+   "bytes": 576,
+   "sha256": "3737b7a5bd5f6fd9d17d810e88f5a0e5d0f71684fa2254ff339d2daa439e95cc",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": [
+    "artifacts/default_mode_validation/after_migration/direct/hole_spec_direct.json",
+    "artifacts/drawer/direct/hole_spec_direct.json"
+   ]
+  },
+  "direct/plan_direct.json": {
+   "bytes": 2562,
+   "sha256": "f76bbde6a77837555bed48bfb5229798838627fdda7046d255676e67b72aae2f",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": [
+    "artifacts/default_mode_validation/after_migration/direct/plan_direct.json",
+    "artifacts/drawer/direct/plan_direct.json"
+   ]
+  },
+  "direct_from_minimal_planner.json": {
+   "bytes": 3049,
+   "sha256": "c88def6ed9311c0c8af7dda58de79577afa114ef51b9bc6b16eae32193b3d247",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "direct_from_minimal_planner.py": {
+   "bytes": 3074,
+   "sha256": "129ffcdbe6009770e223e5ffc49ee52ed7eab8cf9e6686592abe06a5d07e6642",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "drawer_final_targeted_vs_direct.json": {
+   "bytes": 398767,
+   "sha256": "aa2f36c2fe150ee1566a01af4d23cf6aed28d45a484593e628adc55f431886c1",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": [
+    "artifacts/drawer/final_targeted_vs_direct.json"
+   ]
+  },
+  "drawer_hole_spec.json": {
+   "bytes": 878,
+   "sha256": "b06e50b7457c9ec8d39075e2f33bf164ea3a6557ac16405cb210b837031cd40f",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": [
+    "artifacts/default_mode_validation/after_migration/drawer_hole_spec.json",
+    "artifacts/default_mode_validation/after_migration/phase2_named/drawer_mean_exact_hole_spec.json",
+    "artifacts/default_mode_validation/after_migration/phase2_named/drawer_mean_relaxed_hole_spec.json",
+    "artifacts/default_mode_validation/after_migration/phase2_named/drawer_min_max_exact_hole_spec.json",
+    "artifacts/default_mode_validation/after_migration/phase2_named/drawer_min_max_relaxed_hole_spec.json",
+    "artifacts/default_mode_validation/phase2/drawer_mean_exact_hole_spec.json",
+    "artifacts/default_mode_validation/phase2/drawer_mean_relaxed_hole_spec.json",
+    "artifacts/default_mode_validation/phase2/drawer_min_max_exact_hole_spec.json",
+    "artifacts/default_mode_validation/phase2/drawer_min_max_relaxed_hole_spec.json",
+    "artifacts/drawer/hole_spec.json"
+   ]
+  },
+  "drawer_stage1_operator.json": {
+   "bytes": 1879,
+   "sha256": "c19c22b46044908372112ba876e8622bf27f124fe41d0144b69e995bc7eb2a20",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": [
+    "artifacts/default_mode_validation/after_migration/drawer_stage1_operator.json"
+   ]
+  },
+  "drawer_stage2_plan.json": {
+   "bytes": 9398,
+   "sha256": "52f3d9e7f491e7cfa558479e6be9aa22afef8125af576776abd09ecc2e89d002",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "drawer_stage3_input.json": {
+   "bytes": 1837,
+   "sha256": "cbf5d2988b47f086dc2621deb3d5d5745f3b124fc239a026b87ee94fef38316b",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "drawer_stage4.json": {
+   "bytes": 229311,
+   "sha256": "e39f255cc32b1814d673dc1ffbd053f15ff13938f56b0427c3e1953502021e09",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": [
+    "artifacts/default_mode_validation/after_migration/drawer_stage4.json"
+   ]
+  },
+  "logs/compare_with_saved.stdout": {
+   "bytes": 2132,
+   "sha256": "aed7a7609f8a946fa9f550b535954f46f6378e7492cd952f124e808324be32d3",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/direct_from_minimal_planner.stdout": {
+   "bytes": 974,
+   "sha256": "00a5d7663ef2c731b989e4ea1f5ec09ec79905b183547e0e6133733de581ac3e",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/direct_spec.stdout": {
+   "bytes": 2204,
+   "sha256": "18306ea70e085a4f2b7f608c1d6f89a25ade20a8547e1c99ea03deeccfc49f7b",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/drawer_final.stdout": {
+   "bytes": 3838,
+   "sha256": "2d1389369aa3152172cd2d9ae77ec3594d2d99caab7999ac6e89b5ca7ba2d1c1",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/drawer_stage1.stdout": {
+   "bytes": 1687,
+   "sha256": "d5bc75190e4a304d10306ea91ea33deb112f2ba532f0696806c8eb647a231a2f",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/drawer_stage2.stdout": {
+   "bytes": 2833,
+   "sha256": "56b2eaf79c3c7a0a9f0ffe36baf974078a65ee0e7c27370a6865634d9bed95e6",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/drawer_stage3_input.stdout": {
+   "bytes": 2171,
+   "sha256": "440a6e7c73d5985a7198c02f02c5e5931ad212a57fb015c16e99fa8a413b49b8",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/drawer_stage4.stdout": {
+   "bytes": 4564,
+   "sha256": "3ef88571080ad669981c3d5f3107c995311f2a1b65b815711abf279fe8a3dc57",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/planner_comparison_scenarios.stdout": {
+   "bytes": 11512,
+   "sha256": "71bdc3131504651c165cfee57e6509ba79881d1b076b77a124e176c0e4764f47",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/planning_checks.stdout": {
+   "bytes": 1239,
+   "sha256": "83c55c9921b35b104719fc731ac261691aaee011a2d6509dd9b516932c79e769",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/smoke_drawer_stage2.stdout": {
+   "bytes": 2221,
+   "sha256": "1f3b112b27df65a5d17aea2b5a661981a5367ed4a5cecd6d0c4221152ae939bd",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/smoke_drawer_stage4.stdout": {
+   "bytes": 2594,
+   "sha256": "9d01f457a18a8583d965f04a7ab9d85b91ab74df493a68486d48837643c3d2de",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/smoke_final.stdout": {
+   "bytes": 3008,
+   "sha256": "898fec27d701286a21f1db58e689a012437fe23f97a69515b1baf20a7bf014c2",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/stow_planner_demo.stdout": {
+   "bytes": 5716,
+   "sha256": "fbd3967583080dfabf06ff6a2a21739c1018ad6c66acb9c72a69f87c93f35eee",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/stow_stage1.stdout": {
+   "bytes": 2067,
+   "sha256": "a14480040702bf0f7756414e12469f3b2c99c4812b8adf9b3db6400d296f9b83",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/stow_stage2.stdout": {
+   "bytes": 3850,
+   "sha256": "9302b0ad229284ea6d93371081558555fb0ec3161f67c7bfd82970de0906ab62",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/stow_stage3_input.stdout": {
+   "bytes": 1618,
+   "sha256": "07ed7e72c2ee24ad752e82b72feaedffaf40a7e7e118903b7c3c8f837a874dea",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/stow_stage4.stdout": {
+   "bytes": 8804,
+   "sha256": "ece341658289c16e52d4bca4bdd8905a713f72b29be30acc61f49d37dd32a625",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "logs/worked_example_check.stdout": {
+   "bytes": 1495,
+   "sha256": "8019ffdea9de271e4992cf677ac48d090755896ab88e0aebb45f244acb7ecc0f",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "make_manifest.py": {
+   "bytes": 5541,
+   "sha256": "e0e9d218f5ec05922fd3baca2fa0f167ddd88e3bc3cf7e0ce062dff11ebaa7bb",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "planner_comparison_scenarios.json": {
+   "bytes": 45559,
+   "sha256": "432563770f545aa696a3830ec1c0a8ed9d518e7ddc78df4105498f3f80430740",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "planning_checks.json": {
+   "bytes": 267809,
+   "sha256": "d0aaf153a280709512ee01a5d8c2b0dbe6aea4d155cc44336bfde5d91a9ee3ac",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "planning_checks.py": {
+   "bytes": 9369,
+   "sha256": "d809c8355a6c804ced600d7a7b3b44d2a496c4f686f387789939ee862b90d8ba",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/compare_with_saved.json": {
+   "bytes": 1697,
+   "sha256": "826c93f8821639fcc0cc930ada561264a4ecbb61a99c2e2b848db1dac6c4cea8",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/direct_from_minimal_planner.json": {
+   "bytes": 8251,
+   "sha256": "9fff9fea00693834eccfbe0c3e3763ff06f0c0eedc92fc769b6b85bd1c25a40a",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/direct_spec.json": {
+   "bytes": 9332,
+   "sha256": "f81f7649e55babbfe5208f34dab3b0242f7fd6a87660372463624cae23122437",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/drawer_final.json": {
+   "bytes": 1848,
+   "sha256": "bc42370150ed88087afaeaedda1c9a6a04d4289a8fe0907066a42a8928dac5ea",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/drawer_stage1.json": {
+   "bytes": 1752,
+   "sha256": "584d3e3338b128553aea9c40aba5eb15892c1f6f9bc18899325f6ee7014aaf89",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/drawer_stage2.json": {
+   "bytes": 8362,
+   "sha256": "076e7ca4b0ef7dfcd4f911f17c3992baac0486f74a353f613a9404a9a13623dd",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/drawer_stage3_input.json": {
+   "bytes": 1837,
+   "sha256": "a47bb439ec7a0b7a5e0bdf81b985986b09de0e96067b823cd7b7a1141b72ff1e",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/drawer_stage4.json": {
+   "bytes": 88858,
+   "sha256": "88b4d93bc3382d7f6bc531872bf08c9e2e23e698fbf3f7fa2b83510a172da27a",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/planner_comparison_scenarios.json": {
+   "bytes": 195160,
+   "sha256": "65029b8ca926b6996051872c37336292bc7047c74caf83492526a3700a23bf2e",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/planning_checks.json": {
+   "bytes": 450567,
+   "sha256": "c7b30274975ac04da74ecd806ea58331dc41f7f00c4b96c2fe8f4c634754eedb",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/smoke_drawer_stage2.json": {
+   "bytes": 5787,
+   "sha256": "9a13c57210f67cec51636f753f89f05ff8e3b19bec68df530e7214fe65c2f640",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/smoke_drawer_stage4.json": {
+   "bytes": 6663,
+   "sha256": "f0eee14c0de1d707aa29f4b4a5c051fa8aa6d773bad8a285a9fea9a9a6496bfd",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/smoke_final.json": {
+   "bytes": 1898,
+   "sha256": "e0a8c3d3dee6729b08a122c10299635326eda52b73b9f1610954bc64c7838008",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/stow_planner_demo.json": {
+   "bytes": 4910,
+   "sha256": "834959f0e18d924743afddc6354b88aa5189bc02bf50a47f89c52a4e3dc9b4f5",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/stow_stage1.json": {
+   "bytes": 1748,
+   "sha256": "9856b0c433dd1fa5a2a43a08d88d15a3128c45f8d22df1526d0b6e12cfefad63",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/stow_stage2.json": {
+   "bytes": 8463,
+   "sha256": "dcec87de87587ee7c8886b51c664f20f0c704fff66ad8c35089991fddef9dc6d",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/stow_stage3_input.json": {
+   "bytes": 1833,
+   "sha256": "246513ccbdfae8f43fb5a7421c7c259cec4eba97ca0d0d8cbe553b369864f800",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/stow_stage4.json": {
+   "bytes": 4875,
+   "sha256": "37fdd34c8b1b4c027fdfaa76a830ad27c6a2582acd70cebe7ca35bab2ea1f9cd",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "provenance/worked_example_check.json": {
+   "bytes": 5125,
+   "sha256": "88afb44a41bbf3c6663983b1dea8c33e11dd7c6f0bf677abd06077cc63e7316a",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "run.sh": {
+   "bytes": 4376,
+   "sha256": "c692f72bee87fbaa8135334b763de3104cf3468286d4e8f6365e5b843baaec15",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "run_with_provenance.py": {
+   "bytes": 9876,
+   "sha256": "98b499a086ffb1ac1a2d4edbf2cc394351309db4998f6a679c0d6ff8dcc82154",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "smoke/drawer_final_targeted_vs_direct.json": {
+   "bytes": 20122,
+   "sha256": "fd5c72b9718330cbe3576fcfe8e6b4b2d02bba4a07756afcc3749a9e7df79bad",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "smoke/drawer_hole_spec.json": {
+   "bytes": 878,
+   "sha256": "b06e50b7457c9ec8d39075e2f33bf164ea3a6557ac16405cb210b837031cd40f",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": [
+    "artifacts/default_mode_validation/after_migration/drawer_hole_spec.json",
+    "artifacts/default_mode_validation/after_migration/phase2_named/drawer_mean_exact_hole_spec.json",
+    "artifacts/default_mode_validation/after_migration/phase2_named/drawer_mean_relaxed_hole_spec.json",
+    "artifacts/default_mode_validation/after_migration/phase2_named/drawer_min_max_exact_hole_spec.json",
+    "artifacts/default_mode_validation/after_migration/phase2_named/drawer_min_max_relaxed_hole_spec.json",
+    "artifacts/default_mode_validation/phase2/drawer_mean_exact_hole_spec.json",
+    "artifacts/default_mode_validation/phase2/drawer_mean_relaxed_hole_spec.json",
+    "artifacts/default_mode_validation/phase2/drawer_min_max_exact_hole_spec.json",
+    "artifacts/default_mode_validation/phase2/drawer_min_max_relaxed_hole_spec.json",
+    "artifacts/drawer/hole_spec.json"
+   ]
+  },
+  "smoke/drawer_stage2_plan.json": {
+   "bytes": 3987,
+   "sha256": "23d692a1f9cd1b02651e80803f30b9cb69ce551987e68240501a28300dd19853",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "smoke/drawer_stage4.json": {
+   "bytes": 16032,
+   "sha256": "b558191c31af441313b8121f32037d0ff831dba642ba379152c40970c37922cb",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": []
+  },
+  "stow_hole_spec.json": {
+   "bytes": 2373,
+   "sha256": "7235249bbee0eae2eed5d3386dfc38972d7496b70076a7a28d2f3c392e85564c",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": [
+    "artifacts/default_mode_validation/after_migration/phase2_named/stow_mean_exact_hole_spec.json",
+    "artifacts/default_mode_validation/after_migration/phase2_named/stow_mean_relaxed_hole_spec.json",
+    "artifacts/default_mode_validation/after_migration/phase2_named/stow_min_max_exact_hole_spec.json",
+    "artifacts/default_mode_validation/after_migration/phase2_named/stow_min_max_relaxed_hole_spec.json",
+    "artifacts/default_mode_validation/after_migration/stow_hole_spec.json",
+    "artifacts/default_mode_validation/phase2/stow_mean_exact_hole_spec.json",
+    "artifacts/default_mode_validation/phase2/stow_mean_relaxed_hole_spec.json",
+    "artifacts/default_mode_validation/phase2/stow_min_max_exact_hole_spec.json",
+    "artifacts/default_mode_validation/phase2/stow_min_max_relaxed_hole_spec.json",
+    "artifacts/stow/hole_spec.json"
+   ]
+  },
+  "stow_learned_operator.json": {
+   "bytes": 9016,
+   "sha256": "a78ade779680e1b2aa867c27568f47068e7e4d865ad4fabc30ee9efb7eec0391",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": [
+    "artifacts/default_mode_validation/after_migration/stow_learned_operator.json",
+    "artifacts/default_mode_validation/handoff/stage4/stow_min_max_exact_learned_operator.json"
+   ]
+  },
+  "stow_planner_demo.json": {
+   "bytes": 10231,
+   "sha256": "563d97b12b0d41bdf524d432852fe3a5120dd492a56f2460f891f1c71fedebd9",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": [
+    "artifacts/stow/planner_demo.json"
+   ]
+  },
+  "stow_stage1_operator.json": {
+   "bytes": 3925,
+   "sha256": "aa0a85c21f2fe8974da86a7e705aa0e1b517d3278b8567e77c4b4480d463a66b",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": [
+    "artifacts/default_mode_validation/after_migration/stow_stage1_operator.json"
+   ]
+  },
+  "stow_stage2_plan.json": {
+   "bytes": 13006,
+   "sha256": "bf01431d20c89fde76e02d0ce1ae05caac213177d9950efe63e3e28a10440e24",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "stow_stage3_input.json": {
+   "bytes": 1201,
+   "sha256": "7ac795ffcc2c4c51407e1e88c98c2c09dd6eaaf36016a6ab9b1358224537224a",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "stow_stage4.json": {
+   "bytes": 76708,
+   "sha256": "cfaa60cb5ad88c3ccb7afa45df9a0ae63279c142097ace243c2e41adddfc4d09",
+   "kept_in_git": false,
+   "same_bytes_tracked_at": [
+    "artifacts/default_mode_validation/after_migration/stow_stage4.json",
+    "artifacts/default_mode_validation/handoff/stage4/stow_mean_relaxed.json",
+    "artifacts/default_mode_validation/handoff/stage4/stow_min_max_exact.json"
+   ]
+  },
+  "worked_example_check.json": {
+   "bytes": 1945,
+   "sha256": "b23112691fc7b9017d785bcffb3a185b79fb791b0eb04bc356764d4b2ccfa1b5",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  },
+  "worked_example_check.py": {
+   "bytes": 3341,
+   "sha256": "f7df7e2fb14ece66bbea288d4c12a063e61375f94a3e65cc39dc8aa10bf503cc",
+   "kept_in_git": true,
+   "same_bytes_tracked_at": []
+  }
+ }
+}

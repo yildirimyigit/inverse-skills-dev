@@ -1,0 +1,115 @@
+{
+ "key_and_tool": [
+  {
+   "learnable": [
+    "g",
+    "p",
+    "q"
+   ],
+   "extra_actions": [],
+   "old_page": "make_q > HOLE[p] > use",
+   "minimal_planner": "make_q > HOLE[p] > use",
+   "planning_cost": [
+    1,
+    0,
+    3
+   ],
+   "feasible_with_all_holes": null,
+   "changed": false
+  },
+  {
+   "learnable": [
+    "g",
+    "q"
+   ],
+   "extra_actions": [],
+   "old_page": "HOLE[q] > use",
+   "minimal_planner": "HOLE[q] > use",
+   "planning_cost": [
+    1,
+    0,
+    2
+   ],
+   "feasible_with_all_holes": null,
+   "changed": false
+  },
+  {
+   "learnable": [
+    "g",
+    "p"
+   ],
+   "extra_actions": [],
+   "old_page": "make_q > HOLE[p] > use",
+   "minimal_planner": "make_q > HOLE[p] > use",
+   "planning_cost": [
+    1,
+    0,
+    3
+   ],
+   "feasible_with_all_holes": null,
+   "changed": false
+  },
+  {
+   "learnable": [
+    "g"
+   ],
+   "extra_actions": [],
+   "old_page": "no plan (Waiting)",
+   "minimal_planner": "HOLE[g]",
+   "planning_cost": [
+    1,
+    0,
+    1
+   ],
+   "feasible_with_all_holes": null,
+   "changed": true
+  },
+  {
+   "learnable": [],
+   "extra_actions": [],
+   "old_page": "no plan (no holes offered)",
+   "minimal_planner": "no plan",
+   "planning_cost": null,
+   "feasible_with_all_holes": false,
+   "changed": false
+  },
+  {
+   "learnable": [
+    "g",
+    "p",
+    "q",
+    "r"
+   ],
+   "extra_actions": [
+    "make_p"
+   ],
+   "old_page": "make_q > HOLE[r] > make_p > use",
+   "minimal_planner": "make_q > HOLE[r] > make_p > use",
+   "planning_cost": [
+    1,
+    0,
+    4
+   ],
+   "feasible_with_all_holes": null,
+   "changed": false
+  }
+ ],
+ "upstream_within_candidates": {
+  "stow": {
+   "clear_of_walls(cube_a)": [],
+   "gripper_open()": [
+    "clear_of_walls(cube_a)"
+   ],
+   "in_region(cube_a,src_a)": [
+    "clear_of_walls(cube_a)"
+   ],
+   "in_region(cube_b,src_b)": []
+  },
+  "drawer": {
+   "drawer_open(drawer)": [
+    "handle_grasped(drawer)"
+   ],
+   "handle_grasped(drawer)": []
+  }
+ }
+}

@@ -57,6 +57,20 @@ artifacts/drawer/direct/*/*
 !artifacts/planner_comparison/
 # mean + relaxed against min_max + exact on the real pipelines: results and report.
 !artifacts/default_mode_validation/
+# The final verification of fe374f0: the report, the scripts that ran it, the small fresh
+# outputs, and manifest.json (planner version, each run's command and planner calls, the large
+# outputs' summaries, every file's checksum). Large outputs, call records and logs stay local.
+!artifacts/final_verification_fe374f0/
+artifacts/final_verification_fe374f0/*
+!artifacts/final_verification_fe374f0/*.md
+!artifacts/final_verification_fe374f0/*.py
+!artifacts/final_verification_fe374f0/*.json
+!artifacts/final_verification_fe374f0/run.sh
+!artifacts/final_verification_fe374f0/direct/
+artifacts/final_verification_fe374f0/stow_stage4.json
+artifacts/final_verification_fe374f0/drawer_stage4.json
+artifacts/final_verification_fe374f0/drawer_final_targeted_vs_direct.json
+artifacts/final_verification_fe374f0/planning_checks.json
 checkpoints/
 logs/
 wandb/

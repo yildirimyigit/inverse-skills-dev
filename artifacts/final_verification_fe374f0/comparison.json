@@ -1,0 +1,986 @@
+{
+ "Stow Stage 1 operator": {
+  "fresh": "artifacts/final_verification_fe374f0/stow_stage1_operator.json",
+  "saved": {
+   "reference": "artifacts/stow/stage1_operator.json",
+   "bytes_identical": false,
+   "values_identical": false,
+   "differing_values": 78,
+   "differing_fields": {
+    "$.operator.add_effects[*].weight": 2,
+    "$.operator.delete_effects[*].weight": 3,
+    "$.operator.inverse_target_terms[*].weight": 5,
+    "$.operator.metadata.extractor": 1,
+    "$.operator.preconditions[*].weight": 3,
+    "$.scores.clear_of_walls(cube_a).abs_delta": 1,
+    "$.scores.clear_of_walls(cube_a).delta": 1,
+    "$.scores.clear_of_walls(cube_a).end_max": 1,
+    "$.scores.clear_of_walls(cube_a).end_mean": 1,
+    "$.scores.clear_of_walls(cube_a).end_min": 1,
+    "$.scores.clear_of_walls(cube_a).start_max": 1,
+    "$.scores.clear_of_walls(cube_a).start_mean": 1,
+    "$.scores.clear_of_walls(cube_a).start_min": 1,
+    "$.scores.gripper_open().abs_delta": 1,
+    "$.scores.gripper_open().delta": 1,
+    "$.scores.gripper_open().end_max": 1,
+    "$.scores.gripper_open().end_mean": 1,
+    "$.scores.gripper_open().end_min": 1,
+    "$.scores.gripper_open().start_max": 1,
+    "$.scores.gripper_open().start_mean": 1,
+    "$.scores.gripper_open().start_min": 1,
+    "$.scores.in_region(cube_a,pocket).abs_delta": 1,
+    "$.scores.in_region(cube_a,pocket).delta": 1,
+    "$.scores.in_region(cube_a,pocket).end_max": 1,
+    "$.scores.in_region(cube_a,pocket).end_mean": 1,
+    "$.scores.in_region(cube_a,pocket).end_min": 1,
+    "$.scores.in_region(cube_a,pocket).start_max": 1,
+    "$.scores.in_region(cube_a,pocket).start_mean": 1,
+    "$.scores.in_region(cube_a,pocket).start_min": 1,
+    "$.scores.in_region(cube_a,src_a).abs_delta": 1,
+    "$.scores.in_region(cube_a,src_a).delta": 1,
+    "$.scores.in_region(cube_a,src_a).end_max": 1,
+    "$.scores.in_region(cube_a,src_a).end_mean": 1,
+    "$.scores.in_region(cube_a,src_a).end_min": 1,
+    "$.scores.in_region(cube_a,src_a).start_max": 1,
+    "$.scores.in_region(cube_a,src_a).start_mean": 1,
+    "$.scores.in_region(cube_a,src_a).start_min": 1,
+    "$.scores.in_region(cube_b,mouth).abs_delta": 1,
+    "$.scores.in_region(cube_b,mouth).delta": 1,
+    "$.scores.in_region(cube_b,mouth).end_max": 1,
+    "$.scores.in_region(cube_b,mouth).end_mean": 1,
+    "$.scores.in_region(cube_b,mouth).end_min": 1,
+    "$.scores.in_region(cube_b,mouth).start_max": 1,
+    "$.scores.in_region(cube_b,mouth).start_mean": 1,
+    "$.scores.in_region(cube_b,mouth).start_min": 1,
+    "$.scores.in_region(cube_b,src_b).abs_delta": 1,
+    "$.scores.in_region(cube_b,src_b).delta": 1,
+    "$.scores.in_region(cube_b,src_b).end_max": 1,
+    "$.scores.in_region(cube_b,src_b).end_mean": 1,
+    "$.scores.in_region(cube_b,src_b).end_min": 1,
+    "$.scores.in_region(cube_b,src_b).start_max": 1,
+    "$.scores.in_region(cube_b,src_b).start_mean": 1,
+    "$.scores.in_region(cube_b,src_b).start_min": 1,
+    "$.scores.tcp_near(cube_a).abs_delta": 1,
+    "$.scores.tcp_near(cube_a).delta": 1,
+    "$.scores.tcp_near(cube_a).end_max": 1,
+    "$.scores.tcp_near(cube_a).end_mean": 1,
+    "$.scores.tcp_near(cube_a).end_min": 1,
+    "$.scores.tcp_near(cube_a).start_max": 1,
+    "$.scores.tcp_near(cube_a).start_mean": 1,
+    "$.scores.tcp_near(cube_a).start_min": 1,
+    "$.scores.tcp_near(cube_b).abs_delta": 1,
+    "$.scores.tcp_near(cube_b).delta": 1,
+    "$.scores.tcp_near(cube_b).end_max": 1,
+    "$.scores.tcp_near(cube_b).end_mean": 1,
+    "$.scores.tcp_near(cube_b).end_min": 1,
+    "$.scores.tcp_near(cube_b).start_max": 1,
+    "$.scores.tcp_near(cube_b).start_mean": 1,
+    "$.scores.tcp_near(cube_b).start_min": 1
+   },
+   "examples": [
+    [
+     "$.operator.add_effects[0].weight",
+     "fresh 0.9592020970605819",
+     "reference 0.9661654434413218"
+    ],
+    [
+     "$.operator.add_effects[1].weight",
+     "fresh 0.9535181782349231",
+     "reference 0.9553560677826346"
+    ],
+    [
+     "$.operator.delete_effects[0].weight",
+     "fresh 0.8801079471418134",
+     "reference 0.8804929159413986"
+    ],
+    [
+     "$.operator.delete_effects[1].weight",
+     "fresh 0.9820113006273116",
+     "reference 0.9820113047430499"
+    ],
+    [
+     "$.operator.delete_effects[2].weight",
+     "fresh 0.9820113010985281",
+     "reference 0.9820113076792923"
+    ],
+    [
+     "$.operator.inverse_target_terms[0].weight",
+     "fresh 0.9999783915827838",
+     "reference 0.9999830245526169"
+    ],
+    [
+     "$.operator.inverse_target_terms[2].weight",
+     "fresh 0.9592020970605819",
+     "reference 0.9661654434413218"
+    ],
+    [
+     "$.operator.inverse_target_terms[3].weight",
+     "fresh 0.9820113010985327",
+     "reference 0.9820113050469909"
+    ],
+    [
+     "$.operator.inverse_target_terms[4].weight",
+     "fresh 0.9535181782349231",
+     "reference 0.9553560677826346"
+    ],
+    [
+     "$.operator.inverse_target_terms[5].weight",
+     "fresh 0.9820113010985327",
+     "reference 0.9820113076792948"
+    ],
+    [
+     "$.operator.metadata.extractor",
+     "fresh \"first_last_score_min_max_v0\"",
+     "reference \"first_last_score_delta_v0\""
+    ],
+    [
+     "$.operator.preconditions[0].weight",
+     "fresh 0.9999783915827838",
+     "reference 0.9999830245526169"
+    ]
+   ]
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/stow_stage1_operator.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  }
+ },
+ "Drawer Stage 1 operator": {
+  "fresh": "artifacts/final_verification_fe374f0/drawer_stage1_operator.json",
+  "saved": {
+   "reference": "artifacts/drawer/stage1_operator.json",
+   "bytes_identical": false,
+   "values_identical": false,
+   "differing_values": 38,
+   "differing_fields": {
+    "$.operator.add_effects[*].weight": 1,
+    "$.operator.delete_effects[*].weight": 1,
+    "$.operator.inverse_target_terms[*].weight": 2,
+    "$.operator.metadata.extractor": 1,
+    "$.operator.preconditions[*].weight": 1,
+    "$.scores.at_handle_standoff(drawer).abs_delta": 1,
+    "$.scores.at_handle_standoff(drawer).delta": 1,
+    "$.scores.at_handle_standoff(drawer).end_max": 1,
+    "$.scores.at_handle_standoff(drawer).end_mean": 1,
+    "$.scores.at_handle_standoff(drawer).end_min": 1,
+    "$.scores.at_handle_standoff(drawer).start_max": 1,
+    "$.scores.at_handle_standoff(drawer).start_mean": 1,
+    "$.scores.at_handle_standoff(drawer).start_min": 1,
+    "$.scores.drawer_closed(drawer).abs_delta": 1,
+    "$.scores.drawer_closed(drawer).delta": 1,
+    "$.scores.drawer_closed(drawer).end_max": 1,
+    "$.scores.drawer_closed(drawer).end_mean": 1,
+    "$.scores.drawer_closed(drawer).end_min": 1,
+    "$.scores.drawer_closed(drawer).start_max": 1,
+    "$.scores.drawer_closed(drawer).start_mean": 1,
+    "$.scores.drawer_closed(drawer).start_min": 1,
+    "$.scores.drawer_open(drawer).abs_delta": 1,
+    "$.scores.drawer_open(drawer).delta": 1,
+    "$.scores.drawer_open(drawer).end_max": 1,
+    "$.scores.drawer_open(drawer).end_mean": 1,
+    "$.scores.drawer_open(drawer).end_min": 1,
+    "$.scores.drawer_open(drawer).start_max": 1,
+    "$.scores.drawer_open(drawer).start_mean": 1,
+    "$.scores.drawer_open(drawer).start_min": 1,
+    "$.scores.handle_grasped(drawer).abs_delta": 1,
+    "$.scores.handle_grasped(drawer).delta": 1,
+    "$.scores.handle_grasped(drawer).end_max": 1,
+    "$.scores.handle_grasped(drawer).end_mean": 1,
+    "$.scores.handle_grasped(drawer).end_min": 1,
+    "$.scores.handle_grasped(drawer).start_max": 1,
+    "$.scores.handle_grasped(drawer).start_mean": 1,
+    "$.scores.handle_grasped(drawer).start_min": 1
+   },
+   "examples": [
+    [
+     "$.operator.add_effects[0].weight",
+     "fresh 0.927185125068321",
+     "reference 0.9824046676250479"
+    ],
+    [
+     "$.operator.delete_effects[0].weight",
+     "fresh 0.9887955158355708",
+     "reference 0.9943049640543516"
+    ],
+    [
+     "$.operator.inverse_target_terms[0].weight",
+     "fresh 0.927185125068321",
+     "reference 0.9824046676250479"
+    ],
+    [
+     "$.operator.inverse_target_terms[1].weight",
+     "fresh 0.9893434284970579",
+     "reference 0.9947119136814716"
+    ],
+    [
+     "$.operator.metadata.extractor",
+     "fresh \"first_last_score_min_max_v0\"",
+     "reference \"first_last_score_delta_v0\""
+    ],
+    [
+     "$.operator.preconditions[0].weight",
+     "fresh 0.9893434284970579",
+     "reference 0.9947119136814716"
+    ],
+    [
+     "$.scores.at_handle_standoff(drawer).abs_delta",
+     "only in the reference",
+     "3.8007745839507833e-10"
+    ],
+    [
+     "$.scores.at_handle_standoff(drawer).delta",
+     "only in the reference",
+     "-3.8007745839507833e-10"
+    ],
+    [
+     "$.scores.at_handle_standoff(drawer).end_max",
+     "only in the fresh output",
+     "0.0"
+    ],
+    [
+     "$.scores.at_handle_standoff(drawer).end_mean",
+     "only in the reference",
+     "0.0"
+    ],
+    [
+     "$.scores.at_handle_standoff(drawer).end_min",
+     "only in the fresh output",
+     "0.0"
+    ],
+    [
+     "$.scores.at_handle_standoff(drawer).start_max",
+     "only in the fresh output",
+     "8.144335206239361e-10"
+    ]
+   ]
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/drawer_stage1_operator.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  }
+ },
+ "Stow Stage 2 plan": {
+  "fresh": "artifacts/final_verification_fe374f0/stow_stage2_plan.json",
+  "saved": {
+   "reference": "artifacts/stow/stage2_plan.json",
+   "bytes_identical": false,
+   "values_identical": false,
+   "differing_values": 39,
+   "differing_fields": {
+    "$.capability_gaps": 1,
+    "$.delegated": 1,
+    "$.hole_contexts": 1,
+    "$.seeds[*].candidates": 5,
+    "$.seeds[*].capability_gaps": 5,
+    "$.seeds[*].hole_contexts": 5,
+    "$.seeds[*].synthesizable_gaps": 5,
+    "$.seeds[*].unmet_needs": 5,
+    "$.synthesizable_gaps": 1,
+    "$.without_interference_model[*][*]": 10
+   },
+   "examples": [
+    [
+     "$.capability_gaps",
+     "only in the reference",
+     "[\"clear_of_walls(cube_a)\", \"holding(cube_a)\"]"
+    ],
+    [
+     "$.delegated",
+     "only in the fresh output",
+     "[\"clear_of_walls(cube_a)\"]"
+    ],
+    [
+     "$.hole_contexts",
+     "only in the fresh output",
+     "[{\"literal\": \"clear_of_walls(cube_a)\", \"index\": 3, \"state_before\": [\"in_region(cube_a,pocket)\", \"in_region(cube_b,src_b)\", \"tcp_near(cube_a)\"], \"used_by\": \"p..."
+    ],
+    [
+     "$.seeds[0].candidates",
+     "only in the fresh output",
+     "[\"clear_of_walls(cube_a)\", \"gripper_open()\", \"in_region(cube_a,src_a)\", \"in_region(cube_b,src_b)\"]"
+    ],
+    [
+     "$.seeds[0].capability_gaps",
+     "only in the reference",
+     "[\"clear_of_walls(cube_a)\", \"holding(cube_a)\"]"
+    ],
+    [
+     "$.seeds[0].hole_contexts",
+     "only in the fresh output",
+     "[{\"literal\": \"clear_of_walls(cube_a)\", \"index\": 3, \"state_before\": [\"in_region(cube_a,pocket)\", \"in_region(cube_b,src_b)\", \"tcp_near(cube_a)\"], \"used_by\": \"p..."
+    ],
+    [
+     "$.seeds[0].synthesizable_gaps",
+     "only in the reference",
+     "[\"clear_of_walls(cube_a)\"]"
+    ],
+    [
+     "$.seeds[0].unmet_needs",
+     "only in the fresh output",
+     "null"
+    ],
+    [
+     "$.seeds[1].candidates",
+     "only in the fresh output",
+     "[\"clear_of_walls(cube_a)\", \"gripper_open()\", \"in_region(cube_a,src_a)\", \"in_region(cube_b,src_b)\"]"
+    ],
+    [
+     "$.seeds[1].capability_gaps",
+     "only in the reference",
+     "[\"clear_of_walls(cube_a)\", \"holding(cube_a)\"]"
+    ],
+    [
+     "$.seeds[1].hole_contexts",
+     "only in the fresh output",
+     "[{\"literal\": \"clear_of_walls(cube_a)\", \"index\": 3, \"state_before\": [\"in_region(cube_a,pocket)\", \"in_region(cube_b,src_b)\", \"tcp_near(cube_a)\"], \"used_by\": \"p..."
+    ],
+    [
+     "$.seeds[1].synthesizable_gaps",
+     "only in the reference",
+     "[\"clear_of_walls(cube_a)\"]"
+    ]
+   ]
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/stow_stage2_plan.json",
+   "bytes_identical": false,
+   "values_identical": false,
+   "differing_values": 15,
+   "differing_fields": {
+    "$.seeds[*].expanded": 5,
+    "$.without_interference_model[*][*]": 10
+   },
+   "examples": [
+    [
+     "$.seeds[0].expanded",
+     "fresh 44",
+     "reference 95"
+    ],
+    [
+     "$.seeds[1].expanded",
+     "fresh 44",
+     "reference 95"
+    ],
+    [
+     "$.seeds[2].expanded",
+     "fresh 44",
+     "reference 95"
+    ],
+    [
+     "$.seeds[3].expanded",
+     "fresh 44",
+     "reference 95"
+    ],
+    [
+     "$.seeds[4].expanded",
+     "fresh 44",
+     "reference 95"
+    ],
+    [
+     "$.without_interference_model[0][0]",
+     "fresh \"approach(cube_a)\"",
+     "reference \"pick(cube_b)\""
+    ],
+    [
+     "$.without_interference_model[0][1]",
+     "fresh \"HOLE[clear_of_walls(cube_a)]\"",
+     "reference \"place(cube_b,src_b)\""
+    ],
+    [
+     "$.without_interference_model[0][2]",
+     "fresh \"pick(cube_a)\"",
+     "reference \"approach(cube_a)\""
+    ],
+    [
+     "$.without_interference_model[0][3]",
+     "fresh \"place(cube_a,src_a)\"",
+     "reference \"HOLE[clear_of_walls(cube_a)]\""
+    ],
+    [
+     "$.without_interference_model[0][4]",
+     "fresh \"pick(cube_b)\"",
+     "reference \"pick(cube_a)\""
+    ],
+    [
+     "$.without_interference_model[0][5]",
+     "fresh \"place(cube_b,src_b)\"",
+     "reference \"place(cube_a,src_a)\""
+    ],
+    [
+     "$.without_interference_model[1][2]",
+     "fresh \"pick(cube_b)\"",
+     "reference \"pick(cube_a)\""
+    ]
+   ]
+  }
+ },
+ "Stow hole spec": {
+  "fresh": "artifacts/final_verification_fe374f0/stow_hole_spec.json",
+  "saved": {
+   "reference": "artifacts/stow/hole_spec.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/stow_hole_spec.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  }
+ },
+ "Drawer Stage 2 plan": {
+  "fresh": "artifacts/final_verification_fe374f0/drawer_stage2_plan.json",
+  "saved": {
+   "reference": "artifacts/drawer/stage2_plan.json",
+   "bytes_identical": false,
+   "values_identical": false,
+   "differing_values": 43,
+   "differing_fields": {
+    "$.ablations.frontier.candidates": 1,
+    "$.ablations.frontier.capability_gaps": 1,
+    "$.ablations.frontier.expanded": 1,
+    "$.ablations.frontier.hole_contexts": 1,
+    "$.ablations.frontier.synthesizable_gaps": 1,
+    "$.ablations.library_only.capability_gaps": 1,
+    "$.ablations.library_only.feasible_with_all_holes": 1,
+    "$.ablations.library_only.synthesizable_gaps": 1,
+    "$.ablations.library_only.unmet_needs": 1,
+    "$.ablations.with_grasp.candidates": 1,
+    "$.ablations.with_grasp.capability_gaps": 1,
+    "$.ablations.with_grasp.hole_contexts": 1,
+    "$.ablations.with_grasp.synthesizable_gaps": 1,
+    "$.seeds[*].candidates": 5,
+    "$.seeds[*].capability_gaps": 5,
+    "$.seeds[*].expanded": 5,
+    "$.seeds[*].hole_contexts": 5,
+    "$.seeds[*].scores.drawer_closed(drawer)": 2,
+    "$.seeds[*].scores.drawer_open(drawer)": 2,
+    "$.seeds[*].scores.handle_grasped(drawer)": 1,
+    "$.seeds[*].synthesizable_gaps": 5
+   },
+   "examples": [
+    [
+     "$.ablations.frontier.candidates",
+     "fresh [\"drawer_open(drawer)\", \"handle_grasped(drawer)\"]",
+     "reference [\"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.ablations.frontier.capability_gaps",
+     "only in the reference",
+     "[\"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.ablations.frontier.expanded",
+     "fresh 3",
+     "reference 4"
+    ],
+    [
+     "$.ablations.frontier.hole_contexts",
+     "only in the fresh output",
+     "[{\"literal\": \"handle_grasped(drawer)\", \"index\": 1, \"state_before\": [\"at_handle_standoff(drawer)\", \"drawer_closed(drawer)\"], \"used_by\": \"pull_open(drawer)\", \"..."
+    ],
+    [
+     "$.ablations.frontier.synthesizable_gaps",
+     "only in the reference",
+     "[\"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.ablations.library_only.capability_gaps",
+     "only in the reference",
+     "[\"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.ablations.library_only.feasible_with_all_holes",
+     "only in the fresh output",
+     "true"
+    ],
+    [
+     "$.ablations.library_only.synthesizable_gaps",
+     "only in the reference",
+     "[\"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.ablations.library_only.unmet_needs",
+     "only in the fresh output",
+     "[\"drawer_open(drawer)\", \"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.ablations.with_grasp.candidates",
+     "fresh [\"at_handle_standoff(drawer)\", \"drawer_open(drawer)\", \"handle_grasped(drawer)\"]",
+     "reference []"
+    ],
+    [
+     "$.ablations.with_grasp.capability_gaps",
+     "only in the reference",
+     "[]"
+    ],
+    [
+     "$.ablations.with_grasp.hole_contexts",
+     "only in the fresh output",
+     "[]"
+    ]
+   ]
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/drawer_stage2_plan.json",
+   "bytes_identical": false,
+   "values_identical": false,
+   "differing_values": 6,
+   "differing_fields": {
+    "$.ablations.frontier.expanded": 1,
+    "$.seeds[*].expanded": 5
+   },
+   "examples": [
+    [
+     "$.ablations.frontier.expanded",
+     "fresh 3",
+     "reference 4"
+    ],
+    [
+     "$.seeds[0].expanded",
+     "fresh 3",
+     "reference 4"
+    ],
+    [
+     "$.seeds[1].expanded",
+     "fresh 3",
+     "reference 4"
+    ],
+    [
+     "$.seeds[2].expanded",
+     "fresh 3",
+     "reference 4"
+    ],
+    [
+     "$.seeds[3].expanded",
+     "fresh 3",
+     "reference 4"
+    ],
+    [
+     "$.seeds[4].expanded",
+     "fresh 3",
+     "reference 4"
+    ]
+   ]
+  }
+ },
+ "Drawer hole spec": {
+  "fresh": "artifacts/final_verification_fe374f0/drawer_hole_spec.json",
+  "saved": {
+   "reference": "artifacts/drawer/hole_spec.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/drawer_hole_spec.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  }
+ },
+ "Direct baseline plan": {
+  "fresh": "artifacts/final_verification_fe374f0/direct/plan_direct.json",
+  "saved": {
+   "reference": "artifacts/drawer/direct/plan_direct.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/direct/plan_direct.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  }
+ },
+ "Direct baseline spec": {
+  "fresh": "artifacts/final_verification_fe374f0/direct/hole_spec_direct.json",
+  "saved": {
+   "reference": "artifacts/drawer/direct/hole_spec_direct.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/direct/hole_spec_direct.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  }
+ },
+ "Stow Stage 3 input": {
+  "fresh": "artifacts/final_verification_fe374f0/stow_stage3_input.json",
+  "saved": {
+   "reference": null
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/stow_stage3_input.json",
+   "bytes_identical": false,
+   "values_identical": false,
+   "differing_values": 1,
+   "differing_fields": {
+    "$.spec": 1
+   },
+   "examples": [
+    [
+     "$.spec",
+     "fresh \"artifacts/final_verification_fe374f0/stow_hole_spec.json\"",
+     "reference \"artifacts/default_mode_validation/after_migration/stow_hole_spec.json\""
+    ]
+   ]
+  }
+ },
+ "Drawer Stage 3 input": {
+  "fresh": "artifacts/final_verification_fe374f0/drawer_stage3_input.json",
+  "saved": {
+   "reference": null
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/drawer_stage3_input.json",
+   "bytes_identical": false,
+   "values_identical": false,
+   "differing_values": 1,
+   "differing_fields": {
+    "$.spec": 1
+   },
+   "examples": [
+    [
+     "$.spec",
+     "fresh \"artifacts/final_verification_fe374f0/drawer_hole_spec.json\"",
+     "reference \"artifacts/default_mode_validation/after_migration/drawer_hole_spec.json\""
+    ]
+   ]
+  }
+ },
+ "Stow learned operator": {
+  "fresh": "artifacts/final_verification_fe374f0/stow_learned_operator.json",
+  "saved": {
+   "reference": "artifacts/stow/learned_operator.json",
+   "bytes_identical": false,
+   "values_identical": false,
+   "differing_values": 78,
+   "differing_fields": {
+    "$.handoff_attempts": 1,
+    "$.handoff_conditions": 1,
+    "$.handoff_summary": 1,
+    "$.operator.add_effects[*].weight": 1,
+    "$.operator.delete_effects[*].weight": 1,
+    "$.operator.inverse_target_terms[*].weight": 4,
+    "$.operator.metadata.extractor": 1,
+    "$.operator.preconditions[*].weight": 3,
+    "$.scene_seeds": 1,
+    "$.scores.clear_of_walls(cube_a).abs_delta": 1,
+    "$.scores.clear_of_walls(cube_a).delta": 1,
+    "$.scores.clear_of_walls(cube_a).end_max": 1,
+    "$.scores.clear_of_walls(cube_a).end_mean": 1,
+    "$.scores.clear_of_walls(cube_a).end_min": 1,
+    "$.scores.clear_of_walls(cube_a).start_max": 1,
+    "$.scores.clear_of_walls(cube_a).start_mean": 1,
+    "$.scores.clear_of_walls(cube_a).start_min": 1,
+    "$.scores.gripper_open().abs_delta": 1,
+    "$.scores.gripper_open().delta": 1,
+    "$.scores.gripper_open().end_max": 1,
+    "$.scores.gripper_open().end_mean": 1,
+    "$.scores.gripper_open().end_min": 1,
+    "$.scores.gripper_open().start_max": 1,
+    "$.scores.gripper_open().start_mean": 1,
+    "$.scores.gripper_open().start_min": 1,
+    "$.scores.in_region(cube_a,pocket).abs_delta": 1,
+    "$.scores.in_region(cube_a,pocket).delta": 1,
+    "$.scores.in_region(cube_a,pocket).end_max": 1,
+    "$.scores.in_region(cube_a,pocket).end_mean": 1,
+    "$.scores.in_region(cube_a,pocket).end_min": 1,
+    "$.scores.in_region(cube_a,pocket).start_max": 1,
+    "$.scores.in_region(cube_a,pocket).start_mean": 1,
+    "$.scores.in_region(cube_a,pocket).start_min": 1,
+    "$.scores.in_region(cube_a,src_a).abs_delta": 1,
+    "$.scores.in_region(cube_a,src_a).delta": 1,
+    "$.scores.in_region(cube_a,src_a).end_max": 1,
+    "$.scores.in_region(cube_a,src_a).end_mean": 1,
+    "$.scores.in_region(cube_a,src_a).end_min": 1,
+    "$.scores.in_region(cube_a,src_a).start_max": 1,
+    "$.scores.in_region(cube_a,src_a).start_mean": 1,
+    "$.scores.in_region(cube_a,src_a).start_min": 1,
+    "$.scores.in_region(cube_b,mouth).abs_delta": 1,
+    "$.scores.in_region(cube_b,mouth).delta": 1,
+    "$.scores.in_region(cube_b,mouth).end_max": 1,
+    "$.scores.in_region(cube_b,mouth).end_mean": 1,
+    "$.scores.in_region(cube_b,mouth).end_min": 1,
+    "$.scores.in_region(cube_b,mouth).start_max": 1,
+    "$.scores.in_region(cube_b,mouth).start_mean": 1,
+    "$.scores.in_region(cube_b,mouth).start_min": 1,
+    "$.scores.in_region(cube_b,src_b).abs_delta": 1,
+    "$.scores.in_region(cube_b,src_b).delta": 1,
+    "$.scores.in_region(cube_b,src_b).end_max": 1,
+    "$.scores.in_region(cube_b,src_b).end_mean": 1,
+    "$.scores.in_region(cube_b,src_b).end_min": 1,
+    "$.scores.in_region(cube_b,src_b).start_max": 1,
+    "$.scores.in_region(cube_b,src_b).start_mean": 1,
+    "$.scores.in_region(cube_b,src_b).start_min": 1,
+    "$.scores.tcp_near(cube_a).abs_delta": 1,
+    "$.scores.tcp_near(cube_a).delta": 1,
+    "$.scores.tcp_near(cube_a).end_max": 1,
+    "$.scores.tcp_near(cube_a).end_mean": 1,
+    "$.scores.tcp_near(cube_a).end_min": 1,
+    "$.scores.tcp_near(cube_a).start_max": 1,
+    "$.scores.tcp_near(cube_a).start_mean": 1,
+    "$.scores.tcp_near(cube_a).start_min": 1,
+    "$.scores.tcp_near(cube_b).abs_delta": 1,
+    "$.scores.tcp_near(cube_b).delta": 1,
+    "$.scores.tcp_near(cube_b).end_max": 1,
+    "$.scores.tcp_near(cube_b).end_mean": 1,
+    "$.scores.tcp_near(cube_b).end_min": 1,
+    "$.scores.tcp_near(cube_b).start_max": 1,
+    "$.scores.tcp_near(cube_b).start_mean": 1,
+    "$.scores.tcp_near(cube_b).start_min": 1
+   },
+   "examples": [
+    [
+     "$.handoff_attempts",
+     "only in the fresh output",
+     "[{\"seed\": 2000, \"number\": 0, \"scene_seed\": 2000, \"stage\": \"valid\", \"reasons\": [], \"scores\": {\"clear_of_walls(cube_a)\": 0.12012299519734188, \"in_region(cube_a..."
+    ],
+    [
+     "$.handoff_conditions",
+     "only in the fresh output",
+     "{\"hold\": [\"in_region(cube_a,pocket)\", \"in_region(cube_b,src_b)\", \"tcp_near(cube_a)\"], \"absent\": [\"clear_of_walls(cube_a)\", \"in_region(cube_b,mouth)\"]}"
+    ],
+    [
+     "$.handoff_summary",
+     "only in the fresh output",
+     "{\"attempts\": 12, \"failed_forward\": 1, \"failed_prefix\": 0, \"reached_the_handoff\": 11, \"invalid_handoffs\": 1, \"valid_handoffs\": 10, \"raw_handoff_validity\": 0.9..."
+    ],
+    [
+     "$.operator.add_effects[0].weight",
+     "fresh 0.7109388825562221",
+     "reference 0.7182813168710127"
+    ],
+    [
+     "$.operator.delete_effects[0].weight",
+     "fresh 0.9152534753888825",
+     "reference 0.9128145457271851"
+    ],
+    [
+     "$.operator.inverse_target_terms[0].weight",
+     "fresh 0.7109388825562221",
+     "reference 0.7182813168710127"
+    ],
+    [
+     "$.operator.inverse_target_terms[1].weight",
+     "fresh 0.954933973989808",
+     "reference 0.9361977155778543"
+    ],
+    [
+     "$.operator.inverse_target_terms[2].weight",
+     "fresh 0.975228326731248",
+     "reference 0.9769037967353613"
+    ],
+    [
+     "$.operator.inverse_target_terms[3].weight",
+     "fresh 0.8608048575908288",
+     "reference 0.8696646584117105"
+    ],
+    [
+     "$.operator.metadata.extractor",
+     "fresh \"first_last_score_min_max_v0\"",
+     "reference \"first_last_score_delta_v0\""
+    ],
+    [
+     "$.operator.preconditions[0].weight",
+     "fresh 0.954933973989808",
+     "reference 0.9361977155778543"
+    ],
+    [
+     "$.operator.preconditions[1].weight",
+     "fresh 0.975228326731248",
+     "reference 0.9769037967353613"
+    ]
+   ]
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/stow_learned_operator.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  }
+ },
+ "Stow Stage 4": {
+  "fresh": "artifacts/final_verification_fe374f0/stow_stage4.json",
+  "saved": {
+   "reference": "artifacts/stow/stage4_execution.json",
+   "bytes_identical": false,
+   "values_identical": false,
+   "differing_values": 1,
+   "differing_fields": {
+    "$.handoff_validity": 1
+   },
+   "examples": [
+    [
+     "$.handoff_validity",
+     "only in the fresh output",
+     "{\"demonstrations\": {\"attempts\": 12, \"failed_forward\": 1, \"failed_prefix\": 0, \"reached_the_handoff\": 11, \"invalid_handoffs\": 1, \"valid_handoffs\": 10, \"raw_han..."
+    ]
+   ]
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/stow_stage4.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  }
+ },
+ "Drawer Stage 4": {
+  "fresh": "artifacts/final_verification_fe374f0/drawer_stage4.json",
+  "saved": {
+   "reference": "artifacts/drawer/stage4_execution_after_push_fix.json",
+   "bytes_identical": false,
+   "values_identical": false,
+   "differing_values": 40,
+   "differing_fields": {
+    "$.results.library_only[*].capability_gaps": 20,
+    "$.results.library_only[*].unmet_needs": 20
+   },
+   "examples": [
+    [
+     "$.results.library_only[0].capability_gaps",
+     "only in the reference",
+     "[\"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.results.library_only[0].unmet_needs",
+     "only in the fresh output",
+     "[\"drawer_open(drawer)\", \"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.results.library_only[1].capability_gaps",
+     "only in the reference",
+     "[\"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.results.library_only[1].unmet_needs",
+     "only in the fresh output",
+     "[\"drawer_open(drawer)\", \"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.results.library_only[2].capability_gaps",
+     "only in the reference",
+     "[\"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.results.library_only[2].unmet_needs",
+     "only in the fresh output",
+     "[\"drawer_open(drawer)\", \"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.results.library_only[3].capability_gaps",
+     "only in the reference",
+     "[\"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.results.library_only[3].unmet_needs",
+     "only in the fresh output",
+     "[\"drawer_open(drawer)\", \"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.results.library_only[4].capability_gaps",
+     "only in the reference",
+     "[\"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.results.library_only[4].unmet_needs",
+     "only in the fresh output",
+     "[\"drawer_open(drawer)\", \"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.results.library_only[5].capability_gaps",
+     "only in the reference",
+     "[\"handle_grasped(drawer)\"]"
+    ],
+    [
+     "$.results.library_only[5].unmet_needs",
+     "only in the fresh output",
+     "[\"drawer_open(drawer)\", \"handle_grasped(drawer)\"]"
+    ]
+   ]
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/drawer_stage4.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  }
+ },
+ "Targeted vs direct, seeds 3000-3049": {
+  "fresh": "artifacts/final_verification_fe374f0/drawer_final_targeted_vs_direct.json",
+  "saved": {
+   "reference": "artifacts/drawer/final_targeted_vs_direct.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  },
+  "legacy_exact": {
+   "reference": null
+  }
+ },
+ "Stow planner demo": {
+  "fresh": "artifacts/final_verification_fe374f0/stow_planner_demo.json",
+  "saved": {
+   "reference": "artifacts/stow/planner_demo.json",
+   "bytes_identical": true,
+   "values_identical": true,
+   "differing_values": 0,
+   "differing_fields": {},
+   "examples": []
+  },
+  "legacy_exact": {
+   "reference": "artifacts/default_mode_validation/after_migration/stow_planner_demo.json",
+   "bytes_identical": false,
+   "values_identical": false,
+   "differing_values": 1,
+   "differing_fields": {
+    "$.cases.incomplete.expanded": 1
+   },
+   "examples": [
+    [
+     "$.cases.incomplete.expanded",
+     "fresh 44",
+     "reference 95"
+    ]
+   ]
+  }
+ }
+}

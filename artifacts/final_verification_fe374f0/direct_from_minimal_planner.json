@@ -1,0 +1,192 @@
+{
+ "summary": {
+  "grasp_unscored": {
+   "seeds": 5,
+   "spec_bytes_equal_direct": 5,
+   "plans": [
+    "approach_handle(drawer) > HOLE[drawer_open(drawer)]"
+   ],
+   "fields_differing": []
+  },
+  "without_pull_open": {
+   "seeds": 5,
+   "spec_bytes_equal_direct": 5,
+   "plans": [
+    "approach_handle(drawer) > HOLE[drawer_open(drawer)]"
+   ],
+   "fields_differing": []
+  }
+ },
+ "rows": [
+  {
+   "seed": 0,
+   "variant": "grasp_unscored",
+   "plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+   ],
+   "cost": [
+    1,
+    0,
+    2,
+    1,
+    2
+   ],
+   "spec_bytes_equal_direct": true,
+   "fields_differing_from_direct": []
+  },
+  {
+   "seed": 0,
+   "variant": "without_pull_open",
+   "plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+   ],
+   "cost": [
+    1,
+    0,
+    2,
+    1,
+    2
+   ],
+   "spec_bytes_equal_direct": true,
+   "fields_differing_from_direct": []
+  },
+  {
+   "seed": 1,
+   "variant": "grasp_unscored",
+   "plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+   ],
+   "cost": [
+    1,
+    0,
+    2,
+    1,
+    2
+   ],
+   "spec_bytes_equal_direct": true,
+   "fields_differing_from_direct": []
+  },
+  {
+   "seed": 1,
+   "variant": "without_pull_open",
+   "plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+   ],
+   "cost": [
+    1,
+    0,
+    2,
+    1,
+    2
+   ],
+   "spec_bytes_equal_direct": true,
+   "fields_differing_from_direct": []
+  },
+  {
+   "seed": 2,
+   "variant": "grasp_unscored",
+   "plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+   ],
+   "cost": [
+    1,
+    0,
+    2,
+    1,
+    2
+   ],
+   "spec_bytes_equal_direct": true,
+   "fields_differing_from_direct": []
+  },
+  {
+   "seed": 2,
+   "variant": "without_pull_open",
+   "plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+   ],
+   "cost": [
+    1,
+    0,
+    2,
+    1,
+    2
+   ],
+   "spec_bytes_equal_direct": true,
+   "fields_differing_from_direct": []
+  },
+  {
+   "seed": 3,
+   "variant": "grasp_unscored",
+   "plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+   ],
+   "cost": [
+    1,
+    0,
+    2,
+    1,
+    2
+   ],
+   "spec_bytes_equal_direct": true,
+   "fields_differing_from_direct": []
+  },
+  {
+   "seed": 3,
+   "variant": "without_pull_open",
+   "plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+   ],
+   "cost": [
+    1,
+    0,
+    2,
+    1,
+    2
+   ],
+   "spec_bytes_equal_direct": true,
+   "fields_differing_from_direct": []
+  },
+  {
+   "seed": 4,
+   "variant": "grasp_unscored",
+   "plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+   ],
+   "cost": [
+    1,
+    0,
+    2,
+    1,
+    2
+   ],
+   "spec_bytes_equal_direct": true,
+   "fields_differing_from_direct": []
+  },
+  {
+   "seed": 4,
+   "variant": "without_pull_open",
+   "plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+   ],
+   "cost": [
+    1,
+    0,
+    2,
+    1,
+    2
+   ],
+   "spec_bytes_equal_direct": true,
+   "fields_differing_from_direct": []
+  }
+ ]
+}

@@ -1,0 +1,88 @@
+{
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "start_openings_mm": [
+    125.3,
+    144.2,
+    158.2,
+    137.2,
+    125.5
+  ],
+  "operator": {
+    "skill_name": "push_close",
+    "preconditions": [
+      {
+        "key": "drawer_open(drawer)",
+        "weight": 0.9893434284970579,
+        "polarity": "positive"
+      }
+    ],
+    "add_effects": [
+      {
+        "key": "drawer_closed(drawer)",
+        "weight": 0.927185125068321,
+        "polarity": "positive"
+      }
+    ],
+    "delete_effects": [
+      {
+        "key": "drawer_open(drawer)",
+        "weight": 0.9887955158355708,
+        "polarity": "positive"
+      }
+    ],
+    "inverse_target_terms": [
+      {
+        "key": "drawer_closed(drawer)",
+        "weight": 0.927185125068321,
+        "polarity": "negative"
+      },
+      {
+        "key": "drawer_open(drawer)",
+        "weight": 0.9893434284970579,
+        "polarity": "positive"
+      }
+    ],
+    "metadata": {
+      "num_rollouts": 5,
+      "extractor": "first_last_score_min_max_v0"
+    }
+  },
+  "scores": {
+    "at_handle_standoff(drawer)": {
+      "start_min": 0.0,
+      "start_max": 8.144335206239361e-10,
+      "end_min": 0.0,
+      "end_max": 0.0
+    },
+    "drawer_closed(drawer)": {
+      "start_min": 0.0,
+      "start_max": 0.0,
+      "end_min": 0.927185125068321,
+      "end_max": 0.9863606684496667
+    },
+    "drawer_open(drawer)": {
+      "start_min": 0.9893434284970579,
+      "start_max": 0.999599616099172,
+      "end_min": 0.00038718801752701815,
+      "end_max": 0.0005479126614870711
+    },
+    "handle_grasped(drawer)": {
+      "start_min": 3.442170437573111e-10,
+      "start_max": 2.5914570708662765e-05,
+      "end_min": 5.551115123125783e-16,
+      "end_max": 1.7208456881689926e-15
+    }
+  },
+  "checks": {
+    "pre_matches": true,
+    "add_matches": true,
+    "del_matches": true,
+    "no_robot_terms": true
+  }
+}

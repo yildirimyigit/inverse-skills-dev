@@ -1,0 +1,87 @@
+{
+  "spec": "artifacts/final_verification_fe374f0/drawer_hole_spec.json",
+  "bytes_equal_saved_spec": true,
+  "learning_fields": {
+    "achieve": "handle_grasped(drawer)",
+    "object": "drawer",
+    "start": [
+      "at_handle_standoff(drawer)"
+    ],
+    "preserve": [],
+    "preserve_absent": []
+  },
+  "prefix": [
+    "approach_handle(drawer)"
+  ],
+  "suffix": [
+    "pull_open(drawer)"
+  ],
+  "checkpoints": [
+    {
+      "checkpoint": "artifacts/drawer/stage3/1792053076/sac_hole_best",
+      "observation_space_fits": true,
+      "action_space_fits": true,
+      "observation_shape": [
+        7
+      ],
+      "action_shape": [
+        4
+      ]
+    },
+    {
+      "checkpoint": "artifacts/drawer/stage3/1792056712/sac_hole_best",
+      "observation_space_fits": true,
+      "action_space_fits": true,
+      "observation_shape": [
+        7
+      ],
+      "action_shape": [
+        4
+      ]
+    },
+    {
+      "checkpoint": "artifacts/drawer/stage3/1792056715/sac_hole_best",
+      "observation_space_fits": true,
+      "action_space_fits": true,
+      "observation_shape": [
+        7
+      ],
+      "action_shape": [
+        4
+      ]
+    },
+    {
+      "checkpoint": "artifacts/drawer/stage3/1792056719/sac_hole_best",
+      "observation_space_fits": true,
+      "action_space_fits": true,
+      "observation_shape": [
+        7
+      ],
+      "action_shape": [
+        4
+      ]
+    }
+  ],
+  "resets": [
+    {
+      "seed": 1000,
+      "handoff_valid": true,
+      "observation_shape": [
+        7
+      ],
+      "start_literals_scores": {
+        "at_handle_standoff(drawer)": 0.9991877712293317
+      }
+    },
+    {
+      "seed": 1001,
+      "handoff_valid": true,
+      "observation_shape": [
+        7
+      ],
+      "start_literals_scores": {
+        "at_handle_standoff(drawer)": 0.9757262850426773
+      }
+    }
+  ]
+}

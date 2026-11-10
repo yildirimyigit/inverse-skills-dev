@@ -1,0 +1,2079 @@
+{
+  "made_by": "python scripts/compare_hole_planners.py",
+  "repeats": 7,
+  "scenarios": [
+    {
+      "scenario": "Stow",
+      "limits": {},
+      "start": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "goal_positive": [
+        "clear_of_walls(cube_a)",
+        "gripper_open()",
+        "in_region(cube_a,src_a)",
+        "in_region(cube_b,src_b)"
+      ],
+      "goal_negative": [
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "relaxed": {
+        "found": true,
+        "runtime_ms": 0.7550059963250533,
+        "actions": [
+          "pick(cube_b)",
+          "place(cube_b,src_b)",
+          "approach(cube_a)",
+          "HOLE[clear_of_walls(cube_a)]",
+          "pick(cube_a)",
+          "place(cube_a,src_a)"
+        ],
+        "holes": [
+          {
+            "literal": "clear_of_walls(cube_a)",
+            "position": 3,
+            "start": [
+              "tcp_near(cube_a)"
+            ]
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          6
+        ],
+        "expanded": 44,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 3.4828069983632304,
+        "actions": [
+          "pick(cube_b)",
+          "place(cube_b,src_b)",
+          "approach(cube_a)",
+          "HOLE[clear_of_walls(cube_a)]",
+          "pick(cube_a)",
+          "place(cube_a,src_a)"
+        ],
+        "holes": [
+          {
+            "literal": "clear_of_walls(cube_a)",
+            "position": 3,
+            "start": [
+              "tcp_near(cube_a)"
+            ]
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          6
+        ],
+        "expanded": 44,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "clear_of_walls(cube_a)",
+            "index": 3,
+            "state_before": [
+              "in_region(cube_a,pocket)",
+              "in_region(cube_b,src_b)",
+              "tcp_near(cube_a)"
+            ],
+            "used_by": "pick(cube_a)",
+            "used_at": 4,
+            "waiting": [
+              "pick(cube_a)",
+              "goal"
+            ],
+            "prefix": [
+              "pick(cube_b)",
+              "place(cube_b,src_b)",
+              "approach(cube_a)"
+            ],
+            "suffix": [
+              "pick(cube_a)",
+              "place(cube_a,src_a)"
+            ],
+            "library_alternatives": [
+              [
+                "place(cube_a,src_a)",
+                "cannot run here"
+              ],
+              [
+                "place(cube_a,src_b)",
+                "cannot run here"
+              ],
+              [
+                "place(cube_a,mouth)",
+                "cannot run here"
+              ]
+            ]
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": true,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Stow, no interference model",
+      "limits": {},
+      "start": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "goal_positive": [
+        "clear_of_walls(cube_a)",
+        "gripper_open()",
+        "in_region(cube_a,src_a)",
+        "in_region(cube_b,src_b)"
+      ],
+      "goal_negative": [
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "relaxed": {
+        "found": true,
+        "runtime_ms": 1.025396995828487,
+        "actions": [
+          "pick(cube_b)",
+          "place(cube_b,src_b)",
+          "approach(cube_a)",
+          "HOLE[clear_of_walls(cube_a)]",
+          "pick(cube_a)",
+          "place(cube_a,src_a)"
+        ],
+        "holes": [
+          {
+            "literal": "clear_of_walls(cube_a)",
+            "position": 3,
+            "start": [
+              "tcp_near(cube_a)"
+            ]
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          6
+        ],
+        "expanded": 76,
+        "tied_plans_listed": 1,
+        "replays_to_goal": true
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 3.2960129974526353,
+        "actions": [
+          "approach(cube_a)",
+          "HOLE[clear_of_walls(cube_a)]",
+          "pick(cube_a)",
+          "place(cube_a,src_a)",
+          "pick(cube_b)",
+          "place(cube_b,src_b)"
+        ],
+        "holes": [
+          {
+            "literal": "clear_of_walls(cube_a)",
+            "position": 1,
+            "start": [
+              "tcp_near(cube_a)"
+            ]
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          6
+        ],
+        "expanded": 69,
+        "tied_plans_listed": 1,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "clear_of_walls(cube_a)",
+            "index": 1,
+            "state_before": [
+              "in_region(cube_a,pocket)",
+              "in_region(cube_b,mouth)",
+              "tcp_near(cube_a)"
+            ],
+            "used_by": "pick(cube_a)",
+            "used_at": 2,
+            "waiting": [
+              "pick(cube_a)",
+              "goal"
+            ],
+            "prefix": [
+              "approach(cube_a)"
+            ],
+            "suffix": [
+              "pick(cube_a)",
+              "place(cube_a,src_a)",
+              "pick(cube_b)",
+              "place(cube_b,src_b)"
+            ],
+            "library_alternatives": [
+              [
+                "place(cube_a,src_a)",
+                "cannot run here"
+              ],
+              [
+                "place(cube_a,src_b)",
+                "cannot run here"
+              ],
+              [
+                "place(cube_a,mouth)",
+                "cannot run here"
+              ]
+            ]
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Stow, library alone",
+      "limits": {
+        "max_delegated": 0
+      },
+      "start": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "goal_positive": [
+        "clear_of_walls(cube_a)",
+        "gripper_open()",
+        "in_region(cube_a,src_a)",
+        "in_region(cube_b,src_b)"
+      ],
+      "goal_negative": [
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.23982800485100597,
+        "expanded": null,
+        "capability_gaps": [
+          "clear_of_walls(cube_a)",
+          "holding(cube_a)"
+        ],
+        "unsynthesizable_gaps": [
+          "holding(cube_a)"
+        ]
+      },
+      "exact": {
+        "found": false,
+        "runtime_ms": 2.5286179952672683,
+        "expanded": 0,
+        "limits_reached": [
+          "max_delegated"
+        ],
+        "unmet_needs": [
+          "clear_of_walls(cube_a)",
+          "holding(cube_a)",
+          "in_region(cube_a,src_a)"
+        ],
+        "unsynthesizable_needs": [
+          "holding(cube_a)"
+        ],
+        "unnecessary_holes": [],
+        "replaceable_holes": [],
+        "feasible_with_all_holes": true
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Stow, clear_of_walls has no soft score",
+      "limits": {},
+      "start": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "goal_positive": [
+        "clear_of_walls(cube_a)",
+        "gripper_open()",
+        "in_region(cube_a,src_a)",
+        "in_region(cube_b,src_b)"
+      ],
+      "goal_negative": [
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.23906199930934235,
+        "expanded": null,
+        "capability_gaps": [
+          "clear_of_walls(cube_a)",
+          "holding(cube_a)"
+        ],
+        "unsynthesizable_gaps": [
+          "clear_of_walls(cube_a)",
+          "holding(cube_a)"
+        ]
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 2.5480599942966364,
+        "actions": [
+          "pick(cube_b)",
+          "place(cube_b,src_a)",
+          "approach(cube_a)",
+          "HOLE[in_region(cube_a,src_a)]",
+          "pick(cube_b)",
+          "place(cube_b,src_b)"
+        ],
+        "holes": [
+          {
+            "literal": "in_region(cube_a,src_a)",
+            "position": 3,
+            "start": [
+              "tcp_near(cube_a)"
+            ]
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          3,
+          1,
+          6
+        ],
+        "expanded": 49,
+        "tied_plans_listed": 1,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "in_region(cube_a,src_a)",
+            "index": 3,
+            "state_before": [
+              "in_region(cube_a,pocket)",
+              "in_region(cube_b,src_a)",
+              "tcp_near(cube_a)"
+            ],
+            "used_by": "goal",
+            "used_at": null,
+            "waiting": [
+              "push(cube_a,src_a->pocket)",
+              "goal"
+            ],
+            "prefix": [
+              "pick(cube_b)",
+              "place(cube_b,src_a)",
+              "approach(cube_a)"
+            ],
+            "suffix": [
+              "pick(cube_b)",
+              "place(cube_b,src_b)"
+            ],
+            "library_alternatives": [
+              [
+                "place(cube_a,src_a)",
+                "cannot run here"
+              ]
+            ]
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Drawer",
+      "limits": {},
+      "start": [
+        "drawer_closed(drawer)"
+      ],
+      "goal_positive": [
+        "drawer_open(drawer)"
+      ],
+      "goal_negative": [
+        "drawer_closed(drawer)"
+      ],
+      "relaxed": {
+        "found": true,
+        "runtime_ms": 0.07437900057993829,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "holes": [
+          {
+            "literal": "handle_grasped(drawer)",
+            "position": 1,
+            "start": [
+              "at_handle_standoff(drawer)"
+            ]
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "expanded": 4,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.13399499584920704,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[handle_grasped(drawer)]",
+          "pull_open(drawer)"
+        ],
+        "holes": [
+          {
+            "literal": "handle_grasped(drawer)",
+            "position": 1,
+            "start": [
+              "at_handle_standoff(drawer)"
+            ]
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          3
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "handle_grasped(drawer)",
+            "index": 1,
+            "state_before": [
+              "at_handle_standoff(drawer)",
+              "drawer_closed(drawer)"
+            ],
+            "used_by": "pull_open(drawer)",
+            "used_at": 2,
+            "waiting": [
+              "pull_open(drawer)"
+            ],
+            "prefix": [
+              "approach_handle(drawer)"
+            ],
+            "suffix": [
+              "pull_open(drawer)"
+            ],
+            "library_alternatives": []
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": true,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Drawer, library alone",
+      "limits": {
+        "max_delegated": 0
+      },
+      "start": [
+        "drawer_closed(drawer)"
+      ],
+      "goal_positive": [
+        "drawer_open(drawer)"
+      ],
+      "goal_negative": [
+        "drawer_closed(drawer)"
+      ],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.03765599831240252,
+        "expanded": null,
+        "capability_gaps": [
+          "handle_grasped(drawer)"
+        ],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": false,
+        "runtime_ms": 0.0777000022935681,
+        "expanded": 0,
+        "limits_reached": [
+          "max_delegated"
+        ],
+        "unmet_needs": [
+          "drawer_open(drawer)",
+          "handle_grasped(drawer)"
+        ],
+        "unsynthesizable_needs": [],
+        "unnecessary_holes": [],
+        "replaceable_holes": [],
+        "feasible_with_all_holes": true
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Drawer, scripted grasp in the library",
+      "limits": {},
+      "start": [
+        "drawer_closed(drawer)"
+      ],
+      "goal_positive": [
+        "drawer_open(drawer)"
+      ],
+      "goal_negative": [
+        "drawer_closed(drawer)"
+      ],
+      "relaxed": {
+        "found": true,
+        "runtime_ms": 0.06210200081113726,
+        "actions": [
+          "approach_handle(drawer)",
+          "grasp_handle(drawer)",
+          "pull_open(drawer)"
+        ],
+        "holes": [],
+        "cost": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.0748329985071905,
+        "actions": [
+          "approach_handle(drawer)",
+          "grasp_handle(drawer)",
+          "pull_open(drawer)"
+        ],
+        "holes": [],
+        "cost": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [],
+        "limits_reached": []
+      },
+      "same_plan": true,
+      "hole_start_differences": {
+        "drawer_closed(drawer)": {
+          "relaxed": [
+            "at_handle_standoff(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "exact": [
+            [
+              "at_handle_standoff(drawer)"
+            ],
+            [
+              "handle_grasped(drawer)"
+            ]
+          ]
+        },
+        "drawer_open(drawer)": {
+          "relaxed": [
+            "at_handle_standoff(drawer)",
+            "handle_grasped(drawer)"
+          ],
+          "exact": [
+            [
+              "at_handle_standoff(drawer)"
+            ],
+            [
+              "handle_grasped(drawer)"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "Drawer, no pull_open in the library",
+      "limits": {},
+      "start": [
+        "drawer_closed(drawer)"
+      ],
+      "goal_positive": [
+        "drawer_open(drawer)"
+      ],
+      "goal_negative": [
+        "drawer_closed(drawer)"
+      ],
+      "relaxed": {
+        "found": true,
+        "runtime_ms": 0.05236199649516493,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[drawer_open(drawer)]"
+        ],
+        "holes": [
+          {
+            "literal": "drawer_open(drawer)",
+            "position": 1,
+            "start": [
+              "at_handle_standoff(drawer)"
+            ]
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          2
+        ],
+        "expanded": 2,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.08570800127927214,
+        "actions": [
+          "approach_handle(drawer)",
+          "HOLE[drawer_open(drawer)]"
+        ],
+        "holes": [
+          {
+            "literal": "drawer_open(drawer)",
+            "position": 1,
+            "start": [
+              "at_handle_standoff(drawer)"
+            ]
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          2,
+          1,
+          2
+        ],
+        "expanded": 2,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "drawer_open(drawer)",
+            "index": 1,
+            "state_before": [
+              "at_handle_standoff(drawer)",
+              "drawer_closed(drawer)"
+            ],
+            "used_by": "goal",
+            "used_at": null,
+            "waiting": [
+              "goal"
+            ],
+            "prefix": [
+              "approach_handle(drawer)"
+            ],
+            "suffix": [],
+            "library_alternatives": []
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": true,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Delete interaction (make_q, use)",
+      "limits": {},
+      "start": [
+        "p"
+      ],
+      "goal_positive": [
+        "g"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.03363699943292886,
+        "expanded": null,
+        "capability_gaps": [],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.14127499889582396,
+        "actions": [
+          "make_q",
+          "HOLE[p]",
+          "use"
+        ],
+        "holes": [
+          {
+            "literal": "p",
+            "position": 1,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          3
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "p",
+            "index": 1,
+            "state_before": [
+              "q"
+            ],
+            "used_by": "use",
+            "used_at": 2,
+            "waiting": [
+              "make_q",
+              "use"
+            ],
+            "prefix": [
+              "make_q"
+            ],
+            "suffix": [
+              "use"
+            ],
+            "library_alternatives": []
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Delete interaction, p has no soft score",
+      "limits": {},
+      "start": [
+        "p"
+      ],
+      "goal_positive": [
+        "g"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.033166004868689924,
+        "expanded": null,
+        "capability_gaps": [],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.10355000267736614,
+        "actions": [
+          "HOLE[q]",
+          "use"
+        ],
+        "holes": [
+          {
+            "literal": "q",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          2
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "q",
+            "index": 0,
+            "state_before": [
+              "p"
+            ],
+            "used_by": "use",
+            "used_at": 1,
+            "waiting": [
+              "use"
+            ],
+            "prefix": [],
+            "suffix": [
+              "use"
+            ],
+            "library_alternatives": [
+              [
+                "make_q",
+                "the plan then fails at use"
+              ]
+            ]
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Delete interaction, q has no soft score",
+      "limits": {},
+      "start": [
+        "p"
+      ],
+      "goal_positive": [
+        "g"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.032764000934548676,
+        "expanded": null,
+        "capability_gaps": [],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.10137299977941439,
+        "actions": [
+          "make_q",
+          "HOLE[p]",
+          "use"
+        ],
+        "holes": [
+          {
+            "literal": "p",
+            "position": 1,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          3
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "p",
+            "index": 1,
+            "state_before": [
+              "q"
+            ],
+            "used_by": "use",
+            "used_at": 2,
+            "waiting": [
+              "make_q",
+              "use"
+            ],
+            "prefix": [
+              "make_q"
+            ],
+            "suffix": [
+              "use"
+            ],
+            "library_alternatives": []
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Delete interaction, only g has a soft score",
+      "limits": {},
+      "start": [
+        "p"
+      ],
+      "goal_positive": [
+        "g"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.03143199865007773,
+        "expanded": null,
+        "capability_gaps": [],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.07237899990286678,
+        "actions": [
+          "HOLE[g]"
+        ],
+        "holes": [
+          {
+            "literal": "g",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "expanded": 2,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "g",
+            "index": 0,
+            "state_before": [
+              "p"
+            ],
+            "used_by": "goal",
+            "used_at": null,
+            "waiting": [
+              "goal"
+            ],
+            "prefix": [],
+            "suffix": [],
+            "library_alternatives": [
+              [
+                "use",
+                "cannot run here"
+              ]
+            ]
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Consumed shared token",
+      "limits": {},
+      "start": [
+        "token"
+      ],
+      "goal_positive": [
+        "p",
+        "q"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.0355119991581887,
+        "expanded": null,
+        "capability_gaps": [],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.1375860010739416,
+        "actions": [
+          "make_p",
+          "HOLE[token]",
+          "make_q"
+        ],
+        "holes": [
+          {
+            "literal": "token",
+            "position": 1,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          3
+        ],
+        "expanded": 5,
+        "tied_plans_listed": 1,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "token",
+            "index": 1,
+            "state_before": [
+              "p"
+            ],
+            "used_by": "make_q",
+            "used_at": 2,
+            "waiting": [
+              "make_p",
+              "make_q"
+            ],
+            "prefix": [
+              "make_p"
+            ],
+            "suffix": [
+              "make_q"
+            ],
+            "library_alternatives": []
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Producer destroys part of the goal",
+      "limits": {},
+      "start": [
+        "z"
+      ],
+      "goal_positive": [
+        "g",
+        "z"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.039947000914253294,
+        "expanded": null,
+        "capability_gaps": [],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.11819399514934048,
+        "actions": [
+          "HOLE[p]",
+          "use_p"
+        ],
+        "holes": [
+          {
+            "literal": "p",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          2
+        ],
+        "expanded": 4,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "p",
+            "index": 0,
+            "state_before": [
+              "z"
+            ],
+            "used_by": "use_p",
+            "used_at": 1,
+            "waiting": [
+              "use_p"
+            ],
+            "prefix": [],
+            "suffix": [
+              "use_p"
+            ],
+            "library_alternatives": [
+              [
+                "make_p",
+                "the rest of the plan runs, but the goal is not reached"
+              ]
+            ]
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Chain of prerequisites",
+      "limits": {},
+      "start": [],
+      "goal_positive": [
+        "g"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": true,
+        "runtime_ms": 0.053185998694971204,
+        "actions": [
+          "HOLE[r]",
+          "make_p",
+          "use_p"
+        ],
+        "holes": [
+          {
+            "literal": "r",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          3
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.12446499749785289,
+        "actions": [
+          "HOLE[r]",
+          "make_p",
+          "use_p"
+        ],
+        "holes": [
+          {
+            "literal": "r",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          3
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "r",
+            "index": 0,
+            "state_before": [],
+            "used_by": "make_p",
+            "used_at": 1,
+            "waiting": [
+              "make_p"
+            ],
+            "prefix": [],
+            "suffix": [
+              "make_p",
+              "use_p"
+            ],
+            "library_alternatives": []
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": true,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Conjunctive prerequisites",
+      "limits": {},
+      "start": [],
+      "goal_positive": [
+        "g"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": true,
+        "runtime_ms": 0.05819999933009967,
+        "actions": [
+          "HOLE[q]",
+          "HOLE[r]",
+          "make"
+        ],
+        "holes": [
+          {
+            "literal": "q",
+            "position": 0,
+            "start": []
+          },
+          {
+            "literal": "r",
+            "position": 1,
+            "start": []
+          }
+        ],
+        "cost": [
+          2,
+          0,
+          2,
+          2,
+          3
+        ],
+        "expanded": 4,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.1351040045847185,
+        "actions": [
+          "HOLE[q]",
+          "HOLE[r]",
+          "make"
+        ],
+        "holes": [
+          {
+            "literal": "q",
+            "position": 0,
+            "start": []
+          },
+          {
+            "literal": "r",
+            "position": 1,
+            "start": []
+          }
+        ],
+        "cost": [
+          2,
+          0,
+          2,
+          2,
+          3
+        ],
+        "expanded": 4,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "q",
+            "index": 0,
+            "state_before": [],
+            "used_by": "make",
+            "used_at": 2,
+            "waiting": [
+              "make"
+            ],
+            "prefix": [],
+            "suffix": [
+              "HOLE[r]",
+              "make"
+            ],
+            "library_alternatives": []
+          },
+          {
+            "literal": "r",
+            "index": 1,
+            "state_before": [
+              "q"
+            ],
+            "used_by": "make",
+            "used_at": 2,
+            "waiting": [
+              "make"
+            ],
+            "prefix": [
+              "HOLE[q]"
+            ],
+            "suffix": [
+              "make"
+            ],
+            "library_alternatives": []
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": true,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Pure cycle",
+      "limits": {},
+      "start": [],
+      "goal_positive": [
+        "g"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": true,
+        "runtime_ms": 0.05785899702459574,
+        "actions": [
+          "HOLE[g]"
+        ],
+        "holes": [
+          {
+            "literal": "g",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "expanded": 2,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.0896989949978888,
+        "actions": [
+          "HOLE[g]"
+        ],
+        "holes": [
+          {
+            "literal": "g",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "g",
+            "index": 0,
+            "state_before": [],
+            "used_by": "goal",
+            "used_at": null,
+            "waiting": [
+              "q_from_g",
+              "goal"
+            ],
+            "prefix": [],
+            "suffix": [],
+            "library_alternatives": [
+              [
+                "g_from_q",
+                "cannot run here"
+              ]
+            ]
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": true,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Cycle with a way in",
+      "limits": {},
+      "start": [],
+      "goal_positive": [
+        "g"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": true,
+        "runtime_ms": 0.05655400309478864,
+        "actions": [
+          "HOLE[r]",
+          "q_from_r",
+          "g_from_q"
+        ],
+        "holes": [
+          {
+            "literal": "r",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          3
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.11699500464601442,
+        "actions": [
+          "HOLE[r]",
+          "q_from_r",
+          "g_from_q"
+        ],
+        "holes": [
+          {
+            "literal": "r",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          3
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "r",
+            "index": 0,
+            "state_before": [],
+            "used_by": "q_from_r",
+            "used_at": 1,
+            "waiting": [
+              "q_from_r"
+            ],
+            "prefix": [],
+            "suffix": [
+              "q_from_r",
+              "g_from_q"
+            ],
+            "library_alternatives": []
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": true,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Negative goal needs a remover",
+      "limits": {},
+      "start": [
+        "x"
+      ],
+      "goal_positive": [],
+      "goal_negative": [
+        "x"
+      ],
+      "relaxed": {
+        "found": true,
+        "runtime_ms": 0.04299099964555353,
+        "actions": [
+          "HOLE[k]",
+          "clear_x"
+        ],
+        "holes": [
+          {
+            "literal": "k",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          2
+        ],
+        "expanded": 2,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.06663699605269358,
+        "actions": [
+          "HOLE[k]",
+          "clear_x"
+        ],
+        "holes": [
+          {
+            "literal": "k",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          2
+        ],
+        "expanded": 2,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "k",
+            "index": 0,
+            "state_before": [
+              "x"
+            ],
+            "used_by": "clear_x",
+            "used_at": 1,
+            "waiting": [
+              "clear_x"
+            ],
+            "prefix": [],
+            "suffix": [
+              "clear_x"
+            ],
+            "library_alternatives": []
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": true,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Restoring a consumed fact needs r",
+      "limits": {},
+      "start": [
+        "p"
+      ],
+      "goal_positive": [
+        "g"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.03378800465725362,
+        "expanded": null,
+        "capability_gaps": [],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.20573999790940434,
+        "actions": [
+          "make_q",
+          "HOLE[r]",
+          "make_p",
+          "use"
+        ],
+        "holes": [
+          {
+            "literal": "r",
+            "position": 1,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          4
+        ],
+        "expanded": 5,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "r",
+            "index": 1,
+            "state_before": [
+              "q"
+            ],
+            "used_by": "make_p",
+            "used_at": 2,
+            "waiting": [
+              "make_p"
+            ],
+            "prefix": [
+              "make_q"
+            ],
+            "suffix": [
+              "make_p",
+              "use"
+            ],
+            "library_alternatives": []
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Restoring a consumed fact cannot be learned",
+      "limits": {},
+      "start": [
+        "p"
+      ],
+      "goal_positive": [
+        "g"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.03398799890419468,
+        "expanded": null,
+        "capability_gaps": [],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.10624500282574445,
+        "actions": [
+          "HOLE[q]",
+          "use"
+        ],
+        "holes": [
+          {
+            "literal": "q",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          2
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "q",
+            "index": 0,
+            "state_before": [
+              "p"
+            ],
+            "used_by": "use",
+            "used_at": 1,
+            "waiting": [
+              "use"
+            ],
+            "prefix": [],
+            "suffix": [
+              "use"
+            ],
+            "library_alternatives": [
+              [
+                "make_q",
+                "the plan then fails at use"
+              ]
+            ]
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Goal producers destroy each other",
+      "limits": {},
+      "start": [
+        "s"
+      ],
+      "goal_positive": [
+        "g",
+        "h"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.03473499964457005,
+        "expanded": null,
+        "capability_gaps": [],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.1367049990221858,
+        "actions": [
+          "make_h",
+          "HOLE[g]"
+        ],
+        "holes": [
+          {
+            "literal": "g",
+            "position": 1,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          2
+        ],
+        "expanded": 8,
+        "tied_plans_listed": 1,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "g",
+            "index": 1,
+            "state_before": [
+              "h"
+            ],
+            "used_by": "goal",
+            "used_at": null,
+            "waiting": [
+              "goal"
+            ],
+            "prefix": [
+              "make_h"
+            ],
+            "suffix": [],
+            "library_alternatives": [
+              [
+                "make_g",
+                "cannot run here"
+              ]
+            ]
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "A prerequisite nothing can establish",
+      "limits": {},
+      "start": [],
+      "goal_positive": [
+        "g"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.02545699680922553,
+        "expanded": null,
+        "capability_gaps": [
+          "r"
+        ],
+        "unsynthesizable_gaps": [
+          "r"
+        ]
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.06855999527033418,
+        "actions": [
+          "HOLE[p]",
+          "use_p"
+        ],
+        "holes": [
+          {
+            "literal": "p",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          2
+        ],
+        "expanded": 2,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "p",
+            "index": 0,
+            "state_before": [],
+            "used_by": "use_p",
+            "used_at": 1,
+            "waiting": [
+              "use_p"
+            ],
+            "prefix": [],
+            "suffix": [
+              "use_p"
+            ],
+            "library_alternatives": [
+              [
+                "make_p",
+                "cannot run here"
+              ]
+            ]
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Prerequisites never held together",
+      "limits": {},
+      "start": [
+        "n"
+      ],
+      "goal_positive": [
+        "g"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.03505100175971165,
+        "expanded": null,
+        "capability_gaps": [],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.09667200356489047,
+        "actions": [
+          "HOLE[p]",
+          "use"
+        ],
+        "holes": [
+          {
+            "literal": "p",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          2
+        ],
+        "expanded": 4,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "p",
+            "index": 0,
+            "state_before": [
+              "n"
+            ],
+            "used_by": "use",
+            "used_at": 1,
+            "waiting": [
+              "use"
+            ],
+            "prefix": [],
+            "suffix": [
+              "use"
+            ],
+            "library_alternatives": [
+              [
+                "make_p",
+                "cannot run here"
+              ]
+            ]
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {}
+    },
+    {
+      "scenario": "Hole start: facts that exclude each other",
+      "limits": {},
+      "start": [],
+      "goal_positive": [
+        "g(o)"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.04976800119038671,
+        "expanded": null,
+        "capability_gaps": [
+          "g(o)"
+        ],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.11586299660848454,
+        "actions": [
+          "go_near",
+          "HOLE[g(o)]"
+        ],
+        "holes": [
+          {
+            "literal": "g(o)",
+            "position": 1,
+            "start": [
+              "near(o)"
+            ]
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          2
+        ],
+        "expanded": 3,
+        "tied_plans_listed": 1,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "g(o)",
+            "index": 1,
+            "state_before": [
+              "near(o)"
+            ],
+            "used_by": "goal",
+            "used_at": null,
+            "waiting": [
+              "goal"
+            ],
+            "prefix": [
+              "go_near"
+            ],
+            "suffix": [],
+            "library_alternatives": []
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {
+        "g(o)": {
+          "relaxed": [
+            "far(o)",
+            "near(o)"
+          ],
+          "exact": [
+            [
+              "far(o)"
+            ],
+            [
+              "near(o)"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "Hole start: a fact only the relaxation reaches",
+      "limits": {},
+      "start": [
+        "a"
+      ],
+      "goal_positive": [
+        "g(o)"
+      ],
+      "goal_negative": [],
+      "relaxed": {
+        "found": false,
+        "runtime_ms": 0.03835499956039712,
+        "expanded": null,
+        "capability_gaps": [
+          "g(o)"
+        ],
+        "unsynthesizable_gaps": []
+      },
+      "exact": {
+        "found": true,
+        "runtime_ms": 0.07814299897290766,
+        "actions": [
+          "HOLE[g(o)]"
+        ],
+        "holes": [
+          {
+            "literal": "g(o)",
+            "position": 0,
+            "start": []
+          }
+        ],
+        "cost": [
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "expanded": 2,
+        "tied_plans_listed": 0,
+        "replays_to_goal": true,
+        "hole_contexts": [
+          {
+            "literal": "g(o)",
+            "index": 0,
+            "state_before": [
+              "a"
+            ],
+            "used_by": "goal",
+            "used_at": null,
+            "waiting": [
+              "goal"
+            ],
+            "prefix": [],
+            "suffix": [],
+            "library_alternatives": []
+          }
+        ],
+        "limits_reached": []
+      },
+      "same_plan": false,
+      "hole_start_differences": {
+        "g(o)": {
+          "relaxed": [
+            "near(o)"
+          ],
+          "exact": [
+            []
+          ]
+        }
+      }
+    }
+  ]
+}
