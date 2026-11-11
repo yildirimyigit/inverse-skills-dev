@@ -106,6 +106,20 @@ def run_learned(env, obs, model, achieve: str, regions, registry=None,
     return obs
 
 
+def retreat_to_safe(env, obs, regions, registry=None):
+    """The library action retreat_to_safe: the existing `retreat()` rise to the travel height,
+    with the gripper kept as it is.
+
+    The gripper is commanded open if gripper_open() holds when the action starts (its score at or
+    above 0.5, the predicate's own truth boundary), and closed otherwise, so the action changes
+    nothing about the gripper. What the rise really does to both cubes, the gripper and the
+    TCP-near predicates is measured, not assumed: scripts/stow_retreat_gate.py.
+    """
+    registry = registry or sp.registry()
+    gripper_open = registry.get("gripper_open()").evaluate(prim.obs_to_scene(obs, regions)).score >= 0.5
+    return prim.retreat(env, obs, gripper_cmd=1.0 if gripper_open else -1.0)
+
+
 def execute_plan(env, obs, steps: list[Action], model=None, regions=None,
                  goal: tuple[set[str], set[str]] | None = None, domain=None,
                  on_step: Callable | None = None,
