@@ -120,7 +120,11 @@ def episode(env, seed: int, forward, goal, condition: str, policy, spec) -> dict
         controllers = LIBRARY_WITH_SCRIPTED_GRASP
     elif condition != "library_only":
         learned = {spec_target(spec): policy}
-    result = hp.plan(domain, state, *goal)
+    try:
+        result = hp.plan(domain, state, *goal)
+    except hp.InconsistentState as error:     # the measured state breaks a declared constraint
+        row["plan"], row["stopped"] = None, str(error)
+        return row
     row["plan"] = list(result.actions) if result else None
     if not result:
         row["stopped"] = "no plan"

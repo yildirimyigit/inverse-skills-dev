@@ -14,12 +14,17 @@ declares about its own vocabulary and world:
   scored          predicates with a soft score. Only these can be delegated,
                   because a learned skill is trained against the score.
   robot_relative  predicates that relate the robot to the object in their first
-                  argument. A hole starts from every such predicate about its
-                  object that the library can already establish: the library
-                  does all it can before the learned skill takes over.
+                  argument. A hole starts from the largest set of such predicates
+                  about its object that the library establishes in a state where
+                  the hole's literal does not hold yet: the library does all it can
+                  before the learned skill takes over.
   implications, mutex_groups
-                  facts every action obeys: one literal entails another; at most
-                  one literal of a group holds.
+                  constraints every valid state satisfies: one atom entails another;
+                  at most one atom of a group is true. What an action adds brings
+                  what it implies and displaces its mutex partners. A transition
+                  whose result still breaks a constraint, or undoes the action's own
+                  effects, is invalid: the action, or hole, cannot run in that state.
+                  Nothing is ever deleted to repair a broken constraint.
   disturbances    side effects of the world rather than of any action: changing
                   one literal sweeps through where others hold, displacing those
                   objects to an unknown place (leaving a pocket pushes whatever
@@ -136,6 +141,15 @@ class Action:
                    learned_for=literal(data.get("learned_for")))
 
 
+class InconsistentState(ValueError):
+    """A symbolic state that breaks one of the domain's declared implications or mutual
+    exclusions. A planner refuses to start from one."""
+
+
+class InvalidTransition(ValueError):
+    """A transition whose result is not a valid state (`Domain.transition_problems`)."""
+
+
 @dataclass(frozen=True)
 class Disturbance:
     """Changing `trigger` sweeps through where the `clobbers` literals hold.
@@ -209,13 +223,35 @@ class Domain:
         """Every signed precondition holds: the `pre` atoms are true, the `pre_absent` false."""
         return action.pre <= state and not (action.pre_absent & state)
 
-    def enabled(self, state: frozenset[str], action: Action) -> bool:
-        """Can the action run here? A hole runs only while its literal does not hold: a hole for
-        `p` while p is false, a hole for `not p` while p is true. Library actions need only their
-        preconditions."""
+    def can_run(self, state: frozenset[str], action: Action) -> bool:
+        """Do the action's own conditions hold here? Its preconditions; and a hole runs only while
+        its literal does not hold: a hole for `p` while p is false, for `not p` while p is true.
+        Whether the result is a valid state is a separate question (`transition_problems`)."""
         if action.hole_for is not None and action.hole_for.holds(state):
             return False
         return self.applicable(state, action)
+
+    def enabled(self, state: frozenset[str], action: Action) -> bool:
+        """Can the action run here: its conditions hold and its result is a valid state."""
+        return self.successor(state, action) is not None
+
+    def violations(self, state) -> list[str]:
+        """The declared constraints `state` breaks, in words; empty when it is consistent. An
+        implication `q => p` is broken when q is true and p false, a mutex group when more than
+        one of its atoms is true."""
+        state = frozenset(state)
+        broken = [f"{q} implies {p}, but {p} is false"
+                  for q in sorted(state & self.implications.keys())
+                  for p in sorted(self.implications[q]) if p not in state]
+        broken += [f"{' and '.join(sorted(group & state))} exclude each other"
+                   for group in self.mutex_groups if len(group & state) > 1]
+        return broken
+
+    def check_state(self, state, what: str = "the state") -> None:
+        """Raise `InconsistentState` if `state` breaks a declared constraint."""
+        broken = self.violations(state)
+        if broken:
+            raise InconsistentState(f"{what} breaks the domain's constraints: {'; '.join(broken)}")
 
     def closure(self, literals) -> set[str]:
         """The literals together with everything they imply."""
@@ -240,7 +276,40 @@ class Domain:
 
     def transition(self, state: frozenset[str],
                    action: Action) -> tuple[frozenset[str], frozenset[str]]:
-        """The next state, and the literals displaced as collateral on the way."""
+        """The next state, and the literals displaced as collateral on the way. Raises
+        `InvalidTransition` when the result is not a valid state. Preconditions are not
+        checked here: `successor` checks both."""
+        after, collateral = self._modelled(state, action)
+        problems = self._problems(action, after)
+        if problems:
+            raise InvalidTransition(f"{action.name} cannot lead to a valid state: {'; '.join(problems)}")
+        return after, collateral
+
+    def transition_problems(self, state: frozenset[str], action: Action) -> list[str]:
+        """Why the action's modelled result is not a valid state; empty when it is."""
+        return self._problems(action, self._modelled(state, action)[0])
+
+    def successor(self, state: frozenset[str],
+                  action: Action) -> tuple[frozenset[str], frozenset[str]] | None:
+        """The transition, if the action can run here and leads to a valid state; else None."""
+        if not self.can_run(state, action):
+            return None
+        after, collateral = self._modelled(state, action)
+        return None if self._problems(action, after) else (after, collateral)
+
+    def _problems(self, action: Action, after: frozenset[str]) -> list[str]:
+        """A valid result keeps every declared implication and mutual exclusion, and holds every
+        atom the action adds and none it deletes. It is judged after the action's effects, what
+        its additions imply and displace, and the disturbances have all been applied."""
+        problems = self.violations(after)
+        problems += [f"{atom} is added but false after" for atom in sorted(action.add - after)]
+        problems += [f"{atom} is deleted but true after" for atom in sorted(action.delete & after)]
+        return problems
+
+    def _modelled(self, state: frozenset[str],
+                  action: Action) -> tuple[frozenset[str], frozenset[str]]:
+        """The modelled result before it is checked: the action's deletes and adds, what the adds
+        imply, their mutex partners displaced, then the disturbances its changes trigger."""
         added = self.closure(action.add)
         result = (set(state) - action.delete) | added
         for literal in added:
@@ -391,6 +460,7 @@ def plan(domain: Domain, start: frozenset[str], goal_positive,
     """
     if mode not in ("relaxed", "exact"):
         raise ValueError(f"Unknown planning mode '{mode}'")
+    domain.check_state(start, "the start state")
     if mode == "exact":
         if unrestricted_holes:
             raise ValueError("unrestricted_holes is an option of the relaxed mode only")
@@ -461,7 +531,10 @@ def _search(domain, start, goal_positive, goal_negative, candidates, reachable,
         for action in actions:
             if not domain.applicable(state, action):
                 continue
-            nxt, collateral = domain.transition(state, action)
+            try:
+                nxt, collateral = domain.transition(state, action)
+            except InvalidTransition:
+                continue
             if nxt == state:
                 continue
             next_delegated = delegated
@@ -519,12 +592,17 @@ def domain_atoms(domain: Domain) -> frozenset[str]:
 
 def replay_problems(domain: Domain, start: frozenset[str], steps, goal_positive, goal_negative=()) -> list[str]:
     """Replay a plan with the transition model from `start`: every step that could not run there,
-    and the goal literals the final state misses. An empty list means the plan is valid."""
-    problems = []
+    and the goal literals the final state misses. An empty list means the plan is valid. A step
+    whose result is not a valid state ends the replay, since no state follows it."""
+    problems = [f"the start: {broken}" for broken in domain.violations(start)]
     state = frozenset(start)
     for index, step in enumerate(steps):
-        if not domain.enabled(state, step):
+        if not domain.can_run(state, step):
             problems.append(f"step {index + 1}, {step.name}, cannot run")
+        invalid = domain.transition_problems(state, step)
+        if invalid:
+            problems.append(f"step {index + 1}, {step.name}, leads to an invalid state: {'; '.join(invalid)}")
+            return problems
         state = domain.apply(state, step)
     for literal in sorted(join(goal_positive, goal_negative or ())):
         if not literal.holds(state):

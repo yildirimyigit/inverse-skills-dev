@@ -266,8 +266,11 @@ def main() -> None:
             if name in replanned_in:
                 # Forward skill -> measured state -> exact planning, in this episode.
                 state = measured(obs, regions)
-                episode_plan = hp.plan(replanned_in[name], state, *goal,
-                                       max_delegated=0 if name == "relearned" else 2)
+                try:
+                    episode_plan = hp.plan(replanned_in[name], state, *goal,
+                                           max_delegated=0 if name == "relearned" else 2)
+                except hp.InconsistentState as error:     # the measured state breaks a declared constraint
+                    episode_plan, row["plan_refused"] = None, str(error)
                 steps = list(episode_plan.steps) if episode_plan else []
                 row.update(measured_state=sorted(state), plan=[s.name for s in steps],
                            plan_as_planned_at_the_start=[s.name for s in steps] == [s.name for s in conditions[name][0]])

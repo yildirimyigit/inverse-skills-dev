@@ -8,18 +8,27 @@ The model
 
   Library   The library operators are assumed complete and correct under the modelled
             transition semantics, `Domain.transition`. That transition applies an action's own
-            add and delete effects together with the domain's world constraints: implications,
-            mutex groups and disturbances. An effect a world constraint gives a library action is
-            that action's effect, and this module reads library effects only through the
-            transition and `Domain.closure`.
+            add and delete effects, what its additions imply, the mutex partners its additions
+            displace, and the disturbances its changes trigger. An effect a world constraint gives
+            a library action is that action's effect, and this module reads library effects only
+            through the transition and `Domain.closure`.
+  Validity  The domain's implications and mutex groups are constraints on states. A transition
+            is valid when its result keeps all of them, holds every atom the action adds and
+            none it deletes; otherwise the action, or hole, is unavailable in that state
+            (`Domain.successor`). Nothing is deleted to repair a constraint. The start must keep
+            them too, or the planner refuses it (`InconsistentState`). Every state reached is
+            therefore consistent.
   Literals  Every literal is signed: `p` (the atom p is true) or `not p` (it is false), and the
             two signs are treated alike throughout (`literals.py`). A state is the set of true
             atoms; a goal and a precondition set are sets of signed literals.
   Holes     A hole for a scored literal l establishes l and nothing else itself: a hole for `p`
-            adds p, a hole for `not p` deletes p. It runs only while l does not hold, from a
-            largest set of robot-relative facts about l's object that the library really holds
-            together (`hole_starts`), whatever l's sign. The world constraints give it its other
-            effects, as they do for library actions.
+            adds p, a hole for `not p` deletes p. It runs only while l does not hold, and only
+            where its transition is valid, from an initiation context: a largest set of
+            robot-relative facts about l's object that hold together in some library-reachable
+            state where l does not hold (`hole_starts`), whatever l's sign. If l holds in every
+            library-reachable state there is no context and no hole for l, and the result says
+            so (`no_context`). The world constraints give a hole its other effects, as they do
+            for library actions.
 
 Definitions, with k = `max_delegated`, the learning budget
 
@@ -45,7 +54,10 @@ the equally cheap ones. If no size up to k has an admissible set, return `ExactN
 
 What is guaranteed
 
-  - A returned plan runs under the transition model and reaches the goal.
+  - A returned plan runs under the transition model, every state along it is consistent with
+    the declared constraints, and it reaches the goal. This is a symbolic guarantee: that a
+    hole's literal can be established physically, or that a library action really has its
+    modelled effects, is not shown by planning.
   - Its holes are subset-minimal: no proper subset of them reaches the goal at any length, so
     every plan for them uses all of them, and the library alone cannot reach the goal. This is
     not minimum cardinality. The preference can choose more holes than the fewest that reach the
@@ -53,8 +65,9 @@ What is guaranteed
   - The preference never blocks a plan: if some set of at most k candidates is feasible, an
     admissible set exists. Upstream is a strict partial order, and every replacement moves to
     literals strictly lower in it, so refusals cannot go round in a circle.
-  - `ExactNoPlan` is exact relative to the candidate set C, the budget k and the symbolic
-    transition model: it is returned if and only if no set of at most k candidates is feasible.
+  - `ExactNoPlan` is exact relative to the candidate set C, the budget k, the initiation
+    contexts and the symbolic transition model: it is returned if and only if no set of at most
+    k candidates is feasible.
     `feasible_with_all_holes` then says whether holes for every candidate would be.
   - Among the admissible sets of the smallest size, the plan has the least (displaced, length).
 
@@ -115,13 +128,15 @@ class HoleContext:
 class ExactPlanResult(PlanResult):
     """A `PlanResult` that also says why each hole is in the plan.
 
-    `candidates` is the candidate set C. The inherited gap fields stay empty: this mode computes
-    no flat set of gaps. `limits_reached` is always empty: there is no length limit, and a plan
-    is returned only within the budget.
+    `candidates` is the candidate set C, and `no_context` the candidates that hold in every
+    library-reachable state, so no initiation context and no hole exists for them. The inherited
+    gap fields stay empty: this mode computes no flat set of gaps. `limits_reached` is always
+    empty: there is no length limit, and a plan is returned only within the budget.
     """
 
     hole_contexts: tuple[HoleContext, ...] = ()
     limits_reached: tuple[str, ...] = ()
+    no_context: tuple[Literal, ...] = ()
 
     @property
     def planning_cost(self) -> tuple[int, int, int]:
@@ -140,7 +155,8 @@ class ExactNoPlan(NoPlan):
 
     `unmet_needs` are goal literals and library preconditions, of either sign, that hold in no
     state the library alone reaches; `unsynthesizable_needs` are those on atoms without a soft
-    score, which no hole can be offered for. `max_length` is 0, because there is no length limit. `unnecessary_holes` and
+    score, which no hole can be offered for. `no_context`, as in `ExactPlanResult`, lists the
+    candidates with no initiation context. `max_length` is 0, because there is no length limit. `unnecessary_holes` and
     `replaceable_holes` are always empty: when some set within the budget is feasible, an
     admissible one exists, so no plan was refused. They and `expanded` stay for callers that
     read every field. The inherited gap fields stay empty, as in `ExactPlanResult`.
@@ -155,18 +171,22 @@ class ExactNoPlan(NoPlan):
     replaceable_holes: tuple[str, ...] = ()
     feasible_with_all_holes: bool = False
     expanded: int = 0
+    no_context: tuple[Literal, ...] = ()
 
 
 def reachable_states(domain: Domain, start: frozenset[str], holes=()) -> set[frozenset[str]]:
-    """Every state reachable from `start` with the library and `holes`, by real transitions,
-    in any order. No step limit applies. A hole is usable only while its literal does not hold."""
+    """Every state reachable from `start` with the library and `holes`, by valid transitions,
+    in any order. No step limit applies. A hole is usable only while its literal does not hold.
+    A start that breaks a declared constraint is refused (`InconsistentState`)."""
+    domain.check_state(start, "the start state")
     seen = {start}
     frontier = [start]
     while frontier:
         state = frontier.pop()
         for action in [*domain.actions, *holes]:
-            if domain.enabled(state, action):
-                reached = domain.apply(state, action)
+            outcome = domain.successor(state, action)
+            if outcome is not None:
+                reached = outcome[0]
                 if reached not in seen:
                     seen.add(reached)
                     frontier.append(reached)
@@ -179,17 +199,20 @@ def library_states(domain: Domain, start: frozenset[str]) -> set[frozenset[str]]
 
 
 def hole_starts(domain: Domain, literal: Literal, states) -> list[Action]:
-    """The holes for `literal`: one for each largest set of robot-relative facts about its
-    object that hold together in some state the library really reaches.
+    """The holes for `literal`: one for each initiation context, a largest set of robot-relative
+    facts about its object that hold together in some state of `states` (the library-reachable
+    states) where `literal` does not hold yet.
 
     So the library still does all it can before the learned skill takes over, as in
-    `Domain.hole`, and a start is never an impossible conjunction: every start was really held
-    by the library. The rule is the same for both signs. A hole still runs only where its start
-    holds and its literal does not (`Domain.enabled`); if those never hold together, the hole
-    is never used. Usually there is exactly one start.
+    `Domain.hole`, and a context is never an impossible conjunction, nor one held only where the
+    literal is already established: every context was really held by the library in a state the
+    hole could start from. The rule is the same for both signs. If the literal holds in every
+    state there is no context, and no hole: none is invented. A hole still runs only where its
+    context holds, its literal does not, and its transition is valid (`Domain.enabled`).
+    Usually there is exactly one context.
     """
     about_object = domain.about_object(literal)
-    held = {state & about_object for state in states}
+    held = {state & about_object for state in states if not literal.holds(state)}
     largest = [facts for facts in held if not any(facts < other for other in held)]
     return [domain.hole(literal, facts) for facts in sorted(largest, key=sorted)]
 
@@ -278,6 +301,10 @@ class _HoleSets:
                 self._starts[literal] = hole_starts(self.domain, literal, self.library)
         return [hole for literal in sorted(literals) for hole in self._starts[literal]]
 
+    def no_context(self) -> tuple[Literal, ...]:
+        """The candidates with no initiation context: they hold in every library-reachable state."""
+        return tuple(sorted(literal for literal in self.candidates if not self.holes([literal])))
+
     def states(self, literals) -> set[frozenset[str]]:
         literals = frozenset(literals)
         if literals not in self._reached:
@@ -333,9 +360,10 @@ def _cheapest_plans(domain: Domain, start: frozenset[str], satisfied, holes: lis
         settled.add(state)
         expanded += 1
         for action in domain.actions + list(holes):
-            if not domain.enabled(state, action):
+            outcome = domain.successor(state, action)
+            if outcome is None:
                 continue
-            nxt, displaced = domain.transition(state, action)
+            nxt, displaced = outcome
             if nxt == state:
                 continue
             next_key = (key[0] + len(displaced), key[1] + 1)
@@ -355,17 +383,19 @@ def _library_alternatives(domain, before, literal, suffix) -> tuple[tuple[str, s
     the hole is, and the rest of the plan follows."""
     reasons = []
     for action in _establishers(domain, literal):
-        if not domain.applicable(before, action):
+        outcome = domain.successor(before, action)
+        if outcome is None:
             reasons.append((action.name, "cannot run here"))
             continue
-        state = domain.apply(before, action)
+        state = outcome[0]
         for step in suffix:
             if step.hole_for == literal:
                 continue
-            if not domain.applicable(state, step):
+            outcome = domain.successor(state, step)
+            if outcome is None:
                 reasons.append((action.name, f"the plan then fails at {step.name}"))
                 break
-            state = domain.apply(state, step)
+            state = outcome[0]
         else:
             reasons.append((action.name, "the rest of the plan runs, but the goal is not reached"))
     return tuple(reasons)
@@ -432,6 +462,7 @@ def plan_exact(domain: Domain, start, goal_positive, goal_negative=None, *,
     be true and the atoms that must be false. A goal asking for both p and not p is rejected.
     """
     start = frozenset(start)
+    domain.check_state(start, "the start state")
     goal = join(goal_positive, goal_negative or ())
 
     def reaches_goal(state: frozenset[str]) -> bool:
@@ -451,7 +482,8 @@ def plan_exact(domain: Domain, start, goal_positive, goal_negative=None, *,
                            max_delegated=max_delegated,
                            unmet_needs=tuple(sorted(unmet)),
                            unsynthesizable_needs=tuple(sorted(l for l in unmet if l.atom not in domain.scored)),
-                           feasible_with_all_holes=feasible)
+                           feasible_with_all_holes=feasible,
+                           no_context=hole_sets.no_context())
 
     best: tuple[int, int] | None = None
     tied: list[tuple[Action, ...]] = []
@@ -477,4 +509,5 @@ def plan_exact(domain: Domain, start, goal_positive, goal_negative=None, *,
         candidates=tuple(sorted(hole_sets.candidates)),
         alternatives=tuple(tied[1:]),
         hole_contexts=tuple(_hole_context(domain, start, chosen, i, goal) for i in hole_indices),
+        no_context=hole_sets.no_context(),
     )

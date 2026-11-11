@@ -15,7 +15,7 @@ import random
 from dataclasses import replace
 from pathlib import Path
 
-from test_exact_hole_planner import Oracle, layered_problem, random_problem
+from test_exact_hole_planner import Oracle, layered_problem, random_problem, start_refused
 
 from inverse_skills.envs import drawer_domain as dd
 from inverse_skills.envs import stow_domain as sd
@@ -82,6 +82,8 @@ def test_no_plan_exactly_when_no_set_within_the_budget_is_feasible():
     budget. When holes for every candidate would work, raising the budget to the fewest that
     suffice gives a plan."""
     for domain, start, goal_pos, goal_neg in random_problems(400, seed=11):
+        if start_refused(domain, start, goal_pos, goal_neg):
+            continue
         oracle = Oracle(domain, start, goal_pos, goal_neg)
         sizes = [len(chosen) for chosen in oracle.subsets(len(oracle.candidates())) if oracle.solves(chosen)]
         for budget in range(4):
@@ -119,6 +121,8 @@ def test_no_plan_is_relative_to_the_candidate_set():
 def test_every_plan_is_subset_minimal():
     """No proper subset of the plan's holes reaches the goal at any length, for every budget."""
     for domain, start, goal_pos, goal_neg in random_problems(400, seed=12):
+        if start_refused(domain, start, goal_pos, goal_neg):
+            continue
         oracle = Oracle(domain, start, goal_pos, goal_neg)
         for budget in (1, 2, 3):
             result = plan_exact(domain, start, goal_pos, goal_neg, max_delegated=budget)

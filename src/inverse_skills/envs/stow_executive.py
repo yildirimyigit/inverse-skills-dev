@@ -44,6 +44,7 @@ from inverse_skills.envs import stow_primitives as prim
 from inverse_skills.envs import stow_skill_io as skill_io
 from inverse_skills.operators.hole_planner import (
     Action,
+    InvalidTransition,
     derive_fences,
     predicate_args,
     symbolic_state,
@@ -81,6 +82,7 @@ class ExecutionReport:
     goal_met_boolean: bool | None = None          # every goal literal holds in the Boolean sense
     goal_unmet: list[str] = field(default_factory=list)   # the goal literals not robustly met
     final_scores: dict[str, float] = field(default_factory=dict)
+    model_stopped: str = ""        # why the model monitor stopped, if it did: an invalid state or step
     cube_a_err_mm: float = float("nan")
     cube_b_err_mm: float = float("nan")
 
@@ -97,6 +99,7 @@ class ExecutionReport:
             "cube_a_err_mm": self.cube_a_err_mm,
             "cube_b_err_mm": self.cube_b_err_mm,
             "final_scores": self.final_scores,
+            "model_stopped": self.model_stopped,
             "ok": self.ok,
         }
 
@@ -193,6 +196,9 @@ def execute_plan(env, obs, steps: list[Action], model=None, regions=None,
                 registry.evaluate_all(prim.obs_to_scene(o, regions)).items()}
 
     start = symbolic_state(scores(obs)) if domain is not None else None
+    if start is not None and domain.violations(start):
+        report.model_stopped = "the measured start breaks the model's constraints: " + "; ".join(domain.violations(start))
+        start = None
     predicted = start
     for index, step in enumerate(steps):
         measured = scores(obs)
@@ -233,7 +239,11 @@ def execute_plan(env, obs, steps: list[Action], model=None, regions=None,
             if target is not None and goal is not None:
                 kept_true, kept_false = derive_fences(domain, start, steps, index, *goal)
                 fences_broken = [str(l) for l in robustly_unmet(join(kept_true, kept_false), after)]
-            predicted = domain.apply(predicted, step)
+            try:
+                predicted = domain.apply(predicted, step)
+            except InvalidTransition as error:
+                report.model_stopped, predicted = f"after {step.name}: {error}", None
+        if predicted is not None:
             measured_state = symbolic_state(after)
             divergence = sorted(p for p in domain.scored if (p in predicted) != (p in measured_state))
         uncertain = sorted(k for k, v in after.items() if robust_value(v) == "uncertain")

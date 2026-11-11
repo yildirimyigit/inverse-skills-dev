@@ -112,14 +112,26 @@ def test_a_negative_hole_obeys_the_disturbances_like_any_action():
     assert domain.transition(frozenset({"t", "b"}), result.steps[0]) == (frozenset(), frozenset({"b"}))
 
 
-def test_deleting_an_implied_atom_leaves_what_implies_it():
-    """LIMITATION, kept as it is for library deletes: implications are applied to what an action
-    adds, not in reverse to what it deletes. A hole for `not p` while q holds, with q implying p,
-    leaves q true and p false."""
-    domain = Domain(actions=[], scored=frozenset({"p"}), implications={"q": frozenset({"p"})})
-    result = exact(domain, {"q", "p"}, (), {"p"})
-    assert result.actions == ("HOLE[not p]",)
-    assert domain.apply(frozenset({"q", "p"}), result.steps[0]) == {"q"}
+def test_a_hole_for_not_p_cannot_run_while_an_atom_implying_p_holds():
+    """Replaces Round 0's `test_deleting_an_implied_atom_leaves_what_implies_it`, which accepted
+    {q} as the result of deleting p from {q, p} although q implies p (Round 1, 2026-11-11). That
+    result breaks the declared implication, so the transition is invalid: the hole for `not p`
+    cannot run while q holds, and nothing deletes q to make room. With nothing able to make q
+    false there is no plan; the oracle agrees. Once q can be made false, the hole runs."""
+    stuck = Domain(actions=[], scored=frozenset({"p"}), implications={"q": frozenset({"p"})})
+    result = exact(stuck, {"q", "p"}, (), {"p"})
+    assert isinstance(result, ExactNoPlan) and not result.feasible_with_all_holes
+    hole = stuck.hole(neg("p"), ())
+    assert stuck.transition_problems(frozenset({"q", "p"}), hole) == ["q implies p, but p is false"]
+    assert stuck.successor(frozenset({"q", "p"}), hole) is None
+    assert not agrees_with_the_oracle(stuck, {"q", "p"}, set(), {"p"}, 2, 4)
+
+    freed = Domain(actions=[act("drop_q", (), (), {"q"})], scored=frozenset({"p"}),
+                   implications={"q": frozenset({"p"})})
+    result = exact(freed, {"q", "p"}, (), {"p"})
+    assert result.actions == ("drop_q", "HOLE[not p]")
+    assert_valid(freed, {"q", "p"}, result, (), {"p"})
+    assert agrees_with_the_oracle(freed, {"q", "p"}, set(), {"p"}, 2, 4)
 
 
 # --- budget-aware replacement, signed ------------------------------------------------------------

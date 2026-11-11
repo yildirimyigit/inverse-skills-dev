@@ -40,6 +40,7 @@ from inverse_skills.operators.hole_planner import (
     Action,
     Disturbance,
     Domain,
+    InconsistentState,
     NoPlan,
     PlanResult,
     hole_spec,
@@ -196,15 +197,17 @@ def test_a_exact_results_still_work_as_the_results_callers_know():
 
 
 def test_a_the_exact_result_types_keep_their_fields():
-    """Scripts, specs and reports read these fields, so the simplified planner keeps all of them."""
+    """Scripts, specs and reports read these fields, so the simplified planner keeps all of them.
+    Round 1 (2026-11-11) added one field to both results, `no_context`, at the end: the candidates
+    that hold in every library-reachable state, so no initiation context exists for them."""
     assert [f.name for f in dataclasses.fields(ExactPlanResult)] == [
         "actions", "steps", "delegated", "collateral", "hole_literals", "hole_indices", "expanded",
         "candidates", "alternatives", "capability_gaps", "synthesizable_gaps", "hole_contexts",
-        "limits_reached"]
+        "limits_reached", "no_context"]
     assert [f.name for f in dataclasses.fields(ExactNoPlan)] == [
         "capability_gaps", "synthesizable_gaps", "candidates", "limits_reached", "max_delegated",
         "max_length", "unmet_needs", "unsynthesizable_needs", "unnecessary_holes", "replaceable_holes",
-        "feasible_with_all_holes", "expanded"]
+        "feasible_with_all_holes", "expanded", "no_context"]
     assert [f.name for f in dataclasses.fields(HoleContext)] == [
         "literal", "index", "state_before", "used_by", "used_at", "waiting", "prefix", "suffix",
         "library_alternatives"]
@@ -716,10 +719,19 @@ def test_j_a_plan_that_displaces_nothing_wins_however_long():
 # Hole starts, without the relaxation
 
 def test_hole_starts_are_the_relaxed_modes_on_stow_and_the_drawer():
-    for domain, start in ((sd.domain(), sd.stowed_state()), (dd.domain(), DRAWER_START)):
+    """Superseded in part by Round 1 (2026-11-11): a context now comes only from library states
+    where the hole's literal does not hold. A literal the library keeps true in every state it
+    reaches (A stays in the pocket; the drawer stays shut) has no context and no hole. For every
+    other scored atom the exact mode's start is still the relaxed mode's."""
+    kept_true = {"stow": {"in_region(cube_a,pocket)"}, "drawer": {CLOSED}}
+    for name, domain, start in (("stow", sd.domain(), sd.stowed_state()), ("drawer", dd.domain(), DRAWER_START)):
+        library = library_states(domain, start)
         for key in sorted(domain.scored):
-            by_relaxed = domain.hole(pos(key), relaxed_reachable(domain, start))
-            assert hole_starts(domain, pos(key), library_states(domain, start)) == [by_relaxed], key
+            starts = hole_starts(domain, pos(key), library)
+            if key in kept_true[name]:
+                assert all(pos(key).holds(state) for state in library) and starts == [], key
+            else:
+                assert starts == [domain.hole(pos(key), relaxed_reachable(domain, start))], key
 
 
 def test_an_approach_cannot_be_skipped():
@@ -776,12 +788,15 @@ def test_a_hole_cannot_skip_its_preparation():
 
 
 def test_a_hole_is_usable_only_while_its_literal_is_missing():
-    """p implies q, but the start holds p without q. Running a hole for p anyway would add q. It
-    is not offered in the search, and the exact checks must agree."""
+    """p implies q. Superseded by Round 1 (2026-11-11): this test used to start from p without q
+    and check that a hole for p, whose literal already held, was not offered. That start breaks
+    the declared implication, so the planner now refuses it outright. From the valid start {p, q}
+    the goal already holds; from {} the hole for p runs, since p is missing, and brings q."""
     domain = Domain(actions=[act("make_q", {"p", "r"}, {"q"})], scored=frozenset({"p"}),
                     implications={"p": frozenset({"q"})})
-    result = exact(domain, {"p"}, {"q"})
-    assert isinstance(result, ExactNoPlan) and not result.feasible_with_all_holes
+    with pytest.raises(InconsistentState):
+        exact(domain, {"p"}, {"q"})
+    assert exact(domain, (), {"q"}).actions == ("HOLE[p]",)
 
 
 def test_a_hole_starts_only_from_facts_about_its_object():
@@ -1235,7 +1250,9 @@ class Oracle:
     the names a person writes, "p" and "not p". `solves`, `is_minimal` and `minimal_sets` are
     plain searches of the real transitions. Only `upstream` and `admissible` read the preference,
     and `admissible` tries every replacement, not only the largest. `best_plans` enumerates every
-    plan up to a length.
+    plan up to a length. A step whose result breaks a declared constraint, or undoes what the step
+    adds or deletes, is no transition at all; a hole starts only from what the library holds where
+    its literal does not hold yet.
     """
 
     def __init__(self, domain, start, goal_pos, goal_neg=()):
@@ -1270,6 +1287,12 @@ class Oracle:
 
     # -- the transition ---------------------------------------------------------------------------
 
+    def consistent(self, state):
+        """Every declared implication q => p with q true has p true, and at most one atom of each
+        mutex group is true."""
+        implied = all(set(self.domain.implications.get(atom, ())) <= set(state) for atom in state)
+        return implied and all(len(set(group) & set(state)) <= 1 for group in self.domain.mutex_groups)
+
     def closure(self, literals):
         closed, pending = set(), list(literals)
         while pending:
@@ -1280,7 +1303,9 @@ class Oracle:
         return closed
 
     def step(self, state, add, delete=()):
-        """The next state, and what was displaced on the way."""
+        """The next state, and what was displaced on the way; None when the result is not a valid
+        state: it breaks a declared constraint, misses an atom the step adds, or keeps one it
+        deletes."""
         added = self.closure(add)
         after = (set(state) - set(delete)) | added
         for literal in added:
@@ -1292,7 +1317,10 @@ class Oracle:
         for disturbance in self.domain.disturbances:
             if disturbance.trigger in changed:
                 displaced |= (set(disturbance.clobbers) & after) - added
-        return frozenset(after - displaced), frozenset(displaced)
+        after = frozenset(after - displaced)
+        if not self.consistent(after) or not set(add) <= after or set(delete) & after:
+            return None
+        return after, frozenset(displaced)
 
     def hole_step(self, state, pair):
         """A hole for p adds p; a hole for not p deletes p."""
@@ -1305,7 +1333,7 @@ class Oracle:
 
     def starts(self, pair):
         """The largest sets of robot-relative facts about the literal's object held in a library
-        state, whatever the literal's sign."""
+        state where the literal does not hold, whatever its sign."""
         def first_arg(literal):
             inside = literal[literal.index("(") + 1:literal.rindex(")")] if "(" in literal else ""
             return inside.split(",")[0]
@@ -1313,7 +1341,7 @@ class Oracle:
         atom = pair[0]
         about = {p for p in self.domain.robot_relative
                  if first_arg(atom) and p != atom and first_arg(p) == first_arg(atom)}
-        held = {frozenset(state & about) for state in self.library}
+        held = {frozenset(state & about) for state in self.library if not self.holds(state, pair)}
         return [facts for facts in held if not any(facts < other for other in held)]
 
     def reach(self, literals):
@@ -1324,11 +1352,11 @@ class Oracle:
             seen, pending = {self.start}, [self.start]
             while pending:
                 state = pending.pop()
-                following = [self.step(state, a.add, a.delete)[0] for a in self.domain.actions
+                following = [self.step(state, a.add, a.delete) for a in self.domain.actions
                              if self.runs(state, a)]
-                following += [self.hole_step(state, pair)[0] for pair in literals
+                following += [self.hole_step(state, pair) for pair in literals
                               if not self.holds(state, pair) and any(s <= state for s in starts[pair])]
-                for reached in following:
+                for reached in (outcome[0] for outcome in following if outcome is not None):
                     if reached not in seen:
                         seen.add(reached)
                         pending.append(reached)
@@ -1469,15 +1497,17 @@ class Oracle:
             if len(trace) == max_length:
                 return
             for action in self.domain.actions:
-                if self.runs(state, action):
-                    after, displaced = self.step(state, action.add, action.delete)
+                outcome = self.step(state, action.add, action.delete) if self.runs(state, action) else None
+                if outcome is not None:
+                    after, displaced = outcome
                     if after != state:
                         extend(after, [*trace, Step(action.name, None, state, after, displaced)], delegated)
             for pair in candidates:
                 if not self.holds(state, pair) and len(delegated | {pair}) <= budget:
                     for facts in starts[pair]:
-                        if facts <= state:
-                            after, displaced = self.hole_step(state, pair)
+                        outcome = self.hole_step(state, pair) if facts <= state else None
+                        if outcome is not None:
+                            after, displaced = outcome
                             if after != state:
                                 step = Step(f"HOLE[{self.name(pair)}]", pair, state, after, displaced)
                                 extend(after, [*trace, step], delegated | {pair})
@@ -1488,10 +1518,24 @@ class Oracle:
         return best, plans
 
 
+def start_refused(domain, start, goal_pos, goal_neg=()) -> bool:
+    """True, after checking that the planner refuses it, when the start breaks a declared
+    constraint (Round 1): such a problem has no plan to compare."""
+    if Oracle(domain, start, goal_pos, goal_neg).consistent(frozenset(start)):
+        return False
+    with pytest.raises(InconsistentState):
+        plan_exact(domain, start, goal_pos, goal_neg)
+    return True
+
+
 def agrees_with_the_oracle(domain, start, goal_pos, goal_neg, budget, max_length) -> bool:
     """Every guarantee of the formulation, checked against the oracle. Plans longer than
     `max_length` are beyond the oracle's enumeration, and are checked only for their holes."""
     oracle = Oracle(domain, start, goal_pos, goal_neg)
+    if not oracle.consistent(oracle.start):     # the planner refuses a start that breaks a constraint
+        with pytest.raises(InconsistentState):
+            plan_exact(domain, start, goal_pos, goal_neg, max_delegated=budget)
+        return False
     result = plan_exact(domain, start, goal_pos, goal_neg, max_delegated=budget)
     # NoPlan is exact: a plan comes back exactly when some set of at most k candidates is feasible.
     assert bool(result) == oracle.feasible_within(budget)
@@ -1593,8 +1637,10 @@ def test_the_order_of_the_action_list_does_not_change_the_cost():
     rng = random.Random(1)
     for _ in range(300):
         domain, start, goal_pos, goal_neg = random_problem(rng)
+        shuffled = rng.sample(domain.actions, len(domain.actions))     # the same draws, in the same order
+        if start_refused(domain, start, goal_pos, goal_neg):
+            continue
         before = plan_exact(domain, start, goal_pos, goal_neg)
-        shuffled = rng.sample(domain.actions, len(domain.actions))
         after = plan_exact(dataclasses.replace(domain, actions=shuffled), start, goal_pos, goal_neg)
         assert (after.planning_cost if after else None) == (before.planning_cost if before else None)
 

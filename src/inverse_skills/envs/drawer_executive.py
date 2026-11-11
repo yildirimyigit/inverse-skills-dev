@@ -46,7 +46,7 @@ import torch
 from inverse_skills.envs import drawer_predicates as dp
 from inverse_skills.envs import drawer_primitives as prim
 from inverse_skills.envs import drawer_skill_io as skill_io
-from inverse_skills.operators.hole_planner import Action, derive_fences, symbolic_state
+from inverse_skills.operators.hole_planner import Action, InvalidTransition, derive_fences, symbolic_state
 from inverse_skills.operators.literals import Literal, join, robust_value, robustly_unmet
 
 MAX_RETRIES = 3
@@ -74,6 +74,7 @@ class ExecutionReport:
     goal_unmet: list[str] = field(default_factory=list)   # the goal literals not robustly met
     final_scores: dict[str, float] = field(default_factory=dict)
     final_opening_mm: float = float("nan")
+    model_stopped: str = ""        # why the model monitor stopped, if it did: an invalid state or step
 
     @property
     def ok(self) -> bool:
@@ -83,7 +84,7 @@ class ExecutionReport:
         return {"steps": [vars(s) for s in self.steps], "goal_met": self.goal_met,
                 "goal_met_boolean": self.goal_met_boolean, "goal_unmet": self.goal_unmet,
                 "final_scores": self.final_scores, "final_opening_mm": self.final_opening_mm,
-                "ok": self.ok}
+                "model_stopped": self.model_stopped, "ok": self.ok}
 
 
 def scores(obs, registry) -> dict[str, float]:
@@ -123,6 +124,9 @@ def execute_plan(env, obs, steps: list[Action], domain, goal: tuple[set[str], se
     learned = learned or {}
     report = ExecutionReport()
     start = symbolic_state(scores(obs, registry))
+    if domain.violations(start):
+        report.model_stopped = "the measured start breaks the model's constraints: " + "; ".join(domain.violations(start))
+        start = None
     predicted = start
     for index, step in enumerate(steps):
         target = step.hole_for or step.learned_for     # the signed literal a learned step owes
@@ -161,13 +165,17 @@ def execute_plan(env, obs, steps: list[Action], domain, goal: tuple[set[str], se
         divergence: list[str] = []
         fences_broken: list[str] = []
         after = scores(obs, registry)
-        if attempts:   # a step refused before it ran changed nothing to compare
+        if attempts and predicted is not None:   # a step refused before it ran changed nothing to compare
             if target is not None:
                 kept_true, kept_false = derive_fences(domain, start, steps, index, *goal)
                 fences_broken = [str(l) for l in robustly_unmet(join(kept_true, kept_false), after)]
-            predicted = domain.apply(predicted, step)
-            measured_state = symbolic_state(after)
-            divergence = sorted(p for p in domain.scored if (p in predicted) != (p in measured_state))
+            try:
+                predicted = domain.apply(predicted, step)
+            except InvalidTransition as error:
+                report.model_stopped, predicted = f"after {step.name}: {error}", None
+            if predicted is not None:
+                measured_state = symbolic_state(after)
+                divergence = sorted(p for p in domain.scored if (p in predicted) != (p in measured_state))
         uncertain = sorted(k for k, v in after.items() if robust_value(v) == "uncertain")
         report.steps.append(StepReport(step.name, attempts, ok, detail, divergence,
                                        round(prim.opening(obs) * 1000, 1), prim.tilt_deg(obs),
