@@ -512,10 +512,14 @@ def learned_action(achieve: str, operator) -> Action:
     `operator` is what the operator extractor made of the skill's (start, end)
     scenes, exactly as it does for demonstrations: its preconditions are what
     held whenever the skill was run, so the planner uses it only where it was
-    verified.
+    verified. A positive precondition becomes `pre`, a negative one `pre_absent`;
+    an effect that makes an atom true becomes `add`, one that makes it false `delete`.
     """
+    positive_pre = frozenset(t.key for t in operator.preconditions if t.polarity == "positive")
+    negative_pre = frozenset(t.key for t in operator.preconditions if t.polarity == "negative")
     return Action(name=f"LEARNED[{achieve}]",
-                  pre=frozenset(t.key for t in operator.preconditions),
+                  pre=positive_pre,
+                  pre_absent=negative_pre,
                   add=frozenset(t.key for t in operator.add_effects),
                   delete=frozenset(t.key for t in operator.delete_effects))
 

@@ -10,6 +10,7 @@ from inverse_skills.operators import (
     OperatorExtractor,
     RestorationObjective,
 )
+from inverse_skills.operators.literals import neg, pos
 from inverse_skills.predicates.base import Predicate, PredicateRegistry, PredicateResult
 from inverse_skills.toy import build_predicate_registry, make_pick_place_rollouts
 
@@ -93,9 +94,13 @@ def test_a_predicate_false_at_the_start_of_one_demonstration_is_a_precondition_o
 
 def test_a_consistent_false_to_true_transition_is_an_add_effect_in_both_modes() -> None:
     table = {"p": [(0.05, 0.95), (0.1, 0.9), (0.0001, 0.99), (0.15, 0.85), (0.02, 0.97)]}
-    for mode in ("mean", "min_max"):
-        pre, add, delete, _ = _extract(table, mode)
-        assert (pre, add, delete) == (set(), {"p"}, set()), mode
+    pre, add, delete, _ = _extract(table, "mean")
+    assert (pre, add, delete) == (set(), {"p"}, set())
+    # Superseded for min_max by the signed rule (2026-11-11): p is false before every
+    # demonstration, so `not p` is a precondition, and the effect p is its complement.
+    _, add, delete, result = _extract(table, "min_max")
+    assert (add, delete) == ({"p"}, set())
+    assert result.operator.precondition_literals() == {neg("p")}
 
 
 def test_a_consistent_true_to_false_transition_is_a_precondition_and_a_delete_effect_in_both_modes() -> None:
@@ -132,10 +137,14 @@ def test_min_max_terms_carry_the_weakest_evidence_and_their_own_extractor_name()
     table = {"p": [(0.9, 0.1), (0.95, 0.05)], "q": [(0.2, 0.8), (0.1, 0.9)]}
     _, _, _, result = _extract(table, "min_max")
     op = result.operator
-    assert [(t.key, t.weight) for t in op.preconditions] == [("p", pytest.approx(0.9))]
+    # Superseded by the signed rule (2026-11-11): q is false before both demonstrations (at most
+    # 0.2), so `not q` is a precondition too, weighted by its weakest falsity, 1 - 0.2.
+    assert [(t.key, t.polarity, t.weight) for t in op.preconditions] == [
+        ("p", "positive", pytest.approx(0.9)), ("q", "negative", pytest.approx(1 - 0.2))]
     assert [(t.key, t.weight) for t in op.delete_effects] == [("p", pytest.approx(0.9 - 0.1))]
     assert [(t.key, t.weight) for t in op.add_effects] == [("q", pytest.approx(0.8 - 0.2))]
-    assert op.metadata == {"num_rollouts": 2, "extractor": "first_last_score_min_max_v0"}
+    assert op.metadata == {"num_rollouts": 2, "extractor": "first_last_score_min_max_signed_v1",
+                           "true_threshold": 0.8, "false_threshold": 0.2}
 
 
 def test_min_max_is_the_default() -> None:
@@ -149,7 +158,7 @@ def test_min_max_is_the_default() -> None:
     named = OperatorExtractor(registry, OperatorExtractionConfig(mode="min_max")).extract("skill", rollouts)
     assert by_default.operator.to_dict() == named.operator.to_dict()
     assert by_default.operator.preconditions == []
-    assert by_default.operator.metadata["extractor"] == "first_last_score_min_max_v0"
+    assert by_default.operator.metadata["extractor"] == "first_last_score_min_max_signed_v1"
 
 
 def test_the_mean_mode_stays_available_when_it_is_named_and_is_unchanged() -> None:

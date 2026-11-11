@@ -5,6 +5,7 @@ from statistics import mean
 from typing import Literal
 
 from inverse_skills.logging.rollout import ForwardRollout
+from inverse_skills.operators.literals import ROBUST_FALSE, ROBUST_TRUE, neg, pos, validate_scores
 from inverse_skills.operators.schema import LearnedOperator, PredicateTerm
 from inverse_skills.predicates.base import PredicateRegistry
 
@@ -14,12 +15,13 @@ class OperatorExtractionConfig:
     precondition_threshold: float = 0.80
     effect_delta_threshold: float = 0.35
     min_abs_effect_delta: float = 0.15
-    # "min_max" asks every demonstration to show the condition or the transition
-    # (_extract_min_max). "mean" thresholds the scores averaged over the demonstrations:
-    # the earlier rule, kept for comparisons and for the workshop paper's experiments.
+    # "min_max" asks every demonstration to show the condition or the transition, for either
+    # sign (_extract_min_max). "mean" thresholds the scores averaged over the demonstrations and
+    # extracts positive preconditions only: the earlier rule, a historical comparison mode kept
+    # for the workshop paper's experiments. New experiments use min_max.
     mode: Literal["mean", "min_max"] = "min_max"
-    true_threshold: float = 0.80   # min_max: a score at or above this counts as true
-    false_threshold: float = 0.20  # min_max: a score at or below this counts as false
+    true_threshold: float = ROBUST_TRUE    # min_max: a score at or above this is robustly true
+    false_threshold: float = ROBUST_FALSE  # min_max: a score at or below this is robustly false
 
 
 @dataclass
@@ -47,6 +49,8 @@ class OperatorExtractor:
                 raise ValueError(f"Expected skill '{skill_name}', got rollout skill '{rollout.skill_name}'")
             first_eval = self.predicates.evaluate_all(rollout.first())
             last_eval = self.predicates.evaluate_all(rollout.last())
+            for scene_eval in (first_eval, last_eval):
+                validate_scores({key: result.score for key, result in scene_eval.items()}, self.predicates.keys())
             for key in self.predicates.keys():
                 start_scores[key].append(first_eval[key].score)
                 end_scores[key].append(last_eval[key].score)
@@ -94,27 +98,34 @@ class OperatorExtractor:
         end_scores: dict[str, list[float]],
         num_rollouts: int,
     ) -> OperatorExtractionResult:
-        """The conservative rule: every demonstration must show the condition or the transition.
+        """The strict rule, the same for both signs: every demonstration must show the condition
+        or the transition. True means a score >= true_threshold, false a score <= false_threshold.
 
-          Pre: p is true at the start of every demonstration.
-          Add: p is false at the start and true at the end of every demonstration.
-          Del: p is true at the start and false at the end of every demonstration.
+          Pre:  p      p is true at the start of every demonstration
+                not p  p is false at the start of every demonstration
+          Eff:  p      p is false at the start and true at the end of every demonstration
+                not p  p is true at the start and false at the end of every demonstration
 
-        True means a score >= true_threshold, false a score <= false_threshold.
-        The rule assumes every demonstration exhibits each effect. STRIPS allows an
-        add effect that already held before some executions, or a delete effect that
-        was already false; this rule does not extract such effects.
+        A predicate whose start is neither true in every demonstration nor false in every one
+        gives no precondition: a score between the thresholds is evidence of neither. So every
+        effect's complement is a precondition, and the restoration goal is Pre itself.
+
+        The rule assumes every demonstration exhibits each effect. STRIPS allows an add effect
+        that already held before some executions, or a delete effect that was already false;
+        this rule does not extract such effects.
         """
         true_at, false_at = self.config.true_threshold, self.config.false_threshold
-        scores: dict[str, dict[str, float]] = {}
+        if not false_at < true_at:
+            raise ValueError(f"false_threshold {false_at} must lie below true_threshold {true_at}")
+        scores: dict[str, dict] = {}
         preconditions: list[PredicateTerm] = []
         add_effects: list[PredicateTerm] = []
         delete_effects: list[PredicateTerm] = []
 
         for key in self.predicates.keys():
-            start_min, start_max = min(start_scores[key]), max(start_scores[key])
-            end_min, end_max = min(end_scores[key]), max(end_scores[key])
-            scores[key] = {"start_min": start_min, "start_max": start_max, "end_min": end_min, "end_max": end_max}
+            starts, ends = start_scores[key], end_scores[key]
+            start_min, start_max = min(starts), max(starts)
+            end_min, end_max = min(ends), max(ends)
 
             true_at_every_start = start_min >= true_at
             false_at_every_start = start_max <= false_at
@@ -122,18 +133,40 @@ class OperatorExtractor:
             false_at_every_end = end_max <= false_at
 
             # Each weight is the weakest evidence any demonstration gave for the term.
+            precondition = effect = None
             if true_at_every_start:
+                precondition = pos(key)
                 preconditions.append(PredicateTerm(key=key, weight=start_min, polarity="positive"))
+            elif false_at_every_start:
+                precondition = neg(key)
+                preconditions.append(PredicateTerm(key=key, weight=1.0 - start_max, polarity="negative"))
             if false_at_every_start and true_at_every_end:
+                effect = pos(key)
                 add_effects.append(PredicateTerm(key=key, weight=end_min - start_max, polarity="positive"))
             if true_at_every_start and false_at_every_end:
+                effect = neg(key)
                 delete_effects.append(PredicateTerm(key=key, weight=start_min - end_max, polarity="positive"))
+
+            scores[key] = {
+                "start_min": start_min, "start_max": start_max, "end_min": end_min, "end_max": end_max,
+                "support": {"demonstrations": num_rollouts,
+                            "true_at_start": sum(v >= true_at for v in starts),
+                            "false_at_start": sum(v <= false_at for v in starts),
+                            "true_at_end": sum(v >= true_at for v in ends),
+                            "false_at_end": sum(v <= false_at for v in ends)},
+                "precondition": None if precondition is None else precondition.to_dict(),
+                "effect": None if effect is None else effect.to_dict(),
+                "changed_by_the_skill": effect is not None,
+            }
 
         operator = LearnedOperator(
             skill_name=skill_name,
             preconditions=preconditions,
             add_effects=add_effects,
             delete_effects=delete_effects,
-            metadata={"num_rollouts": num_rollouts, "extractor": "first_last_score_min_max_v0"},
+            metadata={"num_rollouts": num_rollouts, "extractor": "first_last_score_min_max_signed_v1",
+                      "true_threshold": true_at, "false_threshold": false_at},
         )
+        if not operator.effects_complement_in_preconditions():
+            raise RuntimeError("an extracted effect's complement is not a precondition; the strict rule guarantees it")
         return OperatorExtractionResult(operator=operator, scores=scores)
