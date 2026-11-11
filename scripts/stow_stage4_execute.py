@@ -29,10 +29,12 @@ Every run is monitored: the executive reports each scored literal where the
 measured scene disagrees with what that condition's domain predicts.
 
 An inverse is only defined when the forward skill actually happened, so each
-episode must start in the state Stage 2 planned from (read from its record). When
-the forward push falls short (it occasionally leaves A outside the pocket's seat),
-the scene is re-rolled, as the hole environment does for its handoffs, and the
-re-roll is reported rather than hidden.
+episode must start where Stage 2 planned from: the forward operator's signed
+effects robustly hold (a physical check, like every other), and the measured
+Boolean state is the one in the Stage 2 record. When the forward push falls short
+(it occasionally leaves A outside the pocket's seat, or B half in the mouth), the
+scene is re-rolled, as the hole environment does for its handoffs, and the re-roll
+is reported rather than hidden.
 
 How often a scene really gives a valid handoff is reported apart from the
 conditions' success, both for the demonstrations and on the evaluation seeds. The
@@ -67,7 +69,7 @@ from inverse_skills.operators.handoff import (
     summarize_attempts,
 )
 from inverse_skills.operators.hole_planner import Action, spec_target
-from inverse_skills.operators.literals import join
+from inverse_skills.operators.literals import join, robustly_unmet
 
 torch.set_num_threads(1)
 
@@ -90,12 +92,32 @@ def forward_once(env, scene_seed: int):
     return prim.forward_stow(env, obs), regions
 
 
-def stowed(env, seed: int, expected: frozenset[str]):
-    """The scene the forward skill leaves for this seed, re-rolled until it is the
-    state the plan starts from. Returns the observation, regions and re-rolls."""
+def forward_effects(operator_path: Path):
+    """The extracted forward operator's signed effects."""
+    data = json.loads(Path(operator_path).read_text())["operator"]
+    return join((t["key"] for t in data["add_effects"]), (t["key"] for t in data["delete_effects"]))
+
+
+def not_stowed(obs, regions, expected: frozenset[str], forward) -> list[str]:
+    """Why this scene is not the one the plan starts from. The forward skill happened when its
+    signed effects robustly hold, a physical check like every other; and the plan applies when
+    the Boolean state is the one Stage 2 planned from. An empty list: the scene is stowed."""
+    scores = measured_scores(obs, regions)
+    reasons = [f"forward effect {l} not robustly measured ({scores[l.atom]:.2f})"
+               for l in robustly_unmet(forward, scores)]
+    state = hp.symbolic_state(scores)
+    if state != expected:
+        reasons.append("differs from the planned start: " + ", ".join(sorted(state ^ expected)))
+    return reasons
+
+
+def stowed(env, seed: int, expected: frozenset[str], forward):
+    """The scene the forward skill leaves for this seed, re-rolled until the forward skill
+    happened and left the state the plan starts from. Returns the observation, regions and
+    re-rolls."""
     for attempt in range(_MAX_FORWARD_ATTEMPTS):
         obs, regions = forward_once(env, seed + attempt * 10_000)
-        if measured(obs, regions) == expected:
+        if not not_stowed(obs, regions, expected, forward):
             return obs, regions, attempt
     raise RuntimeError(f"seed {seed}: the forward skill never produced the planned start")
 
@@ -109,7 +131,7 @@ def run_prefix(env, obs, prefix: list[Action], regions):
     return obs, None if len(report.steps) == len(prefix) else f"stopped after {len(report.steps)} steps"
 
 
-def learn_operator(env, model, spec: dict, seeds, planned_start, domain) -> tuple[Action, dict]:
+def learn_operator(env, model, spec: dict, seeds, planned_start, domain, forward) -> tuple[Action, dict]:
     """Model the learned skill from its own executions, as a demonstration would be.
 
     Each execution starts at a valid handoff, checked before the policy runs. A scene that
@@ -123,10 +145,9 @@ def learn_operator(env, model, spec: dict, seeds, planned_start, domain) -> tupl
 
     def prepare(scene_seed: int) -> Prepared:
         obs, regions = forward_once(env, scene_seed)
-        left_behind = measured(obs, regions)
-        if left_behind != planned_start:
-            return Prepared(failed_stage="forward", reason="differs from the planned start: "
-                            + ", ".join(sorted(left_behind ^ planned_start)))
+        reasons = not_stowed(obs, regions, planned_start, forward)
+        if reasons:
+            return Prepared(failed_stage="forward", reason="; ".join(reasons))
         obs, failure = run_prefix(env, obs, prefix, regions)
         if failure:
             return Prepared(failed_stage="prefix", reason=failure)
@@ -151,14 +172,14 @@ def learn_operator(env, model, spec: dict, seeds, planned_start, domain) -> tupl
                     "action": action.to_dict()}
 
 
-def survey_handoffs(env, spec: dict, seeds, planned_start, domain) -> dict:
+def survey_handoffs(env, spec: dict, seeds, planned_start, domain, forward) -> dict:
     """Would each seed pass the handoff check? Measured only: no policy runs and nothing is
     re-rolled for it, so this is the raw rate behind the conditions' results."""
     prefix = [Action.from_dict(a) for a in spec["prefix"]]
     conditions = handoff_conditions(domain, planned_start, spec)
     rows = []
     for seed in seeds:
-        obs, regions, rerolls = stowed(env, seed, planned_start)
+        obs, regions, rerolls = stowed(env, seed, planned_start, forward)
         obs, failure = run_prefix(env, obs, prefix, regions)
         scores = measured_scores(obs, regions)
         violations = [failure] if failure else handoff_violations(conditions, scores)
@@ -187,6 +208,7 @@ def main() -> None:
     spec = load_spec(args.spec)
     target = spec_target(spec)
     goal = sd.goal_from_operator(args.operator)
+    forward = forward_effects(args.operator)
     stage2 = json.loads(args.plan.read_text())
     starts = {frozenset(row["state"]) for row in stage2["seeds"]}
     if len(starts) != 1:
@@ -205,7 +227,7 @@ def main() -> None:
 
     print(f"learning the model of LEARNED[{target}] from its executions "
           f"on seeds {EXTRACTION_SEEDS[0]}-{EXTRACTION_SEEDS[-1]}")
-    learned, learned_record = learn_operator(env, model, spec, EXTRACTION_SEEDS, start, domain)
+    learned, learned_record = learn_operator(env, model, spec, EXTRACTION_SEEDS, start, domain, forward)
     print(f"  handoff must have true: {', '.join(learned_record['handoff_conditions']['hold'])}; "
           f"false: {', '.join(learned_record['handoff_conditions']['absent'])}")
     for attempt in learned_record["handoff_attempts"]:
@@ -238,7 +260,7 @@ def main() -> None:
     for name, (steps, cond_domain) in conditions.items():
         print(f"\n{name}")
         for seed in args.seeds:
-            obs, regions, rerolls = stowed(env, seed, start)
+            obs, regions, rerolls = stowed(env, seed, start, forward)
             row = {"seed": seed, "forward_rerolls": rerolls}
             if name in replanned_in:
                 # Forward skill -> measured state -> exact planning, in this episode.
@@ -263,7 +285,7 @@ def main() -> None:
                 print(f"      model != world after {line}")
 
     # Apart from the results above: how often the evaluation seeds really give a valid handoff.
-    evaluation_handoffs = survey_handoffs(env, spec, args.seeds, start, domain)
+    evaluation_handoffs = survey_handoffs(env, spec, args.seeds, start, domain, forward)
     env.close()
 
     print(f"\n{'condition':22s} {'goal met':>9} {'(Boolean)':>10} {'mean A err':>11} {'mean B err':>11} {'diverging steps':>16}")
