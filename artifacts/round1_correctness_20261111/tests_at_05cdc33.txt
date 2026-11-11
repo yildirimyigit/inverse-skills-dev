@@ -1,0 +1,4 @@
+commit 05cdc333ab24fc93059ddf1c93cc218dc5fe1d89, 2026-11-11T20:40:50Z: PYTHONNOUSERSITE=1 python -m pytest -q
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+321 passed, 454 warnings in 16.25s

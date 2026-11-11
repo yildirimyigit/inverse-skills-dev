@@ -1,0 +1,318 @@
+{
+ "previous_commit": "ca2d029",
+ "commit": "c6d305090a37c8d0f7ad62a5c03f0eac2ceb546a",
+ "tracked_changes": [],
+ "stow": {
+  "library_states": {
+   "previous": 18,
+   "corrected": 18,
+   "same": true
+  },
+  "states_with_candidate_holes": {
+   "previous": 320,
+   "corrected": 320,
+   "same": true
+  },
+  "transitions_now_invalid": [],
+  "candidate_contexts": {
+   "previous": {
+    "clear_of_walls(cube_a)": [
+     [
+      "tcp_near(cube_a)"
+     ]
+    ],
+    "gripper_open()": [
+     []
+    ],
+    "not in_region(cube_a,pocket)": [
+     [
+      "tcp_near(cube_a)"
+     ]
+    ],
+    "in_region(cube_a,src_a)": [
+     [
+      "tcp_near(cube_a)"
+     ]
+    ],
+    "not in_region(cube_b,mouth)": [
+     [
+      "tcp_near(cube_b)"
+     ]
+    ],
+    "in_region(cube_b,src_b)": [
+     [
+      "tcp_near(cube_b)"
+     ]
+    ],
+    "not tcp_near(cube_a)": [
+     []
+    ],
+    "not tcp_near(cube_b)": [
+     []
+    ]
+   },
+   "corrected": {
+    "clear_of_walls(cube_a)": [
+     [
+      "tcp_near(cube_a)"
+     ]
+    ],
+    "gripper_open()": [
+     []
+    ],
+    "not in_region(cube_a,pocket)": [
+     [
+      "tcp_near(cube_a)"
+     ]
+    ],
+    "in_region(cube_a,src_a)": [
+     [
+      "tcp_near(cube_a)"
+     ]
+    ],
+    "not in_region(cube_b,mouth)": [
+     [
+      "tcp_near(cube_b)"
+     ]
+    ],
+    "in_region(cube_b,src_b)": [
+     [
+      "tcp_near(cube_b)"
+     ]
+    ],
+    "not tcp_near(cube_a)": [
+     []
+    ],
+    "not tcp_near(cube_b)": [
+     []
+    ]
+   }
+  },
+  "contexts_changed": {
+   "not clear_of_walls(cube_a)": {
+    "previous": [
+     [
+      "tcp_near(cube_a)"
+     ]
+    ],
+    "corrected": []
+   },
+   "in_region(cube_a,pocket)": {
+    "previous": [
+     [
+      "tcp_near(cube_a)"
+     ]
+    ],
+    "corrected": []
+   },
+   "not in_region(cube_a,src_a)": {
+    "previous": [
+     [
+      "tcp_near(cube_a)"
+     ]
+    ],
+    "corrected": []
+   }
+  },
+  "seeds": [
+   {
+    "seed": 0,
+    "violations": [],
+    "differs": [],
+    "no_context": []
+   },
+   {
+    "seed": 1,
+    "violations": [],
+    "differs": [],
+    "no_context": []
+   },
+   {
+    "seed": 2,
+    "violations": [],
+    "differs": [],
+    "no_context": []
+   },
+   {
+    "seed": 3,
+    "violations": [],
+    "differs": [],
+    "no_context": []
+   },
+   {
+    "seed": 4,
+    "violations": [],
+    "differs": [],
+    "no_context": []
+   }
+  ],
+  "spec_fields_that_differ": [],
+  "ablations_unchanged": {
+   "without_interference_model": true,
+   "library_only": true
+  },
+  "no_context": []
+ },
+ "drawer": {
+  "library_states": {
+   "previous": 2,
+   "corrected": 2,
+   "same": true
+  },
+  "states_with_candidate_holes": {
+   "previous": 9,
+   "corrected": 9,
+   "same": true
+  },
+  "transitions_now_invalid": [],
+  "candidate_contexts": {
+   "previous": {
+    "not at_handle_standoff(drawer)": [
+     []
+    ],
+    "not drawer_closed(drawer)": [
+     [
+      "at_handle_standoff(drawer)"
+     ]
+    ],
+    "drawer_open(drawer)": [
+     [
+      "at_handle_standoff(drawer)"
+     ]
+    ],
+    "not handle_grasped(drawer)": [
+     [
+      "at_handle_standoff(drawer)"
+     ]
+    ],
+    "handle_grasped(drawer)": [
+     [
+      "at_handle_standoff(drawer)"
+     ]
+    ]
+   },
+   "corrected": {
+    "not at_handle_standoff(drawer)": [
+     []
+    ],
+    "not drawer_closed(drawer)": [
+     [
+      "at_handle_standoff(drawer)"
+     ]
+    ],
+    "drawer_open(drawer)": [
+     [
+      "at_handle_standoff(drawer)"
+     ]
+    ],
+    "not handle_grasped(drawer)": [],
+    "handle_grasped(drawer)": [
+     [
+      "at_handle_standoff(drawer)"
+     ]
+    ]
+   }
+  },
+  "contexts_changed": {
+   "drawer_closed(drawer)": {
+    "previous": [
+     [
+      "at_handle_standoff(drawer)"
+     ]
+    ],
+    "corrected": []
+   },
+   "not drawer_open(drawer)": {
+    "previous": [
+     [
+      "at_handle_standoff(drawer)"
+     ]
+    ],
+    "corrected": []
+   },
+   "not handle_grasped(drawer)": {
+    "previous": [
+     [
+      "at_handle_standoff(drawer)"
+     ]
+    ],
+    "corrected": []
+   }
+  },
+  "seeds": [
+   {
+    "seed": 0,
+    "violations": [],
+    "differs": [],
+    "no_context": [
+     "not handle_grasped(drawer)"
+    ]
+   },
+   {
+    "seed": 1,
+    "violations": [],
+    "differs": [],
+    "no_context": [
+     "not handle_grasped(drawer)"
+    ]
+   },
+   {
+    "seed": 2,
+    "violations": [],
+    "differs": [],
+    "no_context": [
+     "not handle_grasped(drawer)"
+    ]
+   },
+   {
+    "seed": 3,
+    "violations": [],
+    "differs": [],
+    "no_context": [
+     "not handle_grasped(drawer)"
+    ]
+   },
+   {
+    "seed": 4,
+    "violations": [],
+    "differs": [],
+    "no_context": [
+     "not handle_grasped(drawer)"
+    ]
+   }
+  ],
+  "spec_fields_that_differ": [],
+  "ablations_unchanged": {
+   "library_only": true,
+   "frontier": true,
+   "unrestricted": true,
+   "with_grasp": true,
+   "library_only_unmet_needs": true
+  },
+  "no_context": [
+   "not handle_grasped(drawer)"
+  ]
+ },
+ "direct_protocol": {
+  "contexts": [
+   [
+    "at_handle_standoff(drawer)"
+   ]
+  ],
+  "recorded_start": [
+   "at_handle_standoff(drawer)"
+  ],
+  "context_unchanged": true,
+  "fences": {
+   "kept_true": [],
+   "kept_false": [
+    "handle_grasped(drawer)"
+   ]
+  },
+  "fences_unchanged": true
+ },
+ "stow_stage4_states": {
+  "replanned_episodes": 20,
+  "refused": 0
+ }
+}
