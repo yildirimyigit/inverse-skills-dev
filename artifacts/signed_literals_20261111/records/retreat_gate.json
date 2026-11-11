@@ -1,0 +1,17 @@
+{
+ "step": "retreat_gate",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "scripts/stow_retreat_gate.py",
+  "--out",
+  "artifacts/signed_literals_20261111/E0_stage0/retreat_gate.json"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "c03f4eb4e13945aca881992bde740a3b85c77a42",
+  "tracked_changes": []
+ },
+ "started": "2026-11-11 14:23:45",
+ "seconds": 47.8,
+ "exit_code": 0
+}

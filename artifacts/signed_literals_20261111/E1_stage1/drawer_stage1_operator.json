@@ -1,0 +1,243 @@
+{
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "start_openings_mm": [
+    125.3,
+    144.2,
+    158.2,
+    137.2,
+    125.5
+  ],
+  "demonstrations": {
+    "skill": "push_close",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "boundaries": "the whole skill: the scene before it starts and the scene it leaves"
+  },
+  "extraction": {
+    "mode": "min_max",
+    "true_threshold": 0.8,
+    "false_threshold": 0.2
+  },
+  "operator": {
+    "schema_version": "signed_literals_v1",
+    "skill_name": "push_close",
+    "preconditions": [
+      {
+        "key": "at_handle_standoff(drawer)",
+        "weight": 0.9999999991855665,
+        "polarity": "negative"
+      },
+      {
+        "key": "drawer_closed(drawer)",
+        "weight": 1.0,
+        "polarity": "negative"
+      },
+      {
+        "key": "drawer_open(drawer)",
+        "weight": 0.9893434284970579,
+        "polarity": "positive"
+      },
+      {
+        "key": "handle_grasped(drawer)",
+        "weight": 0.9999740854292913,
+        "polarity": "negative"
+      }
+    ],
+    "effects": [
+      {
+        "key": "drawer_closed(drawer)",
+        "weight": 0.927185125068321,
+        "polarity": "positive"
+      },
+      {
+        "key": "drawer_open(drawer)",
+        "weight": 0.9887955158355708,
+        "polarity": "negative"
+      }
+    ],
+    "add_effects": [
+      {
+        "key": "drawer_closed(drawer)",
+        "weight": 0.927185125068321,
+        "polarity": "positive"
+      }
+    ],
+    "delete_effects": [
+      {
+        "key": "drawer_open(drawer)",
+        "weight": 0.9887955158355708,
+        "polarity": "positive"
+      }
+    ],
+    "restoration_goal": [
+      {
+        "key": "at_handle_standoff(drawer)",
+        "weight": 0.9999999991855665,
+        "polarity": "negative"
+      },
+      {
+        "key": "drawer_closed(drawer)",
+        "weight": 1.0,
+        "polarity": "negative"
+      },
+      {
+        "key": "drawer_open(drawer)",
+        "weight": 0.9893434284970579,
+        "polarity": "positive"
+      },
+      {
+        "key": "handle_grasped(drawer)",
+        "weight": 0.9999740854292913,
+        "polarity": "negative"
+      }
+    ],
+    "inverse_target_terms": [
+      {
+        "key": "at_handle_standoff(drawer)",
+        "weight": 0.9999999991855665,
+        "polarity": "negative"
+      },
+      {
+        "key": "drawer_closed(drawer)",
+        "weight": 1.0,
+        "polarity": "negative"
+      },
+      {
+        "key": "drawer_open(drawer)",
+        "weight": 0.9893434284970579,
+        "polarity": "positive"
+      },
+      {
+        "key": "handle_grasped(drawer)",
+        "weight": 0.9999740854292913,
+        "polarity": "negative"
+      }
+    ],
+    "metadata": {
+      "num_rollouts": 5,
+      "extractor": "first_last_score_min_max_signed_v1",
+      "true_threshold": 0.8,
+      "false_threshold": 0.2
+    }
+  },
+  "signed": {
+    "preconditions": [
+      "not at_handle_standoff(drawer)",
+      "not drawer_closed(drawer)",
+      "drawer_open(drawer)",
+      "not handle_grasped(drawer)"
+    ],
+    "effects": [
+      "drawer_closed(drawer)",
+      "not drawer_open(drawer)"
+    ],
+    "restoration_goal": [
+      "not at_handle_standoff(drawer)",
+      "not drawer_closed(drawer)",
+      "drawer_open(drawer)",
+      "not handle_grasped(drawer)"
+    ]
+  },
+  "uncertain_at_start": [],
+  "scores": {
+    "at_handle_standoff(drawer)": {
+      "start_min": 0.0,
+      "start_max": 8.144335206239361e-10,
+      "end_min": 0.0,
+      "end_max": 0.0,
+      "support": {
+        "demonstrations": 5,
+        "true_at_start": 0,
+        "false_at_start": 5,
+        "true_at_end": 0,
+        "false_at_end": 5
+      },
+      "precondition": {
+        "atom": "at_handle_standoff(drawer)",
+        "polarity": "negative"
+      },
+      "effect": null,
+      "changed_by_the_skill": false
+    },
+    "drawer_closed(drawer)": {
+      "start_min": 0.0,
+      "start_max": 0.0,
+      "end_min": 0.927185125068321,
+      "end_max": 0.9863606684496667,
+      "support": {
+        "demonstrations": 5,
+        "true_at_start": 0,
+        "false_at_start": 5,
+        "true_at_end": 5,
+        "false_at_end": 0
+      },
+      "precondition": {
+        "atom": "drawer_closed(drawer)",
+        "polarity": "negative"
+      },
+      "effect": {
+        "atom": "drawer_closed(drawer)",
+        "polarity": "positive"
+      },
+      "changed_by_the_skill": true
+    },
+    "drawer_open(drawer)": {
+      "start_min": 0.9893434284970579,
+      "start_max": 0.999599616099172,
+      "end_min": 0.00038718801752701815,
+      "end_max": 0.0005479126614870711,
+      "support": {
+        "demonstrations": 5,
+        "true_at_start": 5,
+        "false_at_start": 0,
+        "true_at_end": 0,
+        "false_at_end": 5
+      },
+      "precondition": {
+        "atom": "drawer_open(drawer)",
+        "polarity": "positive"
+      },
+      "effect": {
+        "atom": "drawer_open(drawer)",
+        "polarity": "negative"
+      },
+      "changed_by_the_skill": true
+    },
+    "handle_grasped(drawer)": {
+      "start_min": 3.442170437573111e-10,
+      "start_max": 2.5914570708662765e-05,
+      "end_min": 5.551115123125783e-16,
+      "end_max": 1.7208456881689926e-15,
+      "support": {
+        "demonstrations": 5,
+        "true_at_start": 0,
+        "false_at_start": 5,
+        "true_at_end": 0,
+        "false_at_end": 5
+      },
+      "precondition": {
+        "atom": "handle_grasped(drawer)",
+        "polarity": "negative"
+      },
+      "effect": null,
+      "changed_by_the_skill": false
+    }
+  },
+  "checks": {
+    "effects_match_the_designed_skill": true,
+    "no_robot_relative_effects": true,
+    "effects_complement_in_preconditions": true,
+    "goal_is_pre": true
+  }
+}

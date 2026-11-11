@@ -1,0 +1,23 @@
+{
+ "step": "direct_precheck",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "scripts/drawer_direct_precheck.py",
+  "--operator",
+  "artifacts/signed_literals_20261111/E1_stage1/drawer_stage1_operator.json",
+  "--grasp-spec",
+  "artifacts/signed_literals_20261111/E2_stage2/drawer_hole_spec.json",
+  "--spec",
+  "artifacts/signed_literals_20261111/E2_stage2/direct/hole_spec_direct.json",
+  "--out",
+  "artifacts/signed_literals_20261111/E3_stage3/direct/precheck.json"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "b621e006dbb0fd3bea8d19f84498a3d528df19a1",
+  "tracked_changes": []
+ },
+ "started": "2026-11-11 14:46:14",
+ "seconds": 39.5,
+ "exit_code": 0
+}

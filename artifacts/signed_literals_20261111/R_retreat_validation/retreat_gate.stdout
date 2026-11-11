@@ -1,0 +1,131 @@
+/opt/conda/envs/inverse-skills/lib/python3.10/site-packages/sapien/_vulkan_tricks.py:78: UserWarning: Failed to find Vulkan ICD file. This is probably due to an incorrect or partial installation of the NVIDIA driver. SAPIEN will attempt to provide an ICD file anyway but it may not work.
+  warn(
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+historical plan: pick(cube_b) > place(cube_b,src_b) > approach(cube_a) > HOLE[clear_of_walls(cube_a)] > pick(cube_a) > place(cube_a,src_a)
+
+after the forward skill (first 0 steps)
+  seed 1000: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 1001: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 1002: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 1003: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 1004: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 1005: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 1006: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 1007: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 1008: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 1009: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 2000: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 2001: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 2002: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 2003: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 2004: pass  tcp_near A 0.000->0.000  B 0.000->0.000  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 2005: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 2006: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 2007: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 2008: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+  seed 2009: pass  tcp_near A 0.000->0.000  B 0.001->0.001  gripper 0.976->0.976  moved A 0.00 B 0.00 mm  rise 0 steps
+
+after place(cube_b,src_b) (first 2 steps)
+  seed 1000: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1001: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1002: pass  tcp_near A 0.000->0.000  B 0.982->0.004  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1003: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1004: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1005: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1006: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1007: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1008: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1009: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2000: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2001: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2002: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2003: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2004: pass  tcp_near A 0.000->0.000  B 0.983->0.004  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2005: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2006: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2007: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2008: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2009: pass  tcp_near A 0.000->0.000  B 0.985->0.005  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+
+after approach(cube_a) (first 3 steps)
+  seed 1000: FAIL  tcp_near A 0.872->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 29.64 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 1001: FAIL  tcp_near A 0.860->0.001  B 0.000->0.000  gripper 0.000->0.000  moved A 41.77 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 1002: FAIL  tcp_near A 0.871->0.004  B 0.000->0.000  gripper 0.000->0.000  moved A 8.24 B 0.00 mm  rise 5 steps  changed ['clear_of_walls(cube_a)']
+  seed 1003: FAIL  tcp_near A 0.875->0.000  B 0.000->0.000  gripper 0.000->0.000  moved A 79.42 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 1004: FAIL  tcp_near A 0.869->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 29.78 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 1005: FAIL  tcp_near A 0.873->0.000  B 0.000->0.000  gripper 0.000->0.000  moved A 67.38 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 1006: FAIL  tcp_near A 0.875->0.003  B 0.000->0.000  gripper 0.000->0.000  moved A 8.35 B 0.00 mm  rise 5 steps  changed ['clear_of_walls(cube_a)']
+  seed 1007: FAIL  tcp_near A 0.867->0.001  B 0.000->0.000  gripper 0.000->0.000  moved A 52.97 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 1008: FAIL  tcp_near A 0.874->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 18.17 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 1009: FAIL  tcp_near A 0.879->0.000  B 0.000->0.000  gripper 0.000->0.000  moved A 60.64 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 2000: FAIL  tcp_near A 0.875->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 10.19 B 0.00 mm  rise 3 steps  changed ['clear_of_walls(cube_a)']
+  seed 2001: FAIL  tcp_near A 0.861->0.003  B 0.000->0.000  gripper 0.000->0.000  moved A 15.21 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 2002: FAIL  tcp_near A 0.873->0.001  B 0.000->0.000  gripper 0.000->0.000  moved A 36.61 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 2003: FAIL  tcp_near A 0.873->0.000  B 0.000->0.000  gripper 0.000->0.000  moved A 72.25 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 2004: FAIL  tcp_near A 0.870->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 1.41 B 0.00 mm  rise 3 steps
+  seed 2005: FAIL  tcp_near A 0.874->0.003  B 0.000->0.000  gripper 0.000->0.000  moved A 8.68 B 0.00 mm  rise 5 steps  changed ['clear_of_walls(cube_a)']
+  seed 2006: FAIL  tcp_near A 0.863->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 30.20 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 2007: FAIL  tcp_near A 0.874->0.000  B 0.000->0.000  gripper 0.000->0.000  moved A 60.50 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 2008: FAIL  tcp_near A 0.868->0.000  B 0.000->0.000  gripper 0.000->0.000  moved A 67.68 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+  seed 2009: FAIL  tcp_near A 0.865->0.000  B 0.000->0.000  gripper 0.000->0.000  moved A 71.21 B 0.00 mm  rise 5 steps  changed ['in_region(cube_a,pocket)', 'clear_of_walls(cube_a)']
+
+after the learned drag (first 4 steps)
+  seed 1000: FAIL  tcp_near A 0.870->0.004  B 0.000->0.000  gripper 0.000->0.000  moved A 11.56 B 0.00 mm  rise 5 steps
+  seed 1001: FAIL  tcp_near A 0.854->0.010  B 0.000->0.000  gripper 0.000->0.000  moved A 29.17 B 0.00 mm  rise 2 steps
+  seed 1002: FAIL  tcp_near A 0.865->0.020  B 0.000->0.000  gripper 0.000->0.000  moved A 2.84 B 0.00 mm  rise 2 steps
+  seed 1003: FAIL  tcp_near A 0.878->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 35.14 B 0.00 mm  rise 5 steps
+  seed 1004: FAIL  tcp_near A 0.871->0.003  B 0.000->0.000  gripper 0.000->0.000  moved A 20.07 B 0.00 mm  rise 5 steps
+  seed 1005: FAIL  tcp_near A 0.877->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 33.30 B 0.00 mm  rise 5 steps
+  seed 1006: FAIL  tcp_near A 0.874->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 38.14 B 0.00 mm  rise 5 steps
+  seed 1007: FAIL  tcp_near A 0.866->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 37.92 B 0.00 mm  rise 5 steps
+  seed 1008: FAIL  tcp_near A 0.872->0.004  B 0.000->0.000  gripper 0.000->0.000  moved A 7.29 B 0.00 mm  rise 5 steps
+  seed 1009: FAIL  tcp_near A 0.881->0.003  B 0.000->0.000  gripper 0.000->0.000  moved A 28.82 B 0.00 mm  rise 5 steps
+  seed 2000: FAIL  tcp_near A 0.878->0.003  B 0.000->0.000  gripper 0.000->0.000  moved A 16.67 B 0.00 mm  rise 5 steps
+  seed 2001: FAIL  tcp_near A 0.859->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 34.28 B 0.00 mm  rise 5 steps
+  seed 2002: FAIL  tcp_near A 0.875->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 43.77 B 0.00 mm  rise 5 steps
+  seed 2003: FAIL  tcp_near A 0.877->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 40.58 B 0.00 mm  rise 5 steps
+  seed 2004: FAIL  tcp_near A 0.856->0.019  B 0.000->0.000  gripper 0.000->0.000  moved A 2.58 B 0.00 mm  rise 2 steps
+  seed 2005: FAIL  tcp_near A 0.874->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 37.39 B 0.00 mm  rise 5 steps
+  seed 2006: FAIL  tcp_near A 0.860->0.003  B 0.000->0.000  gripper 0.000->0.000  moved A 23.91 B 0.00 mm  rise 5 steps
+  seed 2007: FAIL  tcp_near A 0.875->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 37.78 B 0.00 mm  rise 5 steps
+  seed 2008: FAIL  tcp_near A 0.870->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 37.44 B 0.00 mm  rise 5 steps
+  seed 2009: FAIL  tcp_near A 0.867->0.002  B 0.000->0.000  gripper 0.000->0.000  moved A 30.76 B 0.00 mm  rise 5 steps
+
+after place(cube_a,src_a) (first 6 steps)
+  seed 1000: pass  tcp_near A 0.987->0.006  B 0.013->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1001: pass  tcp_near A 0.988->0.005  B 0.024->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1002: pass  tcp_near A 0.987->0.006  B 0.008->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1003: pass  tcp_near A 0.987->0.006  B 0.019->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1004: pass  tcp_near A 0.984->0.006  B 0.006->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1005: pass  tcp_near A 0.987->0.006  B 0.006->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1006: pass  tcp_near A 0.986->0.006  B 0.024->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1007: pass  tcp_near A 0.987->0.006  B 0.009->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1008: pass  tcp_near A 0.987->0.006  B 0.010->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 1009: pass  tcp_near A 0.987->0.006  B 0.009->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2000: pass  tcp_near A 0.987->0.006  B 0.019->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2001: pass  tcp_near A 0.984->0.005  B 0.012->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2002: pass  tcp_near A 0.986->0.006  B 0.008->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2003: pass  tcp_near A 0.984->0.005  B 0.012->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2004: pass  tcp_near A 0.987->0.006  B 0.012->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2005: pass  tcp_near A 0.984->0.005  B 0.015->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2006: pass  tcp_near A 0.987->0.006  B 0.011->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2007: pass  tcp_near A 0.985->0.006  B 0.007->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2008: pass  tcp_near A 0.986->0.006  B 0.011->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+  seed 2009: pass  tcp_near A 0.986->0.006  B 0.017->0.000  gripper 0.982->0.982  moved A 0.00 B 0.00 mm  rise 3 steps
+
+summary
+  after the forward skill      reached 20/20  passed 20  tcp_near after <= 0.0005851480024013922  moved <= 0.0 mm
+  after place(cube_b,src_b)    reached 20/20  passed 20  tcp_near after <= 0.00483412384107379  moved <= 0.0005439866638410266 mm
+  after approach(cube_a)       reached 20/20  passed  0  tcp_near after <= 0.004081186547419902  moved <= 79.42477544123092 mm
+  after the learned drag       reached 20/20  passed  0  tcp_near after <= 0.019957814027108722  moved <= 43.77352758714834 mm
+  after place(cube_a,src_a)    reached 20/20  passed 20  tcp_near after <= 0.006141126209487757  moved <= 0.0010323020731290123 mm
+
+RETREAT GATE: FAIL
+wrote artifacts/signed_literals_20261111/R_retreat_validation/retreat_gate.json

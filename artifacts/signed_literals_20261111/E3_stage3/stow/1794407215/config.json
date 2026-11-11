@@ -1,0 +1,68 @@
+{
+  "command": "scripts/stow_stage3_train.py --timesteps 120000 --eval-every 4000 --curriculum-steps 60000 --seed 0 --spec artifacts/signed_literals_20261111/E2_stage2/stow_hole_spec.json --out-dir artifacts/signed_literals_20261111/E3_stage3/stow",
+  "timesteps": 120000,
+  "eval_every": 4000,
+  "curriculum_steps": 60000,
+  "seed": 0,
+  "device": "cuda",
+  "spec": "artifacts/signed_literals_20261111/E2_stage2/stow_hole_spec.json",
+  "spec_sha256": "e29e878ffc3868767e86a39ea9e0e7189d447fc63691f1e94997b7ea99e002b2",
+  "target": {
+    "atom": "clear_of_walls(cube_a)",
+    "polarity": "positive"
+  },
+  "sac": {
+    "learning_starts": 1000,
+    "batch_size": 256,
+    "train_freq": 1,
+    "gradient_steps": 1
+  },
+  "seeds": {
+    "train": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "selection_and_evaluation": [
+      1000,
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1007,
+      1008,
+      1009
+    ]
+  }
+}

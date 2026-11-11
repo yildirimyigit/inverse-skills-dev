@@ -1,0 +1,25 @@
+{
+ "step": "final_targeted_vs_direct",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "scripts/drawer_final_evaluate.py",
+  "--operator",
+  "artifacts/signed_literals_20261111/E1_stage1/drawer_stage1_operator.json",
+  "--stage3",
+  "artifacts/signed_literals_20261111/E3_stage3/drawer",
+  "--direct",
+  "artifacts/signed_literals_20261111/E3_stage3/direct",
+  "--workers",
+  "4",
+  "--out",
+  "artifacts/signed_literals_20261111/E4_stage4/final_targeted_vs_direct.json"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "6acc02e8048534fa50b0a2d4fd4d1fa62357516b",
+  "tracked_changes": []
+ },
+ "started": "2026-11-11 15:05:20",
+ "seconds": 43.8,
+ "exit_code": 0
+}

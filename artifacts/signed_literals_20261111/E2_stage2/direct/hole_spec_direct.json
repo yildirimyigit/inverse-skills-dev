@@ -1,0 +1,62 @@
+{
+  "hole": "HOLE[drawer_open(drawer)]",
+  "target": {
+    "atom": "drawer_open(drawer)",
+    "polarity": "positive"
+  },
+  "achieve": "drawer_open(drawer)",
+  "object": "drawer",
+  "start": [
+    "at_handle_standoff(drawer)"
+  ],
+  "start_absent": [],
+  "preserve": [],
+  "preserve_absent": [
+    "handle_grasped(drawer)"
+  ],
+  "fences": [
+    {
+      "atom": "handle_grasped(drawer)",
+      "polarity": "negative"
+    }
+  ],
+  "handoff_state": [
+    "at_handle_standoff(drawer)",
+    "drawer_closed(drawer)"
+  ],
+  "handoff_conditions": {
+    "hold": [
+      "at_handle_standoff(drawer)",
+      "drawer_closed(drawer)"
+    ],
+    "absent": [
+      "drawer_open(drawer)",
+      "handle_grasped(drawer)"
+    ]
+  },
+  "prefix": [
+    {
+      "name": "approach_handle(drawer)",
+      "pre": [],
+      "pre_absent": [],
+      "add": [
+        "at_handle_standoff(drawer)"
+      ],
+      "delete": [],
+      "hole_for": null
+    }
+  ],
+  "suffix": [],
+  "plan": [
+    "approach_handle(drawer)",
+    "HOLE[drawer_open(drawer)]"
+  ],
+  "hole_index": 1,
+  "cost": [
+    1,
+    0,
+    2,
+    1,
+    2
+  ]
+}

@@ -1,0 +1,486 @@
+{
+  "timesteps": 120000,
+  "minutes": 19.014867910916657,
+  "spec": {
+    "hole": "HOLE[clear_of_walls(cube_a)]",
+    "target": {
+      "atom": "clear_of_walls(cube_a)",
+      "polarity": "positive"
+    },
+    "achieve": "clear_of_walls(cube_a)",
+    "object": "cube_a",
+    "start": [
+      "tcp_near(cube_a)"
+    ],
+    "start_absent": [],
+    "preserve": [
+      "in_region(cube_b,src_b)"
+    ],
+    "preserve_absent": [
+      "in_region(cube_b,mouth)"
+    ],
+    "fences": [
+      {
+        "atom": "in_region(cube_b,mouth)",
+        "polarity": "negative"
+      },
+      {
+        "atom": "in_region(cube_b,src_b)",
+        "polarity": "positive"
+      }
+    ],
+    "handoff_state": [
+      "in_region(cube_a,pocket)",
+      "in_region(cube_b,src_b)",
+      "tcp_near(cube_a)"
+    ],
+    "handoff_conditions": {
+      "hold": [
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,src_b)",
+        "tcp_near(cube_a)"
+      ],
+      "absent": [
+        "clear_of_walls(cube_a)",
+        "in_region(cube_b,mouth)"
+      ]
+    },
+    "prefix": [
+      {
+        "name": "pick(cube_b)",
+        "pre": [],
+        "pre_absent": [
+          "holding(cube_a)",
+          "holding(cube_b)"
+        ],
+        "add": [
+          "holding(cube_b)",
+          "tcp_near(cube_b)"
+        ],
+        "delete": [
+          "gripper_open()",
+          "in_region(cube_b,mouth)",
+          "in_region(cube_b,pocket)",
+          "in_region(cube_b,src_a)",
+          "in_region(cube_b,src_b)",
+          "tcp_near(cube_a)"
+        ],
+        "hole_for": null
+      },
+      {
+        "name": "place(cube_b,src_b)",
+        "pre": [
+          "holding(cube_b)"
+        ],
+        "pre_absent": [],
+        "add": [
+          "gripper_open()",
+          "in_region(cube_b,src_b)"
+        ],
+        "delete": [
+          "holding(cube_b)"
+        ],
+        "hole_for": null
+      },
+      {
+        "name": "approach(cube_a)",
+        "pre": [],
+        "pre_absent": [
+          "holding(cube_a)",
+          "holding(cube_b)"
+        ],
+        "add": [
+          "tcp_near(cube_a)"
+        ],
+        "delete": [
+          "gripper_open()",
+          "tcp_near(cube_b)"
+        ],
+        "hole_for": null
+      }
+    ],
+    "suffix": [
+      {
+        "name": "pick(cube_a)",
+        "pre": [
+          "clear_of_walls(cube_a)"
+        ],
+        "pre_absent": [
+          "holding(cube_a)",
+          "holding(cube_b)"
+        ],
+        "add": [
+          "holding(cube_a)",
+          "tcp_near(cube_a)"
+        ],
+        "delete": [
+          "gripper_open()",
+          "in_region(cube_a,mouth)",
+          "in_region(cube_a,pocket)",
+          "in_region(cube_a,src_a)",
+          "in_region(cube_a,src_b)",
+          "tcp_near(cube_b)"
+        ],
+        "hole_for": null
+      },
+      {
+        "name": "place(cube_a,src_a)",
+        "pre": [
+          "holding(cube_a)"
+        ],
+        "pre_absent": [],
+        "add": [
+          "gripper_open()",
+          "in_region(cube_a,src_a)"
+        ],
+        "delete": [
+          "holding(cube_a)"
+        ],
+        "hole_for": null
+      },
+      {
+        "name": "retreat_to_safe",
+        "pre": [
+          "gripper_open()"
+        ],
+        "pre_absent": [
+          "holding(cube_a)",
+          "holding(cube_b)"
+        ],
+        "add": [],
+        "delete": [
+          "tcp_near(cube_a)",
+          "tcp_near(cube_b)"
+        ],
+        "hole_for": null
+      }
+    ],
+    "plan": [
+      "pick(cube_b)",
+      "place(cube_b,src_b)",
+      "approach(cube_a)",
+      "HOLE[clear_of_walls(cube_a)]",
+      "pick(cube_a)",
+      "place(cube_a,src_a)",
+      "retreat_to_safe"
+    ],
+    "hole_index": 3,
+    "cost": [
+      1,
+      0,
+      2,
+      1,
+      7
+    ]
+  },
+  "target": {
+    "atom": "clear_of_walls(cube_a)",
+    "polarity": "positive"
+  },
+  "checkpoints": {
+    "sac_hole_best": {
+      "path": "artifacts/signed_literals_20261111/E3_stage3/stow/1794407215/sac_hole_best.zip",
+      "sha256": "07a65f55c754dc43bc773633747677d0cf1ddf328a292acaf45dde5ac16a447d"
+    },
+    "sac_hole_final": {
+      "path": "artifacts/signed_literals_20261111/E3_stage3/stow/1794407215/sac_hole_final.zip",
+      "sha256": "0949c9731c3663b787b9f933c797f550a50f821fe3d9dc49b09bde27710c860f"
+    }
+  },
+  "expert": {
+    "success_rate": 1.0,
+    "fence_rate": 0.0,
+    "contract_rate": 0.0,
+    "mean_steps": 4.8,
+    "mean_x_mm": -119.75963339209557
+  },
+  "best": {
+    "success_rate": 1.0,
+    "fence_rate": 1.0,
+    "contract_rate": 1.0,
+    "mean_steps": 3.7,
+    "mean_x_mm": 56.14477954804897
+  },
+  "final": {
+    "success_rate": 1.0,
+    "fence_rate": 1.0,
+    "contract_rate": 1.0,
+    "mean_steps": 3.7,
+    "mean_x_mm": 35.081189312040806
+  },
+  "history": [
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 56.14602454006672,
+      "timesteps": 4000,
+      "saved": true
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.8,
+      "mean_x_mm": 12.143123708665371,
+      "timesteps": 8000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.8,
+      "mean_x_mm": -44.29626278579235,
+      "timesteps": 12000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.0,
+      "contract_rate": 0.0,
+      "mean_steps": 3.8,
+      "mean_x_mm": -149.4318500161171,
+      "timesteps": 16000
+    },
+    {
+      "success_rate": 0.9,
+      "fence_rate": 1.0,
+      "contract_rate": 0.9,
+      "mean_steps": 3.8,
+      "mean_x_mm": -28.055009432137012,
+      "timesteps": 20000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 80.55419921875,
+      "timesteps": 24000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -19.822226092219353,
+      "timesteps": 28000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -30.71184679865837,
+      "timesteps": 32000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -23.646676912903786,
+      "timesteps": 36000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -34.93063319474459,
+      "timesteps": 40000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -22.056260332465172,
+      "timesteps": 44000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 7.757584494538605,
+      "timesteps": 48000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -29.46284580975771,
+      "timesteps": 52000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -18.15462801605463,
+      "timesteps": 56000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -17.205552011728287,
+      "timesteps": 60000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 0.5,
+      "contract_rate": 0.5,
+      "mean_steps": 3.7,
+      "mean_x_mm": -39.45216462016106,
+      "timesteps": 64000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 6.248061475344002,
+      "timesteps": 68000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 58.549193665385246,
+      "timesteps": 72000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -20.99103219807148,
+      "timesteps": 76000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -30.880516208708286,
+      "timesteps": 80000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -31.84644617140293,
+      "timesteps": 84000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": -8.244353285408579,
+      "timesteps": 88000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 19.280220568180084,
+      "timesteps": 92000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 9.04033025726676,
+      "timesteps": 96000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 68.2461392134428,
+      "timesteps": 100000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 64.08646628260612,
+      "timesteps": 104000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 74.96576085686684,
+      "timesteps": 108000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 64.61828909814358,
+      "timesteps": 112000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 44.743939489126205,
+      "timesteps": 116000
+    },
+    {
+      "success_rate": 1.0,
+      "fence_rate": 1.0,
+      "contract_rate": 1.0,
+      "mean_steps": 3.7,
+      "mean_x_mm": 35.375360026955605,
+      "timesteps": 120000
+    }
+  ],
+  "precondition_sweep": [
+    {
+      "dz_mm": -10,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": -5,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": 0,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": 5,
+      "success_rate": 0.5
+    },
+    {
+      "dz_mm": 10,
+      "success_rate": 1.0
+    },
+    {
+      "dz_mm": 15,
+      "success_rate": 0.4
+    },
+    {
+      "dz_mm": 20,
+      "success_rate": 0.2
+    }
+  ],
+  "x_clear_mm": 110.0,
+  "passed": true
+}

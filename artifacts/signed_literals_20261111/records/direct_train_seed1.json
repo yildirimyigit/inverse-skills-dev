@@ -1,0 +1,25 @@
+{
+ "step": "direct_train_seed1",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "scripts/drawer_direct_train.py",
+  "--seed",
+  "1",
+  "--stage3-config",
+  "artifacts/signed_literals_20261111/E3_stage3/drawer/seed0_1794408487/config.json",
+  "--operator",
+  "artifacts/signed_literals_20261111/E1_stage1/drawer_stage1_operator.json",
+  "--spec",
+  "artifacts/signed_literals_20261111/E2_stage2/direct/hole_spec_direct.json",
+  "--out-dir",
+  "artifacts/signed_literals_20261111/E3_stage3/direct"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "adfa69d398dffe41489047fa848e090ced7eb3f0",
+  "tracked_changes": []
+ },
+ "started": "2026-11-11 14:54:55",
+ "seconds": 407.4,
+ "exit_code": 0
+}

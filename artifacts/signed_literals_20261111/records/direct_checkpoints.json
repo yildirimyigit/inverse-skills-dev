@@ -1,0 +1,21 @@
+{
+ "step": "direct_checkpoints",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "scripts/stage3_checkpoints.py",
+  "--runs",
+  "artifacts/signed_literals_20261111/E3_stage3/direct",
+  "--selected",
+  "sac_direct_best.zip",
+  "--out",
+  "artifacts/signed_literals_20261111/E3_stage3/direct/checkpoints.json"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "adfa69d398dffe41489047fa848e090ced7eb3f0",
+  "tracked_changes": []
+ },
+ "started": "2026-11-11 15:01:43",
+ "seconds": 0.1,
+ "exit_code": 0
+}

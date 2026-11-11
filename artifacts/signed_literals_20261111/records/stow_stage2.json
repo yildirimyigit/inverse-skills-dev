@@ -1,0 +1,21 @@
+{
+ "step": "stow_stage2",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "scripts/stow_stage2_plan.py",
+  "--operator",
+  "artifacts/signed_literals_20261111/E1_stage1/stow_stage1_operator.json",
+  "--out",
+  "artifacts/signed_literals_20261111/E2_stage2/stow_stage2_plan.json",
+  "--spec-out",
+  "artifacts/signed_literals_20261111/E2_stage2/stow_hole_spec.json"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "c03f4eb4e13945aca881992bde740a3b85c77a42",
+  "tracked_changes": []
+ },
+ "started": "2026-11-11 14:24:38",
+ "seconds": 4.9,
+ "exit_code": 0
+}

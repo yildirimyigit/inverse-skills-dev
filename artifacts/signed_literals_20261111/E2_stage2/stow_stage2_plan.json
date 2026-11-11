@@ -1,0 +1,827 @@
+{
+  "inputs": {
+    "operator": "artifacts/signed_literals_20261111/E1_stage1/stow_stage1_operator.json",
+    "operator_sha256": "841aa3e391c47fcc200495872cba103ffea0d2094c704c7954e8c665b46022a8"
+  },
+  "goal": [
+    {
+      "atom": "clear_of_walls(cube_a)",
+      "polarity": "positive"
+    },
+    {
+      "atom": "gripper_open()",
+      "polarity": "positive"
+    },
+    {
+      "atom": "in_region(cube_a,pocket)",
+      "polarity": "negative"
+    },
+    {
+      "atom": "in_region(cube_a,src_a)",
+      "polarity": "positive"
+    },
+    {
+      "atom": "in_region(cube_b,mouth)",
+      "polarity": "negative"
+    },
+    {
+      "atom": "in_region(cube_b,src_b)",
+      "polarity": "positive"
+    },
+    {
+      "atom": "tcp_near(cube_a)",
+      "polarity": "negative"
+    },
+    {
+      "atom": "tcp_near(cube_b)",
+      "polarity": "negative"
+    }
+  ],
+  "goal_positive": [
+    "clear_of_walls(cube_a)",
+    "gripper_open()",
+    "in_region(cube_a,src_a)",
+    "in_region(cube_b,src_b)"
+  ],
+  "goal_negative": [
+    "in_region(cube_a,pocket)",
+    "in_region(cube_b,mouth)",
+    "tcp_near(cube_a)",
+    "tcp_near(cube_b)"
+  ],
+  "unmeasured_atoms": {
+    "atoms": [
+      "holding(cube_a)",
+      "holding(cube_b)",
+      "in_region(cube_a,mouth)",
+      "in_region(cube_a,src_b)",
+      "in_region(cube_b,pocket)",
+      "in_region(cube_b,src_a)"
+    ],
+    "assumed": "false at the start, by the closed world; no predicate measures them"
+  },
+  "historical_plan": [
+    "pick(cube_b)",
+    "place(cube_b,src_b)",
+    "approach(cube_a)",
+    "HOLE[clear_of_walls(cube_a)]",
+    "pick(cube_a)",
+    "place(cube_a,src_a)"
+  ],
+  "same_as_historical": false,
+  "all_seeds_same_plan": true,
+  "passed": true,
+  "library_only": {
+    "plan": null,
+    "unmet_needs": [
+      {
+        "atom": "clear_of_walls(cube_a)",
+        "polarity": "positive"
+      },
+      {
+        "atom": "holding(cube_a)",
+        "polarity": "positive"
+      },
+      {
+        "atom": "in_region(cube_a,pocket)",
+        "polarity": "negative"
+      },
+      {
+        "atom": "in_region(cube_a,src_a)",
+        "polarity": "positive"
+      }
+    ]
+  },
+  "delegated": [
+    {
+      "atom": "clear_of_walls(cube_a)",
+      "polarity": "positive"
+    }
+  ],
+  "hole_contexts": [
+    {
+      "literal": {
+        "atom": "clear_of_walls(cube_a)",
+        "polarity": "positive"
+      },
+      "index": 3,
+      "state_before": [
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,src_b)",
+        "tcp_near(cube_a)"
+      ],
+      "used_by": "pick(cube_a)",
+      "used_at": 4,
+      "waiting": [
+        "pick(cube_a)",
+        "goal"
+      ],
+      "prefix": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
+        "approach(cube_a)"
+      ],
+      "suffix": [
+        "pick(cube_a)",
+        "place(cube_a,src_a)",
+        "retreat_to_safe"
+      ],
+      "library_alternatives": [
+        [
+          "place(cube_a,src_a)",
+          "cannot run here"
+        ],
+        [
+          "place(cube_a,src_b)",
+          "cannot run here"
+        ],
+        [
+          "place(cube_a,mouth)",
+          "cannot run here"
+        ]
+      ]
+    }
+  ],
+  "without_interference_model": [
+    [
+      "approach(cube_a)",
+      "HOLE[clear_of_walls(cube_a)]",
+      "pick(cube_a)",
+      "place(cube_a,src_a)",
+      "pick(cube_b)",
+      "place(cube_b,src_b)",
+      "retreat_to_safe"
+    ],
+    [
+      "approach(cube_a)",
+      "HOLE[clear_of_walls(cube_a)]",
+      "pick(cube_b)",
+      "place(cube_b,src_b)",
+      "pick(cube_a)",
+      "place(cube_a,src_a)",
+      "retreat_to_safe"
+    ]
+  ],
+  "seeds": [
+    {
+      "seed": 0,
+      "state": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "scores": {
+        "in_region(cube_a,src_a)": 2.777208463200509e-10,
+        "in_region(cube_b,src_b)": 1.4432899320127035e-15,
+        "in_region(cube_a,pocket)": 0.9638066013157827,
+        "in_region(cube_b,mouth)": 0.9552964198416896,
+        "tcp_near(cube_a)": 0.00016394525239948887,
+        "tcp_near(cube_b)": 0.0005812093826270126,
+        "gripper_open()": 0.9759753310212219,
+        "clear_of_walls(cube_a)": 0.1193648391086371
+      },
+      "uncertain": [],
+      "plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
+        "approach(cube_a)",
+        "HOLE[clear_of_walls(cube_a)]",
+        "pick(cube_a)",
+        "place(cube_a,src_a)",
+        "retreat_to_safe"
+      ],
+      "candidates": [
+        {
+          "atom": "clear_of_walls(cube_a)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "gripper_open()",
+          "polarity": "positive"
+        },
+        {
+          "atom": "in_region(cube_a,pocket)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "in_region(cube_a,src_a)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "in_region(cube_b,mouth)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "in_region(cube_b,src_b)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "tcp_near(cube_a)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "tcp_near(cube_b)",
+          "polarity": "negative"
+        }
+      ],
+      "delegated": [
+        {
+          "atom": "clear_of_walls(cube_a)",
+          "polarity": "positive"
+        }
+      ],
+      "hole_indices": [
+        3
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        7
+      ],
+      "planning_cost": [
+        1,
+        0,
+        7
+      ],
+      "ties": [],
+      "expanded": 90,
+      "hole_contexts": [
+        {
+          "literal": {
+            "atom": "clear_of_walls(cube_a)",
+            "polarity": "positive"
+          },
+          "index": 3,
+          "state_before": [
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_a)"
+          ],
+          "used_by": "pick(cube_a)",
+          "used_at": 4,
+          "waiting": [
+            "pick(cube_a)",
+            "goal"
+          ],
+          "prefix": [
+            "pick(cube_b)",
+            "place(cube_b,src_b)",
+            "approach(cube_a)"
+          ],
+          "suffix": [
+            "pick(cube_a)",
+            "place(cube_a,src_a)",
+            "retreat_to_safe"
+          ],
+          "library_alternatives": [
+            [
+              "place(cube_a,src_a)",
+              "cannot run here"
+            ],
+            [
+              "place(cube_a,src_b)",
+              "cannot run here"
+            ],
+            [
+              "place(cube_a,mouth)",
+              "cannot run here"
+            ]
+          ]
+        }
+      ],
+      "unmet_needs": null,
+      "replay_problems": [],
+      "same_as_historical": false
+    },
+    {
+      "seed": 1,
+      "state": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "scores": {
+        "in_region(cube_a,src_a)": 4.712211731927596e-10,
+        "in_region(cube_b,src_b)": 2.6645352591003757e-15,
+        "in_region(cube_a,pocket)": 0.9715633181391564,
+        "in_region(cube_b,mouth)": 0.9543211350310623,
+        "tcp_near(cube_a)": 0.00016133583023891784,
+        "tcp_near(cube_b)": 0.0005762025540641535,
+        "gripper_open()": 0.9759754358394217,
+        "clear_of_walls(cube_a)": 0.11967846734808452
+      },
+      "uncertain": [],
+      "plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
+        "approach(cube_a)",
+        "HOLE[clear_of_walls(cube_a)]",
+        "pick(cube_a)",
+        "place(cube_a,src_a)",
+        "retreat_to_safe"
+      ],
+      "candidates": [
+        {
+          "atom": "clear_of_walls(cube_a)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "gripper_open()",
+          "polarity": "positive"
+        },
+        {
+          "atom": "in_region(cube_a,pocket)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "in_region(cube_a,src_a)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "in_region(cube_b,mouth)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "in_region(cube_b,src_b)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "tcp_near(cube_a)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "tcp_near(cube_b)",
+          "polarity": "negative"
+        }
+      ],
+      "delegated": [
+        {
+          "atom": "clear_of_walls(cube_a)",
+          "polarity": "positive"
+        }
+      ],
+      "hole_indices": [
+        3
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        7
+      ],
+      "planning_cost": [
+        1,
+        0,
+        7
+      ],
+      "ties": [],
+      "expanded": 90,
+      "hole_contexts": [
+        {
+          "literal": {
+            "atom": "clear_of_walls(cube_a)",
+            "polarity": "positive"
+          },
+          "index": 3,
+          "state_before": [
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_a)"
+          ],
+          "used_by": "pick(cube_a)",
+          "used_at": 4,
+          "waiting": [
+            "pick(cube_a)",
+            "goal"
+          ],
+          "prefix": [
+            "pick(cube_b)",
+            "place(cube_b,src_b)",
+            "approach(cube_a)"
+          ],
+          "suffix": [
+            "pick(cube_a)",
+            "place(cube_a,src_a)",
+            "retreat_to_safe"
+          ],
+          "library_alternatives": [
+            [
+              "place(cube_a,src_a)",
+              "cannot run here"
+            ],
+            [
+              "place(cube_a,src_b)",
+              "cannot run here"
+            ],
+            [
+              "place(cube_a,mouth)",
+              "cannot run here"
+            ]
+          ]
+        }
+      ],
+      "unmet_needs": null,
+      "replay_problems": [],
+      "same_as_historical": false
+    },
+    {
+      "seed": 2,
+      "state": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "scores": {
+        "in_region(cube_a,src_a)": 3.5093378203399084e-10,
+        "in_region(cube_b,src_b)": 4.6629367034256575e-15,
+        "in_region(cube_a,pocket)": 0.9592020975275259,
+        "in_region(cube_b,mouth)": 0.9579704472966423,
+        "tcp_near(cube_a)": 0.00016432967497531648,
+        "tcp_near(cube_b)": 0.0005824094281464687,
+        "gripper_open()": 0.9759753659606714,
+        "clear_of_walls(cube_a)": 0.11921267249506373
+      },
+      "uncertain": [],
+      "plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
+        "approach(cube_a)",
+        "HOLE[clear_of_walls(cube_a)]",
+        "pick(cube_a)",
+        "place(cube_a,src_a)",
+        "retreat_to_safe"
+      ],
+      "candidates": [
+        {
+          "atom": "clear_of_walls(cube_a)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "gripper_open()",
+          "polarity": "positive"
+        },
+        {
+          "atom": "in_region(cube_a,pocket)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "in_region(cube_a,src_a)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "in_region(cube_b,mouth)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "in_region(cube_b,src_b)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "tcp_near(cube_a)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "tcp_near(cube_b)",
+          "polarity": "negative"
+        }
+      ],
+      "delegated": [
+        {
+          "atom": "clear_of_walls(cube_a)",
+          "polarity": "positive"
+        }
+      ],
+      "hole_indices": [
+        3
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        7
+      ],
+      "planning_cost": [
+        1,
+        0,
+        7
+      ],
+      "ties": [],
+      "expanded": 90,
+      "hole_contexts": [
+        {
+          "literal": {
+            "atom": "clear_of_walls(cube_a)",
+            "polarity": "positive"
+          },
+          "index": 3,
+          "state_before": [
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_a)"
+          ],
+          "used_by": "pick(cube_a)",
+          "used_at": 4,
+          "waiting": [
+            "pick(cube_a)",
+            "goal"
+          ],
+          "prefix": [
+            "pick(cube_b)",
+            "place(cube_b,src_b)",
+            "approach(cube_a)"
+          ],
+          "suffix": [
+            "pick(cube_a)",
+            "place(cube_a,src_a)",
+            "retreat_to_safe"
+          ],
+          "library_alternatives": [
+            [
+              "place(cube_a,src_a)",
+              "cannot run here"
+            ],
+            [
+              "place(cube_a,src_b)",
+              "cannot run here"
+            ],
+            [
+              "place(cube_a,mouth)",
+              "cannot run here"
+            ]
+          ]
+        }
+      ],
+      "unmet_needs": null,
+      "replay_problems": [],
+      "same_as_historical": false
+    },
+    {
+      "seed": 3,
+      "state": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "scores": {
+        "in_region(cube_a,src_a)": 1.048187647789689e-10,
+        "in_region(cube_b,src_b)": 2.1649348980190553e-15,
+        "in_region(cube_a,pocket)": 0.9625096263263782,
+        "in_region(cube_b,mouth)": 0.9556741585088755,
+        "tcp_near(cube_a)": 0.00016167462684291145,
+        "tcp_near(cube_b)": 0.000575736786414538,
+        "gripper_open()": 0.9759754358394217,
+        "clear_of_walls(cube_a)": 0.11987044444097034
+      },
+      "uncertain": [],
+      "plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
+        "approach(cube_a)",
+        "HOLE[clear_of_walls(cube_a)]",
+        "pick(cube_a)",
+        "place(cube_a,src_a)",
+        "retreat_to_safe"
+      ],
+      "candidates": [
+        {
+          "atom": "clear_of_walls(cube_a)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "gripper_open()",
+          "polarity": "positive"
+        },
+        {
+          "atom": "in_region(cube_a,pocket)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "in_region(cube_a,src_a)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "in_region(cube_b,mouth)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "in_region(cube_b,src_b)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "tcp_near(cube_a)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "tcp_near(cube_b)",
+          "polarity": "negative"
+        }
+      ],
+      "delegated": [
+        {
+          "atom": "clear_of_walls(cube_a)",
+          "polarity": "positive"
+        }
+      ],
+      "hole_indices": [
+        3
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        7
+      ],
+      "planning_cost": [
+        1,
+        0,
+        7
+      ],
+      "ties": [],
+      "expanded": 90,
+      "hole_contexts": [
+        {
+          "literal": {
+            "atom": "clear_of_walls(cube_a)",
+            "polarity": "positive"
+          },
+          "index": 3,
+          "state_before": [
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_a)"
+          ],
+          "used_by": "pick(cube_a)",
+          "used_at": 4,
+          "waiting": [
+            "pick(cube_a)",
+            "goal"
+          ],
+          "prefix": [
+            "pick(cube_b)",
+            "place(cube_b,src_b)",
+            "approach(cube_a)"
+          ],
+          "suffix": [
+            "pick(cube_a)",
+            "place(cube_a,src_a)",
+            "retreat_to_safe"
+          ],
+          "library_alternatives": [
+            [
+              "place(cube_a,src_a)",
+              "cannot run here"
+            ],
+            [
+              "place(cube_a,src_b)",
+              "cannot run here"
+            ],
+            [
+              "place(cube_a,mouth)",
+              "cannot run here"
+            ]
+          ]
+        }
+      ],
+      "unmet_needs": null,
+      "replay_problems": [],
+      "same_as_historical": false
+    },
+    {
+      "seed": 4,
+      "state": [
+        "gripper_open()",
+        "in_region(cube_a,pocket)",
+        "in_region(cube_b,mouth)"
+      ],
+      "scores": {
+        "in_region(cube_a,src_a)": 3.1501046215964834e-10,
+        "in_region(cube_b,src_b)": 1.3877787807814457e-15,
+        "in_region(cube_a,pocket)": 0.9737455754101491,
+        "in_region(cube_b,mouth)": 0.9535181782349342,
+        "tcp_near(cube_a)": 0.00016588480174112297,
+        "tcp_near(cube_b)": 0.0005809471752277195,
+        "gripper_open()": 0.9759753659606714,
+        "clear_of_walls(cube_a)": 0.11932411966333589
+      },
+      "uncertain": [],
+      "plan": [
+        "pick(cube_b)",
+        "place(cube_b,src_b)",
+        "approach(cube_a)",
+        "HOLE[clear_of_walls(cube_a)]",
+        "pick(cube_a)",
+        "place(cube_a,src_a)",
+        "retreat_to_safe"
+      ],
+      "candidates": [
+        {
+          "atom": "clear_of_walls(cube_a)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "gripper_open()",
+          "polarity": "positive"
+        },
+        {
+          "atom": "in_region(cube_a,pocket)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "in_region(cube_a,src_a)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "in_region(cube_b,mouth)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "in_region(cube_b,src_b)",
+          "polarity": "positive"
+        },
+        {
+          "atom": "tcp_near(cube_a)",
+          "polarity": "negative"
+        },
+        {
+          "atom": "tcp_near(cube_b)",
+          "polarity": "negative"
+        }
+      ],
+      "delegated": [
+        {
+          "atom": "clear_of_walls(cube_a)",
+          "polarity": "positive"
+        }
+      ],
+      "hole_indices": [
+        3
+      ],
+      "cost": [
+        1,
+        0,
+        2,
+        1,
+        7
+      ],
+      "planning_cost": [
+        1,
+        0,
+        7
+      ],
+      "ties": [],
+      "expanded": 90,
+      "hole_contexts": [
+        {
+          "literal": {
+            "atom": "clear_of_walls(cube_a)",
+            "polarity": "positive"
+          },
+          "index": 3,
+          "state_before": [
+            "in_region(cube_a,pocket)",
+            "in_region(cube_b,src_b)",
+            "tcp_near(cube_a)"
+          ],
+          "used_by": "pick(cube_a)",
+          "used_at": 4,
+          "waiting": [
+            "pick(cube_a)",
+            "goal"
+          ],
+          "prefix": [
+            "pick(cube_b)",
+            "place(cube_b,src_b)",
+            "approach(cube_a)"
+          ],
+          "suffix": [
+            "pick(cube_a)",
+            "place(cube_a,src_a)",
+            "retreat_to_safe"
+          ],
+          "library_alternatives": [
+            [
+              "place(cube_a,src_a)",
+              "cannot run here"
+            ],
+            [
+              "place(cube_a,src_b)",
+              "cannot run here"
+            ],
+            [
+              "place(cube_a,mouth)",
+              "cannot run here"
+            ]
+          ]
+        }
+      ],
+      "unmet_needs": null,
+      "replay_problems": [],
+      "same_as_historical": false
+    }
+  ]
+}

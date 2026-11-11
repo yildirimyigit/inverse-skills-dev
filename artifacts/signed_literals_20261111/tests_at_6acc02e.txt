@@ -1,0 +1,7 @@
+commit 6acc02e8048534fa50b0a2d4fd4d1fa62357516b, 2026-11-11T15:11:12Z: PYTHONNOUSERSITE=1 python -m pytest -q
+tests/test_signed_execution.py: 452 warnings
+  /opt/conda/envs/inverse-skills/lib/python3.10/site-packages/mani_skill/agents/base_agent.py:328: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+    if np.isnan(action).any():
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+301 passed, 454 warnings in 11.84s

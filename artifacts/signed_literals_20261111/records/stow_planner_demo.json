@@ -1,0 +1,19 @@
+{
+ "step": "stow_planner_demo",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "scripts/stow_planner_demo.py",
+  "--operator",
+  "artifacts/signed_literals_20261111/E1_stage1/stow_stage1_operator.json",
+  "--out",
+  "artifacts/signed_literals_20261111/E2_stage2/stow_planner_demo.json"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "c03f4eb4e13945aca881992bde740a3b85c77a42",
+  "tracked_changes": []
+ },
+ "started": "2026-11-11 14:24:43",
+ "seconds": 4.0,
+ "exit_code": 0
+}

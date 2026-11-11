@@ -1,0 +1,1018 @@
+{
+  "passed": true,
+  "summary": {
+    "push_closes": 10,
+    "gripper_upright": 10,
+    "approach_reaches_standoff": 10,
+    "approach_leaves_drawer": 10,
+    "grasp_holds_handle": 10,
+    "grasp_leaves_drawer": 10,
+    "pull_opens_after_grasp": 10,
+    "pull_fails_without_grasp": 10,
+    "near_misses_not_grasped": 10,
+    "near_misses_cannot_open": 10,
+    "grasped_iff_pull_opens": 10
+  },
+  "seeds": [
+    {
+      "seed": 0,
+      "start_opening_mm": 125.3,
+      "pushed_opening_mm": 4.9,
+      "drawer_closed": 0.927,
+      "tilt_after_push_deg": 2.3,
+      "standoff_error_mm": 2.3,
+      "approach_moved_mm": 0.0,
+      "at_handle_standoff": 0.999,
+      "tilt_at_approach_deg": 2.3,
+      "grasp": {
+        "handle_grasped": 0.999,
+        "pinch_left": 15.19,
+        "pinch_right": 15.01,
+        "width_mm": 11.6,
+        "tcp_to_grasp_point_mm": 4.5
+      },
+      "grasp_moved_mm": 0.0,
+      "tilt_at_grasp_deg": 2.2,
+      "pulled_opening_mm": 147.5,
+      "drawer_open": 0.999,
+      "no_grasp_pull_opening_mm": 4.9,
+      "cases": {
+        "open_around": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 80.0,
+          "tcp_to_grasp_point_mm": 2.8,
+          "pulled_opening_mm": 4.9,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "closed_in_air": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 47.2,
+          "pulled_opening_mm": 4.9,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "fist_on_top": {
+          "handle_grasped": 0.012,
+          "pinch_left": -2.4,
+          "pinch_right": 0.73,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 20.0,
+          "pulled_opening_mm": 12.4,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "fist_against_side": {
+          "handle_grasped": 0.0,
+          "pinch_left": -10.98,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 23.6,
+          "pulled_opening_mm": 11.1,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "off_centre_25mm": {
+          "handle_grasped": 0.999,
+          "pinch_left": 15.48,
+          "pinch_right": 15.17,
+          "width_mm": 12.0,
+          "tcp_to_grasp_point_mm": 3.6,
+          "pulled_opening_mm": 147.5,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        },
+        "shallow_20mm": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 21.2,
+          "pulled_opening_mm": 4.2,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": true
+        }
+      },
+      "ajar_grasped": 0.999,
+      "ajar_pull_opening_mm": 147.7,
+      "checks": {
+        "push_closes": true,
+        "gripper_upright": true,
+        "approach_reaches_standoff": true,
+        "approach_leaves_drawer": true,
+        "grasp_holds_handle": true,
+        "grasp_leaves_drawer": true,
+        "pull_opens_after_grasp": true,
+        "pull_fails_without_grasp": true,
+        "near_misses_not_grasped": true,
+        "near_misses_cannot_open": true,
+        "grasped_iff_pull_opens": true
+      }
+    },
+    {
+      "seed": 1,
+      "start_opening_mm": 144.2,
+      "pushed_opening_mm": 2.0,
+      "drawer_closed": 0.982,
+      "tilt_after_push_deg": 3.9,
+      "standoff_error_mm": 2.3,
+      "approach_moved_mm": 0.0,
+      "at_handle_standoff": 0.999,
+      "tilt_at_approach_deg": 3.2,
+      "grasp": {
+        "handle_grasped": 0.999,
+        "pinch_left": 15.06,
+        "pinch_right": 14.94,
+        "width_mm": 10.7,
+        "tcp_to_grasp_point_mm": 4.7
+      },
+      "grasp_moved_mm": 0.0,
+      "tilt_at_grasp_deg": 3.4,
+      "pulled_opening_mm": 147.3,
+      "drawer_open": 0.999,
+      "no_grasp_pull_opening_mm": 2.0,
+      "cases": {
+        "open_around": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 80.0,
+          "tcp_to_grasp_point_mm": 2.8,
+          "pulled_opening_mm": 2.0,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "closed_in_air": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 47.1,
+          "pulled_opening_mm": 2.0,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "fist_on_top": {
+          "handle_grasped": 0.076,
+          "pinch_left": -0.49,
+          "pinch_right": 0.31,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 19.8,
+          "pulled_opening_mm": 4.4,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "fist_against_side": {
+          "handle_grasped": 0.0,
+          "pinch_left": -10.32,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 22.4,
+          "pulled_opening_mm": 11.5,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "off_centre_25mm": {
+          "handle_grasped": 0.999,
+          "pinch_left": 15.28,
+          "pinch_right": 14.9,
+          "width_mm": 11.1,
+          "tcp_to_grasp_point_mm": 2.4,
+          "pulled_opening_mm": 147.3,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        },
+        "shallow_20mm": {
+          "handle_grasped": 0.985,
+          "pinch_left": 15.02,
+          "pinch_right": 14.89,
+          "width_mm": 10.6,
+          "tcp_to_grasp_point_mm": 19.0,
+          "pulled_opening_mm": 147.3,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        }
+      },
+      "ajar_grasped": 0.999,
+      "ajar_pull_opening_mm": 147.7,
+      "checks": {
+        "push_closes": true,
+        "gripper_upright": true,
+        "approach_reaches_standoff": true,
+        "approach_leaves_drawer": true,
+        "grasp_holds_handle": true,
+        "grasp_leaves_drawer": true,
+        "pull_opens_after_grasp": true,
+        "pull_fails_without_grasp": true,
+        "near_misses_not_grasped": true,
+        "near_misses_cannot_open": true,
+        "grasped_iff_pull_opens": true
+      }
+    },
+    {
+      "seed": 2,
+      "start_opening_mm": 158.2,
+      "pushed_opening_mm": 1.4,
+      "drawer_closed": 0.986,
+      "tilt_after_push_deg": 2.9,
+      "standoff_error_mm": 2.3,
+      "approach_moved_mm": 0.0,
+      "at_handle_standoff": 0.999,
+      "tilt_at_approach_deg": 2.9,
+      "grasp": {
+        "handle_grasped": 0.999,
+        "pinch_left": 15.28,
+        "pinch_right": 15.03,
+        "width_mm": 11.2,
+        "tcp_to_grasp_point_mm": 4.6
+      },
+      "grasp_moved_mm": 0.0,
+      "tilt_at_grasp_deg": 2.8,
+      "pulled_opening_mm": 147.2,
+      "drawer_open": 0.999,
+      "no_grasp_pull_opening_mm": 1.4,
+      "cases": {
+        "open_around": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 80.0,
+          "tcp_to_grasp_point_mm": 2.8,
+          "pulled_opening_mm": 1.4,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "closed_in_air": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 47.2,
+          "pulled_opening_mm": 1.4,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "fist_on_top": {
+          "handle_grasped": 0.011,
+          "pinch_left": 0.93,
+          "pinch_right": -2.52,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 20.3,
+          "pulled_opening_mm": 1.3,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "fist_against_side": {
+          "handle_grasped": 0.0,
+          "pinch_left": -12.7,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 21.2,
+          "pulled_opening_mm": 9.2,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "off_centre_25mm": {
+          "handle_grasped": 1.0,
+          "pinch_left": 15.72,
+          "pinch_right": 15.31,
+          "width_mm": 11.9,
+          "tcp_to_grasp_point_mm": 1.6,
+          "pulled_opening_mm": 147.2,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        },
+        "shallow_20mm": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 21.5,
+          "pulled_opening_mm": 0.6,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": true
+        }
+      },
+      "ajar_grasped": 0.999,
+      "ajar_pull_opening_mm": 147.7,
+      "checks": {
+        "push_closes": true,
+        "gripper_upright": true,
+        "approach_reaches_standoff": true,
+        "approach_leaves_drawer": true,
+        "grasp_holds_handle": true,
+        "grasp_leaves_drawer": true,
+        "pull_opens_after_grasp": true,
+        "pull_fails_without_grasp": true,
+        "near_misses_not_grasped": true,
+        "near_misses_cannot_open": true,
+        "grasped_iff_pull_opens": true
+      }
+    },
+    {
+      "seed": 3,
+      "start_opening_mm": 137.2,
+      "pushed_opening_mm": 1.9,
+      "drawer_closed": 0.983,
+      "tilt_after_push_deg": 4.5,
+      "standoff_error_mm": 2.3,
+      "approach_moved_mm": 0.0,
+      "at_handle_standoff": 0.999,
+      "tilt_at_approach_deg": 3.8,
+      "grasp": {
+        "handle_grasped": 0.999,
+        "pinch_left": 14.91,
+        "pinch_right": 15.09,
+        "width_mm": 10.8,
+        "tcp_to_grasp_point_mm": 4.6
+      },
+      "grasp_moved_mm": 0.0,
+      "tilt_at_grasp_deg": 4.0,
+      "pulled_opening_mm": 147.2,
+      "drawer_open": 0.999,
+      "no_grasp_pull_opening_mm": 1.9,
+      "cases": {
+        "open_around": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 80.0,
+          "tcp_to_grasp_point_mm": 2.8,
+          "pulled_opening_mm": 1.9,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "closed_in_air": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 47.2,
+          "pulled_opening_mm": 1.9,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "fist_on_top": {
+          "handle_grasped": 0.114,
+          "pinch_left": 0.04,
+          "pinch_right": -0.05,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 19.8,
+          "pulled_opening_mm": 7.9,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "fist_against_side": {
+          "handle_grasped": 0.0,
+          "pinch_left": -10.38,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 22.4,
+          "pulled_opening_mm": 11.0,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "off_centre_25mm": {
+          "handle_grasped": 1.0,
+          "pinch_left": 15.03,
+          "pinch_right": 14.93,
+          "width_mm": 10.5,
+          "tcp_to_grasp_point_mm": 1.5,
+          "pulled_opening_mm": 147.3,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        },
+        "shallow_20mm": {
+          "handle_grasped": 0.985,
+          "pinch_left": 14.87,
+          "pinch_right": 14.99,
+          "width_mm": 10.7,
+          "tcp_to_grasp_point_mm": 19.1,
+          "pulled_opening_mm": 147.3,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        }
+      },
+      "ajar_grasped": 0.999,
+      "ajar_pull_opening_mm": 147.7,
+      "checks": {
+        "push_closes": true,
+        "gripper_upright": true,
+        "approach_reaches_standoff": true,
+        "approach_leaves_drawer": true,
+        "grasp_holds_handle": true,
+        "grasp_leaves_drawer": true,
+        "pull_opens_after_grasp": true,
+        "pull_fails_without_grasp": true,
+        "near_misses_not_grasped": true,
+        "near_misses_cannot_open": true,
+        "grasped_iff_pull_opens": true
+      }
+    },
+    {
+      "seed": 4,
+      "start_opening_mm": 125.5,
+      "pushed_opening_mm": 1.8,
+      "drawer_closed": 0.984,
+      "tilt_after_push_deg": 2.6,
+      "standoff_error_mm": 2.3,
+      "approach_moved_mm": 0.0,
+      "at_handle_standoff": 0.999,
+      "tilt_at_approach_deg": 1.8,
+      "grasp": {
+        "handle_grasped": 0.999,
+        "pinch_left": 14.99,
+        "pinch_right": 14.92,
+        "width_mm": 10.5,
+        "tcp_to_grasp_point_mm": 4.6
+      },
+      "grasp_moved_mm": 0.0,
+      "tilt_at_grasp_deg": 2.0,
+      "pulled_opening_mm": 147.3,
+      "drawer_open": 0.999,
+      "no_grasp_pull_opening_mm": 1.8,
+      "cases": {
+        "open_around": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 80.0,
+          "tcp_to_grasp_point_mm": 2.8,
+          "pulled_opening_mm": 1.8,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "closed_in_air": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 47.1,
+          "pulled_opening_mm": 1.8,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "fist_on_top": {
+          "handle_grasped": 0.118,
+          "pinch_left": -0.02,
+          "pinch_right": 0.01,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 21.4,
+          "pulled_opening_mm": 7.6,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "fist_against_side": {
+          "handle_grasped": 0.0,
+          "pinch_left": -10.58,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 22.4,
+          "pulled_opening_mm": 11.2,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "off_centre_25mm": {
+          "handle_grasped": 1.0,
+          "pinch_left": 15.18,
+          "pinch_right": 14.87,
+          "width_mm": 11.0,
+          "tcp_to_grasp_point_mm": 1.8,
+          "pulled_opening_mm": 147.3,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        },
+        "shallow_20mm": {
+          "handle_grasped": 0.985,
+          "pinch_left": 14.94,
+          "pinch_right": 14.88,
+          "width_mm": 10.4,
+          "tcp_to_grasp_point_mm": 19.0,
+          "pulled_opening_mm": 147.3,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        }
+      },
+      "ajar_grasped": 0.999,
+      "ajar_pull_opening_mm": 147.7,
+      "checks": {
+        "push_closes": true,
+        "gripper_upright": true,
+        "approach_reaches_standoff": true,
+        "approach_leaves_drawer": true,
+        "grasp_holds_handle": true,
+        "grasp_leaves_drawer": true,
+        "pull_opens_after_grasp": true,
+        "pull_fails_without_grasp": true,
+        "near_misses_not_grasped": true,
+        "near_misses_cannot_open": true,
+        "grasped_iff_pull_opens": true
+      }
+    },
+    {
+      "seed": 5,
+      "start_opening_mm": 174.4,
+      "pushed_opening_mm": 1.3,
+      "drawer_closed": 0.988,
+      "tilt_after_push_deg": 1.2,
+      "standoff_error_mm": 2.3,
+      "approach_moved_mm": 0.0,
+      "at_handle_standoff": 0.999,
+      "tilt_at_approach_deg": 1.9,
+      "grasp": {
+        "handle_grasped": 0.999,
+        "pinch_left": 14.87,
+        "pinch_right": 15.26,
+        "width_mm": 11.4,
+        "tcp_to_grasp_point_mm": 4.6
+      },
+      "grasp_moved_mm": 0.0,
+      "tilt_at_grasp_deg": 1.8,
+      "pulled_opening_mm": 147.2,
+      "drawer_open": 0.999,
+      "no_grasp_pull_opening_mm": 1.3,
+      "cases": {
+        "open_around": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 80.0,
+          "tcp_to_grasp_point_mm": 2.8,
+          "pulled_opening_mm": 1.3,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "closed_in_air": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 47.1,
+          "pulled_opening_mm": 1.3,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "fist_on_top": {
+          "handle_grasped": 0.066,
+          "pinch_left": -0.64,
+          "pinch_right": 0.51,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 20.9,
+          "pulled_opening_mm": 4.2,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "fist_against_side": {
+          "handle_grasped": 0.0,
+          "pinch_left": -12.34,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 22.9,
+          "pulled_opening_mm": 9.9,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "off_centre_25mm": {
+          "handle_grasped": 0.999,
+          "pinch_left": 14.92,
+          "pinch_right": 15.13,
+          "width_mm": 10.7,
+          "tcp_to_grasp_point_mm": 2.0,
+          "pulled_opening_mm": 147.3,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        },
+        "shallow_20mm": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 21.6,
+          "pulled_opening_mm": 0.7,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": true
+        }
+      },
+      "ajar_grasped": 0.999,
+      "ajar_pull_opening_mm": 147.6,
+      "checks": {
+        "push_closes": true,
+        "gripper_upright": true,
+        "approach_reaches_standoff": true,
+        "approach_leaves_drawer": true,
+        "grasp_holds_handle": true,
+        "grasp_leaves_drawer": true,
+        "pull_opens_after_grasp": true,
+        "pull_fails_without_grasp": true,
+        "near_misses_not_grasped": true,
+        "near_misses_cannot_open": true,
+        "grasped_iff_pull_opens": true
+      }
+    },
+    {
+      "seed": 6,
+      "start_opening_mm": 179.2,
+      "pushed_opening_mm": 1.9,
+      "drawer_closed": 0.983,
+      "tilt_after_push_deg": 2.7,
+      "standoff_error_mm": 2.3,
+      "approach_moved_mm": 0.0,
+      "at_handle_standoff": 0.999,
+      "tilt_at_approach_deg": 2.3,
+      "grasp": {
+        "handle_grasped": 0.999,
+        "pinch_left": 15.04,
+        "pinch_right": 15.04,
+        "width_mm": 11.0,
+        "tcp_to_grasp_point_mm": 4.6
+      },
+      "grasp_moved_mm": 0.0,
+      "tilt_at_grasp_deg": 2.3,
+      "pulled_opening_mm": 147.2,
+      "drawer_open": 0.999,
+      "no_grasp_pull_opening_mm": 1.9,
+      "cases": {
+        "open_around": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 80.0,
+          "tcp_to_grasp_point_mm": 2.8,
+          "pulled_opening_mm": 1.9,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "closed_in_air": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 47.2,
+          "pulled_opening_mm": 1.9,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "fist_on_top": {
+          "handle_grasped": 0.021,
+          "pinch_left": 0.78,
+          "pinch_right": -1.87,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 20.1,
+          "pulled_opening_mm": 5.7,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "fist_against_side": {
+          "handle_grasped": 0.0,
+          "pinch_left": -11.1,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 21.7,
+          "pulled_opening_mm": 10.8,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "off_centre_25mm": {
+          "handle_grasped": 1.0,
+          "pinch_left": 15.23,
+          "pinch_right": 14.98,
+          "width_mm": 11.2,
+          "tcp_to_grasp_point_mm": 0.9,
+          "pulled_opening_mm": 147.3,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        },
+        "shallow_20mm": {
+          "handle_grasped": 0.169,
+          "pinch_left": 0.41,
+          "pinch_right": 10.92,
+          "width_mm": 3.0,
+          "tcp_to_grasp_point_mm": 20.1,
+          "pulled_opening_mm": 12.4,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": true
+        }
+      },
+      "ajar_grasped": 0.999,
+      "ajar_pull_opening_mm": 147.7,
+      "checks": {
+        "push_closes": true,
+        "gripper_upright": true,
+        "approach_reaches_standoff": true,
+        "approach_leaves_drawer": true,
+        "grasp_holds_handle": true,
+        "grasp_leaves_drawer": true,
+        "pull_opens_after_grasp": true,
+        "pull_fails_without_grasp": true,
+        "near_misses_not_grasped": true,
+        "near_misses_cannot_open": true,
+        "grasped_iff_pull_opens": true
+      }
+    },
+    {
+      "seed": 7,
+      "start_opening_mm": 159.6,
+      "pushed_opening_mm": 1.4,
+      "drawer_closed": 0.987,
+      "tilt_after_push_deg": 1.1,
+      "standoff_error_mm": 2.3,
+      "approach_moved_mm": 0.0,
+      "at_handle_standoff": 0.999,
+      "tilt_at_approach_deg": 1.4,
+      "grasp": {
+        "handle_grasped": 0.999,
+        "pinch_left": 14.96,
+        "pinch_right": 15.14,
+        "width_mm": 11.0,
+        "tcp_to_grasp_point_mm": 4.6
+      },
+      "grasp_moved_mm": 0.0,
+      "tilt_at_grasp_deg": 1.2,
+      "pulled_opening_mm": 147.2,
+      "drawer_open": 0.999,
+      "no_grasp_pull_opening_mm": 1.4,
+      "cases": {
+        "open_around": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 80.0,
+          "tcp_to_grasp_point_mm": 2.8,
+          "pulled_opening_mm": 1.4,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "closed_in_air": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 47.2,
+          "pulled_opening_mm": 1.4,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "fist_on_top": {
+          "handle_grasped": 0.061,
+          "pinch_left": 0.3,
+          "pinch_right": -0.74,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 24.7,
+          "pulled_opening_mm": 3.0,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "fist_against_side": {
+          "handle_grasped": 0.0,
+          "pinch_left": -10.9,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 22.5,
+          "pulled_opening_mm": 9.1,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "off_centre_25mm": {
+          "handle_grasped": 1.0,
+          "pinch_left": 15.11,
+          "pinch_right": 15.03,
+          "width_mm": 10.8,
+          "tcp_to_grasp_point_mm": 1.1,
+          "pulled_opening_mm": 147.2,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        },
+        "shallow_20mm": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 20.9,
+          "pulled_opening_mm": 0.9,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": true
+        }
+      },
+      "ajar_grasped": 0.999,
+      "ajar_pull_opening_mm": 147.6,
+      "checks": {
+        "push_closes": true,
+        "gripper_upright": true,
+        "approach_reaches_standoff": true,
+        "approach_leaves_drawer": true,
+        "grasp_holds_handle": true,
+        "grasp_leaves_drawer": true,
+        "pull_opens_after_grasp": true,
+        "pull_fails_without_grasp": true,
+        "near_misses_not_grasped": true,
+        "near_misses_cannot_open": true,
+        "grasped_iff_pull_opens": true
+      }
+    },
+    {
+      "seed": 8,
+      "start_opening_mm": 176.8,
+      "pushed_opening_mm": 1.8,
+      "drawer_closed": 0.984,
+      "tilt_after_push_deg": 3.2,
+      "standoff_error_mm": 2.3,
+      "approach_moved_mm": 0.0,
+      "at_handle_standoff": 0.999,
+      "tilt_at_approach_deg": 3.1,
+      "grasp": {
+        "handle_grasped": 0.999,
+        "pinch_left": 15.31,
+        "pinch_right": 15.06,
+        "width_mm": 11.3,
+        "tcp_to_grasp_point_mm": 4.6
+      },
+      "grasp_moved_mm": 0.0,
+      "tilt_at_grasp_deg": 3.1,
+      "pulled_opening_mm": 147.3,
+      "drawer_open": 0.999,
+      "no_grasp_pull_opening_mm": 1.8,
+      "cases": {
+        "open_around": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 80.0,
+          "tcp_to_grasp_point_mm": 2.8,
+          "pulled_opening_mm": 1.8,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "closed_in_air": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 47.2,
+          "pulled_opening_mm": 1.8,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "fist_on_top": {
+          "handle_grasped": 0.044,
+          "pinch_left": 0.35,
+          "pinch_right": -1.08,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 24.5,
+          "pulled_opening_mm": 3.1,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "fist_against_side": {
+          "handle_grasped": 0.0,
+          "pinch_left": -11.38,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 21.3,
+          "pulled_opening_mm": 13.1,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "off_centre_25mm": {
+          "handle_grasped": 1.0,
+          "pinch_left": 15.76,
+          "pinch_right": 15.35,
+          "width_mm": 12.0,
+          "tcp_to_grasp_point_mm": 1.6,
+          "pulled_opening_mm": 147.2,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        },
+        "shallow_20mm": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 21.4,
+          "pulled_opening_mm": 0.9,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": true
+        }
+      },
+      "ajar_grasped": 0.999,
+      "ajar_pull_opening_mm": 147.7,
+      "checks": {
+        "push_closes": true,
+        "gripper_upright": true,
+        "approach_reaches_standoff": true,
+        "approach_leaves_drawer": true,
+        "grasp_holds_handle": true,
+        "grasp_leaves_drawer": true,
+        "pull_opens_after_grasp": true,
+        "pull_fails_without_grasp": true,
+        "near_misses_not_grasped": true,
+        "near_misses_cannot_open": true,
+        "grasped_iff_pull_opens": true
+      }
+    },
+    {
+      "seed": 9,
+      "start_opening_mm": 148.8,
+      "pushed_opening_mm": 1.7,
+      "drawer_closed": 0.985,
+      "tilt_after_push_deg": 1.4,
+      "standoff_error_mm": 2.3,
+      "approach_moved_mm": 0.0,
+      "at_handle_standoff": 0.999,
+      "tilt_at_approach_deg": 0.8,
+      "grasp": {
+        "handle_grasped": 0.999,
+        "pinch_left": 14.97,
+        "pinch_right": 15.02,
+        "width_mm": 10.6,
+        "tcp_to_grasp_point_mm": 4.6
+      },
+      "grasp_moved_mm": 0.0,
+      "tilt_at_grasp_deg": 0.9,
+      "pulled_opening_mm": 147.3,
+      "drawer_open": 0.999,
+      "no_grasp_pull_opening_mm": 1.7,
+      "cases": {
+        "open_around": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 80.0,
+          "tcp_to_grasp_point_mm": 2.8,
+          "pulled_opening_mm": 1.7,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "closed_in_air": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 47.1,
+          "pulled_opening_mm": 1.7,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": false
+        },
+        "fist_on_top": {
+          "handle_grasped": 0.074,
+          "pinch_left": 0.41,
+          "pinch_right": -0.52,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 20.2,
+          "pulled_opening_mm": 9.6,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "fist_against_side": {
+          "handle_grasped": 0.0,
+          "pinch_left": -10.41,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 22.4,
+          "pulled_opening_mm": 10.3,
+          "drawer_open_after_pull": 0.001,
+          "expected_grasp": false
+        },
+        "off_centre_25mm": {
+          "handle_grasped": 1.0,
+          "pinch_left": 15.17,
+          "pinch_right": 14.94,
+          "width_mm": 10.8,
+          "tcp_to_grasp_point_mm": 1.5,
+          "pulled_opening_mm": 147.3,
+          "drawer_open_after_pull": 0.999,
+          "expected_grasp": true
+        },
+        "shallow_20mm": {
+          "handle_grasped": 0.119,
+          "pinch_left": 0.0,
+          "pinch_right": 0.0,
+          "width_mm": 0.0,
+          "tcp_to_grasp_point_mm": 21.1,
+          "pulled_opening_mm": 1.1,
+          "drawer_open_after_pull": 0.0,
+          "expected_grasp": true
+        }
+      },
+      "ajar_grasped": 0.999,
+      "ajar_pull_opening_mm": 147.7,
+      "checks": {
+        "push_closes": true,
+        "gripper_upright": true,
+        "approach_reaches_standoff": true,
+        "approach_leaves_drawer": true,
+        "grasp_holds_handle": true,
+        "grasp_leaves_drawer": true,
+        "pull_opens_after_grasp": true,
+        "pull_fails_without_grasp": true,
+        "near_misses_not_grasped": true,
+        "near_misses_cannot_open": true,
+        "grasped_iff_pull_opens": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,417 @@
+{
+ "about": "Stage A of the signed-literal phase: the state before any change.",
+ "git": {
+  "branch": "feature/signed-literals",
+  "commit": "63dc2829802f989a397327a207e9b87cd5578d72",
+  "status_porcelain": "",
+  "last_commit": "63dc2829802f989a397327a207e9b87cd5578d72 2026-11-10 09:38:13 +0000 Final verification of fe374f0: report, scripts and compact evidence"
+ },
+ "environment": {
+  "python": "3.10.21",
+  "executable": "/opt/conda/envs/inverse-skills/bin/python",
+  "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.35",
+  "cuda_runtime": "12.8",
+  "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "driver": "595.99.02",
+  "packages": {
+   "numpy": "2.2.6",
+   "torch": "2.7.1+cu128",
+   "mani-skill": "3.0.1",
+   "sapien": "3.0.3",
+   "stable-baselines3": "2.8.0",
+   "gymnasium": "1.2.3",
+   "pytest": "9.1.1"
+  }
+ },
+ "tests": {
+  "command": "python -m pytest -q",
+  "exit_code": 0,
+  "summary": "239 passed, 2 warnings in 4.95s",
+  "counts": {
+   "passed": 239,
+   "warnings": 2
+  }
+ },
+ "references": {
+  "artifacts/stow/stage0_gate.json": {
+   "bytes": 6572,
+   "sha256": "9ad0711bcba770fa59f2f31153cb516fb86afd930e1ecd1b0eb98e4408c6d80e",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/stow/stage0_gate.json"
+  },
+  "artifacts/stow/stage1_operator.json": {
+   "bytes": 3912,
+   "sha256": "5b8050d0a2f0e6852815909a3972650318c91ab8201f632da3f3f7d472b1cbb4",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/stow/stage1_operator.json"
+  },
+  "artifacts/stow/stage2_plan.json": {
+   "bytes": 7250,
+   "sha256": "e99700f236c24bb0d6d2946a798a3c2be98e33d2a0a88159936cd2b4feb622d2",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/stow/stage2_plan.json"
+  },
+  "artifacts/stow/hole_spec.json": {
+   "bytes": 2373,
+   "sha256": "7235249bbee0eae2eed5d3386dfc38972d7496b70076a7a28d2f3c392e85564c",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/stow/hole_spec.json"
+  },
+  "artifacts/stow/stage3/1790788534/summary.json": {
+   "bytes": 9163,
+   "sha256": "e0ac604b63b2a06ac2cd4b76140dffb221a41b32d5d8623bf93e5dfff0afbfa9",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/stow/stage3/1790788534/summary.json"
+  },
+  "artifacts/stow/stage3/1790788534/precondition.json": {
+   "bytes": 1271,
+   "sha256": "88ac9380ebf46c0876617edf44645ed8caa3af3035a6933463292bfde3e79064",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/stow/stage3/1790788534/precondition.json"
+  },
+  "artifacts/stow/stage3/1790788534/sac_hole_best.zip": {
+   "bytes": 3036955,
+   "sha256": "1e4ce9cc4ad8511f3333972c9358f0761ff0a348ec736963b9364067d528b26b",
+   "tracked_in_git": true
+  },
+  "artifacts/stow/learned_operator.json": {
+   "bytes": 3378,
+   "sha256": "1bfbfc82ba5369bcf694d144bec5b631d39a715cec5b187a1d22986a9e28d49e",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/stow/learned_operator.json"
+  },
+  "artifacts/stow/stage4_execution.json": {
+   "bytes": 71450,
+   "sha256": "c0765090bccb140b04a87801ad9fd5c86be9b87ee11edb2d964310d36b32b1fc",
+   "tracked_in_git": true
+  },
+  "artifacts/stow/planner_demo.json": {
+   "bytes": 10231,
+   "sha256": "563d97b12b0d41bdf524d432852fe3a5120dd492a56f2460f891f1c71fedebd9",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/stow/planner_demo.json"
+  },
+  "artifacts/drawer/stage0_gate_after_push_fix.json": {
+   "bytes": 30983,
+   "sha256": "5df1c68957c3769d2426ab5b3c985d61f47fd6f85856e0f139909fdddfea55ed",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage0_gate_after_push_fix.json"
+  },
+  "artifacts/drawer/stage1_operator.json": {
+   "bytes": 1934,
+   "sha256": "23bd875c785c28601786aedfbfb32bd7e7cb7d8a534eb536365ce78a8fcd3d5f",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage1_operator.json"
+  },
+  "artifacts/drawer/stage2_plan.json": {
+   "bytes": 6671,
+   "sha256": "14e9dd2b4c40ebf63f50760cb0351e0ebd51119cad09079048ffa093a2fd6114",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage2_plan.json"
+  },
+  "artifacts/drawer/hole_spec.json": {
+   "bytes": 878,
+   "sha256": "b06e50b7457c9ec8d39075e2f33bf164ea3a6557ac16405cb210b837031cd40f",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/hole_spec.json"
+  },
+  "artifacts/drawer/stage3/checkpoints.json": {
+   "bytes": 2612,
+   "sha256": "23e88269de3c82e1fe2636f82d2f2683a7d1121763820a91520f6519973436c8",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/checkpoints.json"
+  },
+  "artifacts/drawer/stage3/1792053076/config.json": {
+   "bytes": 1240,
+   "sha256": "ada662df963a3d487a99443950389cd12ce0da5bd176534b9fa1a79463d4a365",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/1792053076/config.json"
+  },
+  "artifacts/drawer/stage3/1792053076/summary.json": {
+   "bytes": 37683,
+   "sha256": "af1aaab5eee9ab58048f1ab8395948eade6f7e232638293ff263dcf08f022d58",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/1792053076/summary.json"
+  },
+  "artifacts/drawer/stage3/1792053076/evaluation.json": {
+   "bytes": 4394,
+   "sha256": "0a9e73008a218ab96f4ce5c734beccd85662924ce13ab1fdf85461e1bba773d3",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/1792053076/evaluation.json"
+  },
+  "artifacts/drawer/stage3/1792056712/config.json": {
+   "bytes": 1055,
+   "sha256": "50d795392151e32d17a0657956b44f08ed66b422e41bfa63b819964eb105b626",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/1792056712/config.json"
+  },
+  "artifacts/drawer/stage3/1792056712/summary.json": {
+   "bytes": 37778,
+   "sha256": "bac6dcf938a6eb2f5b3b68e6fb06697a388c076d1528a4ced95113b37e52df5e",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/1792056712/summary.json"
+  },
+  "artifacts/drawer/stage3/1792056712/evaluation.json": {
+   "bytes": 4394,
+   "sha256": "74855e92d0df0e740ee1521ebde03a36aece979447b26d491d4a9b95aabdb10a",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/1792056712/evaluation.json"
+  },
+  "artifacts/drawer/stage3/1792056715/config.json": {
+   "bytes": 1055,
+   "sha256": "6fd9394a84dd970f2f51e30b8b80740c78079448c4168254e8f71118377c4229",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/1792056715/config.json"
+  },
+  "artifacts/drawer/stage3/1792056715/summary.json": {
+   "bytes": 37827,
+   "sha256": "2ee32a2e8bae6c1e18799bc56472fedc339b0bca9d80297168354c4cb092dabb",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/1792056715/summary.json"
+  },
+  "artifacts/drawer/stage3/1792056715/evaluation.json": {
+   "bytes": 4415,
+   "sha256": "c1d287c14fdd47ee613c45579f3638ec143c1b74d4a0c1b3c103f5f04a39f424",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/1792056715/evaluation.json"
+  },
+  "artifacts/drawer/stage3/1792056719/config.json": {
+   "bytes": 1055,
+   "sha256": "1252e3697a908a7ad491e025658f17d785aea751bba071bb9a64c6f8667c3d6d",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/1792056719/config.json"
+  },
+  "artifacts/drawer/stage3/1792056719/summary.json": {
+   "bytes": 37785,
+   "sha256": "7b9e5f54cb248976e03163e9cfaddc87f4205544c40161c396c0d82802fe9c8a",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/1792056719/summary.json"
+  },
+  "artifacts/drawer/stage3/1792056719/evaluation.json": {
+   "bytes": 4394,
+   "sha256": "f0e23d24b4a29bf606453f7d9cfc206c2d9910a7af6b06314a8df9fee779cc8b",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/stage3/1792056719/evaluation.json"
+  },
+  "artifacts/drawer/stage4_execution_after_push_fix.json": {
+   "bytes": 228731,
+   "sha256": "df6803dff60e5a2a9e0ba31535040d4c9a84e71d20728491142894e00ae697c3",
+   "tracked_in_git": true
+  },
+  "artifacts/drawer/final_targeted_vs_direct.json": {
+   "bytes": 398767,
+   "sha256": "aa2f36c2fe150ee1566a01af4d23cf6aed28d45a484593e628adc55f431886c1",
+   "tracked_in_git": true
+  },
+  "artifacts/drawer/direct/hole_spec_direct.json": {
+   "bytes": 576,
+   "sha256": "3737b7a5bd5f6fd9d17d810e88f5a0e5d0f71684fa2254ff339d2daa439e95cc",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/direct/hole_spec_direct.json"
+  },
+  "artifacts/drawer/direct/plan_direct.json": {
+   "bytes": 2562,
+   "sha256": "f76bbde6a77837555bed48bfb5229798838627fdda7046d255676e67b72aae2f",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/direct/plan_direct.json"
+  },
+  "artifacts/drawer/direct/checkpoints.json": {
+   "bytes": 2667,
+   "sha256": "f887a67f2822336d87b0741274a1cf522e1a8536ec697e2d66f8d3122a25e32c",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/direct/checkpoints.json"
+  },
+  "artifacts/drawer/direct/comparison.json": {
+   "bytes": 3587,
+   "sha256": "a04287242e2befc045793994f88eb893341f01179858bf4081fe5927db9fac5c",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/direct/comparison.json"
+  },
+  "artifacts/drawer/direct/seed0_1793033388/config.json": {
+   "bytes": 979,
+   "sha256": "de2ffd0f5d7cf03e333e0484f6d1b9c759f3b49576d29894631995673a3327a7",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/direct/seed0_1793033388/config.json"
+  },
+  "artifacts/drawer/direct/seed0_1793033388/summary.json": {
+   "bytes": 67049,
+   "sha256": "154c134ecc6a9ecb84b659a82abe6c04a2dce6fe3f2c6118910620e56f66fddb",
+   "tracked_in_git": true
+  },
+  "artifacts/drawer/direct/seed1_1793033389/config.json": {
+   "bytes": 979,
+   "sha256": "4ffa5154e7d94dbf1a95635037f11698e4e436ee4267a9b15314f69ab3168ac3",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/direct/seed1_1793033389/config.json"
+  },
+  "artifacts/drawer/direct/seed1_1793033389/summary.json": {
+   "bytes": 66032,
+   "sha256": "92991860d917dbba4cc6c6655574dd34e0971b78c0510ef7d1f86b0ea754a5ec",
+   "tracked_in_git": true
+  },
+  "artifacts/drawer/direct/seed2_1793033392/config.json": {
+   "bytes": 979,
+   "sha256": "048ee736ef6cb02d26b8c0ff9f1096d7060e7f3f7a4f876fc2e72fe828408015",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/direct/seed2_1793033392/config.json"
+  },
+  "artifacts/drawer/direct/seed2_1793033392/summary.json": {
+   "bytes": 66802,
+   "sha256": "7e84e70c624ebac576dc548ec88d0d798a1c0f3dac7bf2cf3a90228cd682471e",
+   "tracked_in_git": true
+  },
+  "artifacts/drawer/direct/seed3_1793033394/config.json": {
+   "bytes": 979,
+   "sha256": "38ed6554d3fca8943089d088d4b3b0e8714a9b06ca9c2bb91b27e85e3730c8c4",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/direct/seed3_1793033394/config.json"
+  },
+  "artifacts/drawer/direct/seed3_1793033394/summary.json": {
+   "bytes": 66775,
+   "sha256": "0c3b917432c71a9e8f0cf020ed76c746f4dd1a4b6b2d9c2783db7aa3a7bb4ef2",
+   "tracked_in_git": true
+  },
+  "artifacts/drawer/paper/sources.json": {
+   "bytes": 2205,
+   "sha256": "0cde732307f1b9fca2565a758364c56916991fb62dacd95da0e919008e9c0756",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/drawer/paper/sources.json"
+  },
+  "artifacts/final_verification_fe374f0/stow_stage1_operator.json": {
+   "bytes": 3925,
+   "sha256": "aa0a85c21f2fe8974da86a7e705aa0e1b517d3278b8567e77c4b4480d463a66b",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/final_verification_fe374f0/stow_stage1_operator.json"
+  },
+  "artifacts/final_verification_fe374f0/drawer_stage1_operator.json": {
+   "bytes": 1879,
+   "sha256": "c19c22b46044908372112ba876e8622bf27f124fe41d0144b69e995bc7eb2a20",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/final_verification_fe374f0/drawer_stage1_operator.json"
+  },
+  "artifacts/final_verification_fe374f0/stow_stage2_plan.json": {
+   "bytes": 13006,
+   "sha256": "bf01431d20c89fde76e02d0ce1ae05caac213177d9950efe63e3e28a10440e24",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/final_verification_fe374f0/stow_stage2_plan.json"
+  },
+  "artifacts/final_verification_fe374f0/drawer_stage2_plan.json": {
+   "bytes": 9398,
+   "sha256": "52f3d9e7f491e7cfa558479e6be9aa22afef8125af576776abd09ecc2e89d002",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/final_verification_fe374f0/drawer_stage2_plan.json"
+  },
+  "artifacts/final_verification_fe374f0/stow_hole_spec.json": {
+   "bytes": 2373,
+   "sha256": "7235249bbee0eae2eed5d3386dfc38972d7496b70076a7a28d2f3c392e85564c",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/final_verification_fe374f0/stow_hole_spec.json"
+  },
+  "artifacts/final_verification_fe374f0/drawer_hole_spec.json": {
+   "bytes": 878,
+   "sha256": "b06e50b7457c9ec8d39075e2f33bf164ea3a6557ac16405cb210b837031cd40f",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/final_verification_fe374f0/drawer_hole_spec.json"
+  },
+  "artifacts/final_verification_fe374f0/direct/hole_spec_direct.json": {
+   "bytes": 576,
+   "sha256": "3737b7a5bd5f6fd9d17d810e88f5a0e5d0f71684fa2254ff339d2daa439e95cc",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/final_verification_fe374f0/direct/hole_spec_direct.json"
+  },
+  "artifacts/final_verification_fe374f0/stow_learned_operator.json": {
+   "bytes": 9016,
+   "sha256": "a78ade779680e1b2aa867c27568f47068e7e4d865ad4fabc30ee9efb7eec0391",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/final_verification_fe374f0/stow_learned_operator.json"
+  },
+  "artifacts/final_verification_fe374f0/manifest.json": {
+   "bytes": 49125,
+   "sha256": "6c77e66822872b1ae3d06e2282054744e2a586cb891416d7d9c2a59a416dadcb",
+   "tracked_in_git": true,
+   "copy": "refs/artifacts/final_verification_fe374f0/manifest.json"
+  }
+ },
+ "protocol_lines": {
+  "scripts/stow_stage3_train.py": [
+   "32: EVAL_SEEDS = tuple(range(1000, 1010))",
+   "152: ap.add_argument(\"--timesteps\", type=int, default=150_000)",
+   "153: ap.add_argument(\"--eval-every\", type=int, default=5_000)",
+   "154: ap.add_argument(\"--curriculum-steps\", type=int, default=60_000)",
+   "168: train_env = StowHoleEnv(spec, seed_pool=tuple(range(32)))",
+   "169: eval_env = StowHoleEnv(spec, seed_pool=EVAL_SEEDS, curriculum=1.0)"
+  ],
+  "scripts/drawer_stage3_train.py": [
+   "43: TRAIN_SEEDS = tuple(range(32))",
+   "44: VALIDATION_SEEDS = tuple(range(500, 510))",
+   "45: TEST_SEEDS = tuple(range(1000, 1020))",
+   "138: ap.add_argument(\"--timesteps\", type=int, default=30_000)",
+   "139: ap.add_argument(\"--eval-every\", type=int, default=2_500)"
+  ],
+  "scripts/drawer_direct_train.py": [
+   "5: cannot drift), the training starts (seeds 0-31, offsets redrawn every episode),",
+   "9: hole, 100-step episodes and the 9-number observation (drawer_direct_env.py).",
+   "12: the end of the episode, as Stage 3 measured the grasp. After every validation",
+   "13: episode the arm is held still for 10 steps and the goal is measured again.",
+   "45: TRAIN_SEEDS = tuple(range(32))",
+   "46: VALIDATION_SEEDS = tuple(range(500, 510))",
+   "51: \"\"\"One deterministic episode per seed, each followed by the settling check.\"\"\"",
+   "52: episodes = []",
+   "59: episode = {\"seed\": seed, **env.episodes[-1], **env.settle()}",
+   "60: episodes.append(episode)",
+   "61: return {\"goal_rate\": float(np.mean([e[\"goal_met\"] for e in episodes])),",
+   "62: \"settled_goal_rate\": float(np.mean([e[\"settled_goal_met\"] for e in episodes])),",
+   "63: \"failures\": dict(Counter(e[\"failure\"] for e in episodes if e[\"failure\"])),",
+   "64: \"max_opening_mm\": max(e[\"max_opening_mm\"] for e in episodes),",
+   "65: \"episodes\": episodes}",
+   "69: \"\"\"Every `every` steps: summarise the training episodes since the last report,",
+   "85: recent = self.train_env.episodes[self._seen:]",
+   "86: self._seen = len(self.train_env.episodes)",
+   "87: validation = rollout(self.eval_env, VALIDATION_SEEDS, self.model)",
+   "90: \"train_episodes\": len(recent),",
+   "100: \"validation_episodes\": validation[\"episodes\"],",
+   "107: print(f\"  {self.num_timesteps:>6} steps | training episodes {row['train_episodes']:3d}: grasped \"",
+   "123: ap.add_argument(\"--timesteps\", type=int, default=stage3[\"timesteps\"])",
+   "124: ap.add_argument(\"--eval-every\", type=int, default=stage3[\"eval_every\"])",
+   "135: train_env = DrawerDirectEnv(spec, goal, seed_pool=TRAIN_SEEDS)",
+   "143: \"sac_from\": str(STAGE3_CONFIG), \"episode_length\": train_env.max_steps,",
+   "146: \"seeds\": {\"train\": TRAIN_SEEDS, \"validation\": VALIDATION_SEEDS},",
+   "149: f\"{spec['preserve_absent']} | {train_env.max_steps}-step episodes | SAC {sac_settings}, seed {args.seed}\")",
+   "158: # When training first grasped, first opened the drawer, and first ended an episode with it open.",
+   "159: episodes, length = train_env.episodes, train_env.max_steps",
+   "162: hit = next((e for e in episodes if key(e)), None)",
+   "169: \"episode_length\": length,",
+   "172: \"training_episodes\": len(episodes),",
+   "173: \"validation_interactions\": len(evaluator.history) * len(VALIDATION_SEEDS) * length,",
+   "175: \"first_grasp_episode_ends_at_step\": next((e[\"end_step\"] for e in episodes if e[\"ever_grasped\"]), None),",
+   "177: \"first_held_episode_ends_at_step\": next((e[\"end_step\"] for e in episodes if e[\"goal_met\"]), None),",
+   "178: \"training_episodes_grasped\": sum(e[\"ever_grasped\"] for e in episodes),",
+   "179: \"training_episodes_opened\": sum(e[\"first_satisfied_step\"] is not None for e in episodes),",
+   "180: \"training_max_opening_mm\": max(e[\"max_opening_mm\"] for e in episodes),",
+   "181: \"training_best_drawer_open_score\": max(e[\"best_score\"] for e in episodes),",
+   "182: \"training_failures\": dict(Counter(e[\"failure\"] for e in episodes if e[\"failure\"])),",
+   "195: print(f\"\\ntrained in {minutes:.1f} min: {summary['training_interactions']} steps, {len(episodes)} episodes | \""
+  ],
+  "scripts/stow_stage4_execute.py": [
+   "66: EXTRACTION_SEEDS = tuple(range(2000, 2010))   # disjoint from the evaluation seeds",
+   "165: default=list(range(1000, 1010)))"
+  ],
+  "scripts/drawer_stage4_execute.py": [
+   "54: SEEDS = tuple(range(2000, 2020))",
+   "185: ap.add_argument(\"--seeds\", type=lambda s: [int(x) for x in s.split(\",\")], default=list(SEEDS))"
+  ],
+  "scripts/drawer_final_evaluate.py": [
+   "59: SEEDS = tuple(range(3000, 3050))",
+   "61: GRASP_STEPS = 40          # the grasp policies' training horizon",
+   "62: DIRECT_STEPS = 100        # the direct policies' training horizon",
+   "63: SETTLE_STEPS = 10",
+   "117: for used in range(max_steps):",
+   "237: ap.add_argument(\"--seeds\", type=lambda s: [int(x) for x in s.split(\",\")], default=list(SEEDS))",
+   "254: for i in range(len(args.seeds)))"
+  ],
+  "scripts/stow_stage1_extract.py": [],
+  "scripts/drawer_stage1_extract.py": [],
+  "scripts/stow_stage2_plan.py": [],
+  "scripts/drawer_stage2_plan.py": []
+ }
+}

@@ -71,6 +71,20 @@ artifacts/final_verification_fe374f0/stow_stage4.json
 artifacts/final_verification_fe374f0/drawer_stage4.json
 artifacts/final_verification_fe374f0/drawer_final_targeted_vs_direct.json
 artifacts/final_verification_fe374f0/planning_checks.json
+# The signed-literal phase (2026-11-11): the report, the plan, the scripts that ran it, the run
+# records, the stages' JSON outputs, the diagnostics, and manifest.json (every step's command and
+# commit, every file's checksum, and the summaries of the five large outputs left out below).
+# Checkpoints, console logs and the baseline's copies of committed files stay local.
+!artifacts/signed_literals_20261111/
+artifacts/signed_literals_20261111/**/*.zip
+artifacts/signed_literals_20261111/**/*.log
+artifacts/signed_literals_20261111/logs/
+artifacts/signed_literals_20261111/00_baseline/refs/
+artifacts/signed_literals_20261111/E0_stage0/retreat_gate.json
+artifacts/signed_literals_20261111/R_retreat_validation/retreat_gate.json
+artifacts/signed_literals_20261111/E4_stage4/drawer_stage4.json
+artifacts/signed_literals_20261111/E4_stage4/final_targeted_vs_direct.json
+artifacts/signed_literals_20261111/D_diagnostics/direct_full_horizon.json
 checkpoints/
 logs/
 wandb/

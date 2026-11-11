@@ -1,0 +1,546 @@
+{
+ "stow": {
+  "signed_preconditions": {
+   "previous": [
+    "clear_of_walls(cube_a)",
+    "gripper_open()",
+    "in_region(cube_a,src_a)",
+    "in_region(cube_b,src_b)"
+   ],
+   "updated": [
+    "clear_of_walls(cube_a)",
+    "gripper_open()",
+    "not in_region(cube_a,pocket)",
+    "in_region(cube_a,src_a)",
+    "not in_region(cube_b,mouth)",
+    "in_region(cube_b,src_b)",
+    "not tcp_near(cube_a)",
+    "not tcp_near(cube_b)"
+   ]
+  },
+  "signed_effects": {
+   "previous": [
+    "in_region(cube_a,pocket)",
+    "in_region(cube_b,mouth)",
+    "not clear_of_walls(cube_a)",
+    "not in_region(cube_a,src_a)",
+    "not in_region(cube_b,src_b)"
+   ],
+   "updated": [
+    "in_region(cube_a,pocket)",
+    "in_region(cube_b,mouth)",
+    "not clear_of_walls(cube_a)",
+    "not in_region(cube_a,src_a)",
+    "not in_region(cube_b,src_b)"
+   ]
+  },
+  "restoration_goal": {
+   "previous": [
+    "clear_of_walls(cube_a)",
+    "gripper_open()",
+    "not in_region(cube_a,pocket)",
+    "in_region(cube_a,src_a)",
+    "not in_region(cube_b,mouth)",
+    "in_region(cube_b,src_b)"
+   ],
+   "updated": [
+    "clear_of_walls(cube_a)",
+    "gripper_open()",
+    "not in_region(cube_a,pocket)",
+    "in_region(cube_a,src_a)",
+    "not in_region(cube_b,mouth)",
+    "in_region(cube_b,src_b)",
+    "not tcp_near(cube_a)",
+    "not tcp_near(cube_b)"
+   ]
+  },
+  "missing_capabilities": {
+   "previous": [
+    "clear_of_walls(cube_a)"
+   ],
+   "updated": [
+    "clear_of_walls(cube_a)"
+   ]
+  },
+  "symbolic_plan": {
+   "previous": [
+    "pick(cube_b)",
+    "place(cube_b,src_b)",
+    "approach(cube_a)",
+    "HOLE[clear_of_walls(cube_a)]",
+    "pick(cube_a)",
+    "place(cube_a,src_a)"
+   ],
+   "updated": [
+    "pick(cube_b)",
+    "place(cube_b,src_b)",
+    "approach(cube_a)",
+    "HOLE[clear_of_walls(cube_a)]",
+    "pick(cube_a)",
+    "place(cube_a,src_a)",
+    "retreat_to_safe"
+   ]
+  },
+  "initiation_context": {
+   "previous": [
+    "tcp_near(cube_a)"
+   ],
+   "updated": [
+    "tcp_near(cube_a)"
+   ]
+  },
+  "preservation": {
+   "previous": [
+    "in_region(cube_b,src_b)",
+    "not in_region(cube_b,mouth)"
+   ],
+   "updated": [
+    "not in_region(cube_b,mouth)",
+    "in_region(cube_b,src_b)"
+   ]
+  },
+  "sac_held_out": {
+   "previous": {
+    "seeds": "1000-1009",
+    "success": 1.0,
+    "fences": 1.0,
+    "contract": 1.0,
+    "timesteps": 120000
+   },
+   "updated": {
+    "seeds": "1000-1009",
+    "success": 1.0,
+    "fences": 1.0,
+    "contract": 1.0,
+    "timesteps": 120000
+   }
+  },
+  "full_execution": {
+   "previous": {
+    "full": 1.0,
+    "library_only": 0.0,
+    "without_interference": 0.3,
+    "relearned": 0.9
+   },
+   "updated": {
+    "full": 0.8,
+    "library_only": 0.0,
+    "without_interference": 0.0,
+    "relearned": 0.0
+   },
+   "updated_boolean": {
+    "full": 0.8,
+    "library_only": 0.0,
+    "without_interference": 0.0,
+    "relearned": 0.0
+   },
+   "previous_rejudged_by_the_signed_goal": {
+    "full": {
+     "met": 0,
+     "of": 10,
+     "literals_ever_unmet": [
+      "not tcp_near(cube_a)"
+     ]
+    },
+    "library_only": {
+     "met": 0,
+     "of": 10,
+     "literals_ever_unmet": [
+      "clear_of_walls(cube_a)",
+      "gripper_open()",
+      "in_region(cube_a,src_a)",
+      "not in_region(cube_a,pocket)",
+      "not tcp_near(cube_a)"
+     ]
+    },
+    "without_interference": {
+     "met": 0,
+     "of": 10,
+     "literals_ever_unmet": [
+      "clear_of_walls(cube_a)",
+      "gripper_open()",
+      "in_region(cube_a,src_a)",
+      "in_region(cube_b,src_b)",
+      "not in_region(cube_a,pocket)",
+      "not in_region(cube_b,mouth)",
+      "not tcp_near(cube_a)",
+      "not tcp_near(cube_b)"
+     ]
+    },
+    "relearned": {
+     "met": 0,
+     "of": 10,
+     "literals_ever_unmet": [
+      "clear_of_walls(cube_a)",
+      "gripper_open()",
+      "in_region(cube_a,src_a)",
+      "not tcp_near(cube_a)"
+     ]
+    }
+   }
+  },
+  "model_world_discrepancies": {
+   "previous": {
+    "full": 3,
+    "library_only": 3,
+    "without_interference": 30,
+    "relearned": 3
+   },
+   "updated": {
+    "full": 4,
+    "library_only": 2,
+    "without_interference": 4,
+    "relearned": 0
+   }
+  },
+  "learned_operator": {
+   "previous": {
+    "name": "LEARNED[clear_of_walls(cube_a)]",
+    "pre": [
+     "in_region(cube_a,pocket)",
+     "in_region(cube_b,src_b)",
+     "tcp_near(cube_a)"
+    ],
+    "pre_absent": [],
+    "add": [
+     "clear_of_walls(cube_a)"
+    ],
+    "delete": [
+     "in_region(cube_a,pocket)"
+    ],
+    "hole_for": null
+   },
+   "updated": {
+    "name": "LEARNED[clear_of_walls(cube_a)]",
+    "pre": [
+     "in_region(cube_a,pocket)",
+     "in_region(cube_b,src_b)",
+     "tcp_near(cube_a)"
+    ],
+    "pre_absent": [
+     "clear_of_walls(cube_a)",
+     "gripper_open()",
+     "in_region(cube_a,src_a)",
+     "in_region(cube_b,mouth)",
+     "tcp_near(cube_b)"
+    ],
+    "add": [],
+    "delete": [
+     "in_region(cube_a,pocket)"
+    ],
+    "hole_for": null,
+    "learned_for": {
+     "atom": "clear_of_walls(cube_a)",
+     "polarity": "positive"
+    }
+   },
+   "updated_effects_contain_the_target": false
+  }
+ },
+ "drawer": {
+  "signed_preconditions": {
+   "previous": [
+    "drawer_open(drawer)"
+   ],
+   "updated": [
+    "not at_handle_standoff(drawer)",
+    "not drawer_closed(drawer)",
+    "drawer_open(drawer)",
+    "not handle_grasped(drawer)"
+   ]
+  },
+  "signed_effects": {
+   "previous": [
+    "drawer_closed(drawer)",
+    "not drawer_open(drawer)"
+   ],
+   "updated": [
+    "drawer_closed(drawer)",
+    "not drawer_open(drawer)"
+   ]
+  },
+  "restoration_goal": {
+   "previous": [
+    "not drawer_closed(drawer)",
+    "drawer_open(drawer)"
+   ],
+   "updated": [
+    "not at_handle_standoff(drawer)",
+    "not drawer_closed(drawer)",
+    "drawer_open(drawer)",
+    "not handle_grasped(drawer)"
+   ]
+  },
+  "missing_capabilities": {
+   "previous": [
+    "handle_grasped(drawer)"
+   ],
+   "updated": [
+    "handle_grasped(drawer)"
+   ]
+  },
+  "symbolic_plan": {
+   "previous": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ],
+   "updated": [
+    "approach_handle(drawer)",
+    "HOLE[handle_grasped(drawer)]",
+    "pull_open(drawer)"
+   ]
+  },
+  "initiation_context": {
+   "previous": [
+    "at_handle_standoff(drawer)"
+   ],
+   "updated": [
+    "at_handle_standoff(drawer)"
+   ]
+  },
+  "preservation": {
+   "previous": [],
+   "updated": []
+  },
+  "sac_held_out": {
+   "previous": {
+    "SAC seed 0": {
+     "grasp": 1.0,
+     "pull_open_opens": 1.0
+    },
+    "SAC seed 1": {
+     "grasp": 1.0,
+     "pull_open_opens": 1.0
+    },
+    "SAC seed 2": {
+     "grasp": 1.0,
+     "pull_open_opens": 1.0
+    },
+    "SAC seed 3": {
+     "grasp": 1.0,
+     "pull_open_opens": 1.0
+    }
+   },
+   "updated": {
+    "SAC seed 0": {
+     "grasp": 1.0,
+     "pull_open_opens": 1.0
+    },
+    "SAC seed 1": {
+     "grasp": 1.0,
+     "pull_open_opens": 1.0
+    },
+    "SAC seed 2": {
+     "grasp": 1.0,
+     "pull_open_opens": 1.0
+    },
+    "SAC seed 3": {
+     "grasp": 1.0,
+     "pull_open_opens": 1.0
+    }
+   },
+   "seeds": "1000-1019"
+  },
+  "full_execution": {
+   "previous": {
+    "learned, SAC seed 0": "20/20",
+    "learned, SAC seed 1": "20/20",
+    "learned, SAC seed 2": "20/20",
+    "learned, SAC seed 3": "20/20",
+    "library_only": "0/20",
+    "scripted_grasp": "20/20"
+   },
+   "updated": {
+    "learned, SAC seed 0": "20/20",
+    "learned, SAC seed 1": "20/20",
+    "learned, SAC seed 2": "20/20",
+    "learned, SAC seed 3": "20/20",
+    "library_only": "0/20",
+    "scripted_grasp": "20/20"
+   },
+   "updated_boolean": {
+    "learned, SAC seed 0": "20/20",
+    "learned, SAC seed 1": "20/20",
+    "learned, SAC seed 2": "20/20",
+    "learned, SAC seed 3": "20/20",
+    "library_only": "0/20",
+    "scripted_grasp": "20/20"
+   },
+   "previous_rejudged_by_the_signed_goal": {
+    "learned, SAC seed 0": {
+     "met": 20,
+     "of": 20,
+     "literals_ever_unmet": []
+    },
+    "learned, SAC seed 1": {
+     "met": 20,
+     "of": 20,
+     "literals_ever_unmet": []
+    },
+    "learned, SAC seed 2": {
+     "met": 20,
+     "of": 20,
+     "literals_ever_unmet": []
+    },
+    "learned, SAC seed 3": {
+     "met": 20,
+     "of": 20,
+     "literals_ever_unmet": []
+    },
+    "library_only": {
+     "met": 0,
+     "of": 20,
+     "literals_ever_unmet": [
+      "drawer_open(drawer)",
+      "not at_handle_standoff(drawer)",
+      "not drawer_closed(drawer)"
+     ]
+    },
+    "scripted_grasp": {
+     "met": 20,
+     "of": 20,
+     "literals_ever_unmet": []
+    }
+   }
+  },
+  "model_world_discrepancies": {
+   "previous": {
+    "learned, SAC seed 0": 0,
+    "learned, SAC seed 1": 0,
+    "learned, SAC seed 2": 0,
+    "learned, SAC seed 3": 0,
+    "library_only": 0,
+    "scripted_grasp": 0
+   },
+   "updated": {
+    "learned, SAC seed 0": 0,
+    "learned, SAC seed 1": 0,
+    "learned, SAC seed 2": 0,
+    "learned, SAC seed 3": 0,
+    "library_only": 0,
+    "scripted_grasp": 0
+   }
+  },
+  "targeted_vs_direct": {
+   "previous": {
+    "targeted, SAC seed 0": "49/50",
+    "targeted, SAC seed 1": "49/50",
+    "targeted, SAC seed 2": "49/50",
+    "targeted, SAC seed 3": "49/50",
+    "direct, SAC seed 0": "49/50",
+    "direct, SAC seed 1": "49/50",
+    "direct, SAC seed 2": "49/50",
+    "direct, SAC seed 3": "49/50"
+   },
+   "updated": {
+    "targeted, SAC seed 0": "49/50",
+    "targeted, SAC seed 1": "49/50",
+    "targeted, SAC seed 2": "49/50",
+    "targeted, SAC seed 3": "49/50",
+    "direct, SAC seed 0": "20/50",
+    "direct, SAC seed 1": "0/50",
+    "direct, SAC seed 2": "34/50",
+    "direct, SAC seed 3": "39/50"
+   },
+   "updated_policy_target": {
+    "targeted, SAC seed 0": "49/50",
+    "targeted, SAC seed 1": "49/50",
+    "targeted, SAC seed 2": "49/50",
+    "targeted, SAC seed 3": "49/50",
+    "direct, SAC seed 0": "42/50",
+    "direct, SAC seed 1": "49/50",
+    "direct, SAC seed 2": "49/50",
+    "direct, SAC seed 3": "49/50"
+   },
+   "previous_rejudged_by_the_signed_goal": {
+    "targeted, SAC seed 0": {
+     "met": 49,
+     "of": 50,
+     "literals_ever_unmet": []
+    },
+    "targeted, SAC seed 1": {
+     "met": 49,
+     "of": 50,
+     "literals_ever_unmet": []
+    },
+    "targeted, SAC seed 2": {
+     "met": 49,
+     "of": 50,
+     "literals_ever_unmet": []
+    },
+    "targeted, SAC seed 3": {
+     "met": 49,
+     "of": 50,
+     "literals_ever_unmet": []
+    },
+    "direct, SAC seed 0": {
+     "met": 0,
+     "of": 50,
+     "literals_ever_unmet": [
+      "not handle_grasped(drawer)"
+     ]
+    },
+    "direct, SAC seed 1": {
+     "met": 0,
+     "of": 50,
+     "literals_ever_unmet": [
+      "not handle_grasped(drawer)"
+     ]
+    },
+    "direct, SAC seed 2": {
+     "met": 0,
+     "of": 50,
+     "literals_ever_unmet": [
+      "not handle_grasped(drawer)"
+     ]
+    },
+    "direct, SAC seed 3": {
+     "met": 0,
+     "of": 50,
+     "literals_ever_unmet": [
+      "not handle_grasped(drawer)"
+     ]
+    }
+   },
+   "updated_failures": {
+    "targeted, SAC seed 0": {
+     "the push or the approach did not reach the handoff state": 1
+    },
+    "targeted, SAC seed 1": {
+     "the push or the approach did not reach the handoff state": 1
+    },
+    "targeted, SAC seed 2": {
+     "the push or the approach did not reach the handoff state": 1
+    },
+    "targeted, SAC seed 3": {
+     "the push or the approach did not reach the handoff state": 1
+    },
+    "direct, SAC seed 0": {
+     "drawer open, but goal literals unmet: not handle_grasped(drawer)": 22,
+     "goal not reached in 100 steps (furthest 58 mm, handle_grasped never held)": 1,
+     "goal not reached in 100 steps (furthest 66 mm, handle_grasped never held)": 1,
+     "the push or the approach did not reach the handoff state": 1,
+     "goal not reached in 100 steps (furthest 75 mm, handle_grasped never held)": 1,
+     "goal not reached in 100 steps (furthest 83 mm, handle_grasped never held)": 1,
+     "goal not reached in 100 steps (furthest 68 mm, handle_grasped never held)": 1,
+     "goal not reached in 100 steps (furthest 88 mm, handle_grasped never held)": 1,
+     "goal not reached in 100 steps (furthest 80 mm, handle_grasped never held)": 1
+    },
+    "direct, SAC seed 1": {
+     "drawer open, but goal literals unmet: not handle_grasped(drawer)": 49,
+     "the push or the approach did not reach the handoff state": 1
+    },
+    "direct, SAC seed 2": {
+     "drawer open, but goal literals unmet: not at_handle_standoff(drawer)": 14,
+     "drawer open, but goal literals unmet: not handle_grasped(drawer)": 1,
+     "the push or the approach did not reach the handoff state": 1
+    },
+    "direct, SAC seed 3": {
+     "drawer open, but goal literals unmet: not at_handle_standoff(drawer)": 10,
+     "the push or the approach did not reach the handoff state": 1
+    }
+   }
+  }
+ }
+}

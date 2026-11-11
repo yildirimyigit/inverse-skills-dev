@@ -1,0 +1,23 @@
+{
+ "step": "drawer_stage4",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "scripts/drawer_stage4_execute.py",
+  "--operator",
+  "artifacts/signed_literals_20261111/E1_stage1/drawer_stage1_operator.json",
+  "--spec",
+  "artifacts/signed_literals_20261111/E2_stage2/drawer_hole_spec.json",
+  "--stage3",
+  "artifacts/signed_literals_20261111/E3_stage3/drawer",
+  "--out",
+  "artifacts/signed_literals_20261111/E4_stage4/drawer_stage4.json"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "6acc02e8048534fa50b0a2d4fd4d1fa62357516b",
+  "tracked_changes": []
+ },
+ "started": "2026-11-11 15:04:41",
+ "seconds": 38.9,
+ "exit_code": 0
+}
