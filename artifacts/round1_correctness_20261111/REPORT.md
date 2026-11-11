@@ -1,14 +1,19 @@
 # Round 1: correctness audit and targeted repairs
 
 - **Date:** 2026-11-11
-- **Branch:** `feature/signed-literals`. Two local commits on top of `ca2d029`, nothing pushed:
+- **Branch:** `feature/signed-literals`, on top of `ca2d029`:
   - `c6d3050`: the corrections, with their tests;
-  - `05cdc33`: the documentation.
+  - `05cdc33`: the documentation;
+  - `82a49e0`: this report, sections 1–10;
+  - the commit that adds section 11, your decisions, with the documentation decision 2 asks for.
+- **Pushing:** on 2026-11-11 you approved pushing `c6d3050`, `05cdc33` and `82a49e0`, without merging. The commit that adds section 11 waits for your approval.
 - **Not done in this round, as instructed:** no SAC training, no physics evaluation, no checkpoint replaced, no recorded result changed.
 - **Files in this folder:**
   - `regression.py` and `regression.json`: the symbolic regression of section 7.
   - `tests_at_05cdc33.txt`: the test run.
   - `regression.attempt1_shadowed.json`: a first run with a bug in my script. It is kept locally, not committed, and explained in section 7.
+
+**Your decisions on the questions of section 10 are in section 11.** Only the direct reward's equation and weights remain open.
 
 ## 1. Confirmed correctness defects
 
@@ -217,7 +222,7 @@ These are your direction's points. For the targeted holes, preservation fences s
 - `scripts/drawer_final_evaluate.py`: the direct policy's stop rule. This is the earlier open question B, and it must agree with the reward and termination chosen.
 - Tests for the new reward and the precheck.
 
-**Options for the reward, for your choice.** G is the four goal literals, T the last step of the episode.
+**Options for the reward, for your choice.** G is the four goal literals, T the last step of the episode. Section 11 explains why, under the fixed 100-step horizon you chose, B, C and D must pay their last-step term at every step instead, and gives them in that form.
 
 | Option | Reward | What it implies |
 |---|---|---|
@@ -256,6 +261,8 @@ These are your direction's points. For the targeted holes, preservation fences s
 
 ## 10. Questions for you
 
+Answered on 2026-11-11 in section 11, except the reward's equation and weights.
+
 1. **The direct baseline's Round 2 reward:** one of options A–E in section 8, or another. Also its termination rule.
 2. **The final evaluation's stop rule for the direct policy:** question B from the rerun report. It now depends on question 1.
 3. **The Stow checkpoint selection:** question A from the rerun report, still open.
@@ -263,3 +270,91 @@ These are your direction's points. For the targeted holes, preservation fences s
 5. **Contexts over library-reachable states only.** With R_l over library states, the Drawer's ¬handle_grasped has no hole even after a grasp hole. Please confirm this is intended. The alternative would take R_l over states reachable with the other holes.
 6. **The historical scripts** `validate_*.py` and `compare_hole_planners*.py`: update them to the corrected model, or leave them as records of the earlier one.
 7. **Pushing** `c6d3050` and `05cdc33`, and the commit that adds this report. Nothing is pushed until you say so.
+
+## 11. Your decisions, 2026-11-11
+
+They answer the questions of section 10. Sections 1–10 are unchanged, apart from pointers to this section.
+
+**Decision 1, mutex displacement (question 4): kept.**
+- Adding an atom displaces its mutex partners. This is a defined effect of the transition model, not a repair of an inconsistent state.
+- A transition that breaks any other declared constraint stays invalid.
+- `c6d3050` already implements this, and the Method section already states it. Nothing changed.
+
+**Decision 2, initiation contexts (question 5): kept, with the limitation now stated.**
+- Contexts still come from R_l, the library-reachable states where the candidate literal does not hold.
+- The limitation is now written in the Method section, the README and the planner's docstring:
+  - a context is always a situation the library itself produces;
+  - a literal that is unsatisfied only after another hole has run gets no hole, so a plan that needs a learned skill for it after another learned skill is not found;
+  - this limits the generality of planning with several learned capabilities in sequence. Extending R_l to the states reached with other holes is later work.
+- In the Drawer, ¬handle_grasped is such a literal. No plan needs a hole for it, since pull_open lets go of the handle.
+
+**Decision 3, historical scripts (question 6): kept as records.**
+- The six scripts `validate_*.py` and `compare_hole_planners*.py`, and their outputs, are unchanged. Each output describes the model at the commit that produced it.
+- Run again at the current commit, they would differ in two ways, both visible:
+  - `compare_hole_planners.py` compares every scored literal's contexts in the two planner modes, so it would list the six literals of section 7 as new differences;
+  - a start that breaks a constraint, or an invalid step in a replay, now raises an explicit `InconsistentState` or `InvalidTransition`. Section 7 found neither in any recorded state.
+- `validate_modes_planning.py` catches one expected `ValueError` and records its message. Its Drawer start is consistent, so the message stays the same.
+- No version-specific script is needed now. The one comparison the corrections needed is `regression.py`, which runs `ca2d029` and `c6d3050` side by side. A later validation will get its own script, named for its version.
+- Nothing is rerun because of Round 1, since the recorded plans and execution semantics are identical (section 7).
+
+**Decision 4, the direct policy's termination (question 2; question B of the rerun report): the full horizon.**
+- Training keeps the fixed 100-step horizon, with no early termination.
+- The primary final evaluation runs each direct policy for all 100 steps. It then applies the established 10 settling steps, with the arm held still and the gripper as last commanded, and judges the complete signed goal robustly.
+- The E4 results under the old rule, which stopped at the first goal step, stay as recorded, as a historical diagnostic: direct 20, 0, 34 and 39 of 50.
+- The same full-horizon rule was already run as a diagnostic on the current direct policies: 42, 49, 49 and 49 of 50 (`signed_literals_20261111/D_diagnostics/direct_full_horizon.json`). Round 2 replaces those policies.
+- Round 2 changes the direct stop rule in `scripts/drawer_final_evaluate.py`.
+
+**Decision 5, StowCube checkpoint selection (question 3; question A of the rerun report): a new rule, then retraining.**
+- The 120k checkpoint is not chosen in hindsight.
+- Round 2's plan will propose the rule, to be frozen before any training:
+  - separate validation and final-test seeds;
+  - robust target and fence satisfaction, and robustness margins, ranked above execution speed.
+
+**Decision 6, the direct reward (question 1): open.**
+- Your direction: a complete-task objective, dense progress feedback, and an explicit reward for satisfying the complete signed goal.
+- You choose the exact equation and weights after reviewing section 8. Until then, no reward code changes and nothing is retrained.
+- Decision 4 has one consequence for those options that section 8 does not state. It follows.
+
+### What the fixed horizon means for the reward options
+
+**A reward paid only at the last step cannot be learned from here.**
+- The direct policy observes no clock. Its 9 numbers are the grasp policy's 7, the target's margin and the opening (`drawer_direct_env.observe`).
+- SAC treats the 100-step limit as a time-out, not an end: it keeps estimating the value beyond it. This is the default of SB3 2.8.0 (`handle_timeout_termination=True`).
+- The recorded runs keep that default. Their SAC settings are only learning_starts, batch_size, train_freq and gradient_steps, so the discount is the default γ = 0.99.
+- So a term paid only at T, as options B, C and D are written in section 8, depends on nothing the policy observes. The same observation can come at step 40 or at step 100, and learning sees the term as noise.
+- Options A and E pay at every step, and are unaffected.
+
+**Two consistent ways to keep an explicit goal reward.**
+- **Pay it at every step where the complete goal holds:** 1_G(s_t) = 1 if s_t ⊨_ε G, else 0, with the same thresholds as success. The best policy then reaches the goal and keeps it until step 100, which is what the full-horizon evaluation checks. I recommend this way.
+- **Give the policy the time remaining, and make step T a real end.** A reward at T is then well defined. But the direct policy would get an input the targeted grasp policy lacks, and SB3's time-out handling would have to be switched off for it.
+
+**The options with the goal paid at every step.**
+- s_t is the state after step t, as in section 8.
+- Φ(s) = Σ_{l∈G} V̂_l(s), which lies between −4 and 4.
+- Any option can add w_G·1_G(s_t).
+
+| Option | Reward at step t | Weights | What it implies |
+|---|---|---|---|
+| A. Dense goal sum | Φ(s_t) | — | As in section 8, now exact. A grasp costs 2 per step on its literal (V̂ goes from +1 to −1), against at most 1 under the current fence. Relative to the reward's range, that is 2 of 8 against 1 of 3. |
+| B′. Target progress, goal paid per step | V̂_open(s_t) + w_G·1_G(s_t) | w_G | Dense on the target only: the term the targeted policies are paid for their own target, without fences. A temporary grasp costs nothing. Releasing and leaving the standoff are learned from the goal term alone. For w_G > 0.4, every state in the goal pays more per step than any state outside it, since V̂_open ≥ 0.6 wherever the goal holds. |
+| C′. Sparse success | 1_G(s_t) | — | Exactly the task, but sparse: random actions met the goal in 0 of 32 precheck episodes. |
+| D′. Success with potential-based shaping | w_G·1_G(s_t) + w_Φ·(γΦ(s_t) − Φ(s_{t−1})) | w_G, w_Φ | The goal term alone decides which policies are best, for any w_Φ (Ng et al., 1999). That result applies because SAC bootstraps through the time-out, and so treats the task as continuing. Feedback is dense on every literal, but it pays changes in Φ, not its level. A temporary grasp costs nothing in the optimum. For tabular learners, shaping is equivalent to starting the value estimates at Φ (Wiewiora, 2003). So it guides early learning, and does not change what is learned in the end. |
+| E. Worst literal | min_{l∈G} V̂_l(s_t) | — | As in section 8. While the grasp holds robustly, the minimum is at most −0.6, whatever the drawer does. So pulling further while grasping earns nothing until the release. |
+
+**My recommendation: B′ with w_G = 1.**
+- Its dense term is the kind the targeted policies are paid for their own target, so neither method gets a richer dense signal.
+- A temporary grasp costs nothing, and the complete goal is optimal.
+- Per step it pays between −1 and 2, close to the current direct reward's −2 to 1.
+- The current direct policies reach the complete goal in 42–49 of 50 full-horizon runs, although nothing in their reward asks them to leave the standoff: leaving it evidently comes with opening the drawer. They mostly open by pressing, though, so they show little about learning to let go, which B′ leaves to the goal term.
+
+**D′ is the choice if the dense feedback must provably leave the objective unchanged.** It would take w_G = 1 and w_Φ = 1. Its feedback is the small change in Φ from step to step, which could slow a baseline that already needs about twice the interactions.
+
+**Round 2's plan will also have to settle these:**
+- **The direct checkpoint selection.** It uses the goal rate at the end of a validation episode, before settling, while the primary evaluation judges after settling.
+- **The Stow rule of decision 5,** and its seeds.
+- **The reruns:**
+  - the E2 direct spec;
+  - in E3: the direct precheck, the direct training (seeds 0–3, 30k) and the Stow drag training;
+  - in E4: the final Drawer evaluation, and the Stow Stage 4 run with the new checkpoint.
+
+The plan will come to you before anything runs.

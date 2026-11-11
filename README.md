@@ -191,6 +191,13 @@ What this guarantees, and what it does not:
 - "No plan" is exact relative to the candidate set, the budget and the symbolic
   transition model: it means no set of at most k candidates reaches the goal. The
   report says whether holes for every candidate would.
+- A hole's context comes only from the states the library reaches with the hole's
+  literal unsatisfied. A literal that is unsatisfied only after another hole has run
+  gets no hole: in the Drawer, `not handle_grasped` is broken only by a learned
+  grasp, so there is no hole for it (none is needed: `pull_open` lets go). This
+  limits planning with several learned skills in sequence, and "no plan" is exact
+  relative to these contexts too. Extending the contexts to states reached with
+  other holes is left for later work.
 - The upstream preference reads preconditions of both signs. An action establishes
   `not p` by deleting p, by making true a literal that excludes p, or by triggering
   a disturbance that displaces p. It is not a complete causal analysis, and it does

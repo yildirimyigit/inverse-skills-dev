@@ -27,8 +27,10 @@ The model
             robot-relative facts about l's object that hold together in some library-reachable
             state where l does not hold (`hole_starts`), whatever l's sign. If l holds in every
             library-reachable state there is no context and no hole for l, and the result says
-            so (`no_context`). The world constraints give a hole its other effects, as they do
-            for library actions.
+            so (`no_context`). Contexts never come from states that only other holes reach,
+            which limits plans that need several learned skills in sequence (a stated
+            limitation). The world constraints give a hole its other effects, as they do for
+            library actions.
 
 Definitions, with k = `max_delegated`, the learning budget
 

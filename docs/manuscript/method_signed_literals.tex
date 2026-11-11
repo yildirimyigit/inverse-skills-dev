@@ -161,6 +161,12 @@ $l$'s own atom) held together in some $S\in\mathcal{R}_l$. The library thus does
 before the learned skill takes over, and $c$ is held in a state the hypothetical operator
 could start from. The rule is the same for both signs of $l$. If $\mathcal{R}_l$ is empty,
 $l$ has no context and no hypothetical operator, and this is reported.
+Since $\mathcal{R}_l$ contains only library-reachable states, every context is a situation
+the library itself produces. This limits the generality of planning with several learned
+capabilities in sequence: a literal violated only in states that other hypothetical
+operators create has no context, so no plan is found that needs a learned skill for it
+after another learned skill. Taking $\mathcal{R}_l$ over the states reachable with the
+other hypothetical operators would lift this restriction; we leave it to future work.
 A predicate without a continuous grounding is never delegated, since a learned skill is
 trained against the grounding.
 
