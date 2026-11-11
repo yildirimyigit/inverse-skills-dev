@@ -89,7 +89,31 @@ def library() -> list[Action]:
             add=frozenset({_in(cube, to_slot), f"tcp_near({cube})"}),
             delete=frozenset({"gripper_open()"}),
         ))
+    actions.append(retreat_to_safe())
     return actions
+
+
+def retreat_to_safe() -> Action:
+    """Rise straight up to the travel height, leaving both cubes: a predefined library action.
+
+    It runs the existing `retreat()` primitive with the gripper kept as it is
+    (`stow_executive.retreat_to_safe`). Its model was measured before it was registered
+    (scripts/stow_retreat_gate.py, 20 seeds from each state the historical inverse reaches):
+
+      * from every state with the gripper open (after the forward skill, after placing either
+        cube) both tcp_near scores ended at most 0.006, the gripper stayed open, nothing was
+        touched during the rise, and no cube moved more than 0.001 mm;
+      * from every state with the closed gripper pressing on cube A (after approach, after the
+        drag) releasing the press displaced A by 1.4 to 79 mm.
+
+    So it needs the gripper open, and it is not run while holding a cube, which it would carry.
+    """
+    return Action(
+        name="retreat_to_safe",
+        pre=frozenset({"gripper_open()"}),
+        pre_absent=_HOLDING,
+        delete=frozenset(f"tcp_near({cube})" for cube in CUBES),
+    )
 
 
 def _disturbances() -> list[Disturbance]:

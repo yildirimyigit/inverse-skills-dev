@@ -87,6 +87,12 @@ def execute_action(env, obs, name: str, regions, score) -> tuple[object, bool, s
         obs = prim.approach(env, obs, cube)
         seated = prim.seated_on(obs, cube)
         return obs, seated, "seated" if seated else "not seated on the cube"
+    if name == "retreat_to_safe":
+        obs = retreat_to_safe(env, obs, regions)
+        values = score(obs)
+        near = {key: values[key] for key in ("tcp_near(cube_a)", "tcp_near(cube_b)")}
+        return (obs, all(value <= 0.2 for value in near.values()),
+                ", ".join(f"{key} {value:.2f}" for key, value in near.items()))
     return obs, False, f"no executor bound for {name}"
 
 

@@ -31,6 +31,12 @@ score of at most 0.2):
 A state whose prefix fails (the executive refuses or cannot complete a step) is recorded as not
 reached; that is the prefix's failure, not the retreat's.
 
+The first run of this gate (commit 7279aad, before the action was registered) measured the motion
+from every state above. From the closed-gripper states, releasing the press displaced cube A, so
+the registered action (`stow_domain.retreat_to_safe`) needs the gripper open. Every state is
+still measured and reported; the gate's verdict covers the runs whose start satisfies the
+registered preconditions, robustly for scored literals (`applicable`).
+
     PYTHONNOUSERSITE=1 python scripts/stow_retreat_gate.py --out <new path>.json
 
 Nothing here changes the planning domain. The output is never overwritten.
@@ -96,8 +102,24 @@ def measure(obs, regions, registry) -> dict:
     scene = prim.obs_to_scene(obs, regions)
     qpos = obs["agent"]["qpos"].squeeze().cpu().numpy()
     return {"scores": {key: float(result.score) for key, result in registry.evaluate_all(scene).items()},
+            "holding": scene.robot.holding,
             "cube_a": prim.cube_pos(obs, "cube_a").tolist(), "cube_b": prim.cube_pos(obs, "cube_b").tolist(),
             "tcp": prim.tcp_pos(obs).tolist(), "gripper_width_mm": float((qpos[-2] + qpos[-1]) * 1000)}
+
+
+def applicable(before: dict, action) -> bool:
+    """Does the start satisfy the registered action's preconditions? Scored literals robustly; the
+    unscored holding(cube) fluents from the scene's record of what the gripper holds."""
+    scores = before["scores"]
+    for atom in action.pre:
+        if atom in scores and scores[atom] < ROBUST_TRUE:
+            return False
+    for atom in action.pre_absent:
+        if atom in scores and scores[atom] > ROBUST_FALSE:
+            return False
+        if atom.startswith("holding(") and before["holding"] == atom[len("holding("):-1]:
+            return False
+    return True
 
 
 def stowed(env, seed: int, expected: frozenset[str], registry):
@@ -144,6 +166,7 @@ def main() -> None:
     steps = [Action.from_dict(a) for a in spec["prefix"]] + [hole] + [Action.from_dict(a) for a in spec["suffix"]]
     model = SAC.load(args.checkpoint, device="cuda")
     registry = sp.registry()
+    registered = sd.retreat_to_safe()
     env = prim.make_env()
     unwrapped = env.unwrapped
     bodies = {"cube_a": unwrapped.cube_a, "cube_b": unwrapped.cube_b, "back_wall": unwrapped.back_wall,
@@ -168,9 +191,11 @@ def main() -> None:
             obs = ex.retreat_to_safe(recorder, obs, regions, registry)
             after = measure(obs, regions, registry)
             verdict = judge(before, after, recorder.forces)
-            row.update(reached=True, before=before, after=after, contact_by_step=recorder.forces, **verdict)
+            row.update(reached=True, applicable=applicable(before, registered), before=before, after=after,
+                       contact_by_step=recorder.forces, **verdict)
             runs.append(row)
-            print(f"  seed {seed}: {'pass' if verdict['passed'] else 'FAIL'}  "
+            print(f"  seed {seed}: {'pass' if verdict['passed'] else 'FAIL'}"
+                  f"{'' if row['applicable'] else ' (outside the preconditions)'}  "
                   f"tcp_near A {before['scores']['tcp_near(cube_a)']:.3f}->{after['scores']['tcp_near(cube_a)']:.3f}  "
                   f"B {before['scores']['tcp_near(cube_b)']:.3f}->{after['scores']['tcp_near(cube_b)']:.3f}  "
                   f"gripper {before['scores']['gripper_open()']:.3f}->{after['scores']['gripper_open()']:.3f}  "
@@ -186,6 +211,8 @@ def main() -> None:
         reached = [r for r in rows if r["reached"]]
         summary[label] = {
             "runs": len(rows), "reached": len(reached), "passed": sum(r["passed"] for r in reached),
+            "applicable": sum(r["applicable"] for r in reached),
+            "applicable_passed": sum(r["passed"] for r in reached if r["applicable"]),
             "failed_checks": {check: sum(not r["checks"][check] for r in reached)
                               for check in (reached[0]["checks"] if reached else {})},
             "tcp_near_after_max": {key: max((r["after"]["scores"][key] for r in reached), default=None)
@@ -199,11 +226,13 @@ def main() -> None:
             "tcp_z_after_mm": [min((r["after"]["tcp"][2] * 1000 for r in reached), default=None),
                                max((r["after"]["tcp"][2] * 1000 for r in reached), default=None)],
             "not_reached": [{"seed": r["seed"], "reason": r["reason"]} for r in rows if not r["reached"]]}
-    passed = all(s["reached"] == s["passed"] for s in summary.values())
+    applicable_runs = [r for r in runs if r["reached"] and r["applicable"]]
+    passed = bool(applicable_runs) and all(r["passed"] for r in applicable_runs)
 
     print("\nsummary")
     for label, s in summary.items():
         print(f"  {label:28s} reached {s['reached']:2d}/{s['runs']}  passed {s['passed']:2d}  "
+              f"applicable {s['applicable']:2d} (passed {s['applicable_passed']:2d})  "
               f"tcp_near after <= {max(v for v in s['tcp_near_after_max'].values() if v is not None) if s['reached'] else '-'}  "
               f"moved <= {max(v for v in s['largest_displacement_mm'].values() if v is not None) if s['reached'] else '-'} mm")
     print("\nRETREAT GATE:", "PASS" if passed else "FAIL")
@@ -216,7 +245,9 @@ def main() -> None:
         "spec": str(args.spec), "checkpoint": str(args.checkpoint), "seeds": list(SEEDS),
         "criteria": {"robust_true": ROBUST_TRUE, "robust_false": ROBUST_FALSE,
                      "max_displacement_mm": MAX_DISPLACEMENT_MM, "contact_n": CONTACT_N},
-        "plan": [a.name for a in steps], "summary": summary, "passed": passed, "runs": runs}, indent=1))
+        "registered_action": registered.to_dict(), "plan": [a.name for a in steps], "summary": summary,
+        "passed": passed, "verdict_covers": "runs whose start satisfies the registered preconditions",
+        "runs": runs}, indent=1))
     print(f"wrote {args.out}")
 
 
