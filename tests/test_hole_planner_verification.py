@@ -32,6 +32,18 @@ from inverse_skills.operators.hole_planner import (
 plan = partial(hole_planner.plan, mode="relaxed")
 
 
+from inverse_skills.operators.literals import Literal, neg, pos
+
+
+def names(literals) -> tuple[str, ...]:
+    """Signed literals as a person writes them: "p" and "not p"."""
+    return tuple(str(literal) for literal in literals)
+
+
+def strs(literals) -> set[str]:
+    return {str(literal) for literal in literals}
+
+
 def replay(domain: Domain, start, steps) -> tuple[frozenset[str], tuple[int, ...]]:
     """Re-apply `steps` from `start`. Returns the final state and the cost recomputed
     from the transitions: (delegated predicates, collateral, literals holes change,
@@ -63,7 +75,7 @@ def optimal(domain: Domain, start, goal_pos, goal_neg, candidates, max_delegated
     """Exhaustive enumeration of every sequence within the same bounds, over the
     library and the holes the planner offered: the cheapest cost and every plan with
     it. No-op steps and steps past the goal are skipped (they only add cost)."""
-    holes = [domain.hole(key, relaxed_reachable(domain, start)) for key in candidates]
+    holes = [domain.hole(literal, relaxed_reachable(domain, start)) for literal in candidates]
     actions = list(domain.actions) + holes
     best, plans = None, []
 
@@ -114,7 +126,7 @@ def test_a_satisfied_goal_needs_an_empty_plan():
     for goal_neg in ((), {"x"}):
         result = plan(domain, frozenset({"g"}), {"g"}, goal_neg)
         assert result.actions == () and result.cost == (0, 0, 0, 0, 0)
-        assert result.capability_gaps == () and result.candidates == ()
+        assert result.capability_gaps == () and names(result.candidates) == ()
 
 
 def test_a_goal_the_library_reaches_needs_no_hole():
@@ -122,8 +134,8 @@ def test_a_goal_the_library_reaches_needs_no_hole():
                              Action("make_g", pre=frozenset({"k"}), add=frozenset({"g"}))],
                     scored=frozenset({"g", "k"}))
     result = plan(domain, frozenset(), {"g"})
-    assert result.actions == ("get_k", "make_g") and result.delegated == ()
-    assert result.candidates == ()                      # no hole is even offered
+    assert result.actions == ("get_k", "make_g") and names(result.delegated) == ()
+    assert names(result.candidates) == ()                      # no hole is even offered
     assert_valid(domain, frozenset(), result, {"g"})
 
 
@@ -198,9 +210,9 @@ def test_c_two_independent_predicates_need_two_holes():
     p and q take two holes, and count as two against the delegation limit."""
     domain = no_library()
     reach = relaxed_reachable(domain, frozenset())
-    assert all(domain.hole(key, reach).add == {key} for key in ("p", "q"))
+    assert all(domain.hole(pos(key), reach).add == {key} for key in ("p", "q"))
     result = plan(domain, frozenset(), {"p", "q"})
-    assert result.delegated == ("p", "q") and len(result.hole_indices) == 2
+    assert names(result.delegated) == ("p", "q") and len(result.hole_indices) == 2
     assert isinstance(plan(domain, frozenset(), {"p", "q"}, max_delegated=1), NoPlan)
 
 
@@ -209,12 +221,12 @@ def test_c_two_independent_predicates_need_two_holes():
 def test_d_two_missing_prerequisites_take_two_holes_each_with_its_own_learning_problem():
     domain = two_part_assembly()
     result = plan(domain, frozenset(), {"done"})
-    assert result.delegated == ("fixed(o1)", "fixed(o2)") and result.cost == (2, 0, 2, 2, 5)
+    assert names(result.delegated) == ("fixed(o1)", "fixed(o2)") and result.cost == (2, 0, 2, 2, 5)
     assert result.actions[-1] == "assemble"
     assert_valid(domain, frozenset(), result, {"done"})
     # Each hole starts where the robot is near its own part.
     holes = {result.steps[i].hole_for: result.steps[i] for i in result.hole_indices}
-    assert holes["fixed(o1)"].pre == {"near(o1)"} and holes["fixed(o2)"].pre == {"near(o2)"}
+    assert holes[pos("fixed(o1)")].pre == {"near(o1)"} and holes[pos("fixed(o2)")].pre == {"near(o2)"}
     # One learning problem per hole: the second must keep the first part fixed.
     first, second = (hole_spec(domain, frozenset(), result, {"done"}, index=i) for i in (0, 1))
     assert (first["achieve"], first["preserve"]) == ("fixed(o1)", [])
@@ -258,7 +270,7 @@ def test_e_nothing_can_delete_a_literal_with_an_empty_library():
     for unrestricted in (False, True):
         result = plan(domain, frozenset({"x"}), set(), {"x"}, unrestricted_holes=unrestricted)
         assert isinstance(result, NoPlan)
-        assert result.capability_gaps == () and result.candidates == ()
+        assert result.capability_gaps == () and names(result.candidates) == ()
 
 
 # F. Search correctness and limits
@@ -382,15 +394,15 @@ def test_mutually_exclusive_robot_relative_starts_make_a_hole_inapplicable():
                     mutex_groups=[frozenset({"near(o)", "far(o)"})])
     result = plan(domain, frozenset(), {"done(o)"})
     assert isinstance(result, NoPlan) and result.synthesizable_gaps == ("done(o)",)
-    assert domain.hole("done(o)", relaxed_reachable(domain, frozenset())).pre == {"near(o)", "far(o)"}
+    assert domain.hole(pos("done(o)"), relaxed_reachable(domain, frozenset())).pre == {"near(o)", "far(o)"}
     # The drawer's holes start from the standoff alone, with and without a scripted grasp.
     for with_grasp in (False, True):
         drawer = drawer_like(with_grasp)
         reach = relaxed_reachable(drawer, frozenset({"closed(d)"}))
-        assert drawer.hole("grasped(d)", reach).pre == {"standoff(d)"}
-    assert drawer_like().hole("open(d)", relaxed_reachable(drawer_like(), frozenset({"closed(d)"}))).pre \
+        assert drawer.hole(pos("grasped(d)"), reach).pre == {"standoff(d)"}
+    assert drawer_like().hole(pos("open(d)"), relaxed_reachable(drawer_like(), frozenset({"closed(d)"}))).pre \
         == {"standoff(d)"}
     with_grasp = drawer_like(with_grasp=True)
     reach = relaxed_reachable(with_grasp, frozenset({"closed(d)"}))
-    assert with_grasp.hole("open(d)", reach).pre == {"standoff(d)", "grasped(d)"}   # the latent case
-    assert plan(with_grasp, frozenset({"closed(d)"}), {"open(d)"}, {"closed(d)"}).delegated == ()  # never planned
+    assert with_grasp.hole(pos("open(d)"), reach).pre == {"standoff(d)", "grasped(d)"}   # the latent case
+    assert names(plan(with_grasp, frozenset({"closed(d)"}), {"open(d)"}, {"closed(d)"}).delegated) == ()  # never planned

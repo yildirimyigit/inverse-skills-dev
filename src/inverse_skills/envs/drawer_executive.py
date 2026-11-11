@@ -41,7 +41,7 @@ import torch
 from inverse_skills.envs import drawer_predicates as dp
 from inverse_skills.envs import drawer_primitives as prim
 from inverse_skills.envs import drawer_skill_io as skill_io
-from inverse_skills.operators.hole_planner import Action, delegated_predicate, symbolic_state
+from inverse_skills.operators.hole_planner import Action, symbolic_state
 
 MAX_RETRIES = 3
 SATISFIED = 0.8
@@ -105,7 +105,8 @@ def execute_plan(env, obs, steps: list[Action], domain, goal: tuple[set[str], se
     report = ExecutionReport()
     predicted = symbolic_state(scores(obs, registry))
     for step in steps:
-        achieve = step.hole_for or delegated_predicate(step.name)
+        target = step.hole_for or step.learned_for     # the signed literal a learned step owes
+        achieve = target.atom if target is not None else None
         name = step.name.split("(")[0]
         attempts, ok, detail = 0, False, ""
         while attempts < MAX_RETRIES:

@@ -27,7 +27,6 @@ from inverse_skills.envs import stow_primitives as prim
 from inverse_skills.envs import stow_skill_io as skill_io
 from inverse_skills.operators.hole_planner import (
     Action,
-    delegated_predicate,
     predicate_args,
     symbolic_state,
 )
@@ -154,7 +153,8 @@ def execute_plan(env, obs, steps: list[Action], model=None, regions=None,
                                            "precondition not met: " + ", ".join(unmet)))
             break
 
-        achieve = step.hole_for or delegated_predicate(step.name)
+        target = step.hole_for or step.learned_for     # the signed literal a learned step owes
+        achieve = target.atom if target is not None else None
         attempts, ok, detail = 0, False, ""
         for attempts in range(1, MAX_RETRIES + 1):
             if on_action is not None:

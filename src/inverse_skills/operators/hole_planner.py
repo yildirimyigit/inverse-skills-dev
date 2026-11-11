@@ -1,8 +1,11 @@
 """A STRIPS planner whose library may be incomplete, with holes for the rest.
 
 A hole is an abstract action standing for a policy nobody has learned yet. It
-establishes one predicate the library cannot, and the planner may place it
-anywhere in the plan, so the learned operator is not condemned to run last.
+establishes one signed literal the library cannot, and the planner may place it
+anywhere in the plan, so the learned operator is not condemned to run last. A hole
+for `p` makes the predicate p true; a hole for `not p` makes it false, by deleting
+p (there is no artificial predicate `not_p`). Literals, their signs and their truth
+in a measured scene are defined once, in `literals.py`.
 
 Nothing in this module names a predicate of any particular domain. Everything
 the planner needs to reason about holes is derived from facts the domain
@@ -24,9 +27,10 @@ declares about its own vocabulary and world:
 
 `plan` has two modes. `mode="exact"`, the default, is in `exact_hole_planner`: it
 chooses the holes by real transitions, as the "Minimal Hole Planner" formulation
-defines, and then plans. `mode="relaxed"` is this module's own gap analysis, below,
-kept for comparisons and for the `unrestricted_holes` ablation. Both use this
-module's `Domain` and report the same five cost numbers.
+defines, with signed candidates, and then plans. `mode="relaxed"` is this module's
+own gap analysis, below, kept as a historical comparison mode and for the
+`unrestricted_holes` ablation; it offers holes for positive literals only, as it
+always did. Both use this module's `Domain` and report the same five cost numbers.
 
 In the relaxed mode, which predicates may become holes is derived in advance. A
 hole belongs at an irreducible missing capability, never at a literal the library
@@ -59,6 +63,9 @@ from __future__ import annotations
 import heapq
 from dataclasses import dataclass, field, replace
 
+from inverse_skills.operators import literals as lit
+from inverse_skills.operators.literals import Literal, join, pos
+
 
 def predicate_args(key: str) -> tuple[str, ...]:
     """The arguments of a ground literal such as "in_region(cube_a,pocket)"."""
@@ -68,39 +75,65 @@ def predicate_args(key: str) -> tuple[str, ...]:
     return tuple(arg for arg in inner.split(",") if arg)
 
 
-def delegated_predicate(action_name: str) -> str | None:
-    """The predicate a hole or a learned operator establishes: HOLE[p] / LEARNED[p] -> p."""
-    for prefix in ("HOLE[", "LEARNED["):
-        if action_name.startswith(prefix) and action_name.endswith("]"):
-            return action_name[len(prefix):-1]
-    return None
-
-
 @dataclass(frozen=True)
 class Action:
-    """A ground action. `hole_for` marks the predicate a hole is asked to establish."""
+    """A ground action, its signed preconditions and effects stored by sign.
+
+    `pre` and `pre_absent` are the atoms Pre needs true and false; `add` and `delete` the atoms
+    Eff makes true and false. `hole_for` marks a hole and the signed literal it is asked to
+    establish; `learned_for` marks a library action run by a learned policy, and the literal that
+    policy was trained to establish. The name is for people: nothing reads a sign from it.
+    """
 
     name: str
     pre: frozenset[str] = frozenset()
     pre_absent: frozenset[str] = frozenset()
     add: frozenset[str] = frozenset()
     delete: frozenset[str] = frozenset()
-    hole_for: str | None = None
+    hole_for: Literal | None = None
+    learned_for: Literal | None = None
+
+    def __post_init__(self) -> None:
+        for name in ("hole_for", "learned_for"):
+            value = getattr(self, name)
+            if value is not None and not isinstance(value, Literal):
+                raise TypeError(f"{self.name}: {name} must be a Literal, got {value!r}")
+        if self.pre & self.pre_absent:
+            raise ValueError(f"{self.name}: needs both p and not p for " + ", ".join(sorted(self.pre & self.pre_absent)))
+        if self.add & self.delete:
+            raise ValueError(f"{self.name}: makes both p and not p for " + ", ".join(sorted(self.add & self.delete)))
+
+    @property
+    def precondition_literals(self) -> frozenset[Literal]:
+        return join(self.pre, self.pre_absent)
+
+    @property
+    def effect_literals(self) -> frozenset[Literal]:
+        return join(self.add, self.delete)
 
     def __str__(self) -> str:
         return self.name
 
     def to_dict(self) -> dict:
-        return {"name": self.name, "pre": sorted(self.pre),
+        data = {"name": self.name, "pre": sorted(self.pre),
                 "pre_absent": sorted(self.pre_absent), "add": sorted(self.add),
-                "delete": sorted(self.delete), "hole_for": self.hole_for}
+                "delete": sorted(self.delete),
+                "hole_for": None if self.hole_for is None else self.hole_for.to_dict()}
+        if self.learned_for is not None:          # library actions keep the fields they always had
+            data["learned_for"] = self.learned_for.to_dict()
+        return data
 
     @classmethod
     def from_dict(cls, data: dict) -> "Action":
+        """Read an action written by `to_dict`. In artifacts written before literals had signs,
+        `hole_for` is the bare name of a positive literal."""
+        def literal(value):
+            return None if value is None else Literal.from_dict(value)
         return cls(name=data["name"], pre=frozenset(data.get("pre", ())),
                    pre_absent=frozenset(data.get("pre_absent", ())),
                    add=frozenset(data.get("add", ())),
-                   delete=frozenset(data.get("delete", ())), hole_for=data.get("hole_for"))
+                   delete=frozenset(data.get("delete", ())), hole_for=literal(data.get("hole_for")),
+                   learned_for=literal(data.get("learned_for")))
 
 
 @dataclass(frozen=True)
@@ -117,14 +150,16 @@ class Disturbance:
 
 @dataclass(frozen=True)
 class PlanResult:
+    """A plan. `delegated` and `candidates` are signed literals."""
+
     actions: tuple[str, ...]
     steps: tuple[Action, ...]
-    delegated: tuple[str, ...]
+    delegated: tuple[Literal, ...]
     collateral: int
     hole_literals: int
     hole_indices: tuple[int, ...]
     expanded: int
-    candidates: tuple[str, ...] = ()
+    candidates: tuple[Literal, ...] = ()
     alternatives: tuple[tuple[Action, ...], ...] = ()
     capability_gaps: tuple[str, ...] = ()
     synthesizable_gaps: tuple[str, ...] = ()
@@ -151,7 +186,7 @@ class NoPlan:
 
     capability_gaps: tuple[str, ...] = ()
     synthesizable_gaps: tuple[str, ...] = ()
-    candidates: tuple[str, ...] = ()
+    candidates: tuple[Literal, ...] = ()
 
     def __bool__(self) -> bool:
         return False
@@ -171,7 +206,16 @@ class Domain:
     disturbances: list[Disturbance] = field(default_factory=list)
 
     def applicable(self, state: frozenset[str], action: Action) -> bool:
+        """Every signed precondition holds: the `pre` atoms are true, the `pre_absent` false."""
         return action.pre <= state and not (action.pre_absent & state)
+
+    def enabled(self, state: frozenset[str], action: Action) -> bool:
+        """Can the action run here? A hole runs only while its literal does not hold: a hole for
+        `p` while p is false, a hole for `not p` while p is true. Library actions need only their
+        preconditions."""
+        if action.hole_for is not None and action.hole_for.holds(state):
+            return False
+        return self.applicable(state, action)
 
     def closure(self, literals) -> set[str]:
         """The literals together with everything they imply."""
@@ -213,14 +257,22 @@ class Domain:
     def apply(self, state: frozenset[str], action: Action) -> frozenset[str]:
         return self.transition(state, action)[0]
 
-    def hole(self, key: str, reachable) -> Action:
-        """A hole for `key`, starting from every robot-relative predicate about
-        its object that the library can already establish."""
-        args = predicate_args(key)
-        start = frozenset(
-            p for p in self.robot_relative
-            if args and p != key and p in reachable and predicate_args(p)[:1] == args[:1])
-        return Action(name=f"HOLE[{key}]", pre=start, add=frozenset({key}), hole_for=key)
+    def about_object(self, literal: Literal) -> frozenset[str]:
+        """The robot-relative atoms about the object of `literal` (its first argument), other
+        than the literal's own atom: what a hole for it may start from."""
+        args = predicate_args(literal.atom)
+        return frozenset(p for p in self.robot_relative
+                         if args and p != literal.atom and predicate_args(p)[:1] == args[:1])
+
+    def hole(self, literal: Literal, available) -> Action:
+        """h(l, c): a hole for the signed literal `literal`, starting from every robot-relative
+        atom about its object that is in `available`. For `p` it adds p; for `not p` it deletes p.
+        The domain's world constraints give it its other effects, as for any action."""
+        start = self.about_object(literal) & frozenset(available)
+        return Action(name=f"HOLE[{literal}]", pre=start,
+                      add=frozenset({literal.atom}) if literal.positive else frozenset(),
+                      delete=frozenset() if literal.positive else frozenset({literal.atom}),
+                      hole_for=literal)
 
 
 def relaxed_reachable(domain: Domain, start) -> frozenset[str]:
@@ -367,20 +419,20 @@ def plan(domain: Domain, start: frozenset[str], goal_positive,
             result = _search(domain, start, goal_positive, goal_negative, candidates,
                              reachable, max_delegated, max_length)
     if result is None:
-        return NoPlan(candidates=tuple(candidates), **report)
+        return NoPlan(candidates=tuple(pos(key) for key in candidates), **report)
     return replace(result, **report)
 
 
 def _search(domain, start, goal_positive, goal_negative, candidates, reachable,
             max_delegated, max_length) -> PlanResult | None:
-    holes = [domain.hole(key, reachable) for key in candidates]
+    holes = [domain.hole(pos(key), reachable) for key in candidates]   # positive holes only
     actions = list(domain.actions) + holes
 
     def satisfied(state: frozenset[str]) -> bool:
         return goal_positive <= state and not (goal_negative & state)
 
     if satisfied(start):
-        return PlanResult((), (), (), 0, 0, (), 0, tuple(candidates))
+        return PlanResult((), (), (), 0, 0, (), 0, tuple(pos(key) for key in candidates))
 
     counter = 0
     shortest: dict[tuple, int] = {}   # node -> fewest steps it was explored with
@@ -446,58 +498,94 @@ def _search(domain, start, goal_positive, goal_negative, candidates, reachable,
         hole_literals=best_key[2],
         hole_indices=tuple(i for i, a in enumerate(chosen) if a.hole_for),
         expanded=expanded,
-        candidates=tuple(candidates),
+        candidates=tuple(pos(key) for key in candidates),
         alternatives=tuple(tied[1:]),
     )
+
+
+def state_before(domain: Domain, start: frozenset[str], steps, index: int) -> frozenset[str]:
+    """The predicted symbolic state just before step `index` of a plan."""
+    state = frozenset(start)
+    for action in list(steps)[:index]:
+        state = domain.apply(state, action)
+    return state
 
 
 def derive_fences(domain: Domain, start: frozenset[str], steps, hole_index: int,
                   goal_positive, goal_negative=()) -> tuple[list[str], list[str]]:
     """What the step at `hole_index` must preserve, read off the plan's causal structure.
 
-    Fences are causal links spanning the step: literals true before it that a
-    later step or the goal consumes, with no step in between re-establishing
-    them. Negative fences are the mirror image: literals false before it that a
-    later step or the goal needs absent, with nothing in between removing them.
-    Only scored literals are returned, since only those can be measured while
-    the skill is learned.
+    Fences are causal links spanning the step, of either sign. A positive fence is an atom true
+    before the step that a later step or the goal needs true, with no step in between making it
+    true again. A negative fence is the mirror image: an atom false before the step that a later
+    step or the goal needs false, with no step in between making it false again. The atom the
+    step itself must change is never a fence. Only scored atoms are returned, since only those
+    can be measured while the skill is learned. Returns (atoms kept true, atoms kept false).
     """
     steps = list(steps)
-    before = start
-    for action in steps[:hole_index]:
-        before = domain.apply(before, action)
+    before = state_before(domain, start, steps, hole_index)
     step = steps[hole_index]
+    target = step.hole_for or step.learned_for
+    own = {target.atom} if target is not None else set(step.add) | set(step.delete)
     end = len(steps)
     later = range(hole_index + 1, end)
 
     consumers = [(j, p) for j in later for p in steps[j].pre]
     consumers += [(end, p) for p in goal_positive]
     fences = {p for j, p in consumers
-              if p in before and p not in step.add
+              if p in before and p not in own
               and not any(p in domain.closure(steps[k].add) for k in range(hole_index + 1, j))}
 
     absences = [(j, q) for j in later for q in steps[j].pre_absent]
     absences += [(end, q) for q in goal_negative]
     negative = {q for j, q in absences
-                if q not in before
+                if q not in before and q not in own
                 and not any(q in domain.removes(steps[k]) for k in range(hole_index + 1, j))}
     return sorted(fences & domain.scored), sorted(negative & domain.scored)
 
 
+def handoff_conditions_of(domain: Domain, before: frozenset[str], hole: Action,
+                          kept_true, kept_false) -> tuple[list[str], list[str]]:
+    """What must be measured when a learned skill takes over, as (atoms true, atoms false).
+
+    Its start, its fences, and its transition's pre-state: what the modelled transition removes
+    must hold, and what it establishes must not, since a transition begins in its own pre-state.
+    Only scored atoms can be measured.
+    """
+    after = domain.apply(before, hole)
+    hold = set(hole.pre) | set(kept_true) | (before - after)
+    absent = set(hole.pre_absent) | set(kept_false) | (after - before)
+    return sorted(hold & domain.scored), sorted(absent & domain.scored)
+
+
 def hole_spec(domain: Domain, start: frozenset[str], result: PlanResult, goal_positive,
               goal_negative=(), index: int = 0) -> dict:
-    """The learning problem the planner hands to RL for one hole of a plan."""
+    """The learning problem the planner hands to RL for one hole of a plan.
+
+    `target` is the signed literal the skill must establish; `achieve` repeats its atom for
+    readers written before literals had signs. `start` and `start_absent` are the signed start,
+    `preserve` and `preserve_absent` the signed fences, `fences` the same fences as one signed
+    set, `handoff_state` the predicted symbolic state when the skill takes over, and
+    `handoff_conditions` what the robot must measure there.
+    """
     i = result.hole_indices[index]
     hole = result.steps[i]
     preserve, preserve_absent = derive_fences(domain, start, result.steps, i,
                                               goal_positive, goal_negative)
+    before = state_before(domain, start, result.steps, i)
+    hold, absent = handoff_conditions_of(domain, before, hole, preserve, preserve_absent)
     return {
         "hole": hole.name,
-        "achieve": hole.hole_for,
-        "object": (predicate_args(hole.hole_for) or (None,))[0],
+        "target": hole.hole_for.to_dict(),
+        "achieve": hole.hole_for.atom,
+        "object": (predicate_args(hole.hole_for.atom) or (None,))[0],
         "start": sorted(hole.pre),
+        "start_absent": sorted(hole.pre_absent),
         "preserve": preserve,
         "preserve_absent": preserve_absent,
+        "fences": [l.to_dict() for l in sorted(join(preserve, preserve_absent))],
+        "handoff_state": sorted(before),
+        "handoff_conditions": {"hold": hold, "absent": absent},
         "prefix": [a.to_dict() for a in result.steps[:i]],
         "suffix": [a.to_dict() for a in result.steps[i + 1:]],
         "plan": list(result.actions),
@@ -506,7 +594,13 @@ def hole_spec(domain: Domain, start: frozenset[str], result: PlanResult, goal_po
     }
 
 
-def learned_action(achieve: str, operator) -> Action:
+def spec_target(spec: dict) -> Literal:
+    """The signed literal a hole spec asks for. Specs written before literals had signs name a
+    positive target by its atom only."""
+    return Literal.from_dict(spec["target"]) if "target" in spec else pos(spec["achieve"])
+
+
+def learned_action(target: Literal, operator) -> Action:
     """A learned skill as a library action, modelled from its own executions.
 
     `operator` is what the operator extractor made of the skill's (start, end)
@@ -514,16 +608,20 @@ def learned_action(achieve: str, operator) -> Action:
     held whenever the skill was run, so the planner uses it only where it was
     verified. A positive precondition becomes `pre`, a negative one `pre_absent`;
     an effect that makes an atom true becomes `add`, one that makes it false `delete`.
+    `target` is the literal the policy was trained to establish; whether the extracted
+    effects contain it is for the caller to check, never assumed.
     """
     positive_pre = frozenset(t.key for t in operator.preconditions if t.polarity == "positive")
     negative_pre = frozenset(t.key for t in operator.preconditions if t.polarity == "negative")
-    return Action(name=f"LEARNED[{achieve}]",
+    return Action(name=f"LEARNED[{target}]",
                   pre=positive_pre,
                   pre_absent=negative_pre,
                   add=frozenset(t.key for t in operator.add_effects),
-                  delete=frozenset(t.key for t in operator.delete_effects))
+                  delete=frozenset(t.key for t in operator.delete_effects),
+                  learned_for=target)
 
 
-def symbolic_state(scores: dict[str, float], threshold: float = 0.8) -> frozenset[str]:
-    """The literals a measured scene supports: {p : V_p >= threshold}."""
-    return frozenset(key for key, score in scores.items() if score >= threshold)
+def symbolic_state(scores: dict[str, float]) -> frozenset[str]:
+    """The Boolean symbolic state a measured scene supports: the atoms scoring at least 0.5
+    (`literals.TRUE_AT`). A missing or non-finite score raises; it is never read as false."""
+    return lit.symbolic_state(scores)

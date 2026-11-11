@@ -12,21 +12,28 @@ The model
             mutex groups and disturbances. An effect a world constraint gives a library action is
             that action's effect, and this module reads library effects only through the
             transition and `Domain.closure`.
-  Holes     A hole for a scored literal l adds l and deletes nothing itself. It runs only while
-            l is false, from a largest set of robot-relative facts about l's object that the
-            library really holds together (`hole_starts`). The world constraints give it its
-            other effects, as they do for library actions.
+  Literals  Every literal is signed: `p` (the atom p is true) or `not p` (it is false), and the
+            two signs are treated alike throughout (`literals.py`). A state is the set of true
+            atoms; a goal and a precondition set are sets of signed literals.
+  Holes     A hole for a scored literal l establishes l and nothing else itself: a hole for `p`
+            adds p, a hole for `not p` deletes p. It runs only while l does not hold, from a
+            largest set of robot-relative facts about l's object that the library really holds
+            together (`hole_starts`), whatever l's sign. The world constraints give it its other
+            effects, as they do for library actions.
 
 Definitions, with k = `max_delegated`, the learning budget
 
-  C           The candidates: scored literals that are goal literals or preconditions of some
-              library action.
+  C           The candidates: signed literals on scored atoms that are goal literals or
+              preconditions, positive or negative, of some library action.
   F(H)        H is feasible: the library and holes for H reach the goal, in any order and at any
               length. Decided by exhaustive search (`reachable_states`).
   Minimal     F(H) holds, and F(H - {l}) fails for every l in H.
   U(l)        The candidates strictly upstream of l. The producer graph has an edge from l to u
-              when a library action adds l, counting what its additions imply, does not need l,
-              and needs u. u is upstream of l when a path leads from l to u and none leads back.
+              when a library action can establish l and does not need l, and needs u. An action
+              establishes `p` by adding p, counting what its additions imply; it establishes
+              `not p` by deleting p, by adding a mutex partner of p, or by changing a disturbance
+              trigger that displaces p. It needs its preconditions of both signs. u is upstream
+              of l when a path leads from l to u and none leads back.
   Admissible  |H| <= k, H is minimal, and no l in H has a replacement: a set R within
               (H - {l}) | U(l) with |R| <= k and F(R).
   Cost        (holes, displaced literals, length), compared lexicographically.
@@ -53,9 +60,9 @@ What is guaranteed
 
 What is a design choice, not a fact
 
-  - The upstream preference. It reads positive preconditions only: what a library producer
-    needs, not what it deletes, needs absent or interferes with. It is not a complete
-    causal-dependency analysis, and it does not show that the preferred skill is easier to learn.
+  - The upstream preference. It reads what a library producer needs, of both signs, and what
+    it can establish, of both signs. It is not a complete causal-dependency analysis, and it does
+    not show that the preferred skill is easier to learn.
     It decides which subset-minimal set is learned, and its answer can depend on k, because a
     replacement must fit the budget.
   - Ties. Plans of equal cost are all reported, except orderings that pass through the same state
@@ -74,13 +81,14 @@ import itertools
 from dataclasses import dataclass
 
 from inverse_skills.operators.hole_planner import Action, Domain, NoPlan, PlanResult
+from inverse_skills.operators.literals import Literal, join, neg, pos, satisfied
 
 
 @dataclass(frozen=True)
 class HoleContext:
     """One hole of a plan: what it must do, where it sits, and what needs it."""
 
-    literal: str                      # the ground predicate it must establish
+    literal: Literal                  # the signed literal it must establish
     index: int                        # its position in the plan
     state_before: frozenset[str]      # the symbolic state immediately before it
     used_by: str                      # the first later step that needs what it establishes, "goal"
@@ -96,7 +104,7 @@ class HoleContext:
     library_alternatives: tuple[tuple[str, str], ...] = ()
 
     def to_dict(self) -> dict:
-        return {"literal": self.literal, "index": self.index,
+        return {"literal": self.literal.to_dict(), "index": self.index,
                 "state_before": sorted(self.state_before), "used_by": self.used_by,
                 "used_at": self.used_at, "waiting": list(self.waiting),
                 "prefix": list(self.prefix), "suffix": list(self.suffix),
@@ -130,9 +138,9 @@ class ExactNoPlan(NoPlan):
     reach the goal: False means no number of candidate holes can; True means more than
     `max_delegated` are needed, and `limits_reached` then names "max_delegated".
 
-    `unmet_needs` are goal literals and library preconditions the library alone never makes
-    true; `unsynthesizable_needs` are those without a soft score, which no hole can be offered
-    for. `max_length` is 0, because there is no length limit. `unnecessary_holes` and
+    `unmet_needs` are goal literals and library preconditions, of either sign, that hold in no
+    state the library alone reaches; `unsynthesizable_needs` are those on atoms without a soft
+    score, which no hole can be offered for. `max_length` is 0, because there is no length limit. `unnecessary_holes` and
     `replaceable_holes` are always empty: when some set within the budget is feasible, an
     admissible one exists, so no plan was refused. They and `expanded` stay for callers that
     read every field. The inherited gap fields stay empty, as in `ExactPlanResult`.
@@ -141,8 +149,8 @@ class ExactNoPlan(NoPlan):
     limits_reached: tuple[str, ...] = ()
     max_delegated: int = 0
     max_length: int = 0
-    unmet_needs: tuple[str, ...] = ()
-    unsynthesizable_needs: tuple[str, ...] = ()
+    unmet_needs: tuple[Literal, ...] = ()
+    unsynthesizable_needs: tuple[Literal, ...] = ()
     unnecessary_holes: tuple[str, ...] = ()
     replaceable_holes: tuple[str, ...] = ()
     feasible_with_all_holes: bool = False
@@ -151,13 +159,13 @@ class ExactNoPlan(NoPlan):
 
 def reachable_states(domain: Domain, start: frozenset[str], holes=()) -> set[frozenset[str]]:
     """Every state reachable from `start` with the library and `holes`, by real transitions,
-    in any order. No step limit applies. A hole is usable only while its literal is missing."""
+    in any order. No step limit applies. A hole is usable only while its literal does not hold."""
     seen = {start}
     frontier = [start]
     while frontier:
         state = frontier.pop()
         for action in [*domain.actions, *holes]:
-            if action.hole_for not in state and domain.applicable(state, action):
+            if domain.enabled(state, action):
                 reached = domain.apply(state, action)
                 if reached not in seen:
                     seen.add(reached)
@@ -170,38 +178,54 @@ def library_states(domain: Domain, start: frozenset[str]) -> set[frozenset[str]]
     return reachable_states(domain, start)
 
 
-def hole_starts(domain: Domain, key: str, states) -> list[Action]:
-    """The holes for `key`: one for each largest set of robot-relative facts about its
+def hole_starts(domain: Domain, literal: Literal, states) -> list[Action]:
+    """The holes for `literal`: one for each largest set of robot-relative facts about its
     object that hold together in some state the library really reaches.
 
     So the library still does all it can before the learned skill takes over, as in
-    `Domain.hole`, and a start is never an impossible conjunction: every start was
-    really held by the library. Usually there is exactly one.
+    `Domain.hole`, and a start is never an impossible conjunction: every start was really held
+    by the library. The rule is the same for both signs. A hole still runs only where its start
+    holds and its literal does not (`Domain.enabled`); if those never hold together, the hole
+    is never used. Usually there is exactly one start.
     """
-    about_object = domain.hole(key, domain.robot_relative).pre
+    about_object = domain.about_object(literal)
     held = {state & about_object for state in states}
     largest = [facts for facts in held if not any(facts < other for other in held)]
-    return [domain.hole(key, facts) for facts in sorted(largest, key=sorted)]
+    return [domain.hole(literal, facts) for facts in sorted(largest, key=sorted)]
 
 
-def _establishers(domain: Domain, literal: str) -> list[Action]:
-    """The library actions that add `literal`, counting what their additions imply. One that
-    already needs it does not establish it."""
-    return [action for action in domain.actions
-            if literal in domain.closure(action.add) and literal not in action.pre]
+def established_by(domain: Domain, action: Action) -> frozenset[Literal]:
+    """The signed literals the action can establish by its modelled transition, other than those
+    it already needs: `p` for each atom it adds, counting implications; `not p` for each atom it
+    deletes, each mutex partner of what it adds, and each atom a disturbance it can trigger
+    displaces."""
+    added = domain.closure(action.add)
+    removed = domain.removes(action)
+    displaced = set()
+    for disturbance in domain.disturbances:
+        if disturbance.trigger in added or disturbance.trigger in removed:
+            displaced |= disturbance.clobbers
+    found = {pos(atom) for atom in added}
+    found |= {neg(atom) for atom in (removed | displaced) - added}
+    return frozenset(literal for literal in found if literal not in action.precondition_literals)
 
 
-def _producer_edges(domain: Domain) -> dict[str, set[str]]:
-    """The producer graph: an edge from l to u when a library action establishes l and needs u.
-    Only positive preconditions are read."""
-    edges: dict[str, set[str]] = {}
+def _establishers(domain: Domain, literal: Literal) -> list[Action]:
+    """The library actions that can establish `literal` (`established_by`)."""
+    return [action for action in domain.actions if literal in established_by(domain, action)]
+
+
+def _producer_edges(domain: Domain) -> dict[Literal, set[Literal]]:
+    """The producer graph: an edge from l to u when a library action can establish l and needs u.
+    Preconditions of both signs are read."""
+    edges: dict[Literal, set[Literal]] = {}
     for action in domain.actions:
-        for literal in domain.closure(action.add) - action.pre:
-            edges.setdefault(literal, set()).update(action.pre)
+        for literal in established_by(domain, action):
+            edges.setdefault(literal, set()).update(action.precondition_literals)
     return edges
 
 
-def _below(edges: dict[str, set[str]], literal: str) -> set[str]:
+def _below(edges: dict[Literal, set[Literal]], literal: Literal) -> set[Literal]:
     """Every literal that a path of one or more edges reaches from `literal`."""
     found: set[str] = set()
     pending = [literal]
@@ -213,7 +237,7 @@ def _below(edges: dict[str, set[str]], literal: str) -> set[str]:
     return found
 
 
-def upstream(domain: Domain, literal: str) -> set[str]:
+def upstream(domain: Domain, literal: Literal) -> set[Literal]:
     """The literals strictly upstream of `literal`: reached from it in the producer graph, with
     no path back. Members of a cycle are not upstream of each other."""
     edges = _producer_edges(domain)
@@ -225,16 +249,14 @@ class _HoleSets:
     """What real transitions say about sets of holes, and which sets the definitions admit.
     Each answer comes from an exhaustive search with no step limit."""
 
-    def __init__(self, domain: Domain, start: frozenset[str], goal_positive: set[str],
-                 goal_negative: set[str], budget: int):
+    def __init__(self, domain: Domain, start: frozenset[str], goal: frozenset[Literal], budget: int):
         self.domain = domain
         self.start = start
-        self.goal_positive = goal_positive
-        self.goal_negative = goal_negative
+        self.goal = goal
         self.budget = budget
         self.library = library_states(domain, start)
-        self.needs = goal_positive | {literal for action in domain.actions for literal in action.pre}
-        self.candidates = frozenset(self.needs & domain.scored)
+        self.needs = set(goal) | {literal for action in domain.actions for literal in action.precondition_literals}
+        self.candidates = frozenset(literal for literal in self.needs if literal.atom in domain.scored)
 
         edges = _producer_edges(domain)
         below: dict[str, set[str]] = {}
@@ -247,7 +269,7 @@ class _HoleSets:
         self.upstream = {literal: {other for other in reached_from(literal) & self.candidates
                                    if other != literal and literal not in reached_from(other)}
                          for literal in self.candidates}
-        self._starts: dict[str, list[Action]] = {}
+        self._starts: dict[Literal, list[Action]] = {}
         self._reached = {frozenset(): self.library}
 
     def holes(self, literals) -> list[Action]:
@@ -264,14 +286,13 @@ class _HoleSets:
 
     def feasible(self, literals) -> bool:
         """F: the goal is reachable with the library and holes for `literals`."""
-        return any(self.goal_positive <= state and not (self.goal_negative & state)
-                   for state in self.states(literals))
+        return any(satisfied(self.goal, state) for state in self.states(literals))
 
-    def minimal(self, hole_set: frozenset[str]) -> bool:
+    def minimal(self, hole_set: frozenset[Literal]) -> bool:
         return self.feasible(hole_set) and not any(self.feasible(hole_set - {literal})
                                                    for literal in hole_set)
 
-    def replaceable(self, hole_set: frozenset[str], literal: str) -> bool:
+    def replaceable(self, hole_set: frozenset[Literal], literal: Literal) -> bool:
         """Some set of at most k literals, drawn from the other holes and the candidates upstream
         of `literal`, is feasible. Adding holes never makes the goal unreachable, so only the
         sets of size min(k, |pool|) need a test."""
@@ -279,11 +300,11 @@ class _HoleSets:
         size = min(self.budget, len(pool))
         return any(self.feasible(chosen) for chosen in itertools.combinations(pool, size))
 
-    def admissible(self, hole_set: frozenset[str]) -> bool:
+    def admissible(self, hole_set: frozenset[Literal]) -> bool:
         return (len(hole_set) <= self.budget and self.minimal(hole_set)
                 and not any(self.replaceable(hole_set, literal) for literal in hole_set))
 
-    def smallest_admissible_sets(self) -> list[frozenset[str]]:
+    def smallest_admissible_sets(self) -> list[frozenset[Literal]]:
         """The admissible sets of the smallest size up to k, or none."""
         for size in range(min(self.budget, len(self.candidates)) + 1):
             found = [frozenset(chosen) for chosen in itertools.combinations(sorted(self.candidates), size)
@@ -311,8 +332,8 @@ def _cheapest_plans(domain: Domain, start: frozenset[str], satisfied, holes: lis
             continue
         settled.add(state)
         expanded += 1
-        for action in domain.actions + [hole for hole in holes if hole.hole_for not in state]:
-            if not domain.applicable(state, action):
+        for action in domain.actions + list(holes):
+            if not domain.enabled(state, action):
                 continue
             nxt, displaced = domain.transition(state, action)
             if nxt == state:
@@ -329,17 +350,17 @@ def _cheapest_plans(domain: Domain, start: frozenset[str], satisfied, holes: lis
     return best, plans, expanded
 
 
-def _library_alternatives(domain, before, key, suffix) -> tuple[tuple[str, str], ...]:
-    """For the final plan: what happens if each library action establishing `key` runs where
+def _library_alternatives(domain, before, literal, suffix) -> tuple[tuple[str, str], ...]:
+    """For the final plan: what happens if each library action establishing `literal` runs where
     the hole is, and the rest of the plan follows."""
     reasons = []
-    for action in _establishers(domain, key):
+    for action in _establishers(domain, literal):
         if not domain.applicable(before, action):
             reasons.append((action.name, "cannot run here"))
             continue
         state = domain.apply(before, action)
         for step in suffix:
-            if step.hole_for == key:
+            if step.hole_for == literal:
                 continue
             if not domain.applicable(state, step):
                 reasons.append((action.name, f"the plan then fails at {step.name}"))
@@ -350,32 +371,35 @@ def _library_alternatives(domain, before, key, suffix) -> tuple[tuple[str, str],
     return tuple(reasons)
 
 
-def _hole_context(domain, start, steps, index, goal_positive) -> HoleContext:
+def _hole_context(domain, start, steps, index, goal) -> HoleContext:
     before = start
     for step in steps[:index]:
         before = domain.apply(before, step)
     hole = steps[index]
-    key = hole.hole_for
+    literal = hole.hole_for
 
-    # Follow what the hole established to the first later step that needs it.
+    # Follow what the hole established to the first later step that needs it: what it adds,
+    # counting implications, or the atom it deletes. What a mutex or a disturbance removes on
+    # the way is a forced effect, not what the hole was placed for.
     state = domain.apply(before, hole)
-    established = (domain.closure(hole.add) - before) & state
+    established = {pos(atom) for atom in (domain.closure(hole.add) - before) & state}
+    established |= {neg(atom) for atom in (hole.delete & before) - state}
     used_by, used_at = None, None
     for later in range(index + 1, len(steps)):
         step = steps[later]
-        if established & step.pre:
+        if established & step.precondition_literals:
             used_by, used_at = step.name, later
             break
         state = domain.apply(state, step)
-        established &= state
+        established = {l for l in established if l.holds(state)}
     if used_by is None:
-        used_by = "goal" if established & goal_positive else "none"
+        used_by = "goal" if established & goal else "none"
 
-    waiting = [action.name for action in domain.actions if key in action.pre]
-    if key in goal_positive:
+    waiting = [action.name for action in domain.actions if literal in action.precondition_literals]
+    if literal in goal:
         waiting.append("goal")
     return HoleContext(
-        literal=key,
+        literal=literal,
         index=index,
         state_before=before,
         used_by=used_by,
@@ -383,7 +407,7 @@ def _hole_context(domain, start, steps, index, goal_positive) -> HoleContext:
         waiting=tuple(waiting),
         prefix=tuple(step.name for step in steps[:index]),
         suffix=tuple(step.name for step in steps[index + 1:]),
-        library_alternatives=_library_alternatives(domain, before, key, steps[index + 1:]),
+        library_alternatives=_library_alternatives(domain, before, literal, steps[index + 1:]),
     )
 
 
@@ -403,34 +427,37 @@ def plan_exact(domain: Domain, start, goal_positive, goal_negative=None, *,
                max_delegated: int = 2) -> ExactPlanResult | ExactNoPlan:
     """The cheapest plan whose holes form an admissible set, or an `ExactNoPlan` report, as the
     module docstring defines them. The same as `hole_planner.plan(..., mode="exact")`.
+
+    The goal is one set of signed literals, passed as its two projections: the atoms that must
+    be true and the atoms that must be false. A goal asking for both p and not p is rejected.
     """
     start = frozenset(start)
-    goal_positive = set(goal_positive)
-    goal_negative = set(goal_negative or ())
+    goal = join(goal_positive, goal_negative or ())
 
-    def satisfied(state: frozenset[str]) -> bool:
-        return goal_positive <= state and not (goal_negative & state)
+    def reaches_goal(state: frozenset[str]) -> bool:
+        return satisfied(goal, state)
 
-    if satisfied(start):
+    if reaches_goal(start):
         return ExactPlanResult((), (), (), 0, 0, (), 0)
 
-    hole_sets = _HoleSets(domain, start, goal_positive, goal_negative, max_delegated)
+    hole_sets = _HoleSets(domain, start, goal, max_delegated)
     admissible = hole_sets.smallest_admissible_sets()
     if not admissible:
         feasible = hole_sets.feasible(hole_sets.candidates)
-        unmet = hole_sets.needs - set().union(*hole_sets.library)
+        unmet = {need for need in hole_sets.needs
+                 if not any(need.holds(state) for state in hole_sets.library)}
         return ExactNoPlan(candidates=tuple(sorted(hole_sets.candidates)),
                            limits_reached=("max_delegated",) if feasible else (),
                            max_delegated=max_delegated,
                            unmet_needs=tuple(sorted(unmet)),
-                           unsynthesizable_needs=tuple(sorted(unmet - domain.scored)),
+                           unsynthesizable_needs=tuple(sorted(l for l in unmet if l.atom not in domain.scored)),
                            feasible_with_all_holes=feasible)
 
     best: tuple[int, int] | None = None
     tied: list[tuple[Action, ...]] = []
     expanded = 0
     for hole_set in admissible:
-        cost, plans, explored = _cheapest_plans(domain, start, satisfied, hole_sets.holes(hole_set))
+        cost, plans, explored = _cheapest_plans(domain, start, reaches_goal, hole_sets.holes(hole_set))
         expanded += explored
         if best is None or cost < best:
             best, tied = cost, []
@@ -449,6 +476,5 @@ def plan_exact(domain: Domain, start, goal_positive, goal_negative=None, *,
         expanded=expanded,
         candidates=tuple(sorted(hole_sets.candidates)),
         alternatives=tuple(tied[1:]),
-        hole_contexts=tuple(_hole_context(domain, start, chosen, i, goal_positive)
-                            for i in hole_indices),
+        hole_contexts=tuple(_hole_context(domain, start, chosen, i, goal) for i in hole_indices),
     )

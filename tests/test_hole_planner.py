@@ -21,6 +21,18 @@ from inverse_skills.operators.schema import LearnedOperator, PredicateTerm
 # These tests verify the relaxed mode, which stays available, so every call names it.
 plan = partial(hole_planner.plan, mode="relaxed")
 
+from inverse_skills.operators.literals import Literal, neg, pos
+
+
+def names(literals) -> tuple[str, ...]:
+    """Signed literals as a person writes them: "p" and "not p"."""
+    return tuple(str(literal) for literal in literals)
+
+
+def strs(literals) -> set[str]:
+    return {str(literal) for literal in literals}
+
+
 STOW_GOAL_POS = {"clear_of_walls(cube_a)", "gripper_open()",
                  "in_region(cube_a,src_a)", "in_region(cube_b,src_b)"}
 STOW_GOAL_NEG = {"in_region(cube_a,pocket)", "in_region(cube_b,mouth)"}
@@ -42,7 +54,7 @@ def stow_plan(domain=None, **kwargs):
 def test_stow_needs_one_hole_placed_mid_plan():
     result = stow_plan()
     assert result.actions == B_FIRST
-    assert result.delegated == ("clear_of_walls(cube_a)",)
+    assert names(result.delegated) == ("clear_of_walls(cube_a)",)
     assert result.hole_indices == (3,)          # neither first nor last
     assert result.alternatives == ()            # the model determines the ordering
 
@@ -57,7 +69,7 @@ def test_library_alone_cannot_free_the_stowed_cube():
 
 def test_extracting_a_through_an_occupied_mouth_displaces_b():
     domain = sd.domain()
-    hole = domain.hole("clear_of_walls(cube_a)", {"tcp_near(cube_a)"})
+    hole = domain.hole(pos("clear_of_walls(cube_a)"), {"tcp_near(cube_a)"})
     state = frozenset({"in_region(cube_a,pocket)", "in_region(cube_b,mouth)", "tcp_near(cube_a)"})
     nxt, collateral = domain.transition(state, hole)
     assert collateral == {"in_region(cube_b,mouth)"}
@@ -78,7 +90,7 @@ def test_without_the_interference_model_the_ordering_is_undetermined():
 def test_a_complete_library_is_ordered_by_collateral_not_by_holes():
     """With no hole in the plan, only the interference model keeps B first."""
     with_model = stow_plan(sd.domain(extra_actions=[DRAG]), max_delegated=0)
-    assert with_model.delegated == ()
+    assert names(with_model.delegated) == ()
     assert with_model.actions.index("place(cube_b,src_b)") < with_model.actions.index("drag(cube_a)")
     assert with_model.alternatives == ()
     blind = stow_plan(sd.domain(extra_actions=[DRAG], interference=False), max_delegated=0)
@@ -90,7 +102,7 @@ def test_a_hole_that_swallows_the_task_is_rejected_for_changing_more():
     whole relocation: one predicate too, but a bigger one. The gap rule does not
     even offer it (see the next test)."""
     result = stow_plan(unrestricted_holes=True)
-    assert "in_region(cube_a,src_a)" in result.candidates
+    assert pos("in_region(cube_a,src_a)") in result.candidates
     assert result.hole_literals == 2            # frees A, and so empties the pocket slot
     assert "HOLE[in_region(cube_a,src_a)]" not in result.actions
 
@@ -107,8 +119,8 @@ def test_holes_are_offered_only_at_synthesizable_capability_gaps():
     assert result.capability_gaps == ("clear_of_walls(cube_a)", "holding(cube_a)")
     assert result.synthesizable_gaps == ("clear_of_walls(cube_a)",)
     assert result.unsynthesizable_gaps == ("holding(cube_a)",)
-    assert result.candidates == ("clear_of_walls(cube_a)",)
-    assert stow_plan(unrestricted_holes=True).candidates == ("clear_of_walls(cube_a)",
+    assert names(result.candidates) == ("clear_of_walls(cube_a)",)
+    assert names(stow_plan(unrestricted_holes=True).candidates) == ("clear_of_walls(cube_a)",
                                                              "in_region(cube_a,src_a)")
 
 
@@ -123,7 +135,7 @@ def test_unsynthesizable_gaps_give_no_plan_and_are_reported():
     assert result.capability_gaps == ("clear_of_walls(cube_a)", "holding(cube_a)")
     assert result.synthesizable_gaps == ()
     assert result.unsynthesizable_gaps == ("clear_of_walls(cube_a)", "holding(cube_a)")
-    assert stow_plan(domain, unrestricted_holes=True).delegated == ("in_region(cube_a,src_a)",)
+    assert names(stow_plan(domain, unrestricted_holes=True).delegated) == ("in_region(cube_a,src_a)",)
 
 
 OPEN, CLOSED = "drawer_open(drawer)", "drawer_closed(drawer)"
@@ -181,7 +193,7 @@ def test_conjunctive_prerequisites_are_the_gaps_not_their_product():
                     scored=frozenset({"p", "q", "r"}))
     assert capability_gaps(domain, frozenset(), {"p"}) == {"q", "r"}
     result = plan(domain, frozenset(), {"p"})
-    assert result.delegated == ("q", "r") and result.actions[-1] == "make"
+    assert names(result.delegated) == ("q", "r") and result.actions[-1] == "make"
     assert plan(domain, frozenset(), {"p"}, unrestricted_holes=True).actions == ("HOLE[p]",)
 
 
@@ -250,7 +262,7 @@ def test_learned_operator_enters_the_library_with_its_measured_precondition():
         add_effects=[PredicateTerm("clear_of_walls(cube_a)"), PredicateTerm("in_region(cube_a,mouth)")],
         delete_effects=[PredicateTerm("in_region(cube_a,pocket)")],
     )
-    action = learned_action("clear_of_walls(cube_a)", extracted)
+    action = learned_action(pos("clear_of_walls(cube_a)"), extracted)
     assert action.name == "LEARNED[clear_of_walls(cube_a)]"
     result = stow_plan(sd.domain(extra_actions=[action]), max_delegated=0)
     assert result.actions == tuple(a.replace("HOLE", "LEARNED") for a in B_FIRST)
@@ -279,7 +291,7 @@ def test_pushcube_coarse_place_yields_a_trailing_hole():
                    "tcp_near(cube)"},
                   {"in_region(cube,goal)"})
     assert result.actions == ("pick(cube)", "place(cube,src)", "HOLE[at_pose(cube,src)]")
-    assert result.delegated == ("at_pose(cube,src)",)
+    assert names(result.delegated) == ("at_pose(cube,src)",)
 
 
 def test_a_gap_the_relaxation_hides_gives_no_plan():
@@ -357,22 +369,31 @@ def test_paths_that_used_different_holes_are_kept_apart():
     assert result.cost == (1, 0, 4, 2, 4)
 
 
-def test_learned_steps_name_the_predicate_they_owe():
-    assert hole_planner.delegated_predicate("HOLE[clear_of_walls(cube_a)]") == "clear_of_walls(cube_a)"
-    assert hole_planner.delegated_predicate("LEARNED[p(x,y)]") == "p(x,y)"
-    assert hole_planner.delegated_predicate("pick(cube_a)") is None
+def test_learned_steps_carry_the_literal_they_owe_as_a_field():
+    """Superseded 2026-11-11: the literal a hole or a learned operator owes was read from its name
+    (`HOLE[p]` -> p). It is now a signed field, `hole_for` or `learned_for`, and a name is for
+    people only: nothing reads a sign from it."""
+    extracted = LearnedOperator(skill_name="learned", preconditions=[PredicateTerm("p(x)"),
+                                PredicateTerm("q(x)", polarity="negative")], delete_effects=[PredicateTerm("p(x)")])
+    action = learned_action(neg("p(x)"), extracted)
+    assert action.learned_for == neg("p(x)") and action.hole_for is None
+    assert (action.pre, action.pre_absent, action.add, action.delete) == ({"p(x)"}, {"q(x)"}, set(), {"p(x)"})
+    assert Action.from_dict(action.to_dict()) == action
+    assert not hasattr(hole_planner, "delegated_predicate")
     assert hole_planner.predicate_args("in_region(cube_a,pocket)") == ("cube_a", "pocket")
     assert hole_planner.predicate_args("gripper_open()") == ()
 
 
 def test_action_round_trips_through_a_dict():
     action = Action("x(a)", pre=frozenset({"p(a)"}), pre_absent=frozenset({"q(a)"}),
-                    add=frozenset({"r(a)"}), delete=frozenset({"p(a)"}), hole_for="r(a)")
+                    add=frozenset({"r(a)"}), delete=frozenset({"p(a)"}), hole_for=pos("r(a)"))
     assert Action.from_dict(action.to_dict()) == action
 
 
-def test_symbolic_state_thresholds_scores():
-    assert symbolic_state({"a": 0.81, "b": 0.79, "c": 1.0}) == frozenset({"a", "c"})
+def test_symbolic_state_is_boolean_truth_at_0_5():
+    """Superseded 2026-11-11 by the threshold decision: the symbolic state is Boolean truth, score
+    >= 0.5 (before, >= 0.8). Robust physical checks use 0.8 and 0.2 (`literals.py`)."""
+    assert symbolic_state({"a": 0.81, "b": 0.79, "c": 1.0, "d": 0.5, "e": 0.49}) == frozenset({"a", "b", "c", "d"})
 
 
 def test_the_planner_code_names_no_domain_vocabulary():

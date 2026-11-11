@@ -31,6 +31,7 @@ from inverse_skills.operators.handoff import (
     summarize_attempts,
 )
 from inverse_skills.operators.hole_planner import Action, Domain, hole_spec, learned_action, plan
+from inverse_skills.operators.literals import pos
 from inverse_skills.predicates.base import Predicate, PredicateRegistry, PredicateResult
 
 CLEAR, POCKET, TCP, SRC_B = ("clear_of_walls(cube_a)", "in_region(cube_a,pocket)", "tcp_near(cube_a)",
@@ -96,7 +97,7 @@ def learned_from(rollouts, mode: str) -> Action:
     """Extract in the named mode from the rollouts, and make the library action Stage 4 makes."""
     registry = PredicateRegistry(Scripted(p) for p in (CLEAR, POCKET, TCP, SRC_B, *ELSEWHERE))
     result = OperatorExtractor(registry, OperatorExtractionConfig(mode=mode)).extract("skill", rollouts)
-    return learned_action(CLEAR, result.operator)
+    return learned_action(pos(CLEAR), result.operator)
 
 
 def as_expected(action: Action) -> dict:
@@ -151,9 +152,12 @@ def test_each_kind_of_condition_on_a_small_domain():
     assert conditions.absent == {"goal_part(o)", "bad"}
 
 
-def test_seed_2004_is_invalid_for_exactly_the_literal_the_prefix_disturbed():
+def test_seed_2004_is_invalid_for_exactly_what_the_prefix_disturbed():
+    """The prefix pushed A half out of its seat. Superseded 2026-11-11 by the robust thresholds:
+    clear_of_walls(A), at 0.41, is evidence of neither truth nor falsity, so it fails beside the
+    seat; before, anything below 0.8 counted as false. The verdict, invalid, is unchanged."""
     reasons = handoff_violations(STOW_CONDITIONS, scores_of(RECORDED[2004][0]))
-    assert reasons == [f"{POCKET} should hold, score 0.6656"]
+    assert reasons == [f"{POCKET} should hold, score 0.6656", f"{CLEAR} should not hold, score 0.4148"]
 
 
 def test_every_other_recorded_handoff_is_valid():
@@ -168,14 +172,18 @@ def test_predicates_the_plan_does_not_rely_on_are_not_asked_for():
     assert handoff_violations(STOW_CONDITIONS, scores) == []
 
 
-def test_every_condition_is_checked_with_the_symbolic_threshold():
+def test_every_condition_is_checked_robustly():
+    """Superseded 2026-11-11 by the signed-literal thresholds: a literal that must hold needs a score
+    of at least 0.8, as before, and one that must not hold now needs at most 0.2 (before, anything
+    below 0.8 counted as false). A score in between is evidence of neither, so it fails."""
     good = scores_of(RECORDED[2000][0])
     for literal in STOW_CONDITIONS.hold:
-        assert handoff_violations(STOW_CONDITIONS, {**good, literal: 0.8}) == []          # true at 0.8
+        assert handoff_violations(STOW_CONDITIONS, {**good, literal: 0.8}) == []          # robustly true
         assert handoff_violations(STOW_CONDITIONS, {**good, literal: 0.7999}) != []
     for literal in STOW_CONDITIONS.absent:
-        assert handoff_violations(STOW_CONDITIONS, {**good, literal: 0.7999}) == []       # false below it
-        assert handoff_violations(STOW_CONDITIONS, {**good, literal: 0.8}) != []
+        assert handoff_violations(STOW_CONDITIONS, {**good, literal: 0.2}) == []          # robustly false
+        assert handoff_violations(STOW_CONDITIONS, {**good, literal: 0.2001}) != []
+        assert handoff_violations(STOW_CONDITIONS, {**good, literal: 0.7999}) != []       # no longer false
 
 
 # --- Bounded retries, recorded ---
@@ -191,7 +199,7 @@ def test_an_invalid_handoff_is_replaced_by_the_next_scene_and_the_skill_never_ru
     kept, attempts = collect_demonstrations([2004], STOW_CONDITIONS, recorded_prepare(), demonstrate)
     assert kept == ran == [12004]
     assert [(a.scene_seed, a.number, a.stage) for a in attempts] == [(2004, 0, "handoff"), (12004, 1, "valid")]
-    assert attempts[0].reasons == (f"{POCKET} should hold, score 0.6656",)
+    assert attempts[0].reasons == (f"{POCKET} should hold, score 0.6656", f"{CLEAR} should not hold, score 0.4148")
     assert dict(attempts[0].scores)[POCKET] == pytest.approx(0.6656)
 
 

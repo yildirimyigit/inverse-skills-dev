@@ -23,6 +23,18 @@ from inverse_skills.operators.exact_hole_planner import ExactNoPlan, plan_exact,
 from inverse_skills.operators.handoff import handoff_conditions
 from inverse_skills.operators.hole_planner import Action, Domain, hole_spec
 
+from inverse_skills.operators.literals import Literal, neg, pos
+
+
+def names(literals) -> tuple[str, ...]:
+    """Signed literals as a person writes them: "p" and "not p"."""
+    return tuple(str(literal) for literal in literals)
+
+
+def strs(literals) -> set[str]:
+    return {str(literal) for literal in literals}
+
+
 ARTIFACTS = Path(__file__).resolve().parent.parent / "artifacts"
 
 
@@ -88,7 +100,7 @@ def test_no_plan_without_a_named_limit_means_no_candidate_holes_can_do_it():
     result = plan_exact(domain, (), {"g"}, max_delegated=5)
     assert isinstance(result, ExactNoPlan)
     assert result.limits_reached == () and not result.feasible_with_all_holes
-    assert result.unsynthesizable_needs == ("g", "k")
+    assert names(result.unsynthesizable_needs) == ("g", "k")
 
 
 def test_no_plan_is_relative_to_the_candidate_set():
@@ -98,7 +110,7 @@ def test_no_plan_is_relative_to_the_candidate_set():
     domain = Domain(actions=[act("use", {"p"}, {"g"})], scored=frozenset({"x"}),
                     implications={"x": frozenset({"p"})})
     result = plan_exact(domain, (), {"g"})
-    assert isinstance(result, ExactNoPlan) and result.candidates == ()
+    assert isinstance(result, ExactNoPlan) and names(result.candidates) == ()
     assert Oracle(domain, (), {"g"}).solves({"x"})
 
 
@@ -125,22 +137,25 @@ def test_a_plan_can_use_more_holes_than_the_fewest_that_suffice():
 
 # The upstream preference
 
-def test_upstream_follows_positive_preconditions_only():
-    """`make_p` needs r, deletes z and needs busy absent. Only r is upstream of p."""
+def test_upstream_follows_preconditions_of_both_signs():
+    """Superseded 2026-11-11 by the signed formulation (before: positive preconditions only).
+    `make_p` needs r and needs busy absent, and deletes z. So r and `not busy` are upstream of p;
+    what it deletes is not something it needs."""
     domain = Domain(actions=[act("make_p", {"r"}, {"p"}, {"z"}, {"busy"}), act("use", {"p"}, {"g"})])
-    assert upstream(domain, "p") == {"r"} and upstream(domain, "g") == {"p", "r"}
+    assert strs(upstream(domain, pos("p"))) == {"r", "not busy"}
+    assert strs(upstream(domain, pos("g"))) == {"p", "r", "not busy"}
 
 
 def test_upstream_is_strict_inside_a_cycle():
     """p and q each establish the other, so neither is upstream of the other; r feeds both."""
     domain = Domain(actions=[act("p_from_q", {"q"}, {"p"}), act("q_from_p", {"p"}, {"q"}),
                              act("q_from_r", {"r"}, {"q"})])
-    assert upstream(domain, "p") == {"r"} and upstream(domain, "q") == {"r"}
+    assert strs(upstream(domain, pos("p"))) == {"r"} and strs(upstream(domain, pos("q"))) == {"r"}
 
 
 def test_upstream_counts_what_an_action_establishes_through_an_implication():
     domain = Domain(actions=[act("make_x", {"m"}, {"x"})], implications={"x": frozenset({"g"})})
-    assert upstream(domain, "g") == {"m"}
+    assert strs(upstream(domain, pos("g"))) == {"m"}
 
 
 def test_a_replacement_must_really_reach_the_goal():
@@ -148,8 +163,8 @@ def test_a_replacement_must_really_reach_the_goal():
     and p is kept."""
     domain = Domain(actions=[act("make_q", {"p"}, {"q"}, {"p"}), act("use", {"p", "q"}, {"g"}),
                              act("make_p", {"r"}, {"p"}, {"q"})], scored=frozenset({"p", "q", "r", "g"}))
-    assert "r" in upstream(domain, "p") and not Oracle(domain, {"p"}, {"g"}).solves({"r"})
-    assert plan_exact(domain, {"p"}, {"g"}).delegated == ("p",)
+    assert "r" in strs(upstream(domain, pos("p"))) and not Oracle(domain, {"p"}, {"g"}).solves({"r"})
+    assert names(plan_exact(domain, {"p"}, {"g"}).delegated) == ("p",)
 
 
 def test_the_preference_decides_the_drawer():
@@ -157,11 +172,11 @@ def test_the_preference_decides_the_drawer():
     so the opening is refused; with the grasp unscored, the opening is what is learned."""
     oracle = Oracle(dd.domain(), {dd.CLOSED}, {dd.OPEN}, {dd.CLOSED})
     assert {frozenset({dd.OPEN}), frozenset({dd.GRASPED})} <= oracle.minimal_sets()
-    assert upstream(dd.domain(), dd.OPEN) == {dd.GRASPED}
-    assert plan_exact(dd.domain(), {dd.CLOSED}, {dd.OPEN}, {dd.CLOSED}).delegated == (dd.GRASPED,)
+    assert strs(upstream(dd.domain(), pos(dd.OPEN))) == {dd.GRASPED}
+    assert names(plan_exact(dd.domain(), {dd.CLOSED}, {dd.OPEN}, {dd.CLOSED}).delegated) == (dd.GRASPED,)
     unscored = dd.domain()
     unscored.scored = unscored.scored - {dd.GRASPED}
-    assert plan_exact(unscored, {dd.CLOSED}, {dd.OPEN}, {dd.CLOSED}).delegated == (dd.OPEN,)
+    assert names(plan_exact(unscored, {dd.CLOSED}, {dd.OPEN}, {dd.CLOSED}).delegated) == (dd.OPEN,)
 
 
 # The paper's learning problems
@@ -174,13 +189,25 @@ def saved(path):
     return json.loads((ARTIFACTS / path).read_text())
 
 
+def assert_reproduces(spec: dict, trained: dict) -> None:
+    """Every field of the spec RL was trained on comes back unchanged. Specs now also carry the
+    signed fields (2026-11-11); they must agree with the trained fields: the target is the
+    trained `achieve`, positive, the start has no negative part, and the fences are the same."""
+    assert {key: spec[key] for key in trained} == trained
+    assert spec["target"] == {"atom": trained["achieve"], "polarity": "positive"}
+    assert spec["start_absent"] == []
+    assert {(f["atom"], f["polarity"]) for f in spec["fences"]} == (
+        {(a, "positive") for a in trained["preserve"]} | {(a, "negative") for a in trained["preserve_absent"]})
+
+
 def test_the_trained_stow_and_drawer_learning_problems_are_reproduced():
     """The hole specs RL was trained on, every field, from the first measured Stage 2 state."""
     for name, domain, goal in (
             ("stow", sd.domain(), sd.goal_from_operator(ARTIFACTS / "stow" / "stage1_operator.json")),
             ("drawer", dd.domain(), dd.goal_from_operator(ARTIFACTS / "drawer" / "stage1_operator.json"))):
         start = measured_start(name)
-        assert hole_spec(domain, start, plan_exact(domain, start, *goal), *goal) == saved(f"{name}/hole_spec.json")
+        assert_reproduces(hole_spec(domain, start, plan_exact(domain, start, *goal), *goal),
+                          saved(f"{name}/hole_spec.json"))
 
 
 def test_the_direct_baseline_is_what_the_planner_learns_without_the_grasp():
@@ -191,7 +218,7 @@ def test_the_direct_baseline_is_what_the_planner_learns_without_the_grasp():
     unscored = dd.domain()
     unscored.scored = unscored.scored - {dd.GRASPED}
     spec = hole_spec(unscored, start, plan_exact(unscored, start, *goal), *goal)
-    assert spec == saved("drawer/direct/hole_spec_direct.json")
+    assert_reproduces(spec, saved("drawer/direct/hole_spec_direct.json"))
 
 
 # The library is complete under the transition model

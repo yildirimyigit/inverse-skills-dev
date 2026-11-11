@@ -53,6 +53,18 @@ STOW_PLAN = ("pick(cube_b)", "place(cube_b,src_b)", "approach(cube_a)",
              "HOLE[clear_of_walls(cube_a)]", "pick(cube_a)", "place(cube_a,src_a)")
 OPEN, CLOSED = "drawer_open(drawer)", "drawer_closed(drawer)"
 STANDOFF, GRASPED = "at_handle_standoff(drawer)", "handle_grasped(drawer)"
+from inverse_skills.operators.literals import Literal, neg, pos
+
+
+def names(literals) -> tuple[str, ...]:
+    """Signed literals as a person writes them: "p" and "not p"."""
+    return tuple(str(literal) for literal in literals)
+
+
+def strs(literals) -> set[str]:
+    return {str(literal) for literal in literals}
+
+
 DRAWER_START = frozenset({CLOSED})
 DRAWER_GOAL = ({OPEN}, {CLOSED})
 
@@ -80,7 +92,8 @@ def replay(domain, start, steps):
         assert nxt != states[-1], f"{action.name} changes nothing"
         collateral += len(displaced)
         if action.hole_for is not None:
-            assert action.hole_for in domain.scored, f"{action.name} has no soft score"
+            assert action.hole_for.atom in domain.scored, f"{action.name} has no soft score"
+            assert not action.hole_for.holds(states[-1]), f"{action.name} runs although its literal holds"
             delegated.add(action.hole_for)
             holes += 1
             changed += len((nxt ^ states[-1]) - displaced)
@@ -105,16 +118,18 @@ def assert_valid(domain, start, result, goal_pos, goal_neg=()):
     for context, i in zip(result.hole_contexts, result.hole_indices):
         hole = result.steps[i]
         assert context.literal == hole.hole_for and context.index == i
-        assert context.state_before == states[i] and context.literal not in states[i]
-        assert hole.pre <= states[i]
+        assert context.state_before == states[i] and not context.literal.holds(states[i])
+        assert hole.pre <= states[i] and not (hole.pre_absent & states[i])
         assert context.prefix == result.actions[:i] and context.suffix == result.actions[i + 1:]
         if context.used_at is None:
             assert context.used_by in ("goal", "none")
             if context.used_by == "goal":
-                assert states[-1] & domain.closure(hole.add) & set(goal_pos)
+                assert (states[-1] & domain.closure(hole.add) & set(goal_pos)
+                        or (hole.delete & set(goal_neg)) - states[-1])
         else:
             assert context.used_by == result.actions[context.used_at] and context.used_at > i
-            assert result.steps[context.used_at].pre & domain.closure(hole.add)
+            user = result.steps[context.used_at]
+            assert (user.pre & domain.closure(hole.add)) or (user.pre_absent & hole.delete)
         assert context.waiting, "nothing was waiting for this hole"
     return states
 
@@ -211,7 +226,7 @@ def test_b_the_hidden_gap_gets_a_causally_justified_hole():
     assert_valid(domain, {"p"}, result, {"g"})
 
     context = result.hole_contexts[0]
-    assert context.literal == "p" and context.used_by == "use" and context.waiting == ("make_q", "use")
+    assert str(context.literal) == "p" and context.used_by == "use" and context.waiting == ("make_q", "use")
     assert context.library_alternatives == ()               # nothing in the library establishes p
 
 
@@ -253,7 +268,7 @@ def test_b_a_consumed_shared_resource():
                     scored=frozenset({"token", "p", "q"}))
     assert not relaxed(domain, frozenset({"token"}), {"p", "q"})
     result = exact(domain, {"token"}, {"p", "q"})
-    assert result.delegated == ("token",) and result.cost == (1, 0, 1, 1, 3)
+    assert names(result.delegated) == ("token",) and result.cost == (1, 0, 1, 1, 3)
     assert set(result.alternative_names) | {result.actions} == {
         ("make_p", "HOLE[token]", "make_q"), ("make_q", "HOLE[token]", "make_p")}
     assert_valid(domain, {"token"}, result, {"p", "q"})
@@ -278,7 +293,7 @@ def test_a_the_cost_is_holes_displaced_length():
                              act("make_c", {"e"}, {"c"})],
                     scored=frozenset({"c", "e", "f"}), mutex_groups=[frozenset({"c", "f"})])
     result = exact(domain, (), {"d", "e", "f"})
-    assert result.actions[:3] == ("HOLE[e]", "make_d", "HOLE[e]") and result.delegated == ("e", "f")
+    assert result.actions[:3] == ("HOLE[e]", "make_d", "HOLE[e]") and names(result.delegated) == ("e", "f")
     assert result.cost == (2, 0, 3, 3, 4) and result.planning_cost == (2, 0, 4)
     assert_valid(domain, (), result, {"d", "e", "f"})
     assert relaxed(domain, frozenset(), {"d", "e", "f"}).cost == (2, 0, 3, 2, 5)
@@ -294,7 +309,7 @@ def test_c_a_satisfied_goal_needs_an_empty_plan():
 def test_c_a_library_plan_is_preferred_over_any_hole():
     domain = dd.domain(extra_actions=[dd.scripted_grasp()])
     result = exact(domain, DRAWER_START, *DRAWER_GOAL)
-    assert result.delegated == () and result.hole_indices == ()
+    assert names(result.delegated) == () and result.hole_indices == ()
     assert result.actions == ("approach_handle(drawer)", "grasp_handle(drawer)", "pull_open(drawer)")
     assert_valid(domain, DRAWER_START, result, *DRAWER_GOAL)
 
@@ -347,7 +362,7 @@ def test_d_a_chain_is_repaired_at_its_root():
 def test_d_conjunctive_prerequisites_are_learned_not_their_product():
     domain = Domain(actions=[act("make", {"q", "r"}, {"p"})], scored=frozenset({"p", "q", "r"}))
     result = exact(domain, (), {"p"})
-    assert result.delegated == ("q", "r") and result.actions[-1] == "make"
+    assert names(result.delegated) == ("q", "r") and result.actions[-1] == "make"
     assert_valid(domain, (), result, {"p"})
 
 
@@ -424,7 +439,7 @@ def test_f_an_action_that_needs_its_own_effect_does_not_establish_it():
     of the other, and the shorter plan wins."""
     domain = Domain(actions=[act("keep_b", {"b"}, {"b", "f"}), act("use_f", {"c", "f"}, {"b", "f"})],
                     scored=frozenset({"b", "f"}), implications={"b": frozenset({"f"})})
-    assert upstream(domain, "b") == {"c"} and upstream(domain, "f") == {"c"}
+    assert strs(upstream(domain, pos("b"))) == {"c"} and strs(upstream(domain, pos("f"))) == {"c"}
     result = exact(domain, {"c"}, {"b", "c"})
     assert result.actions == ("HOLE[b]",)
     assert_valid(domain, {"c"}, result, {"b", "c"})
@@ -446,16 +461,16 @@ def test_g_a_literal_without_a_score_is_never_delegated():
     unscored too, nothing can be offered, and the report names both needs."""
     domain = Domain(actions=[act("use", {"k"}, {"g"})], scored=frozenset({"g"}))
     result = exact(domain, (), {"g"})
-    assert result.actions == ("HOLE[g]",) and result.candidates == ("g",)
+    assert result.actions == ("HOLE[g]",) and names(result.candidates) == ("g",)
     failed = exact(Domain(actions=domain.actions, scored=frozenset()), (), {"g"})
-    assert isinstance(failed, ExactNoPlan) and failed.candidates == ()
-    assert failed.unsynthesizable_needs == ("g", "k") and failed.unmet_needs == ("g", "k")
+    assert isinstance(failed, ExactNoPlan) and names(failed.candidates) == ()
+    assert names(failed.unsynthesizable_needs) == ("g", "k") and names(failed.unmet_needs) == ("g", "k")
 
 
 def test_g_a_goal_without_a_score_gets_no_hole():
     result = exact(Domain(actions=[], scored=frozenset()), (), {"g"})
-    assert isinstance(result, ExactNoPlan) and result.candidates == ()
-    assert result.unsynthesizable_needs == ("g",)
+    assert isinstance(result, ExactNoPlan) and names(result.candidates) == ()
+    assert names(result.unsynthesizable_needs) == ("g",)
     assert not result.feasible_with_all_holes    # exact: these holes cannot solve this at any length
 
 
@@ -467,7 +482,7 @@ def test_g_stow_without_the_score_learns_the_placement():
     domain = sd.domain()
     domain.scored = domain.scored - {"clear_of_walls(cube_a)"}
     result = exact(domain, sd.stowed_state(), *STOW_GOAL)
-    assert result.delegated == ("in_region(cube_a,src_a)",)
+    assert names(result.delegated) == ("in_region(cube_a,src_a)",)
     assert "clear_of_walls(cube_a)" not in result.candidates
     assert_valid(domain, sd.stowed_state(), result, *STOW_GOAL)
     assert not relaxed(domain, sd.stowed_state(), *STOW_GOAL)
@@ -538,7 +553,7 @@ def two_part_assembly() -> Domain:
 def test_i_two_holes_each_get_their_own_context_and_learning_problem():
     domain = two_part_assembly()
     result = exact(domain, (), {"done"})
-    assert result.delegated == ("fixed(o1)", "fixed(o2)")
+    assert names(result.delegated) == ("fixed(o1)", "fixed(o2)")
     assert_valid(domain, (), result, {"done"})
     assert [c.used_by for c in result.hole_contexts] == ["assemble", "assemble"]
     first, second = (hole_spec(domain, frozenset(), result, {"done"}, index=i) for i in (0, 1))
@@ -562,11 +577,17 @@ def test_i_a_hole_can_remove_a_negative_goal_through_a_mutex():
     assert CLOSED not in replay(domain, DRAWER_START, result.steps)[0][-1]
 
 
-def test_i_a_negative_only_goal_with_no_library_gets_no_hole():
-    """LIMITATION, shared with the relaxed mode: a hole only makes a literal true, and a
-    hole for a mutex partner would be a delete in disguise, so none is offered."""
+def test_i_a_negative_only_goal_gets_a_hole_that_makes_the_atom_false():
+    """Superseded 2026-11-11 by the signed formulation. This test used to pin a LIMITATION: a hole
+    only made a literal true, so a negative-only goal with no library got no plan. Now `not x` is
+    a candidate like any goal literal, and its hole deletes x directly: no artificial predicate,
+    and no mutex partner standing in for the delete."""
     domain = Domain(actions=[], scored=frozenset({"x", "y"}), mutex_groups=[frozenset({"x", "y"})])
-    assert isinstance(exact(domain, {"x"}, (), {"x"}), ExactNoPlan)
+    result = exact(domain, {"x"}, (), {"x"})
+    assert result.actions == ("HOLE[not x]",) and names(result.delegated) == ("not x",)
+    assert result.steps[0].delete == {"x"} and result.steps[0].add == frozenset()
+    assert names(result.candidates) == ("not x",)          # y is no candidate: nothing needs it
+    assert_valid(domain, {"x"}, result, (), {"x"})
 
 
 def test_i_a_disturbance_orders_the_plan_as_in_the_relaxed_mode():
@@ -601,7 +622,8 @@ def test_i_specs_and_fences_hold_along_the_replayed_plan(name, domain, start, go
     states, _ = replay(domain, start, result.steps)
     for index, i in enumerate(result.hole_indices):
         spec = hole_spec(domain, start, result, goal_pos, goal_neg, index=index)
-        assert spec["hole_index"] == i and spec["achieve"] == result.steps[i].hole_for
+        assert spec["hole_index"] == i and spec["achieve"] == result.steps[i].hole_for.atom
+        assert spec["target"] == result.steps[i].hole_for.to_dict()
         assert set(spec["start"]) <= states[i]
         assert set(spec["preserve"]) <= states[i] and set(spec["preserve"]) <= states[i + 1]
         assert not (set(spec["preserve_absent"]) & states[i + 1])
@@ -612,7 +634,7 @@ def test_i_specs_and_fences_hold_along_the_replayed_plan(name, domain, start, go
 def test_i_a_context_serializes_for_inspection():
     context = exact(delete_interaction(scored=("q", "g")), {"p"}, {"g"}).hole_contexts[0]
     assert context.to_dict() == {
-        "literal": "q", "index": 0, "state_before": ["p"], "used_by": "use", "used_at": 1,
+        "literal": {"atom": "q", "polarity": "positive"}, "index": 0, "state_before": ["p"], "used_by": "use", "used_at": 1,
         "waiting": ["use"], "prefix": [], "suffix": ["use"],
         "library_alternatives": [["make_q", "the plan then fails at use"]]}
 
@@ -625,7 +647,7 @@ def test_i_a_hole_needed_only_for_its_forced_effect_is_allowed_and_says_so():
                              act("side", {"p"}, {"w"})],
                     scored=frozenset({"p"}), mutex_groups=[frozenset({"p", "x"})])
     result = exact(domain, {"x"}, {"g"}, {"x"})
-    assert result.delegated == ("p",)
+    assert names(result.delegated) == ("p",)
     assert_valid(domain, {"x"}, result, {"g"}, {"x"})
     assert result.hole_contexts[0].used_by == "none" and result.hole_contexts[0].waiting == ("alt_g", "side")
 
@@ -646,7 +668,7 @@ def test_j_the_budget_is_respected_and_named():
     replacement does not fit, so the goal itself is learned. With none, there is no plan, and the
     report names the budget because holes for every candidate would reach the goal."""
     domain = two_part_assembly()
-    assert exact(domain, (), {"done"}, max_delegated=2).delegated == ("fixed(o1)", "fixed(o2)")
+    assert names(exact(domain, (), {"done"}, max_delegated=2).delegated) == ("fixed(o1)", "fixed(o2)")
     assert exact(domain, (), {"done"}, max_delegated=1).actions == ("HOLE[done]",)
     result = exact(domain, (), {"done"}, max_delegated=0)
     assert isinstance(result, ExactNoPlan) and result.limits_reached == ("max_delegated",)
@@ -657,7 +679,7 @@ def test_j_no_holes_allowed_means_the_library_alone():
     result = exact(sd.domain(), sd.stowed_state(), *STOW_GOAL, max_delegated=0)
     assert isinstance(result, ExactNoPlan) and "max_delegated" in result.limits_reached
     domain = dd.domain(extra_actions=[dd.scripted_grasp()])
-    assert exact(domain, DRAWER_START, *DRAWER_GOAL, max_delegated=0).delegated == ()
+    assert names(exact(domain, DRAWER_START, *DRAWER_GOAL, max_delegated=0).delegated) == ()
 
 
 def test_j_a_failure_names_no_limit_when_no_candidate_holes_can_do_it():
@@ -696,8 +718,8 @@ def test_j_a_plan_that_displaces_nothing_wins_however_long():
 def test_hole_starts_are_the_relaxed_modes_on_stow_and_the_drawer():
     for domain, start in ((sd.domain(), sd.stowed_state()), (dd.domain(), DRAWER_START)):
         for key in sorted(domain.scored):
-            by_relaxed = domain.hole(key, relaxed_reachable(domain, start))
-            assert hole_starts(domain, key, library_states(domain, start)) == [by_relaxed], key
+            by_relaxed = domain.hole(pos(key), relaxed_reachable(domain, start))
+            assert hole_starts(domain, pos(key), library_states(domain, start)) == [by_relaxed], key
 
 
 def test_an_approach_cannot_be_skipped():
@@ -713,9 +735,9 @@ def test_facts_that_exclude_each_other_give_one_start_each():
                     scored=frozenset({"done(o)"}), robot_relative=frozenset({"near(o)", "far(o)"}),
                     mutex_groups=[frozenset({"near(o)", "far(o)"})])
     assert isinstance(relaxed(domain, frozenset(), {"done(o)"}), NoPlan)
-    assert domain.hole("done(o)", relaxed_reachable(domain, frozenset())).pre == {"near(o)", "far(o)"}
+    assert domain.hole(pos("done(o)"), relaxed_reachable(domain, frozenset())).pre == {"near(o)", "far(o)"}
 
-    starts = hole_starts(domain, "done(o)", library_states(domain, frozenset()))
+    starts = hole_starts(domain, pos("done(o)"), library_states(domain, frozenset()))
     assert [hole.pre for hole in starts] == [{"far(o)"}, {"near(o)"}]
     result = exact(domain, (), {"done(o)"})
     assert result.cost == (1, 0, 1, 1, 2)
@@ -729,7 +751,7 @@ def test_facts_the_library_holds_only_apart_are_not_a_conjunction():
     never holds both. Reading the real states finds that without being told."""
     domain = Domain(actions=[act("left", (), {"l(o)"}, {"r(o)"}), act("right", (), {"r(o)"}, {"l(o)"})],
                     scored=frozenset({"done(o)"}), robot_relative=frozenset({"l(o)", "r(o)"}))
-    starts = hole_starts(domain, "done(o)", library_states(domain, frozenset()))
+    starts = hole_starts(domain, pos("done(o)"), library_states(domain, frozenset()))
     assert [hole.pre for hole in starts] == [{"l(o)"}, {"r(o)"}]
 
 
@@ -740,7 +762,7 @@ def test_a_fact_only_the_relaxation_can_reach_is_not_a_start():
     domain = Domain(actions=[act("make_b", {"a"}, {"b"}, {"a"}), act("prep", {"a", "b"}, {"near(o)"})],
                     scored=frozenset({"fixed(o)"}), robot_relative=frozenset({"near(o)"}))
     start = frozenset({"a"})
-    assert domain.hole("fixed(o)", relaxed_reachable(domain, start)).pre == {"near(o)"}
+    assert domain.hole(pos("fixed(o)"), relaxed_reachable(domain, start)).pre == {"near(o)"}
     assert isinstance(relaxed(domain, start, {"fixed(o)"}), NoPlan)
     result = exact(domain, start, {"fixed(o)"})
     assert result.actions == ("HOLE[fixed(o)]",) and result.steps[0].pre == frozenset()
@@ -764,8 +786,8 @@ def test_a_hole_is_usable_only_while_its_literal_is_missing():
 
 def test_a_hole_starts_only_from_facts_about_its_object():
     domain = two_part_assembly()
-    assert hole_starts(domain, "fixed(o1)", library_states(domain, frozenset()))[0].pre == {"near(o1)"}
-    assert hole_starts(domain, "done", library_states(domain, frozenset()))[0].pre == frozenset()
+    assert hole_starts(domain, pos("fixed(o1)"), library_states(domain, frozenset()))[0].pre == {"near(o1)"}
+    assert hole_starts(domain, pos("done"), library_states(domain, frozenset()))[0].pre == frozenset()
 
 
 # Library actions that can still do the job
@@ -790,7 +812,7 @@ def test_a_library_action_may_take_over_after_later_steps():
     domain = Domain(actions=[act("x", {"z"}, {"w"}), act("make_p", {"r"}, {"p"}, {"z"}),
                              act("use", {"p", "w"}, {"g"})], scored=frozenset({"p", "r"}))
     result = exact(domain, {"z"}, {"g"})
-    assert result.delegated == ("r",) and result.actions[-2:] == ("make_p", "use")
+    assert names(result.delegated) == ("r",) and result.actions[-2:] == ("make_p", "use")
     assert_valid(domain, {"z"}, result, {"g"})
 
 
@@ -803,21 +825,23 @@ def test_several_holes_for_a_literal_are_one_thing_to_learn():
                     scored=frozenset({"p"}))
     result = exact(domain, (), {"g"})
     assert result.actions == ("HOLE[p]", "use_p", "x", "HOLE[p]", "finish")
-    assert result.delegated == ("p",) and result.cost == (1, 0, 2, 2, 5)
+    assert names(result.delegated) == ("p",) and result.cost == (1, 0, 2, 2, 5)
     assert_valid(domain, (), result, {"g"})
 
 
-def test_upstream_reads_positive_preconditions_only():
-    """LIMITATION of the preference, by design. `make_p` is blocked while busy holds, and `free`
-    clears it given key. Clearing a blocker is not a positive precondition of `make_p`, so key is
-    not upstream of p. Both one-hole plans are admissible, and the shorter one, HOLE[p], wins,
-    although learning key would have kept `make_p`. (The earlier rule counted blocker removers.)"""
+def test_upstream_reads_preconditions_of_both_signs():
+    """Superseded 2026-11-11 by the signed formulation, which this test used to pin as a
+    LIMITATION ("positive preconditions only"). `make_p` needs `not busy`, and `free` establishes
+    `not busy` from key. So the path p -> not busy -> key makes key upstream of p, and {p} has a
+    replacement, {key}, that reaches the goal within the budget. The preference now learns key and
+    keeps `make_p`, the root of the chain."""
     domain = Domain(actions=[act("use", {"p"}, {"g"}), act("make_p", (), {"p"}, (), {"busy"}),
                              act("free", {"key"}, (), {"busy"})],
                     scored=frozenset({"p", "key"}))
-    assert upstream(domain, "p") == set()
+    assert strs(upstream(domain, pos("p"))) == {"not busy", "key"}
+    assert Oracle(domain, {"busy"}, {"g"}).upstream(pos("p")) == {"key"}     # within the candidates
     result = exact(domain, {"busy"}, {"g"})
-    assert result.actions == ("HOLE[p]", "use")
+    assert result.actions == ("HOLE[key]", "free", "make_p", "use")
     assert_valid(domain, {"busy"}, result, {"g"})
 
 
@@ -840,7 +864,7 @@ def test_ordering_no_hole_when_another_order_of_the_library_works():
     domain = Domain(actions=[act("make_p", (), {"p"}, {"z"}), act("x", {"z"}, {"w"}),
                              act("use", {"p", "w"}, {"g"})], scored=frozenset({"p"}))
     result = exact(domain, {"z"}, {"g"})
-    assert result.actions == ("x", "make_p", "use") and result.delegated == ()
+    assert result.actions == ("x", "make_p", "use") and names(result.delegated) == ()
 
 
 def test_ordering_a_long_library_plan_needs_no_hole():
@@ -939,7 +963,7 @@ def test_destructive_a_repair_elsewhere_does_not_refuse_a_goal_hole():
     domain = Domain(actions=[act("make_g", {"t"}, {"g"}, {"t"}), act("make_h", {"t"}, {"h"}, {"t"}),
                              act("safe_h", {"k"}, {"h"})], scored=frozenset({"g", "h", "k"}))
     result = exact(domain, {"t"}, {"g", "h"})
-    assert result.delegated == ("g",)
+    assert names(result.delegated) == ("g",)
     assert_valid(domain, {"t"}, result, {"g", "h"})
     oracle = Oracle(domain, {"t"}, {"g", "h"})
     assert oracle.admissible({"k"}, 2) and not oracle.admissible({"h"}, 2)
@@ -962,7 +986,7 @@ def test_destructive_a_circle_of_destroyers_has_no_unique_repair():
     result = exact(domain, (), {"a", "b", "c"})
     assert result.cost == (1, 0, 1, 1, 3)
     assert_valid(domain, (), result, {"a", "b", "c"})
-    reported = {frozenset(s.hole_for for s in steps if s.hole_for) for steps in (result.steps, *result.alternatives)}
+    reported = {frozenset(names(s.hole_for for s in steps if s.hole_for)) for steps in (result.steps, *result.alternatives)}
     assert reported == {frozenset({"a"}), frozenset({"b"}), frozenset({"c"})}
 
 
@@ -972,7 +996,7 @@ def test_destructive_goal_holes_when_only_goal_literals_are_scored():
     and it is learned. (The earlier Waiting rule refused the second.)"""
     fight = Domain(actions=[act("make_g", (), {"g"}, {"h"}), act("make_h", (), {"h"}, {"g"})],
                    scored=frozenset({"g", "h"}))
-    assert exact(fight, (), {"g", "h"}).delegated in (("g",), ("h",))
+    assert names(exact(fight, (), {"g", "h"}).delegated) in (("g",), ("h",))
     assert exact(delete_interaction(scored=("g",)), {"p"}, {"g"}).actions == ("HOLE[g]",)
 
 
@@ -1061,7 +1085,7 @@ def test_false_rejection_an_order_that_cannot_help_without_its_prerequisite():
     domain = Domain(actions=[act("finish", {"a", "d"}, {"g"}), act("make_a", {"f"}, {"a"}, {"d"})],
                     scored=frozenset({"a", "d"}))
     result = exact(domain, (), {"g"})
-    assert result.delegated == ("a", "d") and result.actions[-1] == "finish"
+    assert names(result.delegated) == ("a", "d") and result.actions[-1] == "finish"
     assert isinstance(relaxed(domain, frozenset(), {"g"}), NoPlan)
 
 
@@ -1074,7 +1098,7 @@ def test_minimal_a_chain_has_three_minimal_sets_of_one_literal():
     oracle = Oracle(domain, (), {"g"})
     assert oracle.minimal_sets() == {frozenset({"g"}), frozenset({"p"}), frozenset({"r"})}
     assert [literal for literal in ("g", "p", "r") if oracle.admissible({literal}, 2)] == ["r"]
-    assert exact(domain, (), {"g"}).delegated == ("r",)
+    assert names(exact(domain, (), {"g"}).delegated) == ("r",)
 
 
 def test_minimal_the_drawer_has_two_and_the_cost_alone_would_choose_wrongly():
@@ -1082,7 +1106,7 @@ def test_minimal_the_drawer_has_two_and_the_cost_alone_would_choose_wrongly():
     oracle = Oracle(domain, DRAWER_START, *DRAWER_GOAL)
     assert {frozenset({OPEN}), frozenset({GRASPED})} <= oracle.minimal_sets()
     result = exact(domain, DRAWER_START, *DRAWER_GOAL)
-    assert result.delegated == (GRASPED,)
+    assert names(result.delegated) == (GRASPED,)
     # The plan the preference refused is shorter, so the cost alone would have taken it.
     assert relaxed(drawer_without_pull(), DRAWER_START, *DRAWER_GOAL).cost < result.cost
 
@@ -1094,8 +1118,8 @@ def test_minimal_a_larger_upstream_set_beats_a_smaller_one_within_the_budget():
     domain = Domain(actions=[act("make", {"q", "r"}, {"p"})], scored=frozenset({"p", "q", "r"}))
     oracle = Oracle(domain, (), {"p"})
     assert oracle.minimal_sets() == {frozenset({"p"}), frozenset({"q", "r"})}
-    assert exact(domain, (), {"p"}).delegated == ("q", "r")
-    assert exact(domain, (), {"p"}, max_delegated=1).delegated == ("p",)
+    assert names(exact(domain, (), {"p"}).delegated) == ("q", "r")
+    assert names(exact(domain, (), {"p"}, max_delegated=1).delegated) == ("p",)
 
 
 def test_minimal_a_prerequisite_stays_upstream_if_making_it_destroys_its_user():
@@ -1122,7 +1146,7 @@ def test_minimal_the_preference_can_overrule_the_cost():
     domain = delete_interaction()
     oracle = Oracle(domain, {"p"}, {"g"})
     assert {frozenset({"p"}), frozenset({"q"})} <= oracle.minimal_sets()
-    assert exact(domain, {"p"}, {"g"}).delegated == ("p",)
+    assert names(exact(domain, {"p"}, {"g"}).delegated) == ("p",)
     assert exact(delete_interaction(scored=("q", "g")), {"p"}, {"g"}).cost < exact(domain, {"p"}, {"g"}).cost
 
 
@@ -1133,7 +1157,7 @@ def test_minimal_a_necessary_hole_can_still_be_refused():
                     scored=frozenset({"p", "r", "g"}))
     oracle = Oracle(domain, (), {"g"})
     assert oracle.is_minimal({"g"}) and not oracle.admissible({"g"}, 2)
-    assert exact(domain, (), {"g"}).delegated == ("r",)
+    assert names(exact(domain, (), {"g"}).delegated) == ("r",)
 
 
 # Holes first, then plans
@@ -1195,29 +1219,56 @@ class Step(NamedTuple):
     """One step of a plan the oracle is enumerating."""
 
     name: str
-    hole: str | None
+    hole: tuple[str, bool] | None
     before: frozenset[str]
     after: frozenset[str]
     displaced: frozenset[str]
 
 
 class Oracle:
-    """The "Minimal Hole Planner" formulation written out again from its text.
+    """The "Minimal Hole Planner" formulation, in signed literals, written out again from its text.
 
     It reads a Domain's fields as data and calls none of its methods, and it imports nothing
-    from the exact planner, so a fault in a helper there cannot hide here. `solves`, `is_minimal`
-    and `minimal_sets` are plain searches of the real transitions. Only `upstream` and
-    `admissible` read the preference, and `admissible` tries every replacement, not only the
-    largest. `best_plans` enumerates every plan up to a length.
+    from the planners, so a fault in a helper there cannot hide here. Inside, a signed literal is
+    a pair (atom, sign): sign True for p, False for not p. It accepts the planner's literals,
+    pairs, or bare names (a bare name is a positive literal), and it reports sets of literals by
+    the names a person writes, "p" and "not p". `solves`, `is_minimal` and `minimal_sets` are
+    plain searches of the real transitions. Only `upstream` and `admissible` read the preference,
+    and `admissible` tries every replacement, not only the largest. `best_plans` enumerates every
+    plan up to a length.
     """
 
     def __init__(self, domain, start, goal_pos, goal_neg=()):
         self.domain = domain
         self.start = frozenset(start)
-        self.goal_pos = set(goal_pos)
-        self.goal_neg = set(goal_neg)
+        self.goal = {(atom, True) for atom in goal_pos} | {(atom, False) for atom in goal_neg}
         self.memo = {}
         self.library = self.reach(())
+
+    # -- literals, as the oracle writes them --------------------------------------------------
+
+    @staticmethod
+    def pair(literal):
+        if isinstance(literal, str):
+            return (literal, True)
+        if isinstance(literal, tuple):
+            return literal
+        return (literal.atom, literal.positive)
+
+    @staticmethod
+    def name(pair):
+        atom, sign = pair
+        return atom if sign else f"not {atom}"
+
+    def names(self, pairs):
+        return frozenset(self.name(pair) for pair in pairs)
+
+    @staticmethod
+    def holds(state, pair):
+        atom, sign = pair
+        return (atom in state) == sign
+
+    # -- the transition ---------------------------------------------------------------------------
 
     def closure(self, literals):
         closed, pending = set(), list(literals)
@@ -1243,33 +1294,40 @@ class Oracle:
                 displaced |= (set(disturbance.clobbers) & after) - added
         return frozenset(after - displaced), frozenset(displaced)
 
+    def hole_step(self, state, pair):
+        """A hole for p adds p; a hole for not p deletes p."""
+        atom, sign = pair
+        return self.step(state, {atom}) if sign else self.step(state, (), {atom})
+
     @staticmethod
     def runs(state, action):
         return set(action.pre) <= state and not (set(action.pre_absent) & state)
 
-    def starts(self, key):
-        """The largest sets of robot-relative facts about key's object held in a library state."""
+    def starts(self, pair):
+        """The largest sets of robot-relative facts about the literal's object held in a library
+        state, whatever the literal's sign."""
         def first_arg(literal):
             inside = literal[literal.index("(") + 1:literal.rindex(")")] if "(" in literal else ""
             return inside.split(",")[0]
 
+        atom = pair[0]
         about = {p for p in self.domain.robot_relative
-                 if first_arg(key) and p != key and first_arg(p) == first_arg(key)}
+                 if first_arg(atom) and p != atom and first_arg(p) == first_arg(atom)}
         held = {frozenset(state & about) for state in self.library}
         return [facts for facts in held if not any(facts < other for other in held)]
 
     def reach(self, literals):
         """Every state reachable with the library and holes for `literals`. No step limit."""
-        literals = frozenset(literals)
+        literals = frozenset(self.pair(literal) for literal in literals)
         if literals not in self.memo:
-            starts = {key: self.starts(key) for key in literals}
+            starts = {pair: self.starts(pair) for pair in literals}
             seen, pending = {self.start}, [self.start]
             while pending:
                 state = pending.pop()
                 following = [self.step(state, a.add, a.delete)[0] for a in self.domain.actions
                              if self.runs(state, a)]
-                following += [self.step(state, {key})[0] for key in literals
-                              if key not in state and any(s <= state for s in starts[key])]
+                following += [self.hole_step(state, pair)[0] for pair in literals
+                              if not self.holds(state, pair) and any(s <= state for s in starts[pair])]
                 for reached in following:
                     if reached not in seen:
                         seen.add(reached)
@@ -1277,40 +1335,72 @@ class Oracle:
             self.memo[literals] = seen
         return self.memo[literals]
 
+    # -- feasibility and minimality -------------------------------------------------------------
+
     def satisfied(self, state):
-        return self.goal_pos <= state and not (self.goal_neg & state)
+        return all(self.holds(state, pair) for pair in self.goal)
 
     def solves(self, literals):
         return any(self.satisfied(state) for state in self.reach(literals))
 
     def is_minimal(self, literals):
-        literals = set(literals)
+        literals = {self.pair(literal) for literal in literals}
         return self.solves(literals) and not any(self.solves(literals - {x}) for x in literals)
 
+    def candidate_pairs(self):
+        """Signed literals on scored atoms that are goal literals or preconditions, of either
+        sign, of some library action."""
+        needs = set(self.goal)
+        for action in self.domain.actions:
+            needs |= {(atom, True) for atom in action.pre} | {(atom, False) for atom in action.pre_absent}
+        return {pair for pair in needs if pair[0] in self.domain.scored}
+
     def candidates(self):
-        """Scored literals that are goal literals or preconditions of some library action."""
-        needs = set(self.goal_pos) | {literal for action in self.domain.actions for literal in action.pre}
-        return needs & set(self.domain.scored)
+        return self.names(self.candidate_pairs())
 
     def subsets(self, budget):
-        literals = sorted(self.candidates())
+        literals = sorted(self.candidate_pairs())
         for size in range(min(budget, len(literals)) + 1):
             yield from (frozenset(chosen) for chosen in itertools.combinations(literals, size))
 
     def minimal_sets(self):
-        """Every subset-minimal set of candidates that solves the problem."""
-        return {chosen for chosen in self.subsets(len(self.candidates())) if self.is_minimal(chosen)}
+        """Every subset-minimal set of candidates that solves the problem, by name."""
+        return {self.names(chosen) for chosen in self.subsets(len(self.candidate_pairs()))
+                if self.is_minimal(chosen)}
 
     def feasible_within(self, budget):
         return any(self.solves(chosen) for chosen in self.subsets(budget))
 
-    def needs_of(self, literal):
-        """What library actions that establish `literal` need: actions adding it, counting
-        implications, that do not need it themselves."""
+    def fewest_that_solve(self):
+        return min(len(chosen) for chosen in self.subsets(len(self.candidate_pairs())) if self.solves(chosen))
+
+    # -- the upstream preference ------------------------------------------------------------------
+
+    def establishes(self, action, pair):
+        """Can the action make the literal hold by its modelled transition, without needing it
+        already? p: it adds p, counting implications. not p: it deletes p, adds a mutex partner of
+        p, or changes a disturbance trigger that displaces p."""
+        atom, sign = pair
+        added = self.closure(action.add)
+        if sign:
+            return atom in added and atom not in action.pre
+        removed = set(action.delete)
+        for literal in added:
+            for group in self.domain.mutex_groups:
+                if literal in group:
+                    removed |= group - {literal}
+        displaced = set()
+        for disturbance in self.domain.disturbances:
+            if disturbance.trigger in added or disturbance.trigger in removed:
+                displaced |= set(disturbance.clobbers)
+        return atom in (removed | displaced) and atom not in added and atom not in action.pre_absent
+
+    def needs_of(self, pair):
+        """What the library actions establishing the literal need, of both signs."""
         found = set()
         for action in self.domain.actions:
-            if literal in self.closure(action.add) and literal not in action.pre:
-                found |= set(action.pre)
+            if self.establishes(action, pair):
+                found |= {(atom, True) for atom in action.pre} | {(atom, False) for atom in action.pre_absent}
         return found
 
     def leads_to(self, source, target):
@@ -1325,31 +1415,36 @@ class Oracle:
                     pending.append(following)
         return False
 
+    def upstream_pairs(self, pair):
+        return {u for u in self.candidate_pairs()
+                if u != pair and self.leads_to(pair, u) and not self.leads_to(u, pair)}
+
     def upstream(self, literal):
-        return {u for u in self.candidates()
-                if u != literal and self.leads_to(literal, u) and not self.leads_to(u, literal)}
+        return self.names(self.upstream_pairs(self.pair(literal)))
 
     def admissible(self, literals, budget):
         """At most `budget` literals, subset-minimal, and no literal has a replacement: a set of at
         most `budget` literals, from the others and those upstream of it, that solves the problem."""
-        literals = frozenset(literals)
+        literals = frozenset(self.pair(literal) for literal in literals)
         if len(literals) > budget or not self.is_minimal(literals):
             return False
         for literal in literals:
-            pool = sorted((literals - {literal}) | self.upstream(literal))
+            pool = sorted((literals - {literal}) | self.upstream_pairs(literal))
             for size in range(budget + 1):
                 if any(self.solves(chosen) for chosen in itertools.combinations(pool, size)):
                     return False
         return True
 
     def admissible_sets(self, budget):
-        return {chosen for chosen in self.subsets(budget) if self.admissible(chosen, budget)}
+        return {self.names(chosen) for chosen in self.subsets(budget) if self.admissible(chosen, budget)}
+
+    # -- plans --------------------------------------------------------------------------------------
 
     def best_plans(self, budget, max_length):
         """Every plan of at most `max_length` steps whose holes form an admissible set: the least
-        cost (holes, displaced, length), and every plan at that cost, as (step names, holes)."""
-        candidates = sorted(self.candidates())
-        starts = {key: self.starts(key) for key in candidates}
+        cost (holes, displaced, length), and every plan at that cost, as (step names, hole names)."""
+        candidates = sorted(self.candidate_pairs())
+        starts = {pair: self.starts(pair) for pair in candidates}
         verdicts = {}
         best, plans = None, []
 
@@ -1361,7 +1456,7 @@ class Oracle:
             if not verdicts[delegated]:
                 return
             cost = (len(delegated), sum(len(s.displaced) for s in trace), len(trace))
-            entry = (tuple(s.name for s in trace), delegated)
+            entry = (tuple(s.name for s in trace), self.names(delegated))
             if best is None or cost < best:
                 best, plans = cost, [entry]
             elif cost == best:
@@ -1378,14 +1473,14 @@ class Oracle:
                     after, displaced = self.step(state, action.add, action.delete)
                     if after != state:
                         extend(after, [*trace, Step(action.name, None, state, after, displaced)], delegated)
-            for key in candidates:
-                if key not in state and len(delegated | {key}) <= budget:
-                    for facts in starts[key]:
+            for pair in candidates:
+                if not self.holds(state, pair) and len(delegated | {pair}) <= budget:
+                    for facts in starts[pair]:
                         if facts <= state:
-                            after, displaced = self.step(state, {key})
+                            after, displaced = self.hole_step(state, pair)
                             if after != state:
-                                step = Step(f"HOLE[{key}]", key, state, after, displaced)
-                                extend(after, [*trace, step], delegated | {key})
+                                step = Step(f"HOLE[{self.name(pair)}]", pair, state, after, displaced)
+                                extend(after, [*trace, step], delegated | {pair})
 
         if self.satisfied(self.start):
             return (0, 0, 0), [((), frozenset())]
@@ -1401,12 +1496,11 @@ def agrees_with_the_oracle(domain, start, goal_pos, goal_neg, budget, max_length
     # NoPlan is exact: a plan comes back exactly when some set of at most k candidates is feasible.
     assert bool(result) == oracle.feasible_within(budget)
     if not result:
-        assert result.candidates == tuple(sorted(oracle.candidates()))
-        assert result.feasible_with_all_holes == oracle.solves(oracle.candidates())
+        assert set(names(result.candidates)) == oracle.candidates()
+        assert result.feasible_with_all_holes == oracle.solves(oracle.candidate_pairs())
         assert result.limits_reached == (("max_delegated",) if result.feasible_with_all_holes else ())
         if result.feasible_with_all_holes:     # raising k to the fewest holes that suffice gives a plan
-            fewest = min(len(chosen) for chosen in oracle.subsets(len(oracle.candidates())) if oracle.solves(chosen))
-            assert plan_exact(domain, start, goal_pos, goal_neg, max_delegated=fewest)
+            assert plan_exact(domain, start, goal_pos, goal_neg, max_delegated=oracle.fewest_that_solve())
         return False
     # The holes are admissible, so subset-minimal, and of the smallest admissible size.
     holes = frozenset(result.delegated)
@@ -1420,7 +1514,7 @@ def agrees_with_the_oracle(domain, start, goal_pos, goal_neg, budget, max_length
         assert result.planning_cost == best
         reported = [tuple(result.steps), *map(tuple, result.alternatives)]
         assert {tuple(step.name for step in steps) for steps in reported} <= {entry[0] for entry in plans}
-        assert {frozenset(s.hole_for for s in steps if s.hole_for) for steps in reported} == {entry[1] for entry in plans}
+        assert {frozenset(names(s.hole_for for s in steps if s.hole_for)) for steps in reported} == {entry[1] for entry in plans}
     else:
         assert best is None or result.planning_cost < best
     return bool(result.hole_indices)
@@ -1436,8 +1530,12 @@ def random_problem(rng):
     actions = []
     for i in range(rng.randint(3, 7)):
         add = some(1, 2)
-        actions.append(Action(f"act{i}", pre=some(0, 2), add=add, delete=some(0, 2) - add,
-                              pre_absent=some(0, 1) if rng.random() < 0.15 else frozenset()))
+        # Drawn in the order the generator always drew them. An atom an action would need both
+        # true and false is left out of `pre_absent`: actions reject such a contradiction.
+        pre = some(0, 2)
+        delete = some(0, 2) - add
+        absent = (some(0, 1) if rng.random() < 0.15 else frozenset()) - pre
+        actions.append(Action(f"act{i}", pre=pre, add=add, delete=delete, pre_absent=absent))
     domain = Domain(
         actions=actions,
         scored=some(2, len(pool)),
@@ -1447,7 +1545,10 @@ def random_problem(rng):
         disturbances=([Disturbance(rng.choice(pool), frozenset({rng.choice(pool)}))]
                       if rng.random() < 0.3 else []))
     goal_neg = set(some(0, 1)) if rng.random() < 0.4 else set()
-    return domain, some(0, 3), set(some(1, 3)), goal_neg
+    start, goal_pos = some(0, 3), set(some(1, 3))
+    # A goal asking for both p and not p is refused by the planner (tested on its own), so the
+    # generator leaves the contradiction out. The draws keep their order.
+    return domain, start, goal_pos, goal_neg - goal_pos
 
 
 def layered_problem(rng):

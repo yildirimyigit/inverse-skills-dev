@@ -15,8 +15,9 @@ domain's facts about its world, before anything about the skill's execution is k
   the fences       literals the plan relies on across the hole, true or false
 
 Other literals of the predicted state mean nothing to this skill, and nothing is asked of them.
-Only scored literals can be measured. True and false are the symbolic state's (`symbolic_state`),
-as everywhere else in the planner and the executive.
+Only scored literals can be measured. Each condition is checked robustly, as every physical check
+is (`literals.py`): an atom that must hold needs a score of at least 0.8, one that must not hold a
+score of at most 0.2. A score in between is evidence of neither, so it fails the check.
 
 The check never looks at what the skill then does. A scene that fails it is replaced by the next
 scene and recorded, in the same way the forward skill's re-rolls are; a scene that passes is kept,
@@ -28,7 +29,8 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 
-from inverse_skills.operators.hole_planner import Action, Domain, symbolic_state
+from inverse_skills.operators.hole_planner import Action, Domain, handoff_conditions_of, spec_target
+from inverse_skills.operators.literals import ROBUST_FALSE, ROBUST_TRUE, validate_scores
 
 # As the forward skill's re-rolls and the hole environment's prefix attempts.
 MAX_ATTEMPTS = 5
@@ -47,23 +49,29 @@ class HandoffConditions:
 
 
 def handoff_conditions(domain: Domain, start: frozenset[str], spec: dict) -> HandoffConditions:
-    """The conditions on the handoff of the hole in `spec` (a `hole_spec`), from the plan's start."""
+    """The conditions on the handoff of the hole in `spec` (a `hole_spec`), from the plan's start.
+    The hole's target is read with its sign; a spec written before literals had signs names a
+    positive target."""
     before = frozenset(start)
     for step in spec["prefix"]:
         before = domain.apply(before, Action.from_dict(step))
-    hole = Action(name=spec["hole"], pre=frozenset(spec["start"]), add=frozenset({spec["achieve"]}),
-                  hole_for=spec["achieve"])
-    after = domain.apply(before, hole)
-    hold = set(spec["start"]) | set(spec["preserve"]) | (before - after)
-    absent = set(spec["preserve_absent"]) | (after - before)
-    return HandoffConditions(frozenset(hold & domain.scored), frozenset(absent & domain.scored))
+    target = spec_target(spec)
+    hole = Action(name=spec["hole"], pre=frozenset(spec["start"]),
+                  pre_absent=frozenset(spec.get("start_absent", ())),
+                  add=frozenset({target.atom}) if target.positive else frozenset(),
+                  delete=frozenset() if target.positive else frozenset({target.atom}),
+                  hole_for=target)
+    hold, absent = handoff_conditions_of(domain, before, hole, spec["preserve"], spec["preserve_absent"])
+    return HandoffConditions(frozenset(hold), frozenset(absent))
 
 
 def handoff_violations(conditions: HandoffConditions, scores: dict[str, float]) -> list[str]:
-    """Each condition the measured scores break, with the score that breaks it."""
-    measured = symbolic_state(scores)
-    reasons = [f"{p} should hold, score {scores[p]:.4f}" for p in sorted(conditions.hold - measured)]
-    reasons += [f"{q} should not hold, score {scores[q]:.4f}" for q in sorted(conditions.absent & measured)]
+    """Each condition the measured scores do not robustly meet, with the score that fails it."""
+    validate_scores(scores, conditions.hold | conditions.absent)
+    reasons = [f"{p} should hold, score {scores[p]:.4f}" for p in sorted(conditions.hold)
+               if scores[p] < ROBUST_TRUE]
+    reasons += [f"{q} should not hold, score {scores[q]:.4f}" for q in sorted(conditions.absent)
+                if scores[q] > ROBUST_FALSE]
     return reasons
 
 
