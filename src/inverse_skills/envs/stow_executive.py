@@ -7,8 +7,9 @@ a plan beside scripted primitives — the executive never assumes a step worked.
 
 Every check on the robot is robust (`literals.py`): `p` is met by a score of at
 least 0.8 and `not p` by a score of at most 0.2, so a score in between meets
-neither. Only scored literals can be measured; planner fluents such as what the
-gripper holds are the model's bookkeeping.
+neither. Only scored literals can be measured. Planner fluents such as what the
+gripper holds are the model's bookkeeping: they are neither measured nor checked
+here, and what holds of them rests on the plan's symbolic model alone.
 
   before a step   its scored preconditions, of both signs
   the step        a scripted controller, or the learned policy for the signed
@@ -22,8 +23,11 @@ gripper holds are the model's bookkeeping.
   fences          for a learned step, given the planning domain and the goal: the
                   literals the plan relies on across it, reported if not kept
   monitor         given the domain, the predicted Boolean symbolic state after each
-                  step against the measured one; and the scored atoms whose score is
-                  left between 0.2 and 0.8, where the Boolean and robust readings differ
+                  step against the measured one, on scored atoms; and the scored atoms
+                  whose score is left between 0.2 and 0.8, where the Boolean and robust
+                  readings differ. If the measured start, or a predicted step, is not a
+                  valid state of the model, the monitor stops and says why
+                  (`model_stopped`)
   the goal        every goal literal robustly (`goal_met`), and in the Boolean sense
                   (`goal_met_boolean`)
 

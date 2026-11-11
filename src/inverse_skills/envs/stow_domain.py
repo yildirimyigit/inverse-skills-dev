@@ -10,9 +10,13 @@ Honest means the model admits what the scripted primitives can and cannot do:
     library pulls a cube back toward the robot — that is the gap.
   * grasping and pushing close the gripper; placing opens it.
 
-`holding` is the planner's bookkeeping fluent rather than a scored predicate:
-the executive knows what the gripper holds, so the registry never needs it —
-and, having no soft score, it can never be delegated to a learned skill.
+`holding` is the planner's bookkeeping fluent rather than a scored predicate.
+It is false in the measured start state (the closed world), and afterwards it
+changes only through the modelled transitions: pick makes the cube held, place
+makes it not held, and preconditions on it, of both signs, are checked by the
+symbolic model. Nothing measures it: the executive checks a pick by the cube's
+height and a place by its region, never `holding` itself. Having no soft score,
+it can never be delegated to a learned skill, nor be a fence.
 
 Besides the actions, the domain states facts about the world that every action
 obeys, holes included: which literals imply or exclude each other, and which

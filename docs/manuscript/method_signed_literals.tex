@@ -55,14 +55,28 @@ non-contradictory literal sets. It is applicable in $S$ when $S\models\mathit{Pr
 An effect $p$ makes $p$ true and an effect $\neg p$ makes it false; under the closed
 world these are the add and delete effects of STRIPS,
 $\mathit{Eff}(o)=\{p: p\in \mathit{Add}(o)\}\cup\{\neg p: p\in\mathit{Del}(o)\}$, and an
-operator whose effects contain both $p$ and $\neg p$ is rejected. The transition
-$\delta(S,o)$ applies the effects and then the domain's constraints, which hold for
-every action: \emph{implications} (an added literal adds what it implies),
-\emph{mutex groups} (an added literal removes the other members of its group), and
-\emph{disturbances} (changing a trigger literal displaces listed literals that hold,
-which become false). The number of literals displaced along a plan $\pi$ is
-$\kappa(\pi)$. Implications are applied to what an action adds, not in reverse to what
-it deletes.
+operator whose effects contain both $p$ and $\neg p$ is rejected.
+
+The domain declares \emph{state constraints}: implications $q\Rightarrow p$ and mutex
+groups $M$ (at most one atom of $M$ is true). A state is \emph{consistent} when it keeps
+all of them. The domain also declares \emph{disturbances}: changing a trigger atom
+displaces listed atoms that hold, which become false. For an operator $o$ applicable in
+$S$, let $A=\mathrm{Cl}(\mathit{Add}(o))$ be its additions with everything they imply.
+The modelled result applies, in order, the deletions and additions, the displacement of
+every mutex partner of an atom in $A$, and the disturbances whose triggers changed:
+\begin{equation}
+  S_1=(S\setminus\mathit{Del}(o))\cup A,\qquad
+  S_2=S_1\setminus\textstyle\bigcup_{x\in A}\bigl(M(x)\setminus\{x\}\bigr),\qquad
+  \tilde S=S_2\setminus D,
+\end{equation}
+where $M(x)$ is the union of the mutex groups containing $x$, and $D$ holds the
+displaced atoms of $S_2$ outside $A$. The transition is
+\emph{valid} when $\tilde S$ is consistent, $\mathit{Add}(o)\subseteq\tilde S$ and
+$\mathit{Del}(o)\cap\tilde S=\emptyset$; then $\delta(S,o)=\tilde S$. Otherwise
+$\delta(S,o)$ is undefined, and $o$ is unavailable in $S$. Constraints are thus applied
+forwards to what an operator adds, and checked on the result. Nothing is deleted to
+repair a broken constraint: deleting $p$ while some true $q$ implies $p$ is invalid, not
+a deletion of $q$. The number of atoms displaced along a plan $\pi$ is $\kappa(\pi)$.
 
 \subsection{Extracting the forward operator}
 \label{sec:extraction}
@@ -117,8 +131,12 @@ The inverse problem is the five-tuple
 with the existing operator library $\mathcal{O}$, the predicate repertoire
 $\mathcal{S}$ with its groundings, the initial state $S_0=\sigma(s_0)$ measured after
 the forward execution, the signed goal $G$, and the transition function $\delta$.
-Atoms the library uses as bookkeeping but no predicate measures (e.g.\ what the gripper
-holds) are false in $S_0$ by the closed world and are listed with every plan.
+The initial state must be consistent; an inconsistent measured state is refused, not
+repaired. Atoms the library uses as bookkeeping but no predicate measures (e.g.\ what the
+gripper holds) are false in $S_0$ by the closed world and are listed with every plan.
+After $S_0$ they change only through $\delta$: picking a cube makes it held, placing it
+makes it not held, and preconditions on them, of either sign, are checked
+symbolically. They are never observed physically (Section~\ref{sec:execution}).
 Internally the planner takes $G$ as its two projections, the atoms that must be true
 and those that must be false; this is an implementation detail, not two objectives.
 
@@ -132,11 +150,17 @@ is needed. For a literal $l$ on a scored atom, the hypothetical operator
 \end{equation}
 establishes $l$ from the initiation context $c$: for $l=p$ it adds $p$, for $l=\neg p$
 it deletes $p$ (no auxiliary predicate is introduced). It is enabled in $S$ when
-$S\models c$ and $S\not\models l$, and its transition is $\delta$, so implications, mutex
-groups and disturbances act on it as on any action. The context $c$ is a largest set of
-robot-relative atoms about $l$'s object (excluding $l$'s own atom) that hold together
-in some state the library reaches from $S_0$; the library thus does all it can before
-the learned skill takes over, and $c$ is never a combination no reachable state holds.
+$S\models c$, $S\not\models l$, and its transition $\delta(S,h)$ is valid, so
+implications, mutex groups and disturbances act on it as on any action. Its initiation
+contexts are drawn from the library-reachable states where $l$ does not hold,
+\begin{equation}
+  \mathcal{R}_l=\{S\in\mathrm{Reach}(S_0,\mathcal{O},\delta) : S\not\models l\}:
+\end{equation}
+each context $c$ is a largest set of robot-relative atoms about $l$'s object (excluding
+$l$'s own atom) held together in some $S\in\mathcal{R}_l$. The library thus does all it can
+before the learned skill takes over, and $c$ is held in a state the hypothetical operator
+could start from. The rule is the same for both signs of $l$. If $\mathcal{R}_l$ is empty,
+$l$ has no context and no hypothetical operator, and this is reported.
 A predicate without a continuous grounding is never delegated, since a learned skill is
 trained against the grounding.
 
@@ -185,26 +209,31 @@ planner returns one minimizing, lexicographically,
 reporting equally cheap plans beside it. If no set of at most $k$ candidates is feasible,
 it returns \textsc{NoPlan}, naming the budget when all candidates together would suffice.
 
-These definitions give: (T1) a returned plan runs under $\delta$ and reaches $G$;
+These definitions give: (T1) a returned plan runs under $\delta$, every state along
+it is consistent, and it reaches $G$;
 (T2) its delegated set is subset-minimal, which is not minimum cardinality;
 (T3) the preference never blocks a plan, because strict upstreamness is a strict partial
 order and every replacement moves strictly lower in it; (T4) \textsc{NoPlan} is exact
-relative to $\mathcal{C}$, $k$ and $\delta$; (T5) among admissible sets of the smallest
-size, the plan is optimal in $C$. A symbolic plan only states that an effect is
-representable; whether a learned skill can realize it is established physically
-(Section~\ref{sec:execution}).
+relative to $\mathcal{C}$, $k$, the initiation contexts and $\delta$; (T5) among
+admissible sets of the smallest size, the plan is optimal in $C$. These are guarantees
+about the symbolic model only. A hypothetical operator for $\neg p$ is representable
+whenever $p$ is scored, but nothing in planning shows that a skill can physically make
+$p$ false, nor that a library operator has its modelled effects; both are established
+physically (Section~\ref{sec:execution}).
 
 \subsection{Learning a capability}
 \label{sec:learning}
 
 For the hypothetical operator at position $i$ of a plan, with target $l_i$, the learning
-problem is read off the plan. The \emph{preservation set} $F_i\subseteq\mathcal{L}$
-contains each literal $f$ that holds before step $i$ and is required later (by a later
-step's precondition or by $G$) with no step in between re-establishing it; $l_i$'s own
-atom is excluded. $F_i$ contains literals of both signs. The handoff, where the skill
-takes over, must robustly satisfy the context, the preservation set, and the
-pre-state of the step's modelled transition (what it removes must hold, what it
-establishes must not).
+problem is read off the plan. The \emph{preservation set}
+$F_i\subseteq\mathcal{L}_{\mathrm{scored}}$ contains each literal $f$ on a scored atom that
+holds before step $i$ and is required later (by a later step's precondition or by $G$),
+with no step in between re-establishing it; $l_i$'s own atom is excluded. $F_i$ contains
+literals of both signs. A literal on an unscored atom cannot be measured while the skill
+learns, so it is never in $F_i$: that it survives the skill rests on the symbolic model
+alone. The handoff, where the skill takes over, must robustly satisfy, on scored atoms, the
+context, the preservation set, and the pre-state of the step's modelled transition (what
+it removes must hold, what it establishes must not).
 
 With the signed score
 \begin{equation}
@@ -235,12 +264,16 @@ problem then has no plan that relies on it.
 \label{sec:execution}
 
 The inverse is executed from the measured state: forward execution, measurement,
-planning, then each step in turn. Before a step, its measured preconditions must hold
-robustly~\eqref{eq:robust}; a learned step runs its policy until its target robustly
-holds or its step budget is spent; after a step, every effect its model predicts must
-hold robustly, or the step is retried within a bounded budget. The preservation
-literals of learned steps are monitored, and after every step the predicted Boolean state
-is compared with $\sigma(s)$, reporting each disagreement. The inverse succeeds when
+planning, then each step in turn. Before a step, its preconditions on scored atoms must
+hold robustly~\eqref{eq:robust}; a learned step runs its policy until its target robustly
+holds or its step budget is spent; after a step, every effect its model predicts on a
+scored atom must hold robustly, or the step is retried within a bounded budget. The
+preservation literals of learned steps are monitored, and after every step the predicted
+Boolean state is compared with $\sigma(s)$ on the scored atoms, reporting each
+disagreement; if the measured initial state, or a predicted step, is not valid under the
+constraints, the comparison stops and this is reported. Literals on unscored atoms are
+never measured: preconditions and effects on them hold in the plan's symbolic model, which
+is the only guarantee for them during execution. The inverse succeeds when
 $s\models_\epsilon G$: every literal of the signed goal, positive and negative, robustly
 holds at the end. The Boolean verdict $\sigma(s)\models G$ is reported beside it.
 

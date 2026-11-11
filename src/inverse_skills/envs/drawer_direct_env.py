@@ -2,15 +2,20 @@
 
 The targeted method (drawer_hole_env.py) learns only the missing grasp and
 leaves the pull to the known pull_open controller. The direct baseline asks one
-policy for the whole remaining inverse: the planner's unrestricted hole,
-HOLE[drawer_open], whose spec (scripts/drawer_direct_spec.py) has the same start
-condition and prefix as the grasp hole, and no fences.
+policy for the whole remaining inverse: HOLE[drawer_open] after approach_handle,
+fixed by protocol. Its spec (scripts/drawer_direct_spec.py) has the same start
+condition and prefix as the grasp hole, and the fence that plan derives under the
+signed goal: not handle_grasped.
 
 Everything except the observation and the episode length is the grasp hole's
 environment, inherited unchanged: the same handoff (the forward push, then
 approach_handle), the same random start offset of up to 1 cm around the
 standoff, the same 4-D action scaling, and the framework's reward, here
-2 V(drawer_open) - 1 with no shaping. A step sends the policy's action to the
+2 V(drawer_open) - 1 + min(0, 1 - 2 V(handle_grasped)) at every step, with no
+shaping. So drawer_open is the only literal rewarded; not handle_grasped is
+penalised while it is broken, at every step, including while a grasp would be
+pulling; not drawer_closed and not at_handle_standoff are not in the reward at all,
+though success requires them. A step sends the policy's action to the
 arm and nothing else: no scripted grasp or pull runs inside an episode.
 
 Observation, 9 numbers: the grasp policy's own 7 (the margin of handle_grasped,

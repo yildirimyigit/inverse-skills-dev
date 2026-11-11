@@ -180,8 +180,12 @@ The `exact` mode (`src/inverse_skills/operators/exact_hole_planner.py`) implemen
 What this guarantees, and what it does not:
 
 - The library operators are assumed complete and correct under the modelled
-  transition, which applies each action's own effects together with the domain's
-  world constraints (implications, mutual exclusions, disturbances).
+  transition. It applies each action's own effects, what its additions imply, the
+  mutex partners they displace, and the disturbances its changes trigger. The
+  result must keep every declared implication and mutual exclusion, and hold what
+  the action adds and not what it deletes; otherwise the action, or hole, cannot
+  run there. Nothing is deleted to repair a constraint, and a start state that
+  breaks one is refused.
 - A plan's holes are subset-minimal: no hole can be dropped. They are not always the
   fewest possible: the preference can choose two upstream holes over one, within k.
 - "No plan" is exact relative to the candidate set, the budget and the symbolic
@@ -209,7 +213,8 @@ Each stage prints `PASS` or `FAIL` against its own checks. What they verify:
   to delegate (an admissible set, as above: one the goal cannot be reached without
   by real transitions, that has a soft score, and that no learnable literal upstream
   of it could replace within the budget), where the learned
-  skill starts (the robot-relative predicates the library can establish), and
+  skill starts (the robot-relative predicates the library establishes in a state
+  where the hole's literal does not hold yet), and
   what it must preserve (the causal links spanning it, of both signs). These are written to
   `hole_spec.json`, the learning problem Stage 3 trains against.
 - **Stage 3** — SAC learns the hole's policy against the spec; the best
