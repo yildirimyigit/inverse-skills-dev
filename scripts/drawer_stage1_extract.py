@@ -4,18 +4,20 @@ Each demonstration spans the whole forward skill: the first scene is the world
 before the push (drawer open, arm at its start pose, gripper open), the last is
 the world it leaves behind (drawer shut, arm back home, gripper open). The
 existing OperatorExtractor, with its default min_max rule, turns these scenes
-into preconditions, add effects and delete effects, with no drawer-specific rule;
-the generic inversion rule (preconditions + delete effects + the negation of each
-add effect) then gives the goal the inverse must restore.
+into signed preconditions and signed effects, with no drawer-specific rule: every
+predicate reliably true or reliably false before every demonstration is a
+precondition. The restoration goal is G = Pre u complement(Eff), which the strict
+rule makes Pre itself: the inverse must restore every reliably observed initial
+condition, false ones included.
 
 The goal is symbolic. drawer_open holds for any opening that scores at least
 0.8 (about 94 mm or more); the inverse must make that predicate true again. It
 does not have to return the drawer to the opening it started with (125-179 mm
 across these seeds).
 
-Prints the per-predicate score table, the extracted operator and its inverse
-goal, compares them with what we expect (a check, never an input), and writes
-artifacts/drawer/stage1_operator.json.
+Prints the per-predicate score table, the extracted operator and its restoration
+goal, checks the effects against what the forward skill is designed to do (a
+check, never an input; see operators/stage1_checks.py), and writes the operator.
 """
 
 from __future__ import annotations
@@ -28,12 +30,13 @@ from inverse_skills.envs import drawer_predicates as dp
 from inverse_skills.envs import drawer_primitives as prim
 from inverse_skills.logging.rollout import ForwardRollout
 from inverse_skills.operators.extractor import OperatorExtractor
+from inverse_skills.operators.literals import neg, pos
+from inverse_skills.operators.stage1_checks import signed_summary, stage1_checks, stage1_table, uncertain_at_start
 
 # What the forward skill is meant to do. Only compared with the result.
-_EXPECTED_PRE = {"drawer_open(drawer)"}
-_EXPECTED_ADD = {"drawer_closed(drawer)"}
-_EXPECTED_DEL = {"drawer_open(drawer)"}
-_ROBOT_TERMS = {"at_handle_standoff(drawer)", "handle_grasped(drawer)"}
+# What the forward skill is designed to do, as signed effects. Only compared with the result;
+# the preconditions, and so the restoration goal, are whatever the demonstrations show.
+DESIGNED_EFFECTS = {pos("drawer_closed(drawer)"), neg("drawer_open(drawer)")}
 
 
 def demonstrate(env, seed: int) -> tuple[ForwardRollout, float]:
@@ -66,37 +69,34 @@ def main() -> None:
 
     print(f"{len(rollouts)} demonstrations, seeds {args.seeds}, drawer starting "
           f"{min(start_openings_mm)}-{max(start_openings_mm)} mm open\n")
-    print(f"{'predicate':28s} {'start min':>9} {'start max':>9} {'end min':>9} {'end max':>9}")
-    for key in registry.keys():
-        s = result.scores[key]
-        print(f"{key:28s} {s['start_min']:9.3f} {s['start_max']:9.3f} {s['end_min']:9.3f} {s['end_max']:9.3f}")
+    for line in stage1_table(result.scores):
+        print(line)
 
-    pre = {t.key for t in operator.preconditions}
-    add = {t.key for t in operator.add_effects}
-    dele = {t.key for t in operator.delete_effects}
-    goal = [f"{'not ' if t.polarity == 'negative' else ''}{t.key}"
-            for t in operator.inverse_target_terms()]
+    summary = signed_summary(operator)
     print("\noperator 'push_close'")
-    print("  Pre:", ", ".join(sorted(pre)) or "-")
-    print("  Add:", ", ".join(sorted(add)) or "-")
-    print("  Del:", ", ".join(sorted(dele)) or "-")
-    print("  inverse goal:", ", ".join(goal))
-    print("  (symbolic: drawer_open must score >= 0.8, about 94 mm or more; the starting opening is not a target)")
+    print("  Pre:", ", ".join(summary["preconditions"]) or "-")
+    print("  Eff:", ", ".join(summary["effects"]) or "-")
+    print("  restoration goal G = Pre u complement(Eff):", ", ".join(summary["restoration_goal"]))
+    uncertain = uncertain_at_start(result.scores)
+    print("  neither reliably true nor false at the start (not in G):", ", ".join(uncertain) or "none")
 
-    checks = {
-        "pre_matches": pre == _EXPECTED_PRE,
-        "add_matches": add == _EXPECTED_ADD,
-        "del_matches": dele == _EXPECTED_DEL,
-        "no_robot_terms": not (_ROBOT_TERMS & (pre | add | dele)),
-    }
+    checks = stage1_checks(operator, DESIGNED_EFFECTS, set(registry.robot_relative_keys()))
     print("\nchecks:", json.dumps(checks))
+    for name, ok in checks.items():
+        if not ok:
+            print(f"  {name}: FAILED")
     print("STAGE 1:", "PASS" if all(checks.values()) else "FAIL")
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps({
         "seeds": args.seeds,
         "start_openings_mm": start_openings_mm,
+        "demonstrations": {"skill": "push_close", "seeds": args.seeds,
+                           "boundaries": "the whole skill: the scene before it starts and the scene it leaves"},
+        "extraction": {"mode": "min_max", "true_threshold": 0.8, "false_threshold": 0.2},
         "operator": operator.to_dict(),
+        "signed": summary,
+        "uncertain_at_start": uncertain,
         "scores": result.scores,
         "checks": checks,
     }, indent=2))

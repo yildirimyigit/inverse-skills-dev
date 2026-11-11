@@ -74,6 +74,8 @@ def main() -> None:
                     default=list(range(10)))
     ap.add_argument("--out", type=Path, default=Path("artifacts/stow/stage0_gate.json"))
     args = ap.parse_args()
+    if args.out.exists():
+        raise SystemExit(f"{args.out} exists; saved results are never overwritten. Choose another --out.")
 
     env = prim.make_env()
     rows = []

@@ -503,6 +503,35 @@ def _search(domain, start, goal_positive, goal_negative, candidates, reachable,
     )
 
 
+def domain_atoms(domain: Domain) -> frozenset[str]:
+    """Every atom the domain's actions and world facts mention."""
+    atoms: set[str] = set()
+    for action in domain.actions:
+        atoms |= action.pre | action.pre_absent | action.add | action.delete
+    for group in domain.mutex_groups:
+        atoms |= group
+    for literal, implied in domain.implications.items():
+        atoms |= {literal} | set(implied)
+    for disturbance in domain.disturbances:
+        atoms |= {disturbance.trigger} | disturbance.clobbers
+    return frozenset(atoms)
+
+
+def replay_problems(domain: Domain, start: frozenset[str], steps, goal_positive, goal_negative=()) -> list[str]:
+    """Replay a plan with the transition model from `start`: every step that could not run there,
+    and the goal literals the final state misses. An empty list means the plan is valid."""
+    problems = []
+    state = frozenset(start)
+    for index, step in enumerate(steps):
+        if not domain.enabled(state, step):
+            problems.append(f"step {index + 1}, {step.name}, cannot run")
+        state = domain.apply(state, step)
+    for literal in sorted(join(goal_positive, goal_negative or ())):
+        if not literal.holds(state):
+            problems.append(f"the goal literal {literal} does not hold at the end")
+    return problems
+
+
 def state_before(domain: Domain, start: frozenset[str], steps, index: int) -> frozenset[str]:
     """The predicted symbolic state just before step `index` of a plan."""
     state = frozenset(start)
@@ -598,6 +627,17 @@ def spec_target(spec: dict) -> Literal:
     """The signed literal a hole spec asks for. Specs written before literals had signs name a
     positive target by its atom only."""
     return Literal.from_dict(spec["target"]) if "target" in spec else pos(spec["achieve"])
+
+
+def spec_fences(spec: dict) -> frozenset[Literal]:
+    """The signed fences of a hole spec: kept true (`preserve`) and kept false (`preserve_absent`)."""
+    return join(spec["preserve"], spec["preserve_absent"])
+
+
+def spec_start(spec: dict) -> frozenset[Literal]:
+    """The signed start of a hole spec. Specs written before literals had signs have no
+    negative part."""
+    return join(spec["start"], spec.get("start_absent", ()))
 
 
 def learned_action(target: Literal, operator) -> Action:

@@ -22,12 +22,14 @@ from inverse_skills.envs import stow_predicates as sp
 from inverse_skills.envs import stow_primitives as prim
 from inverse_skills.logging.rollout import ForwardRollout
 from inverse_skills.operators.extractor import OperatorExtractor
+from inverse_skills.operators.literals import neg, pos
+from inverse_skills.operators.stage1_checks import signed_summary, stage1_checks, stage1_table, uncertain_at_start
 
-_EXPECTED_PRE = {"in_region(cube_a,src_a)", "in_region(cube_b,src_b)",
-                 "gripper_open()", "clear_of_walls(cube_a)"}
-_EXPECTED_ADD = {"in_region(cube_a,pocket)", "in_region(cube_b,mouth)"}
-_EXPECTED_DEL = {"in_region(cube_a,src_a)", "in_region(cube_b,src_b)",
-                 "clear_of_walls(cube_a)"}
+# What the forward skill is designed to do, as signed effects. Only compared with the result;
+# the preconditions, and so the restoration goal, are whatever the demonstrations show.
+DESIGNED_EFFECTS = {pos("in_region(cube_a,pocket)"), pos("in_region(cube_b,mouth)"),
+                    neg("in_region(cube_a,src_a)"), neg("in_region(cube_b,src_b)"),
+                    neg("clear_of_walls(cube_a)")}
 
 
 def demonstrate(env, seed: int) -> ForwardRollout:
@@ -57,28 +59,18 @@ def main() -> None:
     operator = result.operator
 
     print(f"{len(rollouts)} demonstrations, seeds {args.seeds}\n")
-    print(f"{'predicate':28s} {'start min':>9} {'start max':>9} {'end min':>9} {'end max':>9}")
-    for key in registry.keys():
-        s = result.scores[key]
-        print(f"{key:28s} {s['start_min']:9.3f} {s['start_max']:9.3f} {s['end_min']:9.3f} {s['end_max']:9.3f}")
+    for line in stage1_table(result.scores):
+        print(line)
 
-    pre = {t.key for t in operator.preconditions}
-    add = {t.key for t in operator.add_effects}
-    dele = {t.key for t in operator.delete_effects}
+    summary = signed_summary(operator)
     print("\noperator 'stow'")
-    print("  Pre:", ", ".join(sorted(pre)) or "-")
-    print("  Add:", ", ".join(sorted(add)) or "-")
-    print("  Del:", ", ".join(sorted(dele)) or "-")
-    print("  inverse target:", ", ".join(
-        f"{'¬' if t.polarity == 'negative' else ''}{t.key}"
-        for t in operator.inverse_target_terms()))
+    print("  Pre:", ", ".join(summary["preconditions"]) or "-")
+    print("  Eff:", ", ".join(summary["effects"]) or "-")
+    print("  restoration goal G = Pre u complement(Eff):", ", ".join(summary["restoration_goal"]))
+    uncertain = uncertain_at_start(result.scores)
+    print("  neither reliably true nor false at the start (not in G):", ", ".join(uncertain) or "none")
 
-    checks = {
-        "pre_matches": pre == _EXPECTED_PRE,
-        "add_matches": add == _EXPECTED_ADD,
-        "del_matches": dele == _EXPECTED_DEL,
-        "no_tcp_near_terms": not any(k.startswith("tcp_near") for k in pre | add | dele),
-    }
+    checks = stage1_checks(operator, DESIGNED_EFFECTS, set(registry.robot_relative_keys()))
     print("\nchecks:", json.dumps(checks))
     for name, ok in checks.items():
         if not ok:
@@ -88,7 +80,12 @@ def main() -> None:
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps({
         "seeds": args.seeds,
+        "demonstrations": {"skill": "stow", "seeds": args.seeds,
+                           "boundaries": "the whole skill: the scene before it starts and the scene it leaves"},
+        "extraction": {"mode": "min_max", "true_threshold": 0.8, "false_threshold": 0.2},
         "operator": operator.to_dict(),
+        "signed": summary,
+        "uncertain_at_start": uncertain,
         "scores": result.scores,
         "checks": checks,
     }, indent=2))

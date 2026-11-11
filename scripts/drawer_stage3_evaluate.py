@@ -20,7 +20,8 @@ import torch
 from stable_baselines3 import SAC
 
 from inverse_skills.envs import drawer_primitives as prim
-from inverse_skills.envs.drawer_hole_env import SATISFIED, DrawerHoleEnv, load_spec
+from inverse_skills.envs.drawer_hole_env import DrawerHoleEnv, load_spec
+from inverse_skills.operators.literals import ROBUST_TRUE
 
 torch.set_num_threads(1)
 
@@ -51,7 +52,7 @@ def main() -> None:
         }
         after = prim.pull_open(env._env, env._obs)
         episode["pulled_opening_mm"] = round(prim.opening(after) * 1000, 1)
-        episode["pull_opened"] = bool(env._scores(after)["drawer_open(drawer)"] >= SATISFIED)
+        episode["pull_opened"] = bool(env._scores(after)["drawer_open(drawer)"] >= ROBUST_TRUE)
         episodes.append(episode)
     env.close()
 

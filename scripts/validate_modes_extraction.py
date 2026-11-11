@@ -322,7 +322,7 @@ def run_stow_learned() -> None:
     seeds = [int(rollout.demo_id.split("_")[1]) for rollout in captured]
     demonstrations = per_demonstration(registry, captured, seeds)
     saved = json.loads(LEARNED_SAVED.read_text())
-    actions = {mode: hp.learned_action(spec["achieve"], results[mode].operator).to_dict() for mode in MODES}
+    actions = {mode: hp.learned_action(hp.spec_target(spec), results[mode].operator).to_dict() for mode in MODES}
     planned_before_hole = planned_state_before_hole(spec)
     record = {
         "recipe": "Stage 4's collection loop before the handoff check (rollouts_without_handoff_check)",

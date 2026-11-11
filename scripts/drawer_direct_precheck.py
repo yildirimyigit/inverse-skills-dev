@@ -9,13 +9,21 @@ kept for evaluation:
   2. horizon          a temporary reference controller, acting only through the
                       same 4-D actions and seeing only the policy's observation,
                       descends onto the fin, closes, and pulls straight back. It
-                      must open the drawer within the episode on every start. It
-                      exists only for this check: never training data, never in RL.
+                      must open the drawer (drawer_open robustly, at least 0.8)
+                      within the episode on every start, and keep it open after
+                      settling. It exists only for this check: never training
+                      data, never in RL. It never lets go of the handle, so it
+                      never meets the complete signed goal (the handle must end
+                      released); that is recorded, not gated: it measures the
+                      horizon, not the goal.
   3. measurement      at every step of those episodes: the opening the
                       environment reports equals the drawer joint's position;
                       drawer_open's score is 0.5 (1 + tanh((opening - 8 cm) / 2 cm));
-                      the reward is 2 V(drawer_open) - 1; goal_met is
-                      drawer_open and not drawer_closed.
+                      the reward is the signed score of drawer_open, 2 V - 1,
+                      plus min(0, signed score) of each of the spec's fences;
+                      goal_met is every literal of the signed goal robustly
+                      (at least 0.8 for p, at most 0.2 for not p). Both are
+                      computed here again from those definitions.
   4. nothing scripted every episode step is exactly one simulator step, and no
                       scripted motion runs during an episode (they are made to
                       raise for the duration).
@@ -44,11 +52,15 @@ from inverse_skills.envs import drawer_hole_env as hole_env
 from inverse_skills.envs import drawer_primitives as prim
 from inverse_skills.envs import motion
 from inverse_skills.envs.drawer_direct_env import DrawerDirectEnv
-from inverse_skills.envs.drawer_hole_env import SATISFIED, DrawerHoleEnv, load_spec
+from inverse_skills.operators.literals import ROBUST_FALSE, ROBUST_TRUE
+from inverse_skills.envs.drawer_hole_env import DrawerHoleEnv, load_spec
 
 TRAIN_SEEDS = tuple(range(32))
 VALIDATION_SEEDS = tuple(range(500, 510))
 _TOL = 1e-5
+# drawer_open robustly holds (scores at least 0.8) from this opening on, in millimetres:
+# 0.5 (1 + tanh((x - 80 mm) / 20 mm)) = 0.8.
+OPEN_MM = 80.0 + 20.0 * float(np.arctanh(2 * ROBUST_TRUE - 1))
 # Scripted motions that must never run while a policy is in control.
 _GUARDED = [(prim, "push_close"), (prim, "approach_handle"), (prim, "test_grasp"), (prim, "pull_open"),
             (prim, "go_home"), (motion, "step_toward"), (motion, "step_in_place"),
@@ -92,7 +104,7 @@ def reference_policy():
 
     def act(obs):
         nonlocal pulling
-        pulling = pulling or 0.5 * (1.0 + np.tanh(obs[0])) >= SATISFIED   # handle_grasped holds
+        pulling = pulling or 0.5 * (1.0 + np.tanh(obs[0])) >= ROBUST_TRUE   # handle_grasped holds
         if not pulling:
             height_cm = obs[3] * 5.0
             action = [-2.0 * obs[1], -2.0 * obs[2], -height_cm, 1.0 if height_cm > 0.3 else -1.0]
@@ -109,6 +121,22 @@ def physical_state(env) -> np.ndarray:
     return np.concatenate([prim.tcp_pos(obs), [prim.gripper_width(obs), prim.opening(obs)], prim.grasp_point(obs)])
 
 
+def expected_reward(env: DrawerDirectEnv, scores: dict[str, float]) -> float:
+    """The target's signed score plus each fence's signed score where it is negative, from the spec."""
+    reward = 2.0 * scores[env.achieve] - 1.0
+    for key in env.spec["preserve"]:
+        reward += min(0.0, 2.0 * scores[key] - 1.0)
+    for key in env.spec["preserve_absent"]:
+        reward += min(0.0, 1.0 - 2.0 * scores[key])
+    return reward
+
+
+def expected_goal_met(env: DrawerDirectEnv, scores: dict[str, float]) -> bool:
+    """Every goal literal robustly: at least 0.8 for the atoms that must hold, at most 0.2 for the rest."""
+    return (all(scores[p] >= ROBUST_TRUE for p in env.goal_positive)
+            and all(scores[q] <= ROBUST_FALSE for q in env.goal_negative))
+
+
 def episode(env: DrawerDirectEnv, sim: SimSteps, seed: int, policy, measure: list | None = None) -> dict:
     obs, info = env.reset(seed=seed)
     before = sim.count
@@ -123,9 +151,8 @@ def episode(env: DrawerDirectEnv, sim: SimSteps, seed: int, policy, measure: lis
                 measure.append({
                     "opening_is_joint": bool(abs(opening - joint) < _TOL),
                     "drawer_open_formula": bool(abs(scores[env.achieve] - formula) < _TOL),
-                    "reward": bool(abs(reward - (2.0 * scores[env.achieve] - 1.0)) < _TOL),
-                    "goal_met": step_info["goal_met"] == (scores["drawer_open(drawer)"] >= SATISFIED
-                                                          and scores["drawer_closed(drawer)"] < SATISFIED),
+                    "reward": bool(abs(reward - expected_reward(env, scores)) < _TOL),
+                    "goal_met": step_info["goal_met"] == expected_goal_met(env, scores),
                 })
             if truncated:
                 break
@@ -142,6 +169,8 @@ def main() -> None:
     ap.add_argument("--spec", type=Path, default=Path("artifacts/drawer/direct/hole_spec_direct.json"))
     ap.add_argument("--out", type=Path, default=Path("artifacts/drawer/direct/precheck.json"))
     args = ap.parse_args()
+    if args.out.exists():
+        raise SystemExit(f"{args.out} exists; saved results are never overwritten. Choose another --out.")
 
     goal = dd.goal_from_operator(args.operator)
     env = DrawerDirectEnv(load_spec(args.spec), goal)
@@ -167,11 +196,12 @@ def main() -> None:
     # 2-4. the reference controller, measured and guarded
     measure: list[dict] = []
     reference = [episode(env, sim, seed, reference_policy(), measure) for seed in starts]
-    opened = [r for r in reference if r["goal_met"]]
+    opened = [r for r in reference if r["end_opening_mm"] >= OPEN_MM and r["first_satisfied_step"] is not None]
     first = sorted(r["first_satisfied_step"] for r in opened)
-    horizon_ok = len(opened) == len(reference) and all(r["settled_goal_met"] for r in reference)
-    print(f"2. reference controller: goal met at the end on {len(opened)}/{len(reference)} starts, still met after "
-          f"settling on {sum(r['settled_goal_met'] for r in reference)}; grasp at step "
+    horizon_ok = len(opened) == len(reference) and all(r["settled_opening_mm"] >= OPEN_MM for r in reference)
+    print(f"2. reference controller: drawer open at the end on {len(opened)}/{len(reference)} starts, still open "
+          f"after settling on {sum(r['settled_opening_mm'] >= OPEN_MM for r in reference)}; complete signed goal "
+          f"met on {sum(r['goal_met'] for r in reference)} (it never lets go of the handle); grasp at step "
           f"{min(r['first_grasp_step'] for r in reference)}-{max(r['first_grasp_step'] for r in reference)}, "
           f"drawer open (score >= 0.8) at step {first[0]}-{first[-1]} of {env.max_steps}; "
           f"final opening {min(r['end_opening_mm'] for r in reference)}-{max(r['end_opening_mm'] for r in reference)} mm")

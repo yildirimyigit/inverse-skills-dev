@@ -25,6 +25,7 @@ import gymnasium as gym
 import numpy as np
 
 from inverse_skills.core import ObjectState, Pose, RobotState, SceneGraph
+from inverse_skills.operators.literals import ROBUST_TRUE
 from inverse_skills.envs import drawer_env as geo
 from inverse_skills.envs import drawer_predicates as dp
 from inverse_skills.envs import motion
@@ -39,7 +40,7 @@ OPEN_TARGET = 0.15             # pull_open pulls the drawer to this opening
 _PUSH_Y = 0.07
 _PUSH_TCP_Z = 0.085
 _FINGER_HALF_DEPTH = 0.01      # the closed fingers reach about this far ahead of the TCP along x
-_SATISFIED = 0.8               # the framework's truth threshold for a predicate score
+_SATISFIED = ROBUST_TRUE       # the forward push stops once drawer_closed robustly holds (0.8)
 _CLOSED_STEPS = 2              # push_close stops once drawer_closed has held on this many steps in a row
 _STALL_STEPS = 10              # push_close gives up once the drawer has not closed further for this many steps
 _STALL_M = 0.0005              # (closing by less than this counts as not moving)

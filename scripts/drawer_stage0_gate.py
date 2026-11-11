@@ -32,6 +32,7 @@ from pathlib import Path
 
 import numpy as np
 
+from inverse_skills.operators.literals import ROBUST_FALSE, ROBUST_TRUE
 from inverse_skills.envs import drawer_env as geo
 from inverse_skills.envs import drawer_predicates as dp
 from inverse_skills.envs import drawer_primitives as prim
@@ -167,13 +168,15 @@ def checks(row: dict) -> dict:
         "gripper_upright": max(row["tilt_after_push_deg"], row["tilt_at_approach_deg"]) <= _UPRIGHT_DEG,
         "approach_reaches_standoff": row["standoff_error_mm"] <= _STANDOFF_MM,
         "approach_leaves_drawer": row["approach_moved_mm"] <= _STILL_MM,
-        "grasp_holds_handle": row["grasp"]["handle_grasped"] >= 0.8,
+        "grasp_holds_handle": row["grasp"]["handle_grasped"] >= ROBUST_TRUE,
         "grasp_leaves_drawer": row["grasp_moved_mm"] <= _GRASP_STILL_MM,
         "pull_opens_after_grasp": row["pulled_opening_mm"] >= _OPENED_MM,
         "pull_fails_without_grasp": row["no_grasp_pull_opening_mm"] <= _CLOSED_MM,
-        "near_misses_not_grasped": all(c["handle_grasped"] < 0.8 for c in cases if not c["expected_grasp"]),
-        "near_misses_cannot_open": all(c["drawer_open_after_pull"] < 0.8 for c in cases if not c["expected_grasp"]),
-        "grasped_iff_pull_opens": all((c["handle_grasped"] >= 0.8) == (c["drawer_open_after_pull"] >= 0.8)
+        # Robustly false, as every physical check of a negative literal is (2026-11-11): at most 0.2.
+        "near_misses_not_grasped": all(c["handle_grasped"] <= ROBUST_FALSE for c in cases if not c["expected_grasp"]),
+        "near_misses_cannot_open": all(c["drawer_open_after_pull"] <= ROBUST_FALSE
+                                       for c in cases if not c["expected_grasp"]),
+        "grasped_iff_pull_opens": all((c["handle_grasped"] >= ROBUST_TRUE) == (c["drawer_open_after_pull"] >= ROBUST_TRUE)
                                       for c in cases),
     }
 
@@ -184,6 +187,8 @@ def main() -> None:
                     default=list(range(10)))
     ap.add_argument("--out", type=Path, default=Path("artifacts/drawer/stage0_gate.json"))
     args = ap.parse_args()
+    if args.out.exists():
+        raise SystemExit(f"{args.out} exists; saved results are never overwritten. Choose another --out.")
 
     env = prim.make_env()
     rows = []

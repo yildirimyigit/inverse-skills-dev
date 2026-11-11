@@ -24,6 +24,7 @@ import numpy as np
 import torch
 from stable_baselines3 import SAC
 
+from inverse_skills.operators.literals import ROBUST_TRUE
 from inverse_skills.envs import drawer_domain as dd
 from inverse_skills.envs import drawer_executive as ex
 from inverse_skills.envs import drawer_predicates as dp
@@ -71,7 +72,7 @@ class FrameRecorder(gym.Wrapper):
         x = 10
         for key, value in sorted(ex.scores(self._obs, self.registry).items()):
             text = f"{short(key)} {value:.2f}"
-            cv2.putText(out, text, (x, 45), _FONT, 0.42, _HOLDS if value >= ex.SATISFIED else _DOES_NOT,
+            cv2.putText(out, text, (x, 45), _FONT, 0.42, _HOLDS if value >= ROBUST_TRUE else _DOES_NOT,
                         1, cv2.LINE_AA)
             x += cv2.getTextSize(text, _FONT, 0.42, 1)[0][0] + 14
         cv2.putText(out, f"drawer opening {prim.opening(self._obs) * 1000:.0f} mm", (10, 66), _FONT, 0.42,

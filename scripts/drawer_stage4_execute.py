@@ -4,16 +4,17 @@ For each start configuration (seeds 2000-2019, never used in training,
 checkpoint selection or earlier evaluations):
 
   1. reset the scene and run the demonstrated forward skill, push_close;
-  2. measure the predicate scores, threshold them into a symbolic state, and
-     check that the forward operator's extracted effects are there. An inverse
-     is only defined when the forward happened: if they are not, that is
-     reported and nothing more is run;
-  3. derive the restoration goal from the Stage 1 operator with the generic
-     inversion rule;
+  2. measure the predicate scores, read them as a Boolean symbolic state (true at
+     a score of at least 0.5), and check that the forward operator's extracted
+     signed effects robustly hold (at least 0.8 for p, at most 0.2 for not p).
+     An inverse is only defined when the forward happened: if they do not, that
+     is reported and nothing more is run;
+  3. take the signed restoration goal of the Stage 1 operator, G = Pre;
   4. plan from the measured state with the existing planner and library;
   5. execute the plan with the drawer executive. A hole is filled by the
-     learned policy trained for the hole spec, stopped as soon as the
-     predicate it owes holds.
+     learned policy trained for the hole spec, stopped as soon as the literal
+     it owes robustly holds. The goal is judged robustly, every literal of
+     both signs; the Boolean verdict is recorded beside it.
 
 The script never names the expected inverse plan: it executes whatever the
 planner returns. Conditions, all on the same 20 configurations:
@@ -48,6 +49,8 @@ from inverse_skills.envs import drawer_predicates as dp
 from inverse_skills.envs import drawer_primitives as prim
 from inverse_skills.envs.drawer_hole_env import load_spec
 from inverse_skills.operators import hole_planner as hp
+from inverse_skills.operators.hole_planner import spec_target
+from inverse_skills.operators.literals import join, robustly_unmet
 
 torch.set_num_threads(1)
 
@@ -82,10 +85,10 @@ def load_checkpoints(stage3_dir: Path) -> dict[str, object]:
     return policies
 
 
-def forward_effects(operator_path: Path) -> tuple[set[str], set[str]]:
-    """The extracted forward operator's add and delete effects."""
+def forward_effects(operator_path: Path):
+    """The extracted forward operator's signed effects."""
     operator = json.loads(operator_path.read_text())["operator"]
-    return {t["key"] for t in operator["add_effects"]}, {t["key"] for t in operator["delete_effects"]}
+    return join((t["key"] for t in operator["add_effects"]), (t["key"] for t in operator["delete_effects"]))
 
 
 def episode(env, seed: int, forward, goal, condition: str, policy, spec) -> dict:
@@ -96,11 +99,12 @@ def episode(env, seed: int, forward, goal, condition: str, policy, spec) -> dict
 
     # The demonstrated forward skill, then what the robot now measures.
     obs = prim.push_close(env, obs)
-    state = hp.symbolic_state(ex.scores(obs, registry))
-    added, deleted = forward
+    measured_scores = ex.scores(obs, registry)
+    state = hp.symbolic_state(measured_scores)
     row["after_forward_opening_mm"] = round(prim.opening(obs) * 1000, 1)
     row["measured_state"] = sorted(state)
-    row["forward_effects_measured"] = added <= state and not (deleted & state)
+    row["forward_effects_unmet"] = [str(l) for l in robustly_unmet(forward, measured_scores)]
+    row["forward_effects_measured"] = not row["forward_effects_unmet"]
     row["forward_control_steps"] = env.counts[FORWARD]
     # Until the inverse runs and reports otherwise:
     row.update(ok=False, goal_met=False, steps=[], inverse_control_steps=0,
@@ -115,7 +119,7 @@ def episode(env, seed: int, forward, goal, condition: str, policy, spec) -> dict
         domain = dd.domain(extra_actions=[dd.scripted_grasp()])
         controllers = LIBRARY_WITH_SCRIPTED_GRASP
     elif condition != "library_only":
-        learned = {spec["achieve"]: policy}
+        learned = {spec_target(spec): policy}
     result = hp.plan(domain, state, *goal)
     row["plan"] = list(result.actions) if result else None
     if not result:
@@ -125,10 +129,10 @@ def episode(env, seed: int, forward, goal, condition: str, policy, spec) -> dict
     if condition == "library_only":
         no_holes = hp.plan(domain, state, *goal, max_delegated=0)
         row["plan_without_holes"] = list(no_holes.actions) if no_holes else None
-        row["unmet_needs"] = list(no_holes.unmet_needs)
+        row["unmet_needs"] = [l.to_dict() for l in no_holes.unmet_needs]
         steps = [s for s in steps if s.hole_for is None]
     row["executed_steps"] = [s.name for s in steps]
-    row["grasp_step"] = next((s.name for s in steps if spec["achieve"] in s.add), None)
+    row["grasp_step"] = next((s.name for s in steps if spec_target(spec) in s.effect_literals), None)
 
     # Execute; every control step is counted under the plan step that took it.
     def count_as(name: str, attempt: int) -> None:
@@ -170,6 +174,8 @@ def summarize(rows: list[dict]) -> dict:
         "grasp_control_steps": sorted(g["control_steps"] for g in grasps),
         "pull_open_succeeded": sum(p["ok"] for p in pulls),
         "goal_met": sum(bool(r["goal_met"]) for r in rows),
+        "goal_met_boolean": sum(bool(r.get("goal_met_boolean")) for r in rows),
+        "goal_literals_ever_unmet": sorted({l for r in rows for l in r.get("goal_unmet", [])}),
         "failed_transitions": {f: failed.count(f) for f in sorted(set(failed))},
         "recovery_attempts": sum(max(s["attempts"] - 1, 0) for r in rows for s in r["steps"]),
         "model_vs_world_differences": sum(bool(s["divergence"]) for r in rows for s in r["steps"]),
@@ -195,8 +201,7 @@ def main() -> None:
     goal = dd.goal_from_operator(args.operator)
     spec = load_spec(args.spec)
     conditions = {**load_checkpoints(args.stage3), "library_only": None, "scripted_grasp": None}
-    print("goal (generic inversion of the Stage 1 operator):",
-          ", ".join(sorted(goal[0])), "| not", ", ".join(sorted(goal[1])))
+    print("signed restoration goal of the Stage 1 operator:", ", ".join(str(l) for l in sorted(join(*goal))))
     print(f"hole spec: {spec['hole']}, starts from {spec['start']}")
 
     env = StepCounter(prim.make_env())
@@ -233,8 +238,11 @@ def main() -> None:
     print("fwd: forward effects measured; moved mm: max drawer movement before pull_open; "
           "tilt: max hand tilt after the grasp (deg); steps: inverse control steps min/median/max")
 
-    args.out.write_text(json.dumps({"seeds": args.seeds, "goal": [sorted(goal[0]), sorted(goal[1])],
-                                    "forward_effects": [sorted(forward[0]), sorted(forward[1])],
+    args.out.write_text(json.dumps({"seeds": args.seeds,
+                                    "inputs": {"operator": str(args.operator), "spec": str(args.spec),
+                                               "stage3": str(args.stage3)},
+                                    "goal": [l.to_dict() for l in sorted(join(*goal))],
+                                    "forward_effects": [l.to_dict() for l in sorted(forward)],
                                     "hole_spec": spec, "summary": summary, "results": results}, indent=2))
     print(f"wrote {args.out}")
 

@@ -3,9 +3,30 @@ from __future__ import annotations
 import math
 from typing import Iterable
 
+from collections.abc import Mapping
+
 from inverse_skills.core.scene import SceneGraph
+from inverse_skills.operators.literals import Literal, literal_set, validate_scores
 from inverse_skills.operators.schema import LearnedOperator, PredicateTerm
 from inverse_skills.predicates.base import Predicate, PredicateRegistry
+
+
+def hole_reward(target: Literal, fences: Iterable[Literal], scores: Mapping[str, float]) -> float:
+    """The reward of a learned skill: R(s) = V^_l(s) + sum over fences f of min(0, V^_f(s)).
+
+    V^ is a literal's signed score, 2V - 1 for `p` and 1 - 2V for `not p` (`Literal.signed_score`).
+    So the target earns its signed score, positive once it holds, and each fence costs reward only
+    where it is being broken. The formula is the same whatever the signs of the target and the
+    fences, and it has no scale of its own: the predicates' temperatures set its shape.
+    """
+    fences = literal_set(fences)
+    if target in fences or target.complement() in fences:
+        raise ValueError(f"the target {target} cannot also be a fence")
+    validate_scores(scores, [target.atom, *(f.atom for f in fences)])
+    reward = target.signed_score(scores[target.atom])
+    for fence in sorted(fences):
+        reward += min(0.0, fence.signed_score(scores[fence.atom]))
+    return float(reward)
 
 
 def signed_score_reward(

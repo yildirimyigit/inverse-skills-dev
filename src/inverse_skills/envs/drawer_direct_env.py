@@ -19,12 +19,19 @@ forces), so the direct learner sees everything the targeted one did; then the
 margin of the predicate it must achieve, drawer_open, and the drawer's opening
 in units of its 20 cm travel.
 
+Success is the complete signed restoration goal, every literal judged robustly
+(`literals.py`), the same goal the targeted method is judged by: the drawer open
+and not shut, and the hand neither at the standoff nor holding the handle. The
+reward is the framework's, from the spec: the target's signed score plus its fences.
+
 Each finished episode is summarised in `episodes`, with the reason it failed:
-  opened_then_lost  the goal held at some step, but not at the end
-  out_of_time       the drawer was still opening over the last 10 steps
-  never_grasped     handle_grasped never held
-  lost_grasp        the grasp held at some step, but not at the end
-  grasped_no_pull   the grasp held at the end and the drawer was not opening
+  open_but_goal_unmet  the drawer ends open, but another goal literal is not met
+                       (listed in `goal_unmet`): a failure under the signed goal
+  opened_then_lost     the drawer was open at some step, but not at the end
+  out_of_time          the drawer was still opening over the last 10 steps
+  never_grasped        handle_grasped never held
+  lost_grasp           the grasp held at some step, but not at the end
+  grasped_no_pull      the grasp held at the end and the drawer was not opening
 """
 
 from __future__ import annotations
@@ -35,8 +42,9 @@ from gymnasium import spaces
 from inverse_skills.envs import drawer_env as geo
 from inverse_skills.envs import drawer_primitives as prim
 from inverse_skills.envs import drawer_skill_io as skill_io
-from inverse_skills.envs.drawer_hole_env import SATISFIED, DrawerHoleEnv
+from inverse_skills.envs.drawer_hole_env import DrawerHoleEnv
 from inverse_skills.envs.motion import step_in_place
+from inverse_skills.operators.literals import ROBUST_TRUE, join, robustly_unmet
 
 MAX_STEPS = 100            # checked in scripts/drawer_direct_precheck.py
 GRASPED = "handle_grasped(drawer)"
@@ -45,12 +53,14 @@ _OPENING_WINDOW = 10       # "still opening" looks this many steps back ...
 _STILL_OPENING = 0.005     # ... for at least this much more opening
 
 
-def observe(obs, achieve, grasp) -> np.ndarray:
-    """The direct policy's 9 numbers: the grasp policy's 7, then achieve's margin and the opening."""
+def observe(obs, achieve, grasp, positive: bool = True) -> np.ndarray:
+    """The direct policy's 9 numbers: the grasp policy's 7, then the target's signed margin and the
+    opening."""
     target = achieve.evaluate(prim.obs_to_scene(obs))
+    sign = 1.0 if positive else -1.0
     return np.concatenate([
         skill_io.observe(obs, grasp),
-        [target.margin / target.temperature, prim.opening(obs) / geo.MAX_OPENING],
+        [sign * target.margin / target.temperature, prim.opening(obs) / geo.MAX_OPENING],
     ]).astype(np.float32)
 
 
@@ -61,17 +71,21 @@ class DrawerDirectEnv(DrawerHoleEnv):
         super().__init__(spec, max_steps=max_steps, **kwargs)
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(9,), dtype=np.float32)
         self.goal_positive, self.goal_negative = goal
+        self.goal = join(self.goal_positive, self.goal_negative)
         self._grasp = self.registry.get(GRASPED)
         self._openings: list[float] = []         # this episode's opening after each step
         self._grasped: list[bool] = []           # ... and whether the grasp held
         self._gripper = 1.0                      # the last gripper command (the handoff leaves it open)
 
     def observe(self, obs) -> np.ndarray:
-        return observe(obs, self._achieve, self._grasp)
+        return observe(obs, self._achieve, self._grasp, self.target.positive)
+
+    def goal_unmet(self, scores) -> list[str]:
+        """The goal literals the scores do not robustly meet."""
+        return [str(l) for l in robustly_unmet(self.goal, scores)]
 
     def goal_met(self, scores) -> bool:
-        return (all(scores[p] >= SATISFIED for p in self.goal_positive)
-                and all(scores[q] < SATISFIED for q in self.goal_negative))
+        return not self.goal_unmet(scores)
 
     def reset(self, seed=None, options=None):
         _, info = super().reset(seed=seed, options=options)
@@ -83,19 +97,22 @@ class DrawerDirectEnv(DrawerHoleEnv):
         self._gripper = float(np.asarray(action, dtype=np.float32).reshape(-1)[3])
         scores = info["scores"]
         self._openings.append(prim.opening(self._obs))
-        self._grasped.append(scores[GRASPED] >= SATISFIED)
+        self._grasped.append(scores[GRASPED] >= ROBUST_TRUE)
         info["goal_met"] = self.goal_met(scores)
+        info["goal_unmet"] = self.goal_unmet(scores)
         if truncated:
-            self.episodes[-1].update(self.diagnose(info["goal_met"]))
+            self.episodes[-1].update(self.diagnose(info["goal_met"], scores))
         return self.observe(self._obs), reward, terminated, truncated, info
 
-    def diagnose(self, goal_met: bool) -> dict:
+    def diagnose(self, goal_met: bool, scores: dict[str, float]) -> dict:
         """What this episode did, and why it failed if it did."""
         openings, grasped = self._openings, self._grasped
         back = openings[max(0, len(openings) - 1 - _OPENING_WINDOW)]
         still_opening = openings[-1] - back >= _STILL_OPENING
         if goal_met:
             failure = None
+        elif self.target.robustly_holds(scores[self.achieve]):
+            failure = "open_but_goal_unmet"
         elif self._first_satisfied is not None:
             failure = "opened_then_lost"
         elif still_opening:
@@ -106,7 +123,7 @@ class DrawerDirectEnv(DrawerHoleEnv):
             failure = "lost_grasp"
         else:
             failure = "grasped_no_pull"
-        return {"goal_met": goal_met, "failure": failure,
+        return {"goal_met": goal_met, "failure": failure, "goal_unmet": self.goal_unmet(scores),
                 "ever_grasped": any(grasped), "grasped_at_end": grasped[-1],
                 "first_grasp_step": grasped.index(True) + 1 if any(grasped) else None,
                 "max_opening_mm": round(max(openings) * 1000, 1),
@@ -115,5 +132,6 @@ class DrawerDirectEnv(DrawerHoleEnv):
     def settle(self, steps: int = SETTLE_STEPS) -> dict:
         """After an episode: hold the arm still, gripper as last commanded, and measure again."""
         self._obs = step_in_place(self._env, self._obs, steps, gripper_cmd=self._gripper)
+        settled = self._scores(self._obs)
         return {"settled_opening_mm": round(prim.opening(self._obs) * 1000, 1),
-                "settled_goal_met": self.goal_met(self._scores(self._obs))}
+                "settled_goal_met": self.goal_met(settled), "settled_goal_unmet": self.goal_unmet(settled)}

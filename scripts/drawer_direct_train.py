@@ -1,17 +1,20 @@
 """Direct baseline, step 3: learn HOLE[drawer_open] with SAC, as Stage 3 learned the grasp.
 
 Everything about the learner is Stage 3's: SAC with the default MlpPolicy and
-the Stage 3 settings (read from the first Stage 3 run's config.json, so they
-cannot drift), the training starts (seeds 0-31, offsets redrawn every episode),
-the validation starts (seeds 500-509, used only to choose the checkpoint), the
-budget (30,000 environment steps), the evaluation interval, and the framework's
-reward with nothing added. Only the problem differs: the planner's unrestricted
-hole, 100-step episodes and the 9-number observation (drawer_direct_env.py).
+the Stage 3 settings (read from a Stage 3 run's config.json, --stage3-config, so
+they cannot drift), the training starts (seeds 0-31, offsets redrawn every
+episode), the validation starts (seeds 500-509, used only to choose the
+checkpoint), the budget (30,000 environment steps), the evaluation interval, and
+the framework's reward with nothing added: the target's signed score plus the
+spec's fences (`restoration.hole_reward`). Only the problem differs: the direct
+baseline's hole (drawer_direct_spec.py), 100-step episodes and the 9-number
+observation (drawer_direct_env.py).
 
-Success: the restoration goal, drawer_open and not drawer_closed, measured at
-the end of the episode, as Stage 3 measured the grasp. After every validation
-episode the arm is held still for 10 steps and the goal is measured again.
-Nothing calls pull_open or any other scripted manipulation.
+Success: the complete signed restoration goal of the Stage 1 operator, every
+literal robustly, measured at the end of the episode, the same goal the targeted
+method is judged by. After every validation episode the arm is held still for 10
+steps and the goal is measured again. Nothing calls pull_open or any other
+scripted manipulation.
 
 Never evaluated here: seeds 1000-1019 and 2000-2019 (used in earlier
 development) and 3000-3049 (reserved for the final comparison).
@@ -38,6 +41,7 @@ from stable_baselines3.common.callbacks import BaseCallback
 from inverse_skills.envs import drawer_domain as dd
 from inverse_skills.envs.drawer_direct_env import DrawerDirectEnv
 from inverse_skills.envs.drawer_hole_env import load_spec
+from inverse_skills.operators.hole_planner import spec_fences, spec_target
 
 # SAC's small MLPs thrash across this machine's 20 cores: one thread is much faster.
 torch.set_num_threads(1)
@@ -118,19 +122,25 @@ def sha256(path: Path) -> str:
 
 
 def main() -> None:
-    stage3 = json.loads(STAGE3_CONFIG.read_text())
     ap = argparse.ArgumentParser()
-    ap.add_argument("--timesteps", type=int, default=stage3["timesteps"])
-    ap.add_argument("--eval-every", type=int, default=stage3["eval_every"])
+    ap.add_argument("--stage3-config", type=Path, default=STAGE3_CONFIG,
+                    help="the Stage 3 run whose SAC settings, budget and interval the baseline copies")
+    ap.add_argument("--timesteps", type=int, default=None, help="default: the Stage 3 run's")
+    ap.add_argument("--eval-every", type=int, default=None, help="default: the Stage 3 run's")
     ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--device", default=stage3["device"])
+    ap.add_argument("--device", default=None, help="default: the Stage 3 run's")
     ap.add_argument("--operator", type=Path, default=Path("artifacts/drawer/stage1_operator.json"))
     ap.add_argument("--spec", type=Path, default=Path("artifacts/drawer/direct/hole_spec_direct.json"))
     ap.add_argument("--out-dir", type=Path, default=Path("artifacts/drawer/direct"))
     args = ap.parse_args()
+    stage3 = json.loads(args.stage3_config.read_text())
+    args.timesteps = args.timesteps or stage3["timesteps"]
+    args.eval_every = args.eval_every or stage3["eval_every"]
+    args.device = args.device or stage3["device"]
     spec = load_spec(args.spec)
     goal = dd.goal_from_operator(args.operator)
     sac_settings = stage3["sac"]
+    target, fences = spec_target(spec), spec_fences(spec)
 
     train_env = DrawerDirectEnv(spec, goal, seed_pool=TRAIN_SEEDS)
     eval_env = DrawerDirectEnv(spec, goal)
@@ -139,10 +149,14 @@ def main() -> None:
     best_path = run_dir / "sac_direct_best"
     (run_dir / "config.json").write_text(json.dumps({
         "command": " ".join(sys.argv), "timesteps": args.timesteps, "eval_every": args.eval_every,
-        "seed": args.seed, "device": args.device, "spec": str(args.spec), "sac": sac_settings,
-        "sac_from": str(STAGE3_CONFIG), "episode_length": train_env.max_steps,
+        "seed": args.seed, "device": args.device, "spec": str(args.spec), "spec_sha256": sha256(args.spec),
+        "operator": str(args.operator), "sac": sac_settings,
+        "sac_from": str(args.stage3_config), "episode_length": train_env.max_steps,
         "observation_size": int(train_env.observation_space.shape[0]),
-        "start_offset_m": train_env.start_offset, "reward": "2 V(drawer_open) - 1, no shaping",
+        "start_offset_m": train_env.start_offset,
+        "reward": f"signed score of {target} plus min(0, signed score) of each fence: "
+                  f"{', '.join(str(f) for f in sorted(fences)) or 'none'}; no shaping",
+        "success": "the complete signed restoration goal, every literal robustly",
         "seeds": {"train": TRAIN_SEEDS, "validation": VALIDATION_SEEDS},
     }, indent=2))
     print(f"hole {spec['hole']}: start {spec['start']}, preserve {spec['preserve']}, keep false "

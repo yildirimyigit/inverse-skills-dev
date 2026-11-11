@@ -22,14 +22,16 @@ ACTION_STROKE = 0.3        # max per-step stroke command, from the Stage 0 sweep
 ACTION_PRESS = 0.15        # max per-step press command
 
 
-def observe(obs, regions, achieve, obj: str) -> np.ndarray:
-    """The achieved predicate's margin over its temperature, and the TCP's offset
-    from the object in cube half-widths."""
+def observe(obs, regions, achieve, obj: str, positive: bool = True) -> np.ndarray:
+    """The target literal's signed margin over its temperature, and the TCP's offset from the
+    object in cube half-widths. The signed margin is the predicate's margin for a target `p` and
+    its negation for a target `not p`, so it is positive once the target holds, for either sign."""
     result = achieve.evaluate(prim.obs_to_scene(obs, regions))
     cube = prim.cube_pos(obs, obj)
     tcp = prim.tcp_pos(obs)
+    sign = 1.0 if positive else -1.0
     return np.array([
-        result.margin / result.temperature,
+        sign * result.margin / result.temperature,
         (tcp[0] - cube[0]) / geo.CUBE_HALF,
         (tcp[1] - cube[1]) / geo.CUBE_HALF,
         (tcp[2] - cube[2]) / geo.CUBE_HALF,

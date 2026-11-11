@@ -24,6 +24,7 @@ Outputs under artifacts/drawer/stage3/<run_id>/.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 import time
@@ -35,7 +36,9 @@ from stable_baselines3 import SAC
 from stable_baselines3.common.callbacks import BaseCallback
 
 from inverse_skills.envs import drawer_primitives as prim
-from inverse_skills.envs.drawer_hole_env import SATISFIED, DrawerHoleEnv, load_spec
+from inverse_skills.envs.drawer_hole_env import DrawerHoleEnv, load_spec
+from inverse_skills.operators.hole_planner import spec_target
+from inverse_skills.operators.literals import ROBUST_TRUE
 
 # SAC's small MLPs thrash across this machine's 20 cores: one thread is much faster.
 torch.set_num_threads(1)
@@ -61,6 +64,10 @@ def sac_policy(model):
     return lambda obs: model.predict(obs, deterministic=True)[0]
 
 
+def sha256(path: Path) -> str:
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
 def rollout(env: DrawerHoleEnv, seeds, policy, pull: bool = False) -> dict:
     """One episode per seed. With `pull`, run the scripted pull_open afterwards."""
     episodes = []
@@ -75,6 +82,7 @@ def rollout(env: DrawerHoleEnv, seeds, policy, pull: bool = False) -> dict:
             "seed": seed,
             "start_offset_mm": start["start_offset_mm"],
             "success": bool(info["postcondition"]),
+            "fences_held": bool(info["fences_held"]),
             "final_score": round(info["scores"][env.achieve], 3),
             "first_satisfied_step": info["first_satisfied_step"],
             "pinch_n": [round(left, 1), round(right, 1)],
@@ -85,9 +93,10 @@ def rollout(env: DrawerHoleEnv, seeds, policy, pull: bool = False) -> dict:
             after = prim.pull_open(env._env, env._obs)
             scores = env._scores(after)
             episode["pulled_opening_mm"] = round(prim.opening(after) * 1000, 1)
-            episode["drawer_open_after_pull"] = scores["drawer_open(drawer)"] >= SATISFIED
+            episode["drawer_open_after_pull"] = scores["drawer_open(drawer)"] >= ROBUST_TRUE
         episodes.append(episode)
-    summary = {"success_rate": float(np.mean([e["success"] for e in episodes])), "episodes": episodes}
+    summary = {"success_rate": float(np.mean([e["success"] for e in episodes])),
+               "fence_rate": float(np.mean([e["fences_held"] for e in episodes])), "episodes": episodes}
     if pull:
         summary["pull_open_rate"] = float(np.mean([e["drawer_open_after_pull"] for e in episodes]))
     return summary
@@ -117,7 +126,8 @@ class EvalBest(BaseCallback):
             "timesteps": self.num_timesteps,
             "train_episodes": len(recent),
             "train_success_rate": float(np.mean([e["success"] for e in recent])) if recent else 0.0,
-            "train_reached_rate": float(np.mean([e["best_score"] >= SATISFIED for e in recent])) if recent else 0.0,
+            "train_reached_rate": float(np.mean([self.train_env.target.robustly_holds(e["best_score"])
+                                                 for e in recent])) if recent else 0.0,
             "train_mean_best_score": float(np.mean([e["best_score"] for e in recent])) if recent else 0.0,
             "validation_success_rate": validation["success_rate"],
         }
@@ -143,7 +153,8 @@ def main() -> None:
     ap.add_argument("--out-dir", type=Path, default=Path("artifacts/drawer/stage3"))
     args = ap.parse_args()
     spec = load_spec(args.spec)
-    print(f"hole: achieve {spec['achieve']}, start {spec['start']}, preserve {spec['preserve']}, "
+    target = spec_target(spec)
+    print(f"hole: target {target}, start {spec['start']}, preserve {spec['preserve']}, "
           f"keep false {spec['preserve_absent']}")
 
     run_dir = args.out_dir / str(int(time.time()))
@@ -151,7 +162,8 @@ def main() -> None:
     best_path = run_dir / "sac_hole_best"
     (run_dir / "config.json").write_text(json.dumps({
         "command": " ".join(sys.argv), "timesteps": args.timesteps, "eval_every": args.eval_every,
-        "seed": args.seed, "device": args.device, "spec": str(args.spec), "sac": SAC_SETTINGS,
+        "seed": args.seed, "device": args.device, "spec": str(args.spec), "spec_sha256": sha256(args.spec),
+        "target": target.to_dict(), "sac": SAC_SETTINGS,
         "seeds": {"train": TRAIN_SEEDS, "validation": VALIDATION_SEEDS, "test": TEST_SEEDS},
     }, indent=2))
 
@@ -184,7 +196,7 @@ def main() -> None:
         print(f"  {name:16s} grasp success {result['success_rate']:.0%}, "
               f"pull_open then opens the drawer {result['pull_open_rate']:.0%}")
     # When training first produced a grasp, and first ended an episode holding one.
-    reached = [e["end_step"] for e in train_env.episodes if e["best_score"] >= SATISFIED]
+    reached = [e["end_step"] for e in train_env.episodes if target.robustly_holds(e["best_score"])]
     held = [e["end_step"] for e in train_env.episodes if e["success"]]
     discovery = {"first_grasp_episode_ends_at_step": reached[0] if reached else None,
                  "first_held_episode_ends_at_step": held[0] if held else None}
@@ -197,6 +209,9 @@ def main() -> None:
         "timesteps": args.timesteps,
         "minutes": minutes,
         "spec": spec,
+        "target": target.to_dict(),
+        "checkpoints": {name: {"path": str(run_dir / f"{name}.zip"), "sha256": sha256(run_dir / f"{name}.zip")}
+                        for name in ("sac_hole_best", "sac_hole_final") if (run_dir / f"{name}.zip").exists()},
         "seeds": {"train": TRAIN_SEEDS, "validation": VALIDATION_SEEDS, "test": TEST_SEEDS},
         "references": references,
         "history": evaluator.history,

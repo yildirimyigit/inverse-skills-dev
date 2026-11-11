@@ -2,7 +2,8 @@
 
 As for the stow hole, the spec Stage 2 wrote is the whole learning problem:
 
-  achieve          the predicate the skill must establish: the reward's only active term
+  target           the signed literal the skill must establish (`achieve` is its
+                   predicate): the reward's only active term
   preserve         fences: literals to keep true (none for the drawer)
   preserve_absent  fences: literals to keep false (none for the drawer)
   start            what must hold when the skill takes over: checked at the handoff
@@ -15,8 +16,10 @@ axis, varies the start while keeping the start condition true. The policy then
 learns only what comes next, the short reach and the grasp: it never approaches
 the handle and never pulls the drawer.
 
-Reward: the framework's signed score, 2 V(achieve) - 1, plus the one-sided
-fences (none here), with no shaping terms. Episodes always run 40 steps: with
+Reward: the framework's signed score of the target, 2 V - 1 for `p` and 1 - 2 V
+for `not p`, plus the one-sided fences (none here), with no shaping terms
+(`restoration.hole_reward`). Success, the handoff and the fences are judged
+robustly (`literals.py`). Episodes always run 40 steps: with
 this reward, ending an episode on success would make stalling just short of
 success the best policy, as the stow task showed.
 """
@@ -36,10 +39,12 @@ from inverse_skills.envs import drawer_predicates as dp
 from inverse_skills.envs import drawer_primitives as prim
 from inverse_skills.envs import drawer_skill_io as skill_io
 from inverse_skills.envs.motion import step_in_place, step_toward
+from inverse_skills.operators.hole_planner import spec_fences, spec_start, spec_target
+from inverse_skills.operators.literals import robustly_unmet
+from inverse_skills.operators.restoration import hole_reward
 
 MAX_STEPS = 40
 START_OFFSET = 0.01        # the TCP starts up to 1 cm from the standoff on each axis
-SATISFIED = 0.8            # the framework's truth threshold
 # The library steps a prefix can contain, by name.
 _PRIMITIVES = {"approach_handle": prim.approach_handle}
 
@@ -56,7 +61,10 @@ class DrawerHoleEnv(gym.Env):
         self._env = prim.make_env(render_mode=render_mode)
         self.registry = dp.registry()
         self.spec = spec
-        self.achieve = spec["achieve"]
+        self.target = spec_target(spec)              # the signed literal the skill owes
+        self.achieve = self.target.atom
+        self.fences = spec_fences(spec)
+        self.start_literals = spec_start(spec)
         self._achieve = self.registry.get(self.achieve)
         self._prefix = [a["name"].split("(")[0] for a in spec["prefix"]]
         self.max_steps = max_steps
@@ -93,16 +101,14 @@ class DrawerHoleEnv(gym.Env):
 
     def _reward(self, scores) -> float:
         """Active term plus one-sided fences: the framework's signed scores."""
-        reward = 2.0 * scores[self.achieve] - 1.0
-        for key in self.spec["preserve"]:
-            reward += min(0.0, 2.0 * scores[key] - 1.0)
-        for key in self.spec["preserve_absent"]:
-            reward += min(0.0, 1.0 - 2.0 * scores[key])
-        return float(reward)
+        return hole_reward(self.target, self.fences, scores)
 
     def _fences_held(self, scores) -> bool:
-        return (all(scores[k] >= SATISFIED for k in self.spec["preserve"])
-                and all(scores[k] < SATISFIED for k in self.spec["preserve_absent"]))
+        return not robustly_unmet(self.fences, scores)
+
+    def _better(self, score: float, best: float) -> float:
+        """The score closer to the target: the higher for `p`, the lower for `not p`."""
+        return max(score, best) if self.target.positive else min(score, best)
 
     # -- gym API --------------------------------------------------------------
 
@@ -123,18 +129,19 @@ class DrawerHoleEnv(gym.Env):
         self._first_satisfied = None
         scores = self._scores(obs)
         self._best_score = scores[self.achieve]
-        start_ok = all(scores[p] >= SATISFIED for p in self.spec["start"])
+        start_ok = not robustly_unmet(self.start_literals, scores)
         info = {"episode_seed": episode_seed, "start_offset_mm": (offset * 1000).round(1).tolist(),
-                "handoff_valid": bool(start_ok and scores[self.achieve] < SATISFIED), "scores": scores}
-        return skill_io.observe(obs, self._achieve), info
+                "handoff_valid": bool(start_ok and not self.target.robustly_holds(scores[self.achieve])),
+                "scores": scores}
+        return skill_io.observe(obs, self._achieve, self.target.positive), info
 
     def step(self, action):
         self._obs, *_ = self._env.step(torch.tensor(skill_io.command(action)))
         self._steps += 1
         self.total_steps += 1
         scores = self._scores(self._obs)
-        satisfied = scores[self.achieve] >= SATISFIED
-        self._best_score = max(self._best_score, scores[self.achieve])
+        satisfied = self.target.robustly_holds(scores[self.achieve])
+        self._best_score = self._better(scores[self.achieve], self._best_score)
         if satisfied and self._first_satisfied is None:
             self._first_satisfied = self._steps
         truncated = self._steps >= self.max_steps
@@ -148,7 +155,8 @@ class DrawerHoleEnv(gym.Env):
             self.episodes.append({"success": satisfied, "best_score": self._best_score,
                                   "first_satisfied_step": self._first_satisfied,
                                   "end_step": self.total_steps})
-        return skill_io.observe(self._obs, self._achieve), self._reward(scores), False, truncated, info
+        return (skill_io.observe(self._obs, self._achieve, self.target.positive), self._reward(scores),
+                False, truncated, info)
 
     def close(self):
         self._env.close()

@@ -6,7 +6,7 @@ observation starts with the margin of whichever predicate the planner asked the
 skill to achieve.
 
 Observation, 7 numbers:
-  the achieved predicate's margin over its temperature;
+  the target literal's signed margin over its temperature (positive once it holds);
   the TCP's offset from the handle's grasp point along x, y and z, in units of
   5 cm (the standoff is 5 cm above the grasp point);
   the gripper's opening, in units of its 8 cm maximum;
@@ -30,12 +30,15 @@ _WIDTH_UNIT = 0.08
 _FORCE_UNIT = 20.0
 
 
-def observe(obs, achieve) -> np.ndarray:
+def observe(obs, achieve, positive: bool = True) -> np.ndarray:
+    """The 7 numbers above. The first is the target literal's signed margin: the predicate's
+    margin for a target `p`, its negation for a target `not p`."""
     result = achieve.evaluate(prim.obs_to_scene(obs))
     offset = (prim.tcp_pos(obs) - prim.grasp_point(obs)) / _POSITION_UNIT
     left, right = prim.pinch_force(obs)
+    sign = 1.0 if positive else -1.0
     return np.array([
-        result.margin / result.temperature,
+        sign * result.margin / result.temperature,
         offset[0], offset[1], offset[2],
         prim.gripper_width(obs) / _WIDTH_UNIT,
         left / _FORCE_UNIT,

@@ -3,13 +3,22 @@
 The spec (`hole_planner.hole_spec`, written by Stage 2) is the whole learning
 problem, and nothing about it is chosen here:
 
-  achieve          the predicate the skill must establish — the reward's active term
+  target           the signed literal the skill must establish (`achieve` is its
+                   predicate) — the reward's active term
   preserve         literals the plan relies on across the hole — one-sided fences
   preserve_absent  literals the plan needs to stay false — one-sided fences too
   start            what must hold when the skill takes over — checked at handoff
   prefix           the plan up to the hole — run by the executive in `reset()`
 
-so the episode starts in exactly the state the executive will hand over.
+so the episode starts in exactly the state the executive will hand over. The
+reward is `restoration.hole_reward`, the same formula for either sign; success,
+the handoff and the fences are judged robustly (`literals.py`).
+
+The interface below (a stroke and a press with the gripper closed, starting
+seated on the object) is the one chosen for the wall-clearing drag. It cannot
+learn a skill that must keep the gripper open or start away from the object; the
+framework's holes and rewards can express such a skill, this environment cannot
+train it.
 
 Deliberately small, because the RL is the part most likely to fail: a 2D
 action and a 4D observation (`stow_skill_io`), and the framework's reward with
@@ -34,8 +43,10 @@ from gymnasium import spaces
 from inverse_skills.envs import stow_predicates as sp
 from inverse_skills.envs import stow_primitives as prim
 from inverse_skills.envs import stow_skill_io as skill_io
-from inverse_skills.envs.stow_executive import SATISFIED, execute_plan
-from inverse_skills.operators.hole_planner import Action
+from inverse_skills.envs.stow_executive import execute_plan
+from inverse_skills.operators.hole_planner import Action, spec_fences, spec_start, spec_target
+from inverse_skills.operators.literals import robustly_unmet
+from inverse_skills.operators.restoration import hole_reward
 
 MAX_STEPS = 40
 # The episode starts seated on the object, because `approach` leaves it there.
@@ -58,7 +69,10 @@ class StowHoleEnv(gym.Env):
         self._env = prim.make_env(render_mode=render_mode)
         self.registry = sp.registry()
         self.spec = spec
-        self.achieve = spec["achieve"]
+        self.target = spec_target(spec)              # the signed literal the skill owes
+        self.achieve = self.target.atom
+        self.fences = spec_fences(spec)
+        self.start_literals = spec_start(spec)
         self.object = spec["object"]
         self._achieve = self.registry.get(self.achieve)
         self._prefix = [Action.from_dict(a) for a in spec["prefix"]]
@@ -107,7 +121,7 @@ class StowHoleEnv(gym.Env):
                 attempts = attempt + 1
                 obs, prefix_ok = self._run_prefix(episode_seed + attempt * 10_000)
                 scores = self._scores(obs)
-                valid = prefix_ok and all(scores[p] >= SATISFIED for p in self.spec["start"])
+                valid = prefix_ok and not robustly_unmet(self.start_literals, scores)
                 if valid:
                     break
             state = self._env.unwrapped.get_state_dict()
@@ -126,20 +140,14 @@ class StowHoleEnv(gym.Env):
         return {k: float(r.score) for k, r in self.registry.evaluate_all(scene).items()}
 
     def _observation(self, obs) -> np.ndarray:
-        return skill_io.observe(obs, self._regions, self._achieve, self.object)
+        return skill_io.observe(obs, self._regions, self._achieve, self.object, self.target.positive)
 
     def _reward(self, scores) -> float:
         """Active term plus one-sided fences — the framework's signed scores."""
-        reward = 2.0 * scores[self.achieve] - 1.0
-        for key in self.spec["preserve"]:
-            reward += min(0.0, 2.0 * scores[key] - 1.0)
-        for key in self.spec["preserve_absent"]:
-            reward += min(0.0, 1.0 - 2.0 * scores[key])
-        return float(reward)
+        return hole_reward(self.target, self.fences, scores)
 
     def _fences_held(self, scores) -> bool:
-        return (all(scores[k] >= SATISFIED for k in self.spec["preserve"])
-                and all(scores[k] < SATISFIED for k in self.spec["preserve_absent"]))
+        return not robustly_unmet(self.fences, scores)
 
     # -- gym API --------------------------------------------------------------
 
@@ -158,7 +166,7 @@ class StowHoleEnv(gym.Env):
         self._first_satisfied = None
         scores = self._scores(obs)
         info = {"prefix_attempts": attempts, "curriculum": self.curriculum, "scores": scores,
-                "handoff_valid": bool(valid and scores[self.achieve] < SATISFIED)}
+                "handoff_valid": bool(valid and not self.target.robustly_holds(scores[self.achieve]))}
         return self._observation(obs), info
 
     def step(self, action):
@@ -166,7 +174,7 @@ class StowHoleEnv(gym.Env):
         self._steps += 1
 
         scores = self._scores(self._obs)
-        satisfied = scores[self.achieve] >= SATISFIED
+        satisfied = self.target.robustly_holds(scores[self.achieve])
         if satisfied and self._first_satisfied is None:
             self._first_satisfied = self._steps
         # The episode is never cut short on success: see the module docstring.

@@ -12,7 +12,9 @@ Outputs under artifacts/stow/stage3/<run_id>/.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import sys
 import time
 from pathlib import Path
 
@@ -23,6 +25,7 @@ from stable_baselines3.common.callbacks import BaseCallback
 
 from inverse_skills.envs import stow_cube as geo
 from inverse_skills.envs import stow_primitives as prim
+from inverse_skills.operators.hole_planner import spec_target
 from inverse_skills.envs.stow_hole_env import StowHoleEnv, load_spec
 
 # SAC's small MLPs thrash across this machine's 20 cores: 129 ms/step at the
@@ -86,6 +89,10 @@ class EvalBest(BaseCallback):
     def _best_steps(self) -> float:
         saved = [h["mean_steps"] for h in self.history[:-1] if h.get("saved")]
         return saved[-1] if saved else float("inf")
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def rollout(env: StowHoleEnv, seeds, policy=None, curriculum: float = 1.0) -> dict:
@@ -158,12 +165,20 @@ def main() -> None:
     ap.add_argument("--out-dir", type=Path, default=Path("artifacts/stow/stage3"))
     args = ap.parse_args()
     spec = load_spec(args.spec)
-    print(f"hole: achieve {spec['achieve']}, start {spec['start']}, preserve "
+    target = spec_target(spec)
+    print(f"hole: target {target}, start {spec['start']}, preserve "
           f"{spec['preserve']}, keep false {spec['preserve_absent']}")
 
     run_dir = args.out_dir / str(int(time.time()))
     run_dir.mkdir(parents=True, exist_ok=True)
     best_path = run_dir / "sac_hole_best"
+    (run_dir / "config.json").write_text(json.dumps({
+        "command": " ".join(sys.argv), "timesteps": args.timesteps, "eval_every": args.eval_every,
+        "curriculum_steps": args.curriculum_steps, "seed": args.seed, "device": args.device,
+        "spec": str(args.spec), "spec_sha256": sha256(args.spec), "target": target.to_dict(),
+        "sac": {"learning_starts": 1_000, "batch_size": 256, "train_freq": 1, "gradient_steps": 1},
+        "seeds": {"train": list(range(32)), "selection_and_evaluation": list(EVAL_SEEDS)},
+    }, indent=2))
 
     train_env = StowHoleEnv(spec, seed_pool=tuple(range(32)))
     eval_env = StowHoleEnv(spec, seed_pool=EVAL_SEEDS, curriculum=1.0)
@@ -204,6 +219,9 @@ def main() -> None:
         "timesteps": args.timesteps,
         "minutes": minutes,
         "spec": spec,
+        "target": target.to_dict(),
+        "checkpoints": {name: {"path": str(run_dir / f"{name}.zip"), "sha256": sha256(run_dir / f"{name}.zip")}
+                        for name in ("sac_hole_best", "sac_hole_final")},
         "expert": expert,
         "best": best_stats,
         "final": final_stats,

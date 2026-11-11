@@ -11,15 +11,24 @@ Every episode, the same for both methods:
   1. reset the configuration, then run the forward push_close and approach_handle,
      the current controllers, so both methods take over from the same physical
      state (checked: identical for all eight policies on every configuration);
-  2. targeted: the grasp policy until handle_grasped >= 0.8, at most 40 steps (its
-     training horizon), then the known pull_open, run only if the grasp holds
-     (its precondition);
+  2. targeted: the grasp policy until handle_grasped robustly holds (at least 0.8),
+     at most 40 steps (its training horizon), then the known pull_open, run only
+     if the grasp holds (its precondition);
      direct: the drawer-opening policy until the restoration goal holds, at most
      100 steps (its training horizon);
   3. settling, identical for both: 10 steps with the arm held still and the
      gripper command unchanged;
-  4. success: the restoration goal, drawer_open and not drawer_closed, measured
-     after settling.
+  4. success: the complete signed restoration goal of the Stage 1 operator, every
+     literal judged robustly (at least 0.8 for p, at most 0.2 for not p), measured
+     after settling: the drawer open and not shut, and the hand neither at the
+     standoff nor holding the handle. The same goal judges both methods.
+
+Each episode also records the policy-level result: the grasp for a targeted policy,
+the drawer opening for a direct one. A drawer opened while another goal literal
+is unmet is a failure, recorded with the unmet literals.
+
+The handoff both methods take over from is checked robustly too: the push's
+signed effects, then the standoff and no grasp.
 
 How the drawer was moved is recorded the first time it passes 50 mm open: a
 two-finger pinch (handle_grasped >= 0.8), a one-finger press (one finger at
@@ -53,11 +62,11 @@ from inverse_skills.envs import drawer_primitives as prim
 from inverse_skills.envs import drawer_skill_io as skill_io
 from inverse_skills.envs.drawer_direct_env import observe as observe_direct
 from inverse_skills.envs.motion import step_in_place
+from inverse_skills.operators.literals import ROBUST_TRUE, join, neg, pos, robustly_unmet
 
 torch.set_num_threads(1)
 
 SEEDS = tuple(range(3000, 3050))
-SATISFIED = 0.8
 GRASP_STEPS = 40          # the grasp policies' training horizon
 DIRECT_STEPS = 100        # the direct policies' training horizon
 SETTLE_STEPS = 10
@@ -72,9 +81,13 @@ def scores(obs, registry) -> dict[str, float]:
     return {k: float(r.score) for k, r in registry.evaluate_all(prim.obs_to_scene(obs)).items()}
 
 
+def goal_unmet(s: dict[str, float], goal) -> list[str]:
+    """The goal literals the scores do not robustly meet."""
+    return [str(l) for l in robustly_unmet(join(*goal), s)]
+
+
 def goal_met(s: dict[str, float], goal) -> bool:
-    positive, negative = goal
-    return all(s[p] >= SATISFIED for p in positive) and all(s[q] < SATISFIED for q in negative)
+    return not goal_unmet(s, goal)
 
 
 class Recorder(gym.Wrapper):
@@ -102,10 +115,10 @@ class Recorder(gym.Wrapper):
             if self.goal_step is None and goal_met(s, self.goal):
                 self.goal_step = self.steps
             self.max_opening = max(self.max_opening, prim.opening(obs))
-            self.grasp_held = self.grasp_held or s[GRASPED] >= SATISFIED
+            self.grasp_held = self.grasp_held or s[GRASPED] >= ROBUST_TRUE
             if self.at_50mm is None and prim.opening(obs) > 0.05:
                 fingers = prim.pinch_force(obs)
-                held = ("two-finger pinch" if s[GRASPED] >= SATISFIED
+                held = ("two-finger pinch" if s[GRASPED] >= ROBUST_TRUE
                         else "one-finger press" if max(fingers) >= PRESS_N else "other")
                 self.at_50mm = {"how": held, "handle_grasped": round(s[GRASPED], 3),
                                 "fingers_n": [round(f, 1) for f in fingers]}
@@ -122,7 +135,7 @@ def run_policy(env, obs, policy, observe, done, max_steps: int, registry):
     return obs, max_steps
 
 
-def episode(env: Recorder, seed: int, method: str, policy, registry, goal) -> dict:
+def episode(env: Recorder, seed: int, method: str, policy, registry, goal, forward) -> dict:
     obs = prim.reset(env, seed)
     obs = prim.push_close(env, obs)
     after_push = scores(obs, registry)
@@ -130,8 +143,8 @@ def episode(env: Recorder, seed: int, method: str, policy, registry, goal) -> di
     start = scores(obs, registry)
     row = {"seed": seed,
            "start_state": [*prim.tcp_pos(obs).tolist(), prim.opening(obs), prim.gripper_width(obs)],
-           "forward_ok": after_push[CLOSED] >= SATISFIED and after_push[OPEN] < SATISFIED,
-           "start_ok": start[STANDOFF] >= SATISFIED and start[GRASPED] < SATISFIED}
+           "forward_ok": not robustly_unmet(forward, after_push),
+           "start_ok": not robustly_unmet({pos(STANDOFF), neg(GRASPED)}, start)}
     if not (row["forward_ok"] and row["start_ok"]):
         row.update(success=False, failure="the push or the approach did not reach the handoff state")
         return row
@@ -140,15 +153,17 @@ def episode(env: Recorder, seed: int, method: str, policy, registry, goal) -> di
     if method == "targeted":
         grasp = registry.get(GRASPED)
         obs, used = run_policy(env, obs, policy, lambda o: skill_io.observe(o, grasp),
-                               lambda s: s[GRASPED] >= SATISFIED, GRASP_STEPS, registry)
-        row["grasp_achieved"] = scores(obs, registry)[GRASPED] >= SATISFIED
+                               lambda s: s[GRASPED] >= ROBUST_TRUE, GRASP_STEPS, registry)
+        row["grasp_achieved"] = scores(obs, registry)[GRASPED] >= ROBUST_TRUE
+        row["policy_target_achieved"] = row["grasp_achieved"]
         if row["grasp_achieved"]:
             obs = prim.pull_open(env, obs)
-            row["pull_open_opened"] = scores(obs, registry)[OPEN] >= SATISFIED
+            row["pull_open_opened"] = scores(obs, registry)[OPEN] >= ROBUST_TRUE
     else:
         achieve, grasp = registry.get(OPEN), registry.get(GRASPED)
         obs, used = run_policy(env, obs, policy, lambda o: observe_direct(o, achieve, grasp),
                                lambda s: goal_met(s, goal), DIRECT_STEPS, registry)
+        row["policy_target_achieved"] = scores(obs, registry)[OPEN] >= ROBUST_TRUE
     env.active = False
     row.update(learned_steps=used, steps_total=env.steps, steps_to_goal=env.goal_step,
                max_opening_mm=round(env.max_opening * 1000, 1), handle_grasped_held=env.grasp_held,
@@ -156,10 +171,14 @@ def episode(env: Recorder, seed: int, method: str, policy, registry, goal) -> di
 
     obs = step_in_place(env, obs, SETTLE_STEPS, gripper_cmd=env.gripper)
     final = scores(obs, registry)
-    row.update(success=goal_met(final, goal), final_opening_mm=round(prim.opening(obs) * 1000, 1),
+    row.update(success=goal_met(final, goal), goal_unmet=goal_unmet(final, goal),
+               drawer_open_after_settling=final[OPEN] >= ROBUST_TRUE,
+               final_opening_mm=round(prim.opening(obs) * 1000, 1),
                final_scores={k: round(v, 3) for k, v in final.items()})
     if row["success"]:
         row["failure"] = None
+    elif row["drawer_open_after_settling"]:
+        row["failure"] = "drawer open, but goal literals unmet: " + ", ".join(row["goal_unmet"])
     elif row["goal_before_settling"]:
         row["failure"] = "goal lost while settling"
     elif method == "targeted" and not row["grasp_achieved"]:
@@ -172,12 +191,19 @@ def episode(env: Recorder, seed: int, method: str, policy, registry, goal) -> di
     return row
 
 
+def forward_effects(operator: str):
+    """The extracted forward operator's signed effects."""
+    data = json.loads(Path(operator).read_text())["operator"]
+    return join((t["key"] for t in data["add_effects"]), (t["key"] for t in data["delete_effects"]))
+
+
 def evaluate(name: str, method: str, checkpoint: str, seeds, operator: str) -> tuple[str, list[dict]]:
     """One policy on every configuration, in its own process and simulator."""
     registry, goal = dp.registry(), dd.goal_from_operator(operator)
+    forward = forward_effects(operator)
     policy = SAC.load(checkpoint, device="cpu")
     env = Recorder(prim.make_env(), registry, goal)
-    rows = [episode(env, seed, method, policy, registry, goal) for seed in seeds]
+    rows = [episode(env, seed, method, policy, registry, goal, forward) for seed in seeds]
     env.close()
     return name, rows
 
@@ -186,10 +212,10 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def checkpoints() -> dict[str, dict]:
-    """The eight selected checkpoints, each checked against its tracked manifest."""
+def checkpoints(stage3: Path, direct: Path) -> dict[str, dict]:
+    """The eight selected checkpoints, each checked against its manifest."""
     found = {}
-    for method, folder, selected in (("targeted", STAGE3, "sac_hole_best.zip"), ("direct", DIRECT, "sac_direct_best.zip")):
+    for method, folder, selected in (("targeted", stage3, "sac_hole_best.zip"), ("direct", direct, "sac_direct_best.zip")):
         manifest = json.loads((folder / "checkpoints.json").read_text())
         for run, entry in sorted(manifest["runs"].items(), key=lambda item: item[1]["sac_seed"]):
             path = folder / run / selected
@@ -200,9 +226,9 @@ def checkpoints() -> dict[str, dict]:
     return found
 
 
-def learning(name: str, method: str) -> dict:
+def learning(name: str, method: str, stage3: Path, direct: Path) -> dict:
     """From the validation curve recorded during training (seeds 500-509)."""
-    folder, key = (STAGE3, "validation_success_rate") if method == "targeted" else (DIRECT, "validation_goal_rate")
+    folder, key = (stage3, "validation_success_rate") if method == "targeted" else (direct, "validation_goal_rate")
     seed = int(name.rsplit(" ", 1)[1])
     for path in folder.glob("*/summary.json"):
         if json.loads((path.parent / "config.json").read_text())["seed"] == seed:
@@ -219,12 +245,14 @@ def learning(name: str, method: str) -> dict:
 
 def summarise(rows: list[dict]) -> dict:
     wins = [r for r in rows if r["success"]]
-    to_goal = sorted(r["steps_to_goal"] for r in wins)
+    to_goal = sorted(r["steps_to_goal"] for r in wins if r["steps_to_goal"] is not None)
     total = sorted(r["steps_total"] for r in wins)
     return {
         "success": len(wins), "configurations": len(rows),
+        "policy_target_achieved": sum(bool(r.get("policy_target_achieved")) for r in rows),
+        "drawer_open_after_settling": sum(bool(r.get("drawer_open_after_settling")) for r in rows),
         "failures": dict(Counter(r["failure"] for r in rows if not r["success"])),
-        "steps_to_goal": [to_goal[0], int(np.median(to_goal)), to_goal[-1]] if wins else None,
+        "steps_to_goal": [to_goal[0], int(np.median(to_goal)), to_goal[-1]] if to_goal else None,
         "steps_total": [total[0], int(np.median(total)), total[-1]] if wins else None,
         "final_opening_mm": ([min(r["final_opening_mm"] for r in wins), float(np.median([r["final_opening_mm"] for r in wins])),
                               max(r["final_opening_mm"] for r in wins)] if wins else None),
@@ -237,12 +265,14 @@ def main() -> None:
     ap.add_argument("--seeds", type=lambda s: [int(x) for x in s.split(",")], default=list(SEEDS))
     ap.add_argument("--operator", default="artifacts/drawer/stage1_operator.json")
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--stage3", type=Path, default=STAGE3, help="the targeted runs and their checkpoints.json")
+    ap.add_argument("--direct", type=Path, default=DIRECT, help="the direct runs and their checkpoints.json")
     ap.add_argument("--out", type=Path, default=Path("artifacts/drawer/final_targeted_vs_direct.json"))
     args = ap.parse_args()
     if args.out.exists():
         raise SystemExit(f"{args.out} exists; results are never overwritten")
 
-    policies = checkpoints()
+    policies = checkpoints(args.stage3, args.direct)
     print(f"{len(policies)} checkpoints verified; {len(args.seeds)} configurations, seeds {args.seeds[0]}-{args.seeds[-1]}")
     spawn = multiprocessing.get_context("spawn")
     with ProcessPoolExecutor(max_workers=args.workers, mp_context=spawn) as pool:
@@ -253,24 +283,27 @@ def main() -> None:
     same_start = all(len({json.dumps(results[name][i]["start_state"]) for name in results}) == 1
                      for i in range(len(args.seeds)))
     summary = {name: summarise(rows) for name, rows in results.items()}
-    curves = {name: learning(name, p["method"]) for name, p in policies.items()}
+    curves = {name: learning(name, p["method"], args.stage3, args.direct) for name, p in policies.items()}
 
     n = len(args.seeds)
     print(f"start states identical for every policy on every configuration: {same_start}\n")
-    print(f"{'policy':22s} {'success':>8} {'steps to goal':>14} {'final mm (median)':>18} {'first >=90% val':>16} "
-          f"{'held':>5} {'best/final val':>14}  how the drawer was moved | failures")
+    print(f"{'policy':22s} {'restored':>8} {'policy target':>13} {'steps to goal':>14} {'final mm (median)':>18} "
+          f"{'first >=90% val':>16} {'held':>5} {'best/final val':>14}  how the drawer was moved | failures")
     for name, s in summary.items():
         c = curves[name]
         steps = "/".join(str(k) for k in s["steps_to_goal"]) if s["steps_to_goal"] else "-"
         final = f"{s['final_opening_mm'][1]:.0f}" if s["final_opening_mm"] else "-"
-        print(f"{name:22s} {s['success']:>5}/{n:<2} {steps:>14} {final:>18} {c['first_90_at_step']!s:>16} "
+        print(f"{name:22s} {s['success']:>5}/{n:<2} {s['policy_target_achieved']:>10}/{n:<2} {steps:>14} {final:>18} "
+              f"{c['first_90_at_step']!s:>16} "
               f"{'yes' if c['held_90_afterwards'] else 'no':>5} {c['best_validation']:>6.0%}/{c['final_validation']:<6.0%}  "
               f"{s['how_drawer_was_moved']} | {s['failures'] or '-'}")
 
     args.out.write_text(json.dumps({
-        "seeds": args.seeds, "goal": [sorted(g) for g in dd.goal_from_operator(args.operator)],
+        "seeds": args.seeds, "goal": [l.to_dict() for l in sorted(join(*dd.goal_from_operator(args.operator)))],
+        "inputs": {"operator": args.operator, "stage3": str(args.stage3), "direct": str(args.direct)},
         "protocol": {"grasp_steps": GRASP_STEPS, "direct_steps": DIRECT_STEPS, "settle_steps": SETTLE_STEPS,
-                     "success": "drawer_open and not drawer_closed after settling", "press_n": PRESS_N},
+                     "success": "the complete signed restoration goal, every literal robustly, after settling",
+                     "press_n": PRESS_N},
         "checkpoints": policies, "start_states_identical": same_start,
         "summary": summary, "learning": curves, "results": results}, indent=2))
     print(f"\nwrote {args.out}")

@@ -28,6 +28,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from inverse_skills.operators.literals import ROBUST_TRUE
+
 BEFORE_MIGRATION = "c68d830"
 OUT_DIR = Path("artifacts/default_mode_validation/handoff")
 HANDOFF = OUT_DIR
@@ -97,7 +99,7 @@ def investigate() -> None:
                          "predicted_true": sorted(predicted & domain.scored),
                          "differs_from_prediction": sorted((hp.symbolic_state(scores) ^ predicted) & domain.scored)})
         traces.append({"seed": seed, "forward_rerolls": rerolls, "steps": rows,
-                       "training_env_would_accept": all(scores[p] >= ex.SATISFIED for p in spec["start"])})
+                       "training_env_would_accept": all(scores[p] >= ROBUST_TRUE for p in spec["start"])})
     env.close()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -157,7 +159,7 @@ def collect() -> None:
     results = extract_both(registry, name, captured)
     scene_seeds = stage4_record["scene_seeds"]
     demonstrations = per_demonstration(registry, captured, scene_seeds)
-    actions = {mode: hp.learned_action(spec["achieve"], results[mode].operator).to_dict() for mode in ("mean", "min_max")}
+    actions = {mode: hp.learned_action(hp.spec_target(spec), results[mode].operator).to_dict() for mode in ("mean", "min_max")}
     saved = json.loads(LEARNED_SAVED.read_text())
 
     # Which runs does the handoff check leave exactly as they were before it? The earlier file labels
