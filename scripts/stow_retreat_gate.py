@@ -161,8 +161,9 @@ def main() -> None:
         raise SystemExit(f"{args.out} exists; results are never overwritten")
 
     spec = json.loads(args.spec.read_text())
-    hole = Action(name=spec["hole"], pre=frozenset(spec["start"]), add=frozenset({spec["achieve"]}),
-                  hole_for=spec["achieve"])
+    target = hp.spec_target(spec)          # the saved spec predates signs: its target is positive
+    hole = Action(name=spec["hole"], pre=frozenset(spec["start"]), add=frozenset({target.atom}),
+                  hole_for=target)
     steps = [Action.from_dict(a) for a in spec["prefix"]] + [hole] + [Action.from_dict(a) for a in spec["suffix"]]
     model = SAC.load(args.checkpoint, device="cuda")
     registry = sp.registry()
