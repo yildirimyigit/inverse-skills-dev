@@ -18,7 +18,8 @@ Two reference points on the test seeds: random actions (what SAC's first
 exploration sees) and a hand-coded "descend, then close" policy (the task is
 solvable through this action space).
 
-Outputs under artifacts/drawer/stage3/<run_id>/.
+Outputs under artifacts/drawer/stage3/seed<k>_<start time>/. A run never writes into
+an existing folder: four seeds started in the same second once shared one.
 """
 
 from __future__ import annotations
@@ -157,8 +158,8 @@ def main() -> None:
     print(f"hole: target {target}, start {spec['start']}, preserve {spec['preserve']}, "
           f"keep false {spec['preserve_absent']}")
 
-    run_dir = args.out_dir / str(int(time.time()))
-    run_dir.mkdir(parents=True, exist_ok=True)
+    run_dir = args.out_dir / f"seed{args.seed}_{int(time.time())}"
+    run_dir.mkdir(parents=True)              # fails, rather than share a folder with another run
     best_path = run_dir / "sac_hole_best"
     (run_dir / "config.json").write_text(json.dumps({
         "command": " ".join(sys.argv), "timesteps": args.timesteps, "eval_every": args.eval_every,

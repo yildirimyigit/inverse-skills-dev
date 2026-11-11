@@ -170,7 +170,7 @@ def main() -> None:
           f"{spec['preserve']}, keep false {spec['preserve_absent']}")
 
     run_dir = args.out_dir / str(int(time.time()))
-    run_dir.mkdir(parents=True, exist_ok=True)
+    run_dir.mkdir(parents=True)              # fails, rather than share a folder with another run
     best_path = run_dir / "sac_hole_best"
     (run_dir / "config.json").write_text(json.dumps({
         "command": " ".join(sys.argv), "timesteps": args.timesteps, "eval_every": args.eval_every,

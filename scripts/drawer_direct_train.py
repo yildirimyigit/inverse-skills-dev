@@ -145,7 +145,7 @@ def main() -> None:
     train_env = DrawerDirectEnv(spec, goal, seed_pool=TRAIN_SEEDS)
     eval_env = DrawerDirectEnv(spec, goal)
     run_dir = args.out_dir / f"seed{args.seed}_{int(time.time())}"
-    run_dir.mkdir(parents=True, exist_ok=True)
+    run_dir.mkdir(parents=True)              # fails, rather than share a folder with another run
     best_path = run_dir / "sac_direct_best"
     (run_dir / "config.json").write_text(json.dumps({
         "command": " ".join(sys.argv), "timesteps": args.timesteps, "eval_every": args.eval_every,
