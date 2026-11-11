@@ -238,6 +238,7 @@ def main() -> None:
     print("fwd: forward effects measured; moved mm: max drawer movement before pull_open; "
           "tilt: max hand tilt after the grasp (deg); steps: inverse control steps min/median/max")
 
+    args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps({"seeds": args.seeds,
                                     "inputs": {"operator": str(args.operator), "spec": str(args.spec),
                                                "stage3": str(args.stage3)},

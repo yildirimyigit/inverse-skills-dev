@@ -298,6 +298,7 @@ def main() -> None:
               f"{'yes' if c['held_90_afterwards'] else 'no':>5} {c['best_validation']:>6.0%}/{c['final_validation']:<6.0%}  "
               f"{s['how_drawer_was_moved']} | {s['failures'] or '-'}")
 
+    args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps({
         "seeds": args.seeds, "goal": [l.to_dict() for l in sorted(join(*dd.goal_from_operator(args.operator)))],
         "inputs": {"operator": args.operator, "stage3": str(args.stage3), "direct": str(args.direct)},

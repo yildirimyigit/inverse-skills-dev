@@ -241,6 +241,7 @@ def main() -> None:
     print(f"    eff   {', '.join(str(l) for l in sorted(learned.effect_literals))}")
     print(f"    the extracted effects {'contain' if target in learned.effect_literals else 'do NOT contain'} "
           f"the target {target}")
+    args.learned_out.parent.mkdir(parents=True, exist_ok=True)
     args.learned_out.write_text(json.dumps(learned_record, indent=2))
     learned_domain = sd.domain(extra_actions=[learned])
     relearned = hp.plan(learned_domain, start, *goal, max_delegated=0)
