@@ -1,5 +1,12 @@
 # The Inverse-Skill Pipeline
 
+> **Historical formulation.** Added 2026-11-11: this document describes the framework as
+> it was formulated for the PlanRob 2026 paper, and is kept unchanged as a record. The current
+> formulation uses signed literals: the planner's state is Boolean (V ≥ 0.5), every physical
+> check is robust (p ≥ 0.8, not p ≤ 0.2), and the restoration goal is the forward operator's
+> preconditions of both signs. It is described in `docs/manuscript/method_signed_literals.tex`
+> and in the README.
+
 *Complete specification of the framework: soft predicate grounding, operator extraction,
 inverse-target derivation, symbolic planning, the fence/active partition, and the residual
 RL reward — with every hyperparameter and its justification.*

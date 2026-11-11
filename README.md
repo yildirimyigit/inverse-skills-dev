@@ -107,7 +107,35 @@ mixed plan. Run the stages in order — each writes what the next one reads.
 
 The extracted operator and a trained policy are committed under
 `artifacts/stow/`, so stages 2 and 4 work immediately on a fresh clone. Stages
-1 and 3 regenerate them.
+1 and 3 regenerate them. They are the earlier, positive-only results, kept as
+published; the current code reads the committed operators with their meaning
+unchanged (a test checks it). The results of the current code are
+in `artifacts/signed_literals_20261111/` (see below).
+
+### Signed literals
+
+Every condition is a signed literal, `p` or `not p`. A predicate's score V, in
+[0, 1], is read in two ways:
+
+- **Boolean**, for the planner's symbolic state: p is true when V ≥ 0.5.
+- **Robust**, for everything checked physically: extraction, preconditions and
+  effects during execution, RL success, fences, handoffs and the final goal.
+  `p` holds when V ≥ 0.8, and `not p` holds when V ≤ 0.2. A score in between
+  holds neither way, and is reported as uncertain.
+
+The restoration goal is the forward operator's preconditions, of both signs.
+Every effect's complement is among them. For StowCube the goal now includes
+`not tcp_near(cube_a)` and `not tcp_near(cube_b)`: the hand must end away from
+both cubes. The inverse therefore ends with `retreat_to_safe`, a predefined
+library action, not a learned skill. It is the existing rise, with the gripper
+kept as it is. It was measured in simulation before it was registered
+(`scripts/stow_retreat_gate.py`), and its precondition `gripper_open()` comes
+from that measurement: with the gripper closed on cube A, releasing the press
+moves A.
+
+`artifacts/signed_literals_20261111/` holds both tasks run fresh with these
+rules, from Stage 0 to the final evaluation. `REPORT.md` there gives the
+results, and `run.py` reruns them stage by stage.
 
 | # | Command | Time | Writes |
 |---|---------|------|--------|
@@ -134,8 +162,10 @@ and for the direct baseline's `unrestricted_holes`, which only the relaxed mode 
 The `exact` mode (`src/inverse_skills/operators/exact_hole_planner.py`) implements the
 "Minimal Hole Planner" formulation. With k = `max_delegated`, the learning budget:
 
-- **Candidates** are the scored literals that are goal literals or preconditions of
-  some library action. Only these can become holes.
+- **Candidates** are the scored literals, of either sign, that are goal literals or
+  preconditions of some library action. Only these can become holes. A hole for `p`
+  makes p true; a hole for `not p` makes p false. A hole can run only while its
+  literal does not hold.
 - **Feasible(H)**: the library and holes for H reach the goal, in any order and at any
   length, decided by exhaustive search of the real transitions.
 - **Admissible**: H has at most k literals, is feasible, no literal can be dropped
@@ -157,26 +187,30 @@ What this guarantees, and what it does not:
 - "No plan" is exact relative to the candidate set, the budget and the symbolic
   transition model: it means no set of at most k candidates reaches the goal. The
   report says whether holes for every candidate would.
-- The upstream preference reads positive preconditions only. It is not a complete
-  causal analysis, and it does not show that the preferred skill is easier to learn;
-  the Drawer's targeted-versus-direct experiment is its evidence.
+- The upstream preference reads preconditions of both signs. An action establishes
+  `not p` by deleting p, by making true a literal that excludes p, or by triggering
+  a disturbance that displaces p. It is not a complete causal analysis, and it does
+  not show that the preferred skill is easier to learn; the Drawer's
+  targeted-versus-direct experiment is its evidence.
 
 Each stage prints `PASS` or `FAIL` against its own checks. What they verify:
 
 - **Stage 0** — the scene behaves as designed: the forward skill seats both
   cubes, `pick(A)` is blocked while A is wedged, and a scripted press-and-drag
   frees it. Run this first on a new machine; it is the physics gate.
-- **Stage 1** — the STRIPS operator extracted from 5 demonstrations matches the
-  scene's intended meaning, with no spurious `tcp_near` terms.
+- **Stage 1** — the signed operator extracted from 5 demonstrations has the
+  designed effects and no robot-relative effect, and every effect's complement is
+  a precondition, so the restoration goal equals the preconditions. Robot-relative
+  facts such as `not tcp_near(cube_a)` appear only as preconditions.
 - **Stage 2** — the planner, from measured predicate scores, produces
-  `pick B → place B → approach A → HOLE[clear_of_walls(A)] → pick A → place A`
-  with no equally cheap alternative, and finds no plan at all when holes are
-  disallowed. Everything about the hole is derived, not given: which predicate
+  `pick B → place B → approach A → HOLE[clear_of_walls(A)] → pick A → place A
+  → retreat_to_safe` with no equally cheap alternative, and finds no plan at all
+  when holes are disallowed. Everything about the hole is derived, not given: which predicate
   to delegate (an admissible set, as above: one the goal cannot be reached without
   by real transitions, that has a soft score, and that no learnable literal upstream
   of it could replace within the budget), where the learned
   skill starts (the robot-relative predicates the library can establish), and
-  what it must preserve (the causal links spanning it). These are written to
+  what it must preserve (the causal links spanning it, of both signs). These are written to
   `hole_spec.json`, the learning problem Stage 3 trains against.
 - **Stage 3** — SAC learns the hole's policy against the spec; the best
   checkpoint is selected on the operator's contract (postcondition established
@@ -189,8 +223,8 @@ Each stage prints `PASS` or `FAIL` against its own checks. What they verify:
   The executive then runs the full plan and the ablations — library only, the
   ordering a planner without the interference model cannot rule out, and the
   re-planned inverse using the learned operator — checking every step's
-  preconditions and postconditions and reporting wherever the measured scene
-  diverges from the domain's prediction.
+  preconditions and modelled effects robustly, and reporting wherever the
+  measured scene diverges from the domain's prediction.
 
 The planner itself contains no domain vocabulary (a test enforces it). The
 domain supplies facts about its world — which literals imply or exclude each
@@ -211,7 +245,8 @@ mp4 into `artifacts/stow/videos/` (not committed — regenerate as needed).
 `scripts/stow_framework_video.py` renders the pipeline end to end without the
 ablations.
 
-Reference results, run `1790788534`, 10 evaluation seeds:
+Historical reference results, before signed literals (positive-only goal, one
+0.8 threshold for every check), run `1790788534`, 10 evaluation seeds:
 
 | condition | goal met | A error | B error |
 |---|---|---|---|
@@ -232,3 +267,10 @@ since an inverse is only defined once the forward skill has happened.
 Handoff validity is reported apart from these results: 9 of the 10 evaluation
 seeds give a valid handoff (not the seed above), and 10 of the 11 scenes that
 reached the handoff while the learned skill's demonstrations were collected.
+
+The signed-literal rerun of both tasks (2026-11-11), with the restoration goal of
+both signs and robust checks, is reported in
+`artifacts/signed_literals_20261111/REPORT.md`. Two protocol questions it raised
+are open: which Stow checkpoint the selection rule should pick, and when the final
+evaluation should stop the direct baseline's policy. Its numbers are not final
+until they are settled.

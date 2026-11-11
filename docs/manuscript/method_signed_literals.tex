@@ -1,0 +1,260 @@
+% Replacement Method section: the signed-literal formulation, as implemented on
+% feature/signed-literals (see definition_to_code.md for where each definition lives).
+% Requires amsmath and amssymb. No experimental claim is made here.
+
+\section{Method}
+\label{sec:method}
+
+\subsection{Predicates, literals and symbolic states}
+\label{sec:literals}
+
+Let $\mathcal{S}$ be a predefined repertoire of grounded atomic predicates. Each
+$p\in\mathcal{S}$ has a continuous grounding $V_p(s)\in[0,1]$ on a scene $s$,
+\begin{equation}
+  V_p(s)=\tfrac12\bigl(1+\tanh\bigl(m_p(s)/T_p\bigr)\bigr),
+\end{equation}
+where $m_p$ is a geometric or physical margin and $T_p$ a temperature. We use
+\emph{signed literals},
+\begin{equation}
+  \mathcal{L}=\{\,p,\ \neg p \mid p\in\mathcal{S}\,\},\qquad
+  \overline{p}=\neg p,\quad \overline{\neg p}=p .
+\end{equation}
+A literal $p$ states that the predicate is true, $\neg p$ that it is false; both are
+first-class conditions, and neither sign is treated specially when conditions are
+extracted, required, planned for, learned or verified. A set of literals is
+\emph{contradictory} if it contains both $p$ and $\neg p$; such sets are rejected
+wherever they would arise.
+
+A symbolic state $S\subseteq\mathcal{S}$ is the set of predicates that are true. Under
+the closed-world interpretation,
+\begin{equation}
+  S\models p \iff p\in S,\qquad S\models\neg p \iff p\notin S,\qquad
+  S\models L \iff \forall l\in L:\ S\models l .
+\end{equation}
+A measured scene is abstracted to the Boolean state
+$\sigma(s)=\{p\in\mathcal{S} : V_p(s)\ge \tfrac12\}$, i.e.\ $p$ is true where its margin
+is non-negative. A predicate without a valid score is never read as false: a missing
+or non-finite score is a measurement failure.
+
+Physical verification uses a stricter, \emph{robust} reading with $\epsilon=0.8$:
+\begin{equation}
+  s\models_\epsilon p \iff V_p(s)\ge\epsilon,\qquad
+  s\models_\epsilon \neg p \iff V_p(s)\le 1-\epsilon .
+  \label{eq:robust}
+\end{equation}
+A score in $(1-\epsilon,\epsilon)$ is evidence of neither truth nor falsity. The
+Boolean state is used for symbolic planning; the robust reading is used for operator
+extraction and every check on the robot, and the two are reported separately where
+they differ.
+
+\subsection{Operators}
+\label{sec:operators}
+
+An operator is a pair $o=\langle \mathit{Pre}(o),\mathit{Eff}(o)\rangle$ of
+non-contradictory literal sets. It is applicable in $S$ when $S\models\mathit{Pre}(o)$.
+An effect $p$ makes $p$ true and an effect $\neg p$ makes it false; under the closed
+world these are the add and delete effects of STRIPS,
+$\mathit{Eff}(o)=\{p: p\in \mathit{Add}(o)\}\cup\{\neg p: p\in\mathit{Del}(o)\}$, and an
+operator whose effects contain both $p$ and $\neg p$ is rejected. The transition
+$\delta(S,o)$ applies the effects and then the domain's constraints, which hold for
+every action: \emph{implications} (an added literal adds what it implies),
+\emph{mutex groups} (an added literal removes the other members of its group), and
+\emph{disturbances} (changing a trigger literal displaces listed literals that hold,
+which become false). The number of literals displaced along a plan $\pi$ is
+$\kappa(\pi)$. Implications are applied to what an action adds, not in reverse to what
+it deletes.
+
+\subsection{Extracting the forward operator}
+\label{sec:extraction}
+
+From demonstrations $\mathcal{D}$ of the forward skill, each giving the scene before
+($s^{\mathrm{pre}}_d$) and after ($s^{\mathrm{post}}_d$) the whole skill, we extract
+\begin{align}
+  \mathit{Pre}(o) &= \{p : \min_d V_p(s^{\mathrm{pre}}_d)\ge\epsilon\}
+     \cup \{\neg p : \max_d V_p(s^{\mathrm{pre}}_d)\le 1-\epsilon\},
+     \label{eq:pre}\\
+  \mathit{Eff}(o) &= \{p : \max_d V_p(s^{\mathrm{pre}}_d)\le1-\epsilon \,\wedge\, \min_d V_p(s^{\mathrm{post}}_d)\ge\epsilon\}
+     \nonumber\\
+  &\quad\cup \{\neg p : \min_d V_p(s^{\mathrm{pre}}_d)\ge\epsilon \,\wedge\, \max_d V_p(s^{\mathrm{post}}_d)\le1-\epsilon\}.
+     \label{eq:eff}
+\end{align}
+Every demonstration must show a condition or a transition for it to be extracted; a
+predicate whose initial scores are not all on one side of the robust thresholds yields
+no precondition. All reliably observed initial conditions enter $\mathit{Pre}(o)$,
+whatever their sign and whether or not the skill changes them; no predicate is
+filtered as irrelevant, as the repertoire is assumed to contain only relevant facts.
+These are \emph{observed} initial conditions: the extraction does not establish that
+any of them is causally necessary for the skill.
+
+\subsection{The restoration objective}
+\label{sec:goal}
+
+Inversion restores every reliably observed initial condition,
+\begin{equation}
+  G=\mathit{Pre}(o)\cup\overline{\mathit{Eff}(o)},\qquad
+  \overline{\mathit{Eff}(o)}=\{\,\overline{l}: l\in\mathit{Eff}(o)\,\}.
+\end{equation}
+By~\eqref{eq:pre}--\eqref{eq:eff}, an effect $p$ is extracted only if $p$ was robustly
+false before every demonstration, so $\neg p\in\mathit{Pre}(o)$; likewise an effect
+$\neg p$ implies $p\in\mathit{Pre}(o)$. Hence $\overline{\mathit{Eff}(o)}\subseteq\mathit{Pre}(o)$
+and
+\begin{equation}
+  G=\mathit{Pre}(o).
+\end{equation}
+This identity is a property of the extraction rule~\eqref{eq:pre}--\eqref{eq:eff}; it
+does not hold for arbitrary STRIPS operators, whose add effects may already hold before
+some executions. Effects remain essential: they model what the forward skill changed,
+and they are used for transition modelling and for checking the forward execution.
+A state satisfies the goal when every literal holds, $S\models G$.
+
+\subsection{The inverse planning problem}
+\label{sec:problem}
+
+The inverse problem is the five-tuple
+\begin{equation}
+  \mathcal{P}_{\mathrm{inv}}=\langle \mathcal{O},\mathcal{S},S_0,G,\delta\rangle,
+\end{equation}
+with the existing operator library $\mathcal{O}$, the predicate repertoire
+$\mathcal{S}$ with its groundings, the initial state $S_0=\sigma(s_0)$ measured after
+the forward execution, the signed goal $G$, and the transition function $\delta$.
+Atoms the library uses as bookkeeping but no predicate measures (e.g.\ what the gripper
+holds) are false in $S_0$ by the closed world and are listed with every plan.
+Internally the planner takes $G$ as its two projections, the atoms that must be true
+and those that must be false; this is an implementation detail, not two objectives.
+
+\subsection{Hypothetical operators}
+\label{sec:holes}
+
+A missing capability is a signed literal that the library cannot establish where it
+is needed. For a literal $l$ on a scored atom, the hypothetical operator
+\begin{equation}
+  h(l,c)=\langle c,\{l\}\rangle
+\end{equation}
+establishes $l$ from the initiation context $c$: for $l=p$ it adds $p$, for $l=\neg p$
+it deletes $p$ (no auxiliary predicate is introduced). It is enabled in $S$ when
+$S\models c$ and $S\not\models l$, and its transition is $\delta$, so implications, mutex
+groups and disturbances act on it as on any action. The context $c$ is a largest set of
+robot-relative atoms about $l$'s object (excluding $l$'s own atom) that hold together
+in some state the library reaches from $S_0$; the library thus does all it can before
+the learned skill takes over, and $c$ is never a combination no reachable state holds.
+A predicate without a continuous grounding is never delegated, since a learned skill is
+trained against the grounding.
+
+The candidates are
+\begin{equation}
+  \mathcal{C}=\mathcal{L}_{\mathrm{scored}}\cap\Bigl(G\cup\bigcup_{a\in\mathcal{O}}\mathit{Pre}(a)\Bigr),
+  \qquad \mathcal{L}_{\mathrm{scored}}=\{p,\neg p : p\in\mathcal{S}\text{ scored}\}.
+\end{equation}
+Both signs are candidates, and $p$ and $\neg p$ are distinct candidates; candidates come
+only from the goal and from preconditions of existing operators. For $R\subseteq\mathcal{C}$,
+$\mathcal{H}(R)$ is the set of hypothetical operators for the literals of $R$.
+
+\subsection{Choosing the capabilities to learn}
+\label{sec:choice}
+
+A set $R$ is \emph{feasible} when the goal is reachable with the library and its
+hypothetical operators,
+\begin{equation}
+  \mathsf{F}(R)\iff \exists S\in\mathrm{Reach}\bigl(S_0,\mathcal{O}\cup\mathcal{H}(R),\delta\bigr): S\models G,
+\end{equation}
+decided by exhaustive search over the finite state space, with no bound on plan length.
+It is \emph{subset-minimal} when
+$\mathsf{Min}(R)\iff \mathsf{F}(R)\wedge\forall l\in R:\neg\mathsf{F}(R\setminus\{l\})$.
+
+The \emph{producer graph} has an edge $l\to u$ when some $a\in\mathcal{O}$ can establish
+$l$ under $\delta$, does not already require $l$, and requires $u$. An action establishes
+$p$ by adding it (counting implications), and $\neg p$ by deleting $p$, by adding a mutex
+partner of $p$, or by changing a disturbance trigger that displaces $p$; its requirements
+are its preconditions of both signs. A candidate $u$ is \emph{strictly upstream} of $l$,
+$u\in U(l)$, when a path leads from $l$ to $u$ and none from $u$ to $l$. With the
+learning budget $k$, $R$ is \emph{admissible} when
+\begin{equation}
+  |R|\le k,\quad \mathsf{Min}(R),\quad\text{and}\quad
+  \forall l\in R:\ \neg\exists R'\subseteq (R\setminus\{l\})\cup U(l):\ |R'|\le k\wedge\mathsf{F}(R').
+\end{equation}
+The preference favours learning a capability from which the library's own producers can
+then be used; it is a design choice, not a proof that the preferred skill is easier to
+learn, and its outcome can depend on $k$.
+
+Let $i^\ast$ be the smallest size of an admissible set. Among the plans $\pi$ whose set
+of delegated literals $\Lambda(\pi)$ is admissible with $|\Lambda(\pi)|=i^\ast$, the
+planner returns one minimizing, lexicographically,
+\begin{equation}
+  C(\pi)=\bigl(|\Lambda(\pi)|,\ \kappa(\pi),\ |\pi|\bigr),
+\end{equation}
+reporting equally cheap plans beside it. If no set of at most $k$ candidates is feasible,
+it returns \textsc{NoPlan}, naming the budget when all candidates together would suffice.
+
+These definitions give: (T1) a returned plan runs under $\delta$ and reaches $G$;
+(T2) its delegated set is subset-minimal, which is not minimum cardinality;
+(T3) the preference never blocks a plan, because strict upstreamness is a strict partial
+order and every replacement moves strictly lower in it; (T4) \textsc{NoPlan} is exact
+relative to $\mathcal{C}$, $k$ and $\delta$; (T5) among admissible sets of the smallest
+size, the plan is optimal in $C$. A symbolic plan only states that an effect is
+representable; whether a learned skill can realize it is established physically
+(Section~\ref{sec:execution}).
+
+\subsection{Learning a capability}
+\label{sec:learning}
+
+For the hypothetical operator at position $i$ of a plan, with target $l_i$, the learning
+problem is read off the plan. The \emph{preservation set} $F_i\subseteq\mathcal{L}$
+contains each literal $f$ that holds before step $i$ and is required later (by a later
+step's precondition or by $G$) with no step in between re-establishing it; $l_i$'s own
+atom is excluded. $F_i$ contains literals of both signs. The handoff, where the skill
+takes over, must robustly satisfy the context, the preservation set, and the
+pre-state of the step's modelled transition (what it removes must hold, what it
+establishes must not).
+
+With the signed score
+\begin{equation}
+  \widehat{V}_{l}(s)=
+  \begin{cases} 2V_p(s)-1, & l=p,\\ 1-2V_p(s), & l=\neg p,\end{cases}
+\end{equation}
+the reward is
+\begin{equation}
+  R_i(s)=\widehat{V}_{l_i}(s)+\sum_{f\in F_i}\min\bigl(0,\widehat{V}_f(s)\bigr),
+\end{equation}
+the same formula for either sign of target or preservation literal: the target earns a
+bipolar reward, and a preservation literal costs reward only while it is violated. SAC
+is trained with a fixed episode horizon; an episode succeeds when $s\models_\epsilon l_i$
+at its end, and checkpoints are selected on held-out starts by success with the
+preservation set robustly kept.
+
+A learned policy enters the library as an operator of its own. It is executed from
+valid handoffs (the handoff check decides which executions count; their outcome does
+not), and its operator $o_i$ is extracted from these executions by the same
+rule~\eqref{eq:pre}--\eqref{eq:eff}; its negative preconditions stay negative. The
+problem is then replanned with $\mathcal{O}\cup\{o_i\}$ and no hypothetical operators.
+The skill counts as integrated only if $l_i\in\mathit{Eff}(o_i)$: the rule keeps an
+effect only when every execution shows it, so a skill that misses its target in a
+single execution yields an operator that cannot establish $l_i$, and the replanned
+problem then has no plan that relies on it.
+
+\subsection{Executing and verifying the inverse}
+\label{sec:execution}
+
+The inverse is executed from the measured state: forward execution, measurement,
+planning, then each step in turn. Before a step, its measured preconditions must hold
+robustly~\eqref{eq:robust}; a learned step runs its policy until its target robustly
+holds or its step budget is spent; after a step, every effect its model predicts must
+hold robustly, or the step is retried within a bounded budget. The preservation
+literals of learned steps are monitored, and after every step the predicted Boolean state
+is compared with $\sigma(s)$, reporting each disagreement. The inverse succeeds when
+$s\models_\epsilon G$: every literal of the signed goal, positive and negative, robustly
+holds at the end. The Boolean verdict $\sigma(s)\models G$ is reported beside it.
+
+\paragraph{Predefined library primitives.}
+The operator library may contain scripted primitives that are not learned. In StowCube
+the library includes \textsc{retreat\_to\_safe}, the existing scripted vertical rise to
+the travel height with the gripper command unchanged, modelled with preconditions
+$\{\mathit{gripper\_open}(),\neg\mathit{holding}(\cdot)\}$ and effects
+$\{\neg\mathit{tcp\_near}(a),\neg\mathit{tcp\_near}(b)\}$. Its model was measured in
+simulation before it was added: from reachable states with the gripper open, both
+proximity predicates ended robustly false and no object moved; from closed-gripper
+presses, releasing the press displaced the pressed cube, which is why the model requires
+the gripper open. Adding a verified primitive does not constitute learning a missing
+capability: capabilities are missing relative to the library the planner is given, and a
+capability the library already provides as a verified primitive is not missing. Which
+primitives a task's library contains is part of the task's specification and is stated
+with the experiments.

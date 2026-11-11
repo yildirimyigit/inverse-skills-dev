@@ -1,5 +1,12 @@
 # Inverse Skill Learning as World-State Restoration
 
+> **Historical formulation.** Added 2026-11-11: this document describes the framework as
+> it was formulated for the PlanRob 2026 paper, and is kept unchanged as a record. The current
+> formulation uses signed literals: the planner's state is Boolean (V ≥ 0.5), every physical
+> check is robust (p ≥ 0.8, not p ≤ 0.2), and the restoration goal is the forward operator's
+> preconditions of both signs. It is described in `docs/manuscript/method_signed_literals.tex`
+> and in the README.
+
 *A technical report for readers with an undergraduate CS background.*
 
 ---
