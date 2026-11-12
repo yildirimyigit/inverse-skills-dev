@@ -344,6 +344,7 @@ They answer the questions of section 10. Sections 1–10 are unchanged, apart fr
 **My recommendation: B′ with w_G = 1.**
 - Its dense term is the kind the targeted policies are paid for their own target, so neither method gets a richer dense signal.
 - A temporary grasp costs nothing, and the complete goal is optimal.
+  - *Withdrawn on 2026-11-12:* "the complete goal is optimal" overstates it. B′ only orders single steps: every state in the goal earns more than any state outside it. That does not make a goal-reaching policy optimal. See `round2_20261112/PLAN.md` §1.1.
 - Per step it pays between −1 and 2, close to the current direct reward's −2 to 1.
 - The current direct policies reach the complete goal in 42–49 of 50 full-horizon runs, although nothing in their reward asks them to leave the standoff: leaving it evidently comes with opening the drawer. They mostly open by pressing, though, so they show little about learning to let go, which B′ leaves to the goal term.
 

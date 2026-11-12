@@ -1,0 +1,74 @@
+{
+  "rule": "a candidate seed is clean when no seed recorded for its task (or for an unnamed task) is congruent to it modulo 10,000 below 50,000, i.e. no recorded run could have reached the same scene",
+  "files_read": 506,
+  "used_seeds": {
+    "stow": [
+      "0-31",
+      "77-78",
+      "99",
+      "109",
+      "500-509",
+      "1000-1019",
+      "1101-1104",
+      "2000-2019",
+      "3000-3049",
+      "12001",
+      "12004"
+    ],
+    "drawer": [
+      "0-31",
+      "77-78",
+      "99",
+      "109",
+      "500-509",
+      "1000-1019",
+      "1101-1104",
+      "2000-2019",
+      "3000-3049",
+      "5000",
+      "12001",
+      "12004"
+    ]
+  },
+  "candidates": {
+    "stow_validation": {
+      "task": "stow",
+      "seeds": "4000-4019",
+      "scenes_reachable_with_re_rolls": [
+        "4000-4019",
+        "14000-14019",
+        "24000-24019",
+        "34000-34019",
+        "44000-44019"
+      ],
+      "clean": true,
+      "clashes": {}
+    },
+    "stow_final_test": {
+      "task": "stow",
+      "seeds": "5000-5049",
+      "scenes_reachable_with_re_rolls": [
+        "5000-5049",
+        "15000-15049",
+        "25000-25049",
+        "35000-35049",
+        "45000-45049"
+      ],
+      "clean": true,
+      "clashes": {}
+    },
+    "drawer_final_test": {
+      "task": "drawer",
+      "seeds": "7000-7049",
+      "scenes_reachable_with_re_rolls": [
+        "7000-7049",
+        "17000-17049",
+        "27000-27049",
+        "37000-37049",
+        "47000-47049"
+      ],
+      "clean": true,
+      "clashes": {}
+    }
+  }
+}
