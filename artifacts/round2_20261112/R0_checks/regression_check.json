@@ -1,0 +1,94 @@
+{
+  "new": "artifacts/round2_20261112/R0_checks/final_eval_3000_regression.json",
+  "passed": true,
+  "policies": {
+    "direct, SAC seed 0": {
+      "record": "artifacts/signed_literals_20261111/D_diagnostics/direct_full_horizon.json",
+      "rows": 50,
+      "rows_in_record": 50,
+      "rows_differing": 0,
+      "only_in_new": [
+        "settle_gripper_command"
+      ],
+      "differences": [],
+      "equal": true
+    },
+    "direct, SAC seed 1": {
+      "record": "artifacts/signed_literals_20261111/D_diagnostics/direct_full_horizon.json",
+      "rows": 50,
+      "rows_in_record": 50,
+      "rows_differing": 0,
+      "only_in_new": [
+        "settle_gripper_command"
+      ],
+      "differences": [],
+      "equal": true
+    },
+    "direct, SAC seed 2": {
+      "record": "artifacts/signed_literals_20261111/D_diagnostics/direct_full_horizon.json",
+      "rows": 50,
+      "rows_in_record": 50,
+      "rows_differing": 0,
+      "only_in_new": [
+        "settle_gripper_command"
+      ],
+      "differences": [],
+      "equal": true
+    },
+    "direct, SAC seed 3": {
+      "record": "artifacts/signed_literals_20261111/D_diagnostics/direct_full_horizon.json",
+      "rows": 50,
+      "rows_in_record": 50,
+      "rows_differing": 0,
+      "only_in_new": [
+        "settle_gripper_command"
+      ],
+      "differences": [],
+      "equal": true
+    },
+    "targeted, SAC seed 0": {
+      "record": "artifacts/signed_literals_20261111/E4_stage4/final_targeted_vs_direct.json",
+      "rows": 50,
+      "rows_in_record": 50,
+      "rows_differing": 0,
+      "only_in_new": [
+        "settle_gripper_command"
+      ],
+      "differences": [],
+      "equal": true
+    },
+    "targeted, SAC seed 1": {
+      "record": "artifacts/signed_literals_20261111/E4_stage4/final_targeted_vs_direct.json",
+      "rows": 50,
+      "rows_in_record": 50,
+      "rows_differing": 0,
+      "only_in_new": [
+        "settle_gripper_command"
+      ],
+      "differences": [],
+      "equal": true
+    },
+    "targeted, SAC seed 2": {
+      "record": "artifacts/signed_literals_20261111/E4_stage4/final_targeted_vs_direct.json",
+      "rows": 50,
+      "rows_in_record": 50,
+      "rows_differing": 0,
+      "only_in_new": [
+        "settle_gripper_command"
+      ],
+      "differences": [],
+      "equal": true
+    },
+    "targeted, SAC seed 3": {
+      "record": "artifacts/signed_literals_20261111/E4_stage4/final_targeted_vs_direct.json",
+      "rows": 50,
+      "rows_in_record": 50,
+      "rows_differing": 0,
+      "only_in_new": [
+        "settle_gripper_command"
+      ],
+      "differences": [],
+      "equal": true
+    }
+  }
+}

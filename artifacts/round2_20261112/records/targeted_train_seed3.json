@@ -1,0 +1,27 @@
+{
+ "step": "targeted_train_seed3",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "scripts/drawer_stage3_train.py",
+  "--timesteps",
+  "30000",
+  "--eval-every",
+  "2500",
+  "--seed",
+  "3",
+  "--spec",
+  "artifacts/signed_literals_20261111/E2_stage2/drawer_hole_spec.json",
+  "--operator",
+  "artifacts/signed_literals_20261111/E1_stage1/drawer_stage1_operator.json",
+  "--out-dir",
+  "artifacts/round2_20261112/R1_training/drawer"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "f4f753fc24549ea160c275e205e88c2b0a4928f0",
+  "tracked_changes": []
+ },
+ "started": "2026-11-12 09:43:10",
+ "seconds": 3037.9,
+ "exit_code": 0
+}

@@ -1,0 +1,17 @@
+{
+ "step": "paper_results",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "artifacts/round2_20261112/paper_results.py",
+  "--out",
+  "artifacts/round2_20261112/paper"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "2db49e1177325ed332e155f4bfe22f453a563509",
+  "tracked_changes": []
+ },
+ "started": "2026-11-12 10:47:07",
+ "seconds": 0.6,
+ "exit_code": 0
+}

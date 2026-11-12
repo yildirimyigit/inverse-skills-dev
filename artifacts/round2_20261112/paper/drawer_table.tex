@@ -1,0 +1,24 @@
+\begin{table*}[t]
+\centering
+\footnotesize
+\caption{Targeted versus direct learning on 50 unseen drawer configurations (7000--7049).}
+\label{tab:drawer-round2}
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+Policy & Goal after settling & 95\% interval & Goal at policy end & Lost in settling & First $\geq$90\% (complete goal) & First $\geq$90\% (grasp) & Stayed $\geq$90\% \\
+\midrule
+targeted, SAC seed 0 & 50/50 & [93, 100]\% & 50/50 & 0 & 10k & 10k & yes \\
+targeted, SAC seed 1 & 50/50 & [93, 100]\% & 50/50 & 0 & 10k & 10k & yes \\
+targeted, SAC seed 2 & 50/50 & [93, 100]\% & 50/50 & 0 & 12.5k & 12.5k & yes \\
+targeted, SAC seed 3 & 50/50 & [93, 100]\% & 50/50 & 0 & 10k & 12.5k & yes \\
+direct, SAC seed 0 & 50/50 & [93, 100]\% & 50/50 & 0 & 25k & — & no \\
+direct, SAC seed 1 & 50/50 & [93, 100]\% & 50/50 & 0 & 22.5k & — & yes \\
+direct, SAC seed 2 & 50/50 & [93, 100]\% & 50/50 & 0 & 22.5k & — & no \\
+direct, SAC seed 3 & 50/50 & [93, 100]\% & 50/50 & 0 & 25k & — & yes \\
+\midrule Targeted, 4 seeds & 200/200 (per seed 50--50) & & & & median 10k & & \\
+\midrule Direct, 4 seeds & 200/200 (per seed 50--50) & & & & median 23.75k & & \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}\parbox{\textwidth}{\scriptsize Four SAC runs per method, each at its validation-selected checkpoint, on the same 50 configurations with identical forward initializations. Success is the complete signed restoration goal, every literal judged robustly, after the established 10 settling steps. Validation (10 configurations every 2,500 interactions, budget 30k) measures the complete goal for both methods: targeted after its scripted pull_open and settling, direct after its 100 steps and settling; the targeted checkpoint is selected on its grasp validation, as established. Wilson intervals are per policy. Four runs per method do not support strong statistical claims.}
+\end{table*}

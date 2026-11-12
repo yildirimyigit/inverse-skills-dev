@@ -1,0 +1,50 @@
+{
+  "about": "Did Round 2's training repeat E3's? Compares the policy networks' weights.",
+  "policies": {
+    "targeted, SAC seed 0": {
+      "round2": "artifacts/round2_20261112/R1_training/drawer/seed0_1794476593/sac_hole_best.zip",
+      "e3": "artifacts/signed_literals_20261111/E3_stage3/drawer/seed0_1794408487/sac_hole_best.zip",
+      "tensors": 32,
+      "weights_identical": true,
+      "zip_members_differing": [
+        "data"
+      ]
+    },
+    "targeted, SAC seed 1": {
+      "round2": "artifacts/round2_20261112/R1_training/drawer/seed1_1794476593/sac_hole_best.zip",
+      "e3": "artifacts/signed_literals_20261111/E3_stage3/drawer/seed1_1794408487/sac_hole_best.zip",
+      "tensors": 32,
+      "weights_identical": true,
+      "zip_members_differing": [
+        "data"
+      ]
+    },
+    "targeted, SAC seed 2": {
+      "round2": "artifacts/round2_20261112/R1_training/drawer/seed2_1794476593/sac_hole_best.zip",
+      "e3": "artifacts/signed_literals_20261111/E3_stage3/drawer/seed2_1794408487/sac_hole_best.zip",
+      "tensors": 32,
+      "weights_identical": true,
+      "zip_members_differing": [
+        "data"
+      ]
+    },
+    "targeted, SAC seed 3": {
+      "round2": "artifacts/round2_20261112/R1_training/drawer/seed3_1794476593/sac_hole_best.zip",
+      "e3": "artifacts/signed_literals_20261111/E3_stage3/drawer/seed3_1794408487/sac_hole_best.zip",
+      "tensors": 32,
+      "weights_identical": true,
+      "zip_members_differing": [
+        "data"
+      ]
+    },
+    "stow, final model": {
+      "round2": "artifacts/round2_20261112/R1_training/stow/1794476593/sac_hole_final.zip",
+      "e3": "artifacts/signed_literals_20261111/E3_stage3/stow/1794407215/sac_hole_final.zip",
+      "tensors": 32,
+      "weights_identical": true,
+      "zip_members_differing": [
+        "data"
+      ]
+    }
+  }
+}

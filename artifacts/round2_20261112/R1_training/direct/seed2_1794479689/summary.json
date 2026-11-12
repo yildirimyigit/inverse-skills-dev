@@ -1,0 +1,3047 @@
+{
+  "timesteps": 30000,
+  "minutes": 6.662000350900053,
+  "episode_length": 100,
+  "spec": {
+    "hole": "HOLE[drawer_open(drawer)]",
+    "target": {
+      "atom": "drawer_open(drawer)",
+      "polarity": "positive"
+    },
+    "achieve": "drawer_open(drawer)",
+    "object": "drawer",
+    "start": [
+      "at_handle_standoff(drawer)"
+    ],
+    "start_absent": [],
+    "preserve": [],
+    "preserve_absent": [],
+    "fences": [
+      {
+        "atom": "handle_grasped(drawer)",
+        "polarity": "negative"
+      }
+    ],
+    "handoff_state": [
+      "at_handle_standoff(drawer)",
+      "drawer_closed(drawer)"
+    ],
+    "handoff_conditions": {
+      "hold": [
+        "at_handle_standoff(drawer)",
+        "drawer_closed(drawer)"
+      ],
+      "absent": [
+        "drawer_open(drawer)",
+        "handle_grasped(drawer)"
+      ]
+    },
+    "prefix": [
+      {
+        "name": "approach_handle(drawer)",
+        "pre": [],
+        "pre_absent": [],
+        "add": [
+          "at_handle_standoff(drawer)"
+        ],
+        "delete": [],
+        "hole_for": null
+      }
+    ],
+    "suffix": [],
+    "plan": [
+      "approach_handle(drawer)",
+      "HOLE[drawer_open(drawer)]"
+    ],
+    "hole_index": 1,
+    "cost": [
+      1,
+      0,
+      2,
+      1,
+      2
+    ],
+    "fences_derived_not_used": {
+      "preserve": [],
+      "preserve_absent": [
+        "handle_grasped(drawer)"
+      ]
+    }
+  },
+  "training_interactions": 30000,
+  "training_episodes": 300,
+  "validation_interactions": 12000,
+  "discovery": {
+    "first_grasp_episode_ends_at_step": 3400,
+    "first_opening_at_step": 16612,
+    "first_held_episode_ends_at_step": 16700,
+    "training_episodes_grasped": 105,
+    "training_episodes_opened": 98,
+    "training_max_opening_mm": 200.0,
+    "training_best_drawer_open_score": 0.9999938558272289,
+    "training_failures": {
+      "never_grasped": 186,
+      "lost_grasp": 12,
+      "out_of_time": 4,
+      "open_but_goal_unmet": 1
+    }
+  },
+  "best_checkpoint": {
+    "timesteps": 22500,
+    "validation_settled_goal_rate": 1.0,
+    "validation_goal_rate": 1.0,
+    "sha256": "2422087c89e8431195a235017ad791d62ed6c9967b1df5f0b81c13d3c99ecd9e"
+  },
+  "final": {
+    "timesteps": 30000,
+    "validation_settled_goal_rate": 0.0,
+    "validation_goal_rate": 0.0,
+    "validation_failures": {
+      "never_grasped": 10
+    },
+    "sha256": "058e437f09248a40201b88502dab5ab88c136f0b9f1b145adbf5e025ae47063f"
+  },
+  "history": [
+    {
+      "timesteps": 2500,
+      "train_episodes": 25,
+      "train_goal_rate": 0.0,
+      "train_reached_rate": 0.0,
+      "train_grasp_rate": 0.0,
+      "train_max_opening_mm": 12.4,
+      "train_failures": {
+        "never_grasped": 25
+      },
+      "validation_goal_rate": 0.0,
+      "validation_settled_goal_rate": 0.0,
+      "validation_failures": {
+        "never_grasped": 10
+      },
+      "validation_max_opening_mm": 3.0,
+      "validation_episodes": [
+        {
+          "seed": 500,
+          "success": false,
+          "best_score": 0.00038816786037138007,
+          "first_satisfied_step": null,
+          "end_step": 100,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.5,
+          "end_opening_mm": 1.5,
+          "settled_opening_mm": 1.5,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 501,
+          "success": false,
+          "best_score": 0.0003678974645615063,
+          "first_satisfied_step": null,
+          "end_step": 200,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.9,
+          "end_opening_mm": 0.9,
+          "settled_opening_mm": 0.9,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 502,
+          "success": false,
+          "best_score": 0.00038170989798314015,
+          "first_satisfied_step": null,
+          "end_step": 300,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.3,
+          "end_opening_mm": 1.3,
+          "settled_opening_mm": 1.3,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 503,
+          "success": false,
+          "best_score": 0.0003617841745330308,
+          "first_satisfied_step": null,
+          "end_step": 400,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.8,
+          "end_opening_mm": 0.8,
+          "settled_opening_mm": 0.8,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 504,
+          "success": false,
+          "best_score": 0.0004275438999236658,
+          "first_satisfied_step": null,
+          "end_step": 500,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 2.4,
+          "settled_opening_mm": 2.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 505,
+          "success": false,
+          "best_score": 0.00042663515270807695,
+          "first_satisfied_step": null,
+          "end_step": 600,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 2.4,
+          "settled_opening_mm": 2.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 506,
+          "success": false,
+          "best_score": 0.0004523883006177787,
+          "first_satisfied_step": null,
+          "end_step": 700,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 3.0,
+          "end_opening_mm": 3.0,
+          "settled_opening_mm": 3.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 507,
+          "success": false,
+          "best_score": 0.00043383560309173674,
+          "first_satisfied_step": null,
+          "end_step": 800,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.6,
+          "end_opening_mm": 2.6,
+          "settled_opening_mm": 2.6,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 508,
+          "success": false,
+          "best_score": 0.00039662992255301566,
+          "first_satisfied_step": null,
+          "end_step": 900,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.7,
+          "end_opening_mm": 1.7,
+          "settled_opening_mm": 1.7,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 509,
+          "success": false,
+          "best_score": 0.0003555482948202626,
+          "first_satisfied_step": null,
+          "end_step": 1000,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.6,
+          "end_opening_mm": 0.6,
+          "settled_opening_mm": 0.6,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        }
+      ],
+      "saved": true
+    },
+    {
+      "timesteps": 5000,
+      "train_episodes": 25,
+      "train_goal_rate": 0.0,
+      "train_reached_rate": 0.0,
+      "train_grasp_rate": 0.04,
+      "train_max_opening_mm": 32.8,
+      "train_failures": {
+        "never_grasped": 24,
+        "lost_grasp": 1
+      },
+      "validation_goal_rate": 0.0,
+      "validation_settled_goal_rate": 0.0,
+      "validation_failures": {
+        "never_grasped": 10
+      },
+      "validation_max_opening_mm": 3.0,
+      "validation_episodes": [
+        {
+          "seed": 500,
+          "success": false,
+          "best_score": 0.00038816786037138007,
+          "first_satisfied_step": null,
+          "end_step": 1100,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.5,
+          "end_opening_mm": 1.5,
+          "settled_opening_mm": 1.5,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 501,
+          "success": false,
+          "best_score": 0.0003678974645615063,
+          "first_satisfied_step": null,
+          "end_step": 1200,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.9,
+          "end_opening_mm": 0.9,
+          "settled_opening_mm": 0.9,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 502,
+          "success": false,
+          "best_score": 0.00038170989798314015,
+          "first_satisfied_step": null,
+          "end_step": 1300,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.3,
+          "end_opening_mm": 1.3,
+          "settled_opening_mm": 1.3,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 503,
+          "success": false,
+          "best_score": 0.0003617841745330308,
+          "first_satisfied_step": null,
+          "end_step": 1400,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.8,
+          "end_opening_mm": 0.8,
+          "settled_opening_mm": 0.8,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 504,
+          "success": false,
+          "best_score": 0.0004275438999236658,
+          "first_satisfied_step": null,
+          "end_step": 1500,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 2.4,
+          "settled_opening_mm": 2.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 505,
+          "success": false,
+          "best_score": 0.00042663515270807695,
+          "first_satisfied_step": null,
+          "end_step": 1600,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 2.4,
+          "settled_opening_mm": 2.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 506,
+          "success": false,
+          "best_score": 0.0004523883006177787,
+          "first_satisfied_step": null,
+          "end_step": 1700,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 3.0,
+          "end_opening_mm": 3.0,
+          "settled_opening_mm": 3.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 507,
+          "success": false,
+          "best_score": 0.00043383560309173674,
+          "first_satisfied_step": null,
+          "end_step": 1800,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.6,
+          "end_opening_mm": 2.6,
+          "settled_opening_mm": 2.6,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 508,
+          "success": false,
+          "best_score": 0.00039662992255301566,
+          "first_satisfied_step": null,
+          "end_step": 1900,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.7,
+          "end_opening_mm": 1.7,
+          "settled_opening_mm": 1.7,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 509,
+          "success": false,
+          "best_score": 0.0003555482948202626,
+          "first_satisfied_step": null,
+          "end_step": 2000,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.6,
+          "end_opening_mm": 0.6,
+          "settled_opening_mm": 0.6,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        }
+      ]
+    },
+    {
+      "timesteps": 7500,
+      "train_episodes": 25,
+      "train_goal_rate": 0.0,
+      "train_reached_rate": 0.0,
+      "train_grasp_rate": 0.0,
+      "train_max_opening_mm": 8.6,
+      "train_failures": {
+        "never_grasped": 24,
+        "out_of_time": 1
+      },
+      "validation_goal_rate": 0.0,
+      "validation_settled_goal_rate": 0.0,
+      "validation_failures": {
+        "never_grasped": 10
+      },
+      "validation_max_opening_mm": 3.0,
+      "validation_episodes": [
+        {
+          "seed": 500,
+          "success": false,
+          "best_score": 0.00038816786037138007,
+          "first_satisfied_step": null,
+          "end_step": 2100,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.5,
+          "end_opening_mm": 1.5,
+          "settled_opening_mm": 1.5,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 501,
+          "success": false,
+          "best_score": 0.0003678974645615063,
+          "first_satisfied_step": null,
+          "end_step": 2200,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.9,
+          "end_opening_mm": 0.9,
+          "settled_opening_mm": 0.9,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 502,
+          "success": false,
+          "best_score": 0.00038170989798314015,
+          "first_satisfied_step": null,
+          "end_step": 2300,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.3,
+          "end_opening_mm": 1.3,
+          "settled_opening_mm": 1.3,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 503,
+          "success": false,
+          "best_score": 0.0003617841745330308,
+          "first_satisfied_step": null,
+          "end_step": 2400,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.8,
+          "end_opening_mm": 0.8,
+          "settled_opening_mm": 0.8,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 504,
+          "success": false,
+          "best_score": 0.0004275438999236658,
+          "first_satisfied_step": null,
+          "end_step": 2500,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 2.4,
+          "settled_opening_mm": 2.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 505,
+          "success": false,
+          "best_score": 0.00042663515270807695,
+          "first_satisfied_step": null,
+          "end_step": 2600,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 2.4,
+          "settled_opening_mm": 2.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 506,
+          "success": false,
+          "best_score": 0.0004523883006177787,
+          "first_satisfied_step": null,
+          "end_step": 2700,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 3.0,
+          "end_opening_mm": 3.0,
+          "settled_opening_mm": 3.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 507,
+          "success": false,
+          "best_score": 0.00043383560309173674,
+          "first_satisfied_step": null,
+          "end_step": 2800,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.6,
+          "end_opening_mm": 2.6,
+          "settled_opening_mm": 2.6,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 508,
+          "success": false,
+          "best_score": 0.00039662992255301566,
+          "first_satisfied_step": null,
+          "end_step": 2900,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.7,
+          "end_opening_mm": 1.7,
+          "settled_opening_mm": 1.7,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 509,
+          "success": false,
+          "best_score": 0.0003555482948202626,
+          "first_satisfied_step": null,
+          "end_step": 3000,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.6,
+          "end_opening_mm": 0.6,
+          "settled_opening_mm": 0.6,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        }
+      ]
+    },
+    {
+      "timesteps": 10000,
+      "train_episodes": 25,
+      "train_goal_rate": 0.0,
+      "train_reached_rate": 0.0,
+      "train_grasp_rate": 0.04,
+      "train_max_opening_mm": 16.8,
+      "train_failures": {
+        "never_grasped": 24,
+        "lost_grasp": 1
+      },
+      "validation_goal_rate": 0.0,
+      "validation_settled_goal_rate": 0.0,
+      "validation_failures": {
+        "never_grasped": 10
+      },
+      "validation_max_opening_mm": 3.0,
+      "validation_episodes": [
+        {
+          "seed": 500,
+          "success": false,
+          "best_score": 0.00038816786037138007,
+          "first_satisfied_step": null,
+          "end_step": 3100,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.5,
+          "end_opening_mm": 1.5,
+          "settled_opening_mm": 1.5,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 501,
+          "success": false,
+          "best_score": 0.0003678974645615063,
+          "first_satisfied_step": null,
+          "end_step": 3200,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.9,
+          "end_opening_mm": 0.9,
+          "settled_opening_mm": 0.9,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 502,
+          "success": false,
+          "best_score": 0.00038170989798314015,
+          "first_satisfied_step": null,
+          "end_step": 3300,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.3,
+          "end_opening_mm": 1.3,
+          "settled_opening_mm": 1.3,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 503,
+          "success": false,
+          "best_score": 0.0003617841745330308,
+          "first_satisfied_step": null,
+          "end_step": 3400,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.8,
+          "end_opening_mm": 0.8,
+          "settled_opening_mm": 0.8,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 504,
+          "success": false,
+          "best_score": 0.0004275438999236658,
+          "first_satisfied_step": null,
+          "end_step": 3500,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 2.4,
+          "settled_opening_mm": 2.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 505,
+          "success": false,
+          "best_score": 0.00042663515270807695,
+          "first_satisfied_step": null,
+          "end_step": 3600,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 2.4,
+          "settled_opening_mm": 2.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 506,
+          "success": false,
+          "best_score": 0.0004523883006177787,
+          "first_satisfied_step": null,
+          "end_step": 3700,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 3.0,
+          "end_opening_mm": 3.0,
+          "settled_opening_mm": 3.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 507,
+          "success": false,
+          "best_score": 0.00043383560309173674,
+          "first_satisfied_step": null,
+          "end_step": 3800,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.6,
+          "end_opening_mm": 2.6,
+          "settled_opening_mm": 2.6,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 508,
+          "success": false,
+          "best_score": 0.00039662992255301566,
+          "first_satisfied_step": null,
+          "end_step": 3900,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.7,
+          "end_opening_mm": 1.7,
+          "settled_opening_mm": 1.7,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 509,
+          "success": false,
+          "best_score": 0.0003555482948202626,
+          "first_satisfied_step": null,
+          "end_step": 4000,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.6,
+          "end_opening_mm": 0.6,
+          "settled_opening_mm": 0.6,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not at_handle_standoff(drawer)",
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        }
+      ]
+    },
+    {
+      "timesteps": 12500,
+      "train_episodes": 25,
+      "train_goal_rate": 0.0,
+      "train_reached_rate": 0.0,
+      "train_grasp_rate": 0.0,
+      "train_max_opening_mm": 11.5,
+      "train_failures": {
+        "never_grasped": 25
+      },
+      "validation_goal_rate": 0.0,
+      "validation_settled_goal_rate": 0.0,
+      "validation_failures": {
+        "never_grasped": 10
+      },
+      "validation_max_opening_mm": 3.0,
+      "validation_episodes": [
+        {
+          "seed": 500,
+          "success": false,
+          "best_score": 0.00038816786037138007,
+          "first_satisfied_step": null,
+          "end_step": 4100,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.5,
+          "end_opening_mm": 1.5,
+          "settled_opening_mm": 1.5,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 501,
+          "success": false,
+          "best_score": 0.0003678974645615063,
+          "first_satisfied_step": null,
+          "end_step": 4200,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.9,
+          "end_opening_mm": 0.9,
+          "settled_opening_mm": 0.9,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 502,
+          "success": false,
+          "best_score": 0.00038170989798314015,
+          "first_satisfied_step": null,
+          "end_step": 4300,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.3,
+          "end_opening_mm": 1.3,
+          "settled_opening_mm": 1.3,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 503,
+          "success": false,
+          "best_score": 0.0003617841745330308,
+          "first_satisfied_step": null,
+          "end_step": 4400,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.8,
+          "end_opening_mm": 0.8,
+          "settled_opening_mm": 0.8,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 504,
+          "success": false,
+          "best_score": 0.0004275438999236658,
+          "first_satisfied_step": null,
+          "end_step": 4500,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 2.4,
+          "settled_opening_mm": 2.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 505,
+          "success": false,
+          "best_score": 0.00042663515270807695,
+          "first_satisfied_step": null,
+          "end_step": 4600,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 2.4,
+          "settled_opening_mm": 2.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 506,
+          "success": false,
+          "best_score": 0.0004523883006177787,
+          "first_satisfied_step": null,
+          "end_step": 4700,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 3.0,
+          "end_opening_mm": 3.0,
+          "settled_opening_mm": 3.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 507,
+          "success": false,
+          "best_score": 0.00043383560309173674,
+          "first_satisfied_step": null,
+          "end_step": 4800,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.6,
+          "end_opening_mm": 2.6,
+          "settled_opening_mm": 2.6,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 508,
+          "success": false,
+          "best_score": 0.00039662992255301566,
+          "first_satisfied_step": null,
+          "end_step": 4900,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.7,
+          "end_opening_mm": 1.7,
+          "settled_opening_mm": 1.7,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 509,
+          "success": false,
+          "best_score": 0.0003555482948202626,
+          "first_satisfied_step": null,
+          "end_step": 5000,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.6,
+          "end_opening_mm": 0.6,
+          "settled_opening_mm": 0.6,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        }
+      ]
+    },
+    {
+      "timesteps": 15000,
+      "train_episodes": 25,
+      "train_goal_rate": 0.0,
+      "train_reached_rate": 0.0,
+      "train_grasp_rate": 0.08,
+      "train_max_opening_mm": 51.1,
+      "train_failures": {
+        "never_grasped": 23,
+        "lost_grasp": 1,
+        "out_of_time": 1
+      },
+      "validation_goal_rate": 0.0,
+      "validation_settled_goal_rate": 0.0,
+      "validation_failures": {
+        "never_grasped": 10
+      },
+      "validation_max_opening_mm": 9.3,
+      "validation_episodes": [
+        {
+          "seed": 500,
+          "success": false,
+          "best_score": 0.0007275120702769367,
+          "first_satisfied_step": null,
+          "end_step": 5100,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 7.7,
+          "end_opening_mm": 7.7,
+          "settled_opening_mm": 7.7,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 501,
+          "success": false,
+          "best_score": 0.0007250926468959085,
+          "first_satisfied_step": null,
+          "end_step": 5200,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 7.7,
+          "end_opening_mm": 0.6,
+          "settled_opening_mm": 0.8,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 502,
+          "success": false,
+          "best_score": 0.0008156242778796785,
+          "first_satisfied_step": null,
+          "end_step": 5300,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 8.9,
+          "end_opening_mm": 8.9,
+          "settled_opening_mm": 8.9,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 503,
+          "success": false,
+          "best_score": 0.0008249150232377822,
+          "first_satisfied_step": null,
+          "end_step": 5400,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 9.0,
+          "end_opening_mm": 9.0,
+          "settled_opening_mm": 9.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 504,
+          "success": false,
+          "best_score": 0.000806632776434224,
+          "first_satisfied_step": null,
+          "end_step": 5500,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 8.8,
+          "end_opening_mm": 8.8,
+          "settled_opening_mm": 8.8,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 505,
+          "success": false,
+          "best_score": 0.0006685905521698898,
+          "first_satisfied_step": null,
+          "end_step": 5600,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 6.9,
+          "end_opening_mm": 6.9,
+          "settled_opening_mm": 6.9,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 506,
+          "success": false,
+          "best_score": 0.0007488854235623843,
+          "first_satisfied_step": null,
+          "end_step": 5700,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 8.0,
+          "end_opening_mm": 8.0,
+          "settled_opening_mm": 8.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 507,
+          "success": false,
+          "best_score": 0.000785856046120248,
+          "first_satisfied_step": null,
+          "end_step": 5800,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 8.5,
+          "end_opening_mm": 8.5,
+          "settled_opening_mm": 8.5,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 508,
+          "success": false,
+          "best_score": 0.0008535214364401855,
+          "first_satisfied_step": null,
+          "end_step": 5900,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 9.3,
+          "end_opening_mm": 9.3,
+          "settled_opening_mm": 9.3,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 509,
+          "success": false,
+          "best_score": 0.000710752752380861,
+          "first_satisfied_step": null,
+          "end_step": 6000,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 7.5,
+          "end_opening_mm": 7.5,
+          "settled_opening_mm": 7.5,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        }
+      ]
+    },
+    {
+      "timesteps": 17500,
+      "train_episodes": 25,
+      "train_goal_rate": 0.12,
+      "train_reached_rate": 0.12,
+      "train_grasp_rate": 0.12,
+      "train_max_opening_mm": 107.4,
+      "train_failures": {
+        "never_grasped": 18,
+        "lost_grasp": 3,
+        "out_of_time": 1
+      },
+      "validation_goal_rate": 0.0,
+      "validation_settled_goal_rate": 0.0,
+      "validation_failures": {
+        "never_grasped": 10
+      },
+      "validation_max_opening_mm": 55.2,
+      "validation_episodes": [
+        {
+          "seed": 500,
+          "success": false,
+          "best_score": 0.0037209995389083095,
+          "first_satisfied_step": null,
+          "end_step": 6100,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 24.1,
+          "end_opening_mm": 24.1,
+          "settled_opening_mm": 24.1,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 501,
+          "success": false,
+          "best_score": 0.003678840523076321,
+          "first_satisfied_step": null,
+          "end_step": 6200,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 24.0,
+          "end_opening_mm": 24.0,
+          "settled_opening_mm": 24.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 502,
+          "success": false,
+          "best_score": 0.004237275231883386,
+          "first_satisfied_step": null,
+          "end_step": 6300,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 25.4,
+          "end_opening_mm": 25.4,
+          "settled_opening_mm": 25.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 503,
+          "success": false,
+          "best_score": 0.004524957722877088,
+          "first_satisfied_step": null,
+          "end_step": 6400,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 26.1,
+          "end_opening_mm": 26.1,
+          "settled_opening_mm": 26.1,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 504,
+          "success": false,
+          "best_score": 0.01636356708182274,
+          "first_satisfied_step": null,
+          "end_step": 6500,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 39.0,
+          "end_opening_mm": 39.0,
+          "settled_opening_mm": 39.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 505,
+          "success": false,
+          "best_score": 0.0040038983369419245,
+          "first_satisfied_step": null,
+          "end_step": 6600,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 24.8,
+          "end_opening_mm": 24.8,
+          "settled_opening_mm": 24.8,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 506,
+          "success": false,
+          "best_score": 0.07760858068966225,
+          "first_satisfied_step": null,
+          "end_step": 6700,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 55.2,
+          "end_opening_mm": 55.2,
+          "settled_opening_mm": 55.2,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 507,
+          "success": false,
+          "best_score": 0.011899624823884236,
+          "first_satisfied_step": null,
+          "end_step": 6800,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 35.8,
+          "end_opening_mm": 35.8,
+          "settled_opening_mm": 35.8,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 508,
+          "success": false,
+          "best_score": 0.003988738258140112,
+          "first_satisfied_step": null,
+          "end_step": 6900,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 24.8,
+          "end_opening_mm": 24.8,
+          "settled_opening_mm": 24.8,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 509,
+          "success": false,
+          "best_score": 0.003508055968350021,
+          "first_satisfied_step": null,
+          "end_step": 7000,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 23.5,
+          "end_opening_mm": 23.5,
+          "settled_opening_mm": 23.5,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        }
+      ]
+    },
+    {
+      "timesteps": 20000,
+      "train_episodes": 25,
+      "train_goal_rate": 0.24,
+      "train_reached_rate": 0.24,
+      "train_grasp_rate": 0.4,
+      "train_max_opening_mm": 176.3,
+      "train_failures": {
+        "never_grasped": 14,
+        "lost_grasp": 4,
+        "out_of_time": 1
+      },
+      "validation_goal_rate": 0.0,
+      "validation_settled_goal_rate": 0.0,
+      "validation_failures": {
+        "never_grasped": 9,
+        "lost_grasp": 1
+      },
+      "validation_max_opening_mm": 88.4,
+      "validation_episodes": [
+        {
+          "seed": 500,
+          "success": false,
+          "best_score": 0.07044454351558632,
+          "first_satisfied_step": null,
+          "end_step": 7100,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 54.2,
+          "end_opening_mm": 54.2,
+          "settled_opening_mm": 54.2,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 501,
+          "success": false,
+          "best_score": 0.014061960773334825,
+          "first_satisfied_step": null,
+          "end_step": 7200,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 37.5,
+          "end_opening_mm": 0.0,
+          "settled_opening_mm": 0.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 502,
+          "success": false,
+          "best_score": 0.698009149588373,
+          "first_satisfied_step": null,
+          "end_step": 7300,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 88.4,
+          "end_opening_mm": 88.4,
+          "settled_opening_mm": 88.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 503,
+          "success": false,
+          "best_score": 0.3773166480014792,
+          "first_satisfied_step": null,
+          "end_step": 7400,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 75.0,
+          "end_opening_mm": 75.0,
+          "settled_opening_mm": 75.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 504,
+          "success": false,
+          "best_score": 0.07791193367530197,
+          "first_satisfied_step": null,
+          "end_step": 7500,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 55.3,
+          "end_opening_mm": 55.3,
+          "settled_opening_mm": 55.3,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 505,
+          "success": false,
+          "best_score": 0.00042663515270807695,
+          "first_satisfied_step": null,
+          "end_step": 7600,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 0.0,
+          "settled_opening_mm": 0.6,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 506,
+          "success": false,
+          "best_score": 0.3232259140752217,
+          "first_satisfied_step": null,
+          "end_step": 7700,
+          "goal_met": false,
+          "failure": "lost_grasp",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 9,
+          "max_opening_mm": 72.6,
+          "end_opening_mm": 72.6,
+          "settled_opening_mm": 72.6,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 507,
+          "success": false,
+          "best_score": 0.05894265982452268,
+          "first_satisfied_step": null,
+          "end_step": 7800,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 52.3,
+          "end_opening_mm": 52.3,
+          "settled_opening_mm": 52.3,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 508,
+          "success": false,
+          "best_score": 0.4379768288949123,
+          "first_satisfied_step": null,
+          "end_step": 7900,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 77.5,
+          "end_opening_mm": 77.5,
+          "settled_opening_mm": 77.5,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 509,
+          "success": false,
+          "best_score": 0.12412272681536668,
+          "first_satisfied_step": null,
+          "end_step": 8000,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 60.5,
+          "end_opening_mm": 60.5,
+          "settled_opening_mm": 60.5,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "drawer_open(drawer)"
+          ]
+        }
+      ]
+    },
+    {
+      "timesteps": 22500,
+      "train_episodes": 25,
+      "train_goal_rate": 0.8,
+      "train_reached_rate": 0.8,
+      "train_grasp_rate": 0.84,
+      "train_max_opening_mm": 200.0,
+      "train_failures": {
+        "never_grasped": 3,
+        "lost_grasp": 2
+      },
+      "validation_goal_rate": 1.0,
+      "validation_settled_goal_rate": 1.0,
+      "validation_failures": {},
+      "validation_max_opening_mm": 190.8,
+      "validation_episodes": [
+        {
+          "seed": 500,
+          "success": true,
+          "best_score": 0.9798401004202277,
+          "first_satisfied_step": 13,
+          "end_step": 8100,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 11,
+          "max_opening_mm": 118.8,
+          "end_opening_mm": 118.8,
+          "settled_opening_mm": 118.8,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 501,
+          "success": true,
+          "best_score": 0.9999845949047522,
+          "first_satisfied_step": 13,
+          "end_step": 8200,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 10,
+          "max_opening_mm": 190.8,
+          "end_opening_mm": 190.8,
+          "settled_opening_mm": 190.8,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 502,
+          "success": true,
+          "best_score": 0.9993486227176622,
+          "first_satisfied_step": 14,
+          "end_step": 8300,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 153.4,
+          "end_opening_mm": 153.4,
+          "settled_opening_mm": 153.4,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 503,
+          "success": true,
+          "best_score": 0.9912368454029056,
+          "first_satisfied_step": 13,
+          "end_step": 8400,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 11,
+          "max_opening_mm": 127.3,
+          "end_opening_mm": 127.3,
+          "settled_opening_mm": 127.3,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 504,
+          "success": true,
+          "best_score": 0.9917407085889335,
+          "first_satisfied_step": 13,
+          "end_step": 8500,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 10,
+          "max_opening_mm": 127.9,
+          "end_opening_mm": 127.9,
+          "settled_opening_mm": 127.9,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 505,
+          "success": true,
+          "best_score": 0.9998464409792636,
+          "first_satisfied_step": 12,
+          "end_step": 8600,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 9,
+          "max_opening_mm": 167.8,
+          "end_opening_mm": 167.8,
+          "settled_opening_mm": 167.8,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 506,
+          "success": true,
+          "best_score": 0.999508806563183,
+          "first_satisfied_step": 13,
+          "end_step": 8700,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 10,
+          "max_opening_mm": 156.2,
+          "end_opening_mm": 156.2,
+          "settled_opening_mm": 156.2,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 507,
+          "success": true,
+          "best_score": 0.9898904531615501,
+          "first_satisfied_step": 13,
+          "end_step": 8800,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 10,
+          "max_opening_mm": 125.8,
+          "end_opening_mm": 125.8,
+          "settled_opening_mm": 125.8,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 508,
+          "success": true,
+          "best_score": 0.9991291728270516,
+          "first_satisfied_step": 14,
+          "end_step": 8900,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 11,
+          "max_opening_mm": 150.5,
+          "end_opening_mm": 150.5,
+          "settled_opening_mm": 150.5,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 509,
+          "success": true,
+          "best_score": 0.9930445640321108,
+          "first_satisfied_step": 13,
+          "end_step": 9000,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 12,
+          "max_opening_mm": 129.6,
+          "end_opening_mm": 129.6,
+          "settled_opening_mm": 129.6,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        }
+      ],
+      "saved": true
+    },
+    {
+      "timesteps": 25000,
+      "train_episodes": 25,
+      "train_goal_rate": 0.96,
+      "train_reached_rate": 1.0,
+      "train_grasp_rate": 0.96,
+      "train_max_opening_mm": 200.0,
+      "train_failures": {
+        "open_but_goal_unmet": 1
+      },
+      "validation_goal_rate": 1.0,
+      "validation_settled_goal_rate": 1.0,
+      "validation_failures": {},
+      "validation_max_opening_mm": 181.4,
+      "validation_episodes": [
+        {
+          "seed": 500,
+          "success": true,
+          "best_score": 0.9999362380389248,
+          "first_satisfied_step": 15,
+          "end_step": 9100,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 12,
+          "max_opening_mm": 176.6,
+          "end_opening_mm": 176.6,
+          "settled_opening_mm": 176.6,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 501,
+          "success": true,
+          "best_score": 0.9999184427940583,
+          "first_satisfied_step": 15,
+          "end_step": 9200,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 11,
+          "max_opening_mm": 174.1,
+          "end_opening_mm": 173.2,
+          "settled_opening_mm": 173.2,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 502,
+          "success": true,
+          "best_score": 0.9999543223370417,
+          "first_satisfied_step": 16,
+          "end_step": 9300,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 12,
+          "max_opening_mm": 179.9,
+          "end_opening_mm": 179.9,
+          "settled_opening_mm": 179.9,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 503,
+          "success": true,
+          "best_score": 0.9998843590949287,
+          "first_satisfied_step": 15,
+          "end_step": 9400,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 12,
+          "max_opening_mm": 170.6,
+          "end_opening_mm": 164.2,
+          "settled_opening_mm": 164.2,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 504,
+          "success": true,
+          "best_score": 0.9999069904566737,
+          "first_satisfied_step": 15,
+          "end_step": 9500,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 11,
+          "max_opening_mm": 172.8,
+          "end_opening_mm": 165.1,
+          "settled_opening_mm": 165.1,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 505,
+          "success": true,
+          "best_score": 0.999957655298058,
+          "first_satisfied_step": 14,
+          "end_step": 9600,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 11,
+          "max_opening_mm": 180.7,
+          "end_opening_mm": 180.7,
+          "settled_opening_mm": 180.7,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 506,
+          "success": true,
+          "best_score": 0.9998890595888439,
+          "first_satisfied_step": 15,
+          "end_step": 9700,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 22,
+          "max_opening_mm": 171.1,
+          "end_opening_mm": 167.8,
+          "settled_opening_mm": 167.8,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 507,
+          "success": true,
+          "best_score": 0.999960670658625,
+          "first_satisfied_step": 15,
+          "end_step": 9800,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 12,
+          "max_opening_mm": 181.4,
+          "end_opening_mm": 179.4,
+          "settled_opening_mm": 179.4,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 508,
+          "success": true,
+          "best_score": 0.9999100280545554,
+          "first_satisfied_step": 16,
+          "end_step": 9900,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 13,
+          "max_opening_mm": 173.2,
+          "end_opening_mm": 173.1,
+          "settled_opening_mm": 173.1,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 509,
+          "success": true,
+          "best_score": 0.9998770744719171,
+          "first_satisfied_step": 15,
+          "end_step": 10000,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 12,
+          "max_opening_mm": 170.0,
+          "end_opening_mm": 169.0,
+          "settled_opening_mm": 169.0,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        }
+      ]
+    },
+    {
+      "timesteps": 27500,
+      "train_episodes": 25,
+      "train_goal_rate": 1.0,
+      "train_reached_rate": 1.0,
+      "train_grasp_rate": 1.0,
+      "train_max_opening_mm": 200.0,
+      "train_failures": {},
+      "validation_goal_rate": 1.0,
+      "validation_settled_goal_rate": 1.0,
+      "validation_failures": {},
+      "validation_max_opening_mm": 200.0,
+      "validation_episodes": [
+        {
+          "seed": 500,
+          "success": true,
+          "best_score": 0.9999938558272289,
+          "first_satisfied_step": 24,
+          "end_step": 10100,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 12,
+          "max_opening_mm": 200.0,
+          "end_opening_mm": 197.1,
+          "settled_opening_mm": 197.1,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 501,
+          "success": true,
+          "best_score": 0.9999938558272289,
+          "first_satisfied_step": 23,
+          "end_step": 10200,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 12,
+          "max_opening_mm": 200.0,
+          "end_opening_mm": 198.7,
+          "settled_opening_mm": 198.7,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 502,
+          "success": true,
+          "best_score": 0.9999938558272289,
+          "first_satisfied_step": 26,
+          "end_step": 10300,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 13,
+          "max_opening_mm": 200.0,
+          "end_opening_mm": 198.9,
+          "settled_opening_mm": 198.9,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 503,
+          "success": true,
+          "best_score": 0.9999938558272289,
+          "first_satisfied_step": 24,
+          "end_step": 10400,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 13,
+          "max_opening_mm": 200.0,
+          "end_opening_mm": 187.9,
+          "settled_opening_mm": 187.9,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 504,
+          "success": true,
+          "best_score": 0.9999896780731399,
+          "first_satisfied_step": 24,
+          "end_step": 10500,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 12,
+          "max_opening_mm": 194.8,
+          "end_opening_mm": 184.4,
+          "settled_opening_mm": 184.4,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 505,
+          "success": true,
+          "best_score": 0.9999938545911154,
+          "first_satisfied_step": 21,
+          "end_step": 10600,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 10,
+          "max_opening_mm": 200.0,
+          "end_opening_mm": 190.2,
+          "settled_opening_mm": 190.2,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 506,
+          "success": true,
+          "best_score": 0.9999938558272289,
+          "first_satisfied_step": 22,
+          "end_step": 10700,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 11,
+          "max_opening_mm": 200.0,
+          "end_opening_mm": 173.0,
+          "settled_opening_mm": 173.0,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 507,
+          "success": true,
+          "best_score": 0.9999938558272289,
+          "first_satisfied_step": 23,
+          "end_step": 10800,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 11,
+          "max_opening_mm": 200.0,
+          "end_opening_mm": 183.0,
+          "settled_opening_mm": 183.0,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 508,
+          "success": true,
+          "best_score": 0.9999938524296087,
+          "first_satisfied_step": 24,
+          "end_step": 10900,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 12,
+          "max_opening_mm": 200.0,
+          "end_opening_mm": 184.6,
+          "settled_opening_mm": 184.6,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        },
+        {
+          "seed": 509,
+          "success": true,
+          "best_score": 0.9999938558272289,
+          "first_satisfied_step": 24,
+          "end_step": 11000,
+          "goal_met": true,
+          "failure": null,
+          "goal_unmet": [],
+          "ever_grasped": true,
+          "grasped_at_end": false,
+          "first_grasp_step": 13,
+          "max_opening_mm": 200.0,
+          "end_opening_mm": 186.4,
+          "settled_opening_mm": 186.4,
+          "settled_goal_met": true,
+          "settled_goal_unmet": []
+        }
+      ]
+    },
+    {
+      "timesteps": 30000,
+      "train_episodes": 25,
+      "train_goal_rate": 0.76,
+      "train_reached_rate": 0.76,
+      "train_grasp_rate": 0.72,
+      "train_max_opening_mm": 200.0,
+      "train_failures": {
+        "never_grasped": 6
+      },
+      "validation_goal_rate": 0.0,
+      "validation_settled_goal_rate": 0.0,
+      "validation_failures": {
+        "never_grasped": 10
+      },
+      "validation_max_opening_mm": 3.0,
+      "validation_episodes": [
+        {
+          "seed": 500,
+          "success": false,
+          "best_score": 0.00038816786037138007,
+          "first_satisfied_step": null,
+          "end_step": 11100,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.5,
+          "end_opening_mm": 0.0,
+          "settled_opening_mm": 0.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 501,
+          "success": false,
+          "best_score": 0.0003678974645615063,
+          "first_satisfied_step": null,
+          "end_step": 11200,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.9,
+          "end_opening_mm": 0.0,
+          "settled_opening_mm": 0.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 502,
+          "success": false,
+          "best_score": 0.00038170989798314015,
+          "first_satisfied_step": null,
+          "end_step": 11300,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.3,
+          "end_opening_mm": 0.0,
+          "settled_opening_mm": 0.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 503,
+          "success": false,
+          "best_score": 0.0003617841745330308,
+          "first_satisfied_step": null,
+          "end_step": 11400,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.8,
+          "end_opening_mm": 0.0,
+          "settled_opening_mm": 0.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 504,
+          "success": false,
+          "best_score": 0.0004275438999236658,
+          "first_satisfied_step": null,
+          "end_step": 11500,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 0.0,
+          "settled_opening_mm": 0.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 505,
+          "success": false,
+          "best_score": 0.00042663515270807695,
+          "first_satisfied_step": null,
+          "end_step": 11600,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.4,
+          "end_opening_mm": 1.4,
+          "settled_opening_mm": 1.4,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 506,
+          "success": false,
+          "best_score": 0.0004523883006177787,
+          "first_satisfied_step": null,
+          "end_step": 11700,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 3.0,
+          "end_opening_mm": 0.0,
+          "settled_opening_mm": 0.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 507,
+          "success": false,
+          "best_score": 0.00043383560309173674,
+          "first_satisfied_step": null,
+          "end_step": 11800,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 2.6,
+          "end_opening_mm": 0.0,
+          "settled_opening_mm": 0.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 508,
+          "success": false,
+          "best_score": 0.00039662992255301566,
+          "first_satisfied_step": null,
+          "end_step": 11900,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 1.7,
+          "end_opening_mm": 0.0,
+          "settled_opening_mm": 0.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        },
+        {
+          "seed": 509,
+          "success": false,
+          "best_score": 0.0003555482948202626,
+          "first_satisfied_step": null,
+          "end_step": 12000,
+          "goal_met": false,
+          "failure": "never_grasped",
+          "goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ],
+          "ever_grasped": false,
+          "grasped_at_end": false,
+          "first_grasp_step": null,
+          "max_opening_mm": 0.6,
+          "end_opening_mm": 0.0,
+          "settled_opening_mm": 0.0,
+          "settled_goal_met": false,
+          "settled_goal_unmet": [
+            "not drawer_closed(drawer)",
+            "drawer_open(drawer)"
+          ]
+        }
+      ]
+    }
+  ]
+}

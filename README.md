@@ -282,7 +282,24 @@ reached the handoff while the learned skill's demonstrations were collected.
 
 The signed-literal rerun of both tasks (2026-11-11), with the restoration goal of
 both signs and robust checks, is reported in
-`artifacts/signed_literals_20261111/REPORT.md`. Two protocol questions it raised
-are open: which Stow checkpoint the selection rule should pick, and when the final
-evaluation should stop the direct baseline's policy. Its numbers are not final
-until they are settled.
+`artifacts/signed_literals_20261111/REPORT.md`. It raised two protocol questions:
+which Stow checkpoint the selection rule should pick, and when the final evaluation
+should stop the direct baseline's policy. Both were settled before Round 2, and its
+numbers are kept as previous results.
+
+Round 2 (2026-11-12) gives the final numbers, in
+`artifacts/round2_20261112/REPORT.md`. Its protocol was frozen before training
+(`PLAN.md` there):
+- the direct baseline's reward is B': drawer_open's signed score, plus 1 at every step
+  where the complete signed goal holds, with no fences;
+- the direct baseline is selected and evaluated after all 100 steps and the settling;
+- the Stow checkpoint is selected on fresh validation scenes, starting exactly where
+  Stage 4 starts the skill, by the contract where Stage 4 stops the policy, then a
+  robustness margin, then the latest checkpoint;
+- the targeted Drawer policies are retrained, and validated on the complete goal too.
+
+On 50 fresh Drawer configurations, all eight policies restore the complete goal in
+50 of 50. The targeted method reaches 90% complete-goal validation in about 2.4 times
+fewer interactions, and stays there in 4 of 4 runs against 2 of 4. StowCube passes
+Stage 4 on 50 fresh scenes: 48/50 for the full plan and for the relearned operator.
+The two failures are a scripted pick on the two scenes with an invalid handoff.

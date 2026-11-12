@@ -1,0 +1,27 @@
+{
+ "step": "stow_train",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "scripts/stow_stage3_train.py",
+  "--timesteps",
+  "120000",
+  "--eval-every",
+  "4000",
+  "--curriculum-steps",
+  "60000",
+  "--seed",
+  "0",
+  "--spec",
+  "artifacts/signed_literals_20261111/E2_stage2/stow_hole_spec.json",
+  "--out-dir",
+  "artifacts/round2_20261112/R1_training/stow"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "f4f753fc24549ea160c275e205e88c2b0a4928f0",
+  "tracked_changes": []
+ },
+ "started": "2026-11-12 09:43:10",
+ "seconds": 3037.9,
+ "exit_code": 0
+}

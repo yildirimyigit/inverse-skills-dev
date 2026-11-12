@@ -1,0 +1,26 @@
+{
+ "note": "Each checkpoint is identified by its SHA-256 (check a copy with `sha256sum`). Stage 4 and the final evaluation use each run's sac_hole_best.zip.",
+ "load": "stable_baselines3.SAC.load('<run folder>/sac_hole_best', device='cpu')",
+ "versions": {
+  "torch": "2.7.1+cu128",
+  "stable-baselines3": "2.8.0",
+  "mani-skill": "3.0.1",
+  "sapien": "3.0.3"
+ },
+ "runs": {
+  "1794476593": {
+   "sac_seed": 0,
+   "selected": "sac_hole_best.zip",
+   "files": {
+    "sac_hole_best.zip": {
+     "bytes": 3036954,
+     "sha256": "7743f8142b76dac4d53e84a3ff4f3bce3588b404610a80a24bacf20eb805f85f"
+    },
+    "sac_hole_final.zip": {
+     "bytes": 3036937,
+     "sha256": "afdfb6ae35cf32ca97684b7b4aaac5e7fca2602ee9405e04a4794277d12b7542"
+    }
+   }
+  }
+ }
+}

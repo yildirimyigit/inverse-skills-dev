@@ -1,0 +1,27 @@
+{
+ "step": "final_targeted_vs_direct",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "scripts/drawer_final_evaluate.py",
+  "--seeds",
+  "7000,7001,7002,7003,7004,7005,7006,7007,7008,7009,7010,7011,7012,7013,7014,7015,7016,7017,7018,7019,7020,7021,7022,7023,7024,7025,7026,7027,7028,7029,7030,7031,7032,7033,7034,7035,7036,7037,7038,7039,7040,7041,7042,7043,7044,7045,7046,7047,7048,7049",
+  "--operator",
+  "artifacts/signed_literals_20261111/E1_stage1/drawer_stage1_operator.json",
+  "--stage3",
+  "artifacts/round2_20261112/R1_training/drawer",
+  "--direct",
+  "artifacts/round2_20261112/R1_training/direct",
+  "--workers",
+  "4",
+  "--out",
+  "artifacts/round2_20261112/R3_final/final_targeted_vs_direct.json"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "f4f753fc24549ea160c275e205e88c2b0a4928f0",
+  "tracked_changes": []
+ },
+ "started": "2026-11-12 10:44:27",
+ "seconds": 51.0,
+ "exit_code": 0
+}

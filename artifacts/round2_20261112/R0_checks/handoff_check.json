@@ -1,0 +1,386 @@
+{
+  "spec": "artifacts/signed_literals_20261111/E2_stage2/stow_hole_spec.json",
+  "passed": true,
+  "seeds": [
+    {
+      "seed": 4000,
+      "scene": 4000,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        15.390999794006348,
+        11.847999572753906
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4001,
+      "scene": 4001,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        30.950000762939453,
+        0.11800000071525574
+      ],
+      "stop_step_stage4": 7,
+      "stop_step_validation": 7,
+      "steps_compared": 7,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4002,
+      "scene": 4002,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        2.7690000534057617,
+        18.95400047302246
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4003,
+      "scene": 4003,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        26.013999938964844,
+        1.8539999723434448
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4004,
+      "scene": 4004,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        8.47700023651123,
+        19.204999923706055
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4005,
+      "scene": 4005,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        2.864000082015991,
+        19.930999755859375
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4006,
+      "scene": 4006,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        0.05299999937415123,
+        24.26099967956543
+      ],
+      "stop_step_stage4": 7,
+      "stop_step_validation": 7,
+      "steps_compared": 7,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4007,
+      "scene": 4007,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        27.593000411987305,
+        1.944000005722046
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4008,
+      "scene": 4008,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        21.47599983215332,
+        7.617000102996826
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4009,
+      "scene": 4009,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        16.36199951171875,
+        14.512999534606934
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4010,
+      "scene": 4010,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        28.051000595092773,
+        7.427000045776367
+      ],
+      "stop_step_stage4": 7,
+      "stop_step_validation": 7,
+      "steps_compared": 7,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4011,
+      "scene": 4011,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        26.354000091552734,
+        1.4079999923706055
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4012,
+      "scene": 4012,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        28.26099967956543,
+        0.15700000524520874
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4013,
+      "scene": 4013,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        25.38599967956543,
+        2.0980000495910645
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4014,
+      "scene": 4014,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        30.238000869750977,
+        2.2100000381469727
+      ],
+      "stop_step_stage4": 7,
+      "stop_step_validation": 7,
+      "steps_compared": 7,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4015,
+      "scene": 4015,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        8.645000457763672,
+        19.090999603271484
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4016,
+      "scene": 4016,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        15.265000343322754,
+        13.473999977111816
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4017,
+      "scene": 4017,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        6.428999900817871,
+        14.151000022888184
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4018,
+      "scene": 4018,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        30.39299964904785,
+        0.0
+      ],
+      "stop_step_stage4": 8,
+      "stop_step_validation": 8,
+      "steps_compared": 8,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    },
+    {
+      "seed": 4019,
+      "scene": 4019,
+      "handoff_valid": true,
+      "stage4_prefix_failure": null,
+      "state_differs_at_handoff": [],
+      "fingers_equal": true,
+      "contacts_equal": true,
+      "finger_contact_n": [
+        17.114999771118164,
+        5.863999843597412
+      ],
+      "stop_step_stage4": 6,
+      "stop_step_validation": 6,
+      "steps_compared": 6,
+      "trajectory_steps_differing": [],
+      "scores_at_stop_equal": true,
+      "equal": true
+    }
+  ]
+}

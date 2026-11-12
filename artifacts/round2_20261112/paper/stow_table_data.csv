@@ -1,0 +1,7 @@
+contract_at_40,contract_at_stop,goal_met,goal_met_boolean,handoffs_valid,item,mean_steps,n,p10_margin_at_40,part
+20,20,,,20,validation (4000-4019),4.35,20,0.1763903264095802,Stage 3
+50,50,,,50,test (5000-5049),4.14,50,0.17380285756056202,Stage 3
+,,48,48,,Full plan: planner + learned drag + retreat_to_safe,,50,,Stage 4
+,,0,0,,Library only,,50,,Stage 4
+,,1,1,,Without the interference model,,50,,Stage 4
+,,48,48,,Relearned: the drag as an extracted library operator,,50,,Stage 4

@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{StowCube: the learned drag and the full inverse.}
+\label{tab:stow-round2}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Stage 3 & Contract at the stop & 95\% interval & P10 margin \\
+\midrule
+validation (4000--4019) & 20/20 & [84, 100]\% & +0.176 \\
+test (5000--5049) & 50/50 & [93, 100]\% & +0.174 \\
+\midrule
+Stage 4 (5000--5049) & Complete signed goal & 95\% interval & Boolean \\
+\midrule
+Full plan: planner + learned drag + retreat\_to\_safe & 48/50 & [87, 99]\% & 48/50 \\
+Library only & 0/50 & [0, 7]\% & 0/50 \\
+Without the interference model & 1/50 & [0, 10]\% & 1/50 \\
+Relearned: the drag as an extracted library operator & 48/50 & [87, 99]\% & 48/50 \\
+\bottomrule
+\end{tabular}
+\end{table}

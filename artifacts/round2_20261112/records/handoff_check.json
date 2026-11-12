@@ -1,0 +1,19 @@
+{
+ "step": "handoff_check",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "artifacts/round2_20261112/handoff_check.py",
+  "--spec",
+  "artifacts/signed_literals_20261111/E2_stage2/stow_hole_spec.json",
+  "--out",
+  "artifacts/round2_20261112/R0_checks/handoff_check.json"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "f4f753fc24549ea160c275e205e88c2b0a4928f0",
+  "tracked_changes": []
+ },
+ "started": "2026-11-12 09:41:57",
+ "seconds": 50.6,
+ "exit_code": 0
+}

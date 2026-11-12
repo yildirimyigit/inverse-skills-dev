@@ -1,0 +1,15 @@
+{
+ "step": "manifest",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "artifacts/round2_20261112/manifest.py"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "2db49e1177325ed332e155f4bfe22f453a563509",
+  "tracked_changes": []
+ },
+ "started": "2026-11-12 10:47:08",
+ "seconds": 1.3,
+ "exit_code": 0
+}

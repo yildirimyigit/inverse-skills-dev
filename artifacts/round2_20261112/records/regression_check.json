@@ -1,0 +1,23 @@
+{
+ "step": "regression_check",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "artifacts/round2_20261112/regression_check.py",
+  "--new",
+  "artifacts/round2_20261112/R0_checks/final_eval_3000_regression.json",
+  "--targeted-record",
+  "artifacts/signed_literals_20261111/E4_stage4/final_targeted_vs_direct.json",
+  "--direct-record",
+  "artifacts/signed_literals_20261111/D_diagnostics/direct_full_horizon.json",
+  "--out",
+  "artifacts/round2_20261112/R0_checks/regression_check.json"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "f4f753fc24549ea160c275e205e88c2b0a4928f0",
+  "tracked_changes": []
+ },
+ "started": "2026-11-12 09:42:57",
+ "seconds": 0.1,
+ "exit_code": 0
+}

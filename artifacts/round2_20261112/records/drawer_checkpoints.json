@@ -1,0 +1,21 @@
+{
+ "step": "drawer_checkpoints",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "scripts/stage3_checkpoints.py",
+  "--runs",
+  "artifacts/round2_20261112/R1_training/drawer",
+  "--selected",
+  "sac_hole_best.zip",
+  "--out",
+  "artifacts/round2_20261112/R1_training/drawer/checkpoints.json"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "f4f753fc24549ea160c275e205e88c2b0a4928f0",
+  "tracked_changes": []
+ },
+ "started": "2026-11-12 10:41:32",
+ "seconds": 0.1,
+ "exit_code": 0
+}

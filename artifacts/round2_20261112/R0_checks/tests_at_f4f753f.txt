@@ -1,0 +1,2 @@
+commit f4f753fc24549ea160c275e205e88c2b0a4928f0, 2026-11-12T09:41:53: PYTHONNOUSERSITE=1 python -m pytest -q
+333 passed, 1497 warnings in 19.63s

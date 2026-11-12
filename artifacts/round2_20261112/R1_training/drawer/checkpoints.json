@@ -1,0 +1,68 @@
+{
+ "note": "Each checkpoint is identified by its SHA-256 (check a copy with `sha256sum`). Stage 4 and the final evaluation use each run's sac_hole_best.zip.",
+ "load": "stable_baselines3.SAC.load('<run folder>/sac_hole_best', device='cpu')",
+ "versions": {
+  "torch": "2.7.1+cu128",
+  "stable-baselines3": "2.8.0",
+  "mani-skill": "3.0.1",
+  "sapien": "3.0.3"
+ },
+ "runs": {
+  "seed0_1794476593": {
+   "sac_seed": 0,
+   "selected": "sac_hole_best.zip",
+   "files": {
+    "sac_hole_best.zip": {
+     "bytes": 3099608,
+     "sha256": "ff0b86a4576f5ff18da1ff6ac13d3f4991cb964e33084d96701b30d4160e7fd9"
+    },
+    "sac_hole_final.zip": {
+     "bytes": 3099594,
+     "sha256": "6ad4d9925e2788c5b27736a87ed2cef1fd7372eb022714bcc1036f1ecb2b9510"
+    }
+   }
+  },
+  "seed1_1794476593": {
+   "sac_seed": 1,
+   "selected": "sac_hole_best.zip",
+   "files": {
+    "sac_hole_best.zip": {
+     "bytes": 3099608,
+     "sha256": "f6a09ec9ebf630806b00e350133c7f49da7c5dc0c249d128abd85b28032fc1e8"
+    },
+    "sac_hole_final.zip": {
+     "bytes": 3099594,
+     "sha256": "8125c92ec3c11117da4e6cd31c7ce076e73c1214b443726d8163bc9ae309ba21"
+    }
+   }
+  },
+  "seed2_1794476593": {
+   "sac_seed": 2,
+   "selected": "sac_hole_best.zip",
+   "files": {
+    "sac_hole_best.zip": {
+     "bytes": 3099609,
+     "sha256": "55bf4758d1d5f9b91222d101a55044cc824eecf2fe354ec00a563a74be442d34"
+    },
+    "sac_hole_final.zip": {
+     "bytes": 3099594,
+     "sha256": "136902d7d15e611e156c7e1aaab2b5863be3a40e6d959743fd3ea7be22891c91"
+    }
+   }
+  },
+  "seed3_1794476593": {
+   "sac_seed": 3,
+   "selected": "sac_hole_best.zip",
+   "files": {
+    "sac_hole_best.zip": {
+     "bytes": 3099613,
+     "sha256": "66b8584fcfdfd008b897aeec7dbb2bfba1ee5e34a972a6f7f8b1199e54ac160a"
+    },
+    "sac_hole_final.zip": {
+     "bytes": 3099598,
+     "sha256": "09a4fa0c23c14e2f52fa878a2ca08921683699ce91442b3ab24457f6376228e0"
+    }
+   }
+  }
+ }
+}

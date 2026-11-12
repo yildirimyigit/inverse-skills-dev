@@ -1,0 +1,179 @@
+{
+  "goal": [
+    {
+      "atom": "at_handle_standoff(drawer)",
+      "polarity": "negative"
+    },
+    {
+      "atom": "drawer_closed(drawer)",
+      "polarity": "negative"
+    },
+    {
+      "atom": "drawer_open(drawer)",
+      "polarity": "positive"
+    },
+    {
+      "atom": "handle_grasped(drawer)",
+      "polarity": "negative"
+    }
+  ],
+  "goal_positive": [
+    "drawer_open(drawer)"
+  ],
+  "goal_negative": [
+    "at_handle_standoff(drawer)",
+    "drawer_closed(drawer)",
+    "handle_grasped(drawer)"
+  ],
+  "protocol": "one policy after approach_handle, from the standoff: HOLE[drawer_open], nothing scripted after it",
+  "difference_from_the_targeted_method": "the targeted plan runs the scripted pull_open after its learned grasp, which also releases the handle; the direct policy has no scripted action after it",
+  "same_start_as_grasp_hole": true,
+  "passed": true,
+  "seeds": [
+    {
+      "seed": 0,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "protocol_plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "protocol_plan_reaches_the_goal_in_the_model": false,
+      "model_misses": [
+        "the goal literal not at_handle_standoff(drawer) does not hold at the end"
+      ],
+      "exact_planner": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "exact_planner_without_a_learnable_grasp": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]",
+        "HOLE[not at_handle_standoff(drawer)]"
+      ],
+      "relaxed_unrestricted_ablation": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ]
+    },
+    {
+      "seed": 1,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "protocol_plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "protocol_plan_reaches_the_goal_in_the_model": false,
+      "model_misses": [
+        "the goal literal not at_handle_standoff(drawer) does not hold at the end"
+      ],
+      "exact_planner": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "exact_planner_without_a_learnable_grasp": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]",
+        "HOLE[not at_handle_standoff(drawer)]"
+      ],
+      "relaxed_unrestricted_ablation": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ]
+    },
+    {
+      "seed": 2,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "protocol_plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "protocol_plan_reaches_the_goal_in_the_model": false,
+      "model_misses": [
+        "the goal literal not at_handle_standoff(drawer) does not hold at the end"
+      ],
+      "exact_planner": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "exact_planner_without_a_learnable_grasp": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]",
+        "HOLE[not at_handle_standoff(drawer)]"
+      ],
+      "relaxed_unrestricted_ablation": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ]
+    },
+    {
+      "seed": 3,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "protocol_plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "protocol_plan_reaches_the_goal_in_the_model": false,
+      "model_misses": [
+        "the goal literal not at_handle_standoff(drawer) does not hold at the end"
+      ],
+      "exact_planner": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "exact_planner_without_a_learnable_grasp": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]",
+        "HOLE[not at_handle_standoff(drawer)]"
+      ],
+      "relaxed_unrestricted_ablation": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ]
+    },
+    {
+      "seed": 4,
+      "state": [
+        "drawer_closed(drawer)"
+      ],
+      "protocol_plan": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]"
+      ],
+      "protocol_plan_reaches_the_goal_in_the_model": false,
+      "model_misses": [
+        "the goal literal not at_handle_standoff(drawer) does not hold at the end"
+      ],
+      "exact_planner": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ],
+      "exact_planner_without_a_learnable_grasp": [
+        "approach_handle(drawer)",
+        "HOLE[drawer_open(drawer)]",
+        "HOLE[not at_handle_standoff(drawer)]"
+      ],
+      "relaxed_unrestricted_ablation": [
+        "approach_handle(drawer)",
+        "HOLE[handle_grasped(drawer)]",
+        "pull_open(drawer)"
+      ]
+    }
+  ]
+}

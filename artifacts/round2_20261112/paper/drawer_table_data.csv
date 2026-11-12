@@ -1,0 +1,9 @@
+policy,run,configurations,success,wilson_low,wilson_high,valid_forward,success_given_valid_forward,policy_target,goal_before_settling,lost_while_settling,gained_while_settling,first_90_complete,stayed_90_complete,best_complete,final_complete,first_90_skill,selected_at,failures
+"targeted, SAC seed 0",seed0_1794476593,50,50,0.9286499658256813,1.0,50,50,50,50,0,0,10000,True,1.0,1.0,10000,10000,{}
+"targeted, SAC seed 1",seed1_1794476593,50,50,0.9286499658256813,1.0,50,50,50,50,0,0,10000,True,1.0,1.0,10000,10000,{}
+"targeted, SAC seed 2",seed2_1794476593,50,50,0.9286499658256813,1.0,50,50,50,50,0,0,12500,True,1.0,1.0,12500,12500,{}
+"targeted, SAC seed 3",seed3_1794476593,50,50,0.9286499658256813,1.0,50,50,50,50,0,0,10000,True,1.0,1.0,12500,12500,{}
+"direct, SAC seed 0",seed0_1794479689,50,50,0.9286499658256813,1.0,50,50,50,50,0,0,25000,False,1.0,0.7,,25000,{}
+"direct, SAC seed 1",seed1_1794479689,50,50,0.9286499658256813,1.0,50,50,50,50,0,0,22500,True,1.0,1.0,,22500,{}
+"direct, SAC seed 2",seed2_1794479689,50,50,0.9286499658256813,1.0,50,50,50,50,0,0,22500,False,1.0,0.0,,22500,{}
+"direct, SAC seed 3",seed3_1794479689,50,50,0.9286499658256813,1.0,50,50,50,50,0,0,25000,True,1.0,1.0,,25000,{}

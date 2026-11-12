@@ -1,0 +1,17 @@
+{
+ "step": "tests",
+ "command": [
+  "/opt/conda/envs/inverse-skills/bin/python",
+  "-m",
+  "pytest",
+  "-q"
+ ],
+ "checkout": {
+  "branch": "feature/signed-literals",
+  "commit": "f4f753fc24549ea160c275e205e88c2b0a4928f0",
+  "tracked_changes": []
+ },
+ "started": "2026-11-12 09:41:31",
+ "seconds": 21.6,
+ "exit_code": 0
+}
