@@ -4,20 +4,25 @@ Everything about the learner is Stage 3's: SAC with the default MlpPolicy and
 the Stage 3 settings (read from a Stage 3 run's config.json, --stage3-config, so
 they cannot drift), the training starts (seeds 0-31, offsets redrawn every
 episode), the validation starts (seeds 500-509, used only to choose the
-checkpoint), the budget (30,000 environment steps), the evaluation interval, and
-the framework's reward with nothing added: the target's signed score plus the
-spec's fences (`restoration.hole_reward`). Only the problem differs: the direct
-baseline's hole (drawer_direct_spec.py), 100-step episodes and the 9-number
-observation (drawer_direct_env.py).
+checkpoint), the budget (30,000 environment steps) and the evaluation interval.
+What differs is the problem: the direct baseline's hole (drawer_direct_spec.py,
+no fences), 100-step episodes, the 9-number observation and the reward B'
+(drawer_direct_env.py): 2 V(drawer_open) - 1, plus 1 at every step where the
+complete signed goal holds.
 
-Success: the complete signed restoration goal of the Stage 1 operator, every
-literal robustly, measured at the end of the episode, the same goal the targeted
-method is judged by. After every validation episode the arm is held still for 10
-steps and the goal is measured again. Nothing calls pull_open or any other
-scripted manipulation.
+Validation: every episode runs all 100 steps, then the established settling (10
+steps, the arm held still, the last gripper command held), and succeeds when the
+complete signed restoration goal of the Stage 1 operator holds after settling,
+every literal robustly: the same measure the final evaluation uses. The goal
+before settling is recorded too, and not used. Nothing calls pull_open or any
+other scripted manipulation.
+
+Checkpoint selection (frozen 2026-11-12, before training): the highest settled
+validation success; among equal rates, the earliest checkpoint.
 
 Never evaluated here: seeds 1000-1019 and 2000-2019 (used in earlier
-development) and 3000-3049 (reserved for the final comparison).
+development), 3000-3049 (the previous final comparison) and 7000-7049 (reserved
+for the final comparison).
 
 Outputs under artifacts/drawer/direct/<run_id>/: config.json, summary.json,
 sac_direct_best.zip and sac_direct_final.zip.
@@ -69,9 +74,14 @@ def rollout(env: DrawerDirectEnv, seeds, model) -> dict:
             "episodes": episodes}
 
 
+def select_checkpoint(history: list[dict]) -> dict:
+    """The selected evaluation: the highest settled validation success, the earliest among equals."""
+    return max(history, key=lambda row: (row["validation_settled_goal_rate"], -row["timesteps"]))
+
+
 class EvalBest(BaseCallback):
     """Every `every` steps: summarise the training episodes since the last report,
-    evaluate on the validation starts, and keep the best checkpoint (as Stage 3)."""
+    evaluate on the validation starts, and keep the selected checkpoint."""
 
     def __init__(self, train_env: DrawerDirectEnv, eval_env: DrawerDirectEnv, every: int, path: Path):
         super().__init__()
@@ -80,7 +90,6 @@ class EvalBest(BaseCallback):
         self.every = every
         self.path = path
         self.history: list[dict] = []
-        self.best = -1.0
         self._seen = 0
 
     def _on_step(self) -> bool:
@@ -103,11 +112,10 @@ class EvalBest(BaseCallback):
             "validation_max_opening_mm": validation["max_opening_mm"],
             "validation_episodes": validation["episodes"],
         }
-        if row["validation_goal_rate"] > self.best:
-            self.best = row["validation_goal_rate"]
+        self.history.append(row)
+        if select_checkpoint(self.history) is row:
             self.model.save(self.path)
             row["saved"] = True
-        self.history.append(row)
         print(f"  {self.num_timesteps:>6} steps | training episodes {row['train_episodes']:3d}: grasped "
               f"{row['train_grasp_rate']:.0%}, opened {row['train_reached_rate']:.0%}, held "
               f"{row['train_goal_rate']:.0%}, max opening {row['train_max_opening_mm']:.0f} mm | validation "
@@ -154,9 +162,11 @@ def main() -> None:
         "sac_from": str(args.stage3_config), "episode_length": train_env.max_steps,
         "observation_size": int(train_env.observation_space.shape[0]),
         "start_offset_m": train_env.start_offset,
-        "reward": f"signed score of {target} plus min(0, signed score) of each fence: "
-                  f"{', '.join(str(f) for f in sorted(fences)) or 'none'}; no shaping",
-        "success": "the complete signed restoration goal, every literal robustly",
+        "reward": f"B': signed score of {target} (2 V - 1) plus 1 at every step where the complete signed "
+                  f"goal robustly holds; fences: {', '.join(str(f) for f in sorted(fences)) or 'none'}",
+        "success": "the complete signed restoration goal, every literal robustly, after all 100 steps and "
+                   "the 10 settling steps",
+        "selection": "the highest validation_settled_goal_rate; the earliest checkpoint among equals",
         "seeds": {"train": TRAIN_SEEDS, "validation": VALIDATION_SEEDS},
     }, indent=2))
     print(f"hole {spec['hole']}: start {spec['start']}, preserve {spec['preserve']}, keep false "
@@ -176,7 +186,7 @@ def main() -> None:
         hit = next((e for e in episodes if key(e)), None)
         return None if hit is None else hit["end_step"] - length + (hit["first_satisfied_step"] or length)
 
-    best_row = max(evaluator.history, key=lambda r: (r["validation_goal_rate"], -r["timesteps"]))
+    best_row = select_checkpoint(evaluator.history)
     summary = {
         "timesteps": args.timesteps,
         "minutes": minutes,
@@ -195,9 +205,12 @@ def main() -> None:
             "training_best_drawer_open_score": max(e["best_score"] for e in episodes),
             "training_failures": dict(Counter(e["failure"] for e in episodes if e["failure"])),
         },
-        "best_checkpoint": {"timesteps": best_row["timesteps"], "validation_goal_rate": best_row["validation_goal_rate"],
+        "best_checkpoint": {"timesteps": best_row["timesteps"],
+                            "validation_settled_goal_rate": best_row["validation_settled_goal_rate"],
+                            "validation_goal_rate": best_row["validation_goal_rate"],
                             "sha256": sha256(best_path.with_suffix(".zip"))},
         "final": {"timesteps": evaluator.history[-1]["timesteps"],
+                  "validation_settled_goal_rate": evaluator.history[-1]["validation_settled_goal_rate"],
                   "validation_goal_rate": evaluator.history[-1]["validation_goal_rate"],
                   "validation_failures": evaluator.history[-1]["validation_failures"],
                   "sha256": sha256(run_dir / "sac_direct_final.zip")},
@@ -207,8 +220,8 @@ def main() -> None:
     eval_env.close()
     (run_dir / "summary.json").write_text(json.dumps(summary, indent=2))
     print(f"\ntrained in {minutes:.1f} min: {summary['training_interactions']} steps, {len(episodes)} episodes | "
-          f"best validation {best_row['validation_goal_rate']:.0%} at {best_row['timesteps']} steps, final "
-          f"{summary['final']['validation_goal_rate']:.0%} | first opening at step "
+          f"selected: settled validation {best_row['validation_settled_goal_rate']:.0%} at {best_row['timesteps']} "
+          f"steps, final {summary['final']['validation_settled_goal_rate']:.0%} | first opening at step "
           f"{summary['discovery']['first_opening_at_step']}\nwrote {run_dir}/summary.json")
 
 

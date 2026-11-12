@@ -28,6 +28,14 @@ the optimal policy.
 
 A start-state curriculum loosens the handoff from a firm seat on the object to
 a light touch, so the first episodes see reward gradient immediately.
+
+Training restores each scene's handoff from a saved simulator state, then seats
+the hand again as the curriculum says. With `exact_handoff`, used for validation
+and testing, every reset instead runs the handoff afresh exactly as Stage 4 does:
+a rebuilt simulator, the forward push, the prefix through the executive, and
+nothing after approach. A saved state holds poses, velocities and joint
+positions, but not the contact solver's internal state or the controllers'
+targets, so only a fresh run is the start Stage 4 hands over.
 """
 
 from __future__ import annotations
@@ -64,8 +72,9 @@ class StowHoleEnv(gym.Env):
 
     def __init__(self, spec: dict, max_steps: int = MAX_STEPS, curriculum: float = 0.0,
                  seed_pool: tuple[int, ...] = tuple(range(32)),
-                 render_mode: str | None = None):
+                 render_mode: str | None = None, exact_handoff: bool = False):
         super().__init__()
+        self.exact_handoff = exact_handoff      # True: Stage 4's own handoff, run afresh, no re-seat
         self._env = prim.make_env(render_mode=render_mode)
         self.registry = sp.registry()
         self.spec = spec
@@ -107,23 +116,29 @@ class StowHoleEnv(gym.Env):
         prefix_ok = len(report.steps) == len(self._prefix) and all(s.ok for s in report.steps)
         return obs, prefix_ok
 
-    def _handoff(self, episode_seed: int) -> tuple:
-        """The cached post-prefix simulator state for this seed, computed once.
+    def _valid_prefix(self, episode_seed: int):
+        """Run the handoff for this seed, leaving the simulator there.
 
         A handoff is valid when every prefix step met its postcondition and the
         hole's start literals hold as measured. Invalid ones are re-rolled with a
         fresh scene: a prefix that failed is the executive's problem, not
-        something the policy should be asked to learn from.
+        something the policy should be asked to learn from. Returns the last
+        observation, the number of scenes tried and whether the last was valid.
         """
+        attempts, valid = 0, False
+        for attempt in range(_MAX_PREFIX_ATTEMPTS):
+            attempts = attempt + 1
+            obs, prefix_ok = self._run_prefix(episode_seed + attempt * 10_000)
+            scores = self._scores(obs)
+            valid = prefix_ok and not robustly_unmet(self.start_literals, scores)
+            if valid:
+                break
+        return obs, attempts, valid
+
+    def _handoff(self, episode_seed: int) -> tuple:
+        """The cached post-prefix simulator state for this seed, computed once."""
         if episode_seed not in self._handoffs:
-            attempts, valid = 0, False
-            for attempt in range(_MAX_PREFIX_ATTEMPTS):
-                attempts = attempt + 1
-                obs, prefix_ok = self._run_prefix(episode_seed + attempt * 10_000)
-                scores = self._scores(obs)
-                valid = prefix_ok and not robustly_unmet(self.start_literals, scores)
-                if valid:
-                    break
+            _obs, attempts, valid = self._valid_prefix(episode_seed)
             state = self._env.unwrapped.get_state_dict()
             self._handoffs[episode_seed] = (state, self._regions, attempts, valid)
         return self._handoffs[episode_seed]
@@ -157,10 +172,13 @@ class StowHoleEnv(gym.Env):
             episode_seed = int(seed)
         else:
             episode_seed = int(self.np_random.choice(self.seed_pool))
-        state, regions, attempts, valid = self._handoff(episode_seed)
-        self._env.unwrapped.set_state_dict(state)
-        self._regions = regions
-        obs = self._descend_to_start(self._env.unwrapped.get_obs())
+        if self.exact_handoff:
+            obs, attempts, valid = self._valid_prefix(episode_seed)     # as Stage 4: afresh, no re-seat
+        else:
+            state, regions, attempts, valid = self._handoff(episode_seed)
+            self._env.unwrapped.set_state_dict(state)
+            self._regions = regions
+            obs = self._descend_to_start(self._env.unwrapped.get_obs())
         self._obs = obs
         self._steps = 0
         self._first_satisfied = None

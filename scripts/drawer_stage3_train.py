@@ -10,9 +10,17 @@ to 1 cm around the standoff):
   test         seeds 1000-1019, used only for the final report
 
 Success means handle_grasped >= 0.8 at the end of the 40-step episode, the
-physically validated condition from Stage 0. On the test seeds every episode is
-then followed by the scripted pull_open, to see whether the learned grasp
-really lets the drawer be pulled open.
+physically validated condition from Stage 0. The best checkpoint is the one with
+the highest validation success, the earliest among equals. On the test seeds every
+episode is then followed by the scripted pull_open, to see whether the learned
+grasp really lets the drawer be pulled open.
+
+At every validation checkpoint a second measure is recorded from the same starts,
+for comparing learning efficiency with the direct baseline on the same objective
+(2026-11-12): the complete signed restoration goal after the final evaluation's own
+targeted procedure, `drawer_final_evaluate.inverse` (the policy until the grasp
+robustly holds, at most 40 steps; pull_open if it holds; the 10 settling steps).
+It never takes part in selecting the checkpoint.
 
 Two reference points on the test seeds: random actions (what SAC's first
 exploration sees) and a hand-coded "descend, then close" policy (the task is
@@ -36,6 +44,10 @@ import torch
 from stable_baselines3 import SAC
 from stable_baselines3.common.callbacks import BaseCallback
 
+import drawer_final_evaluate as final       # a script beside this one: its `inverse` procedure
+
+from inverse_skills.envs import drawer_domain as dd
+from inverse_skills.envs import drawer_predicates as dp
 from inverse_skills.envs import drawer_primitives as prim
 from inverse_skills.envs.drawer_hole_env import DrawerHoleEnv, load_spec
 from inverse_skills.operators.hole_planner import spec_target
@@ -103,16 +115,29 @@ def rollout(env: DrawerHoleEnv, seeds, policy, pull: bool = False) -> dict:
     return summary
 
 
+def task_rollout(env: DrawerHoleEnv, seeds, model, registry, goal) -> dict:
+    """The complete-goal measure: from each start (the same as the skill-level validation's),
+    the final evaluation's targeted procedure, and the complete signed goal after settling."""
+    episodes = []
+    for seed in seeds:
+        env.reset(seed=seed)
+        row = final.inverse(final.Recorder(env._env, registry, goal), env._obs, "targeted", model, registry, goal)
+        episodes.append({"seed": seed, **{k: row[k] for k in (
+            "success", "failure", "grasp_achieved", "learned_steps", "goal_before_settling", "final_opening_mm")}})
+    return {"success_rate": float(np.mean([e["success"] for e in episodes])), "episodes": episodes}
+
+
 class EvalBest(BaseCallback):
     """Every `every` steps: report the training episodes since the last report,
     evaluate on the validation seeds, and keep the best checkpoint."""
 
-    def __init__(self, train_env: DrawerHoleEnv, eval_env: DrawerHoleEnv, every: int, path: Path):
+    def __init__(self, train_env: DrawerHoleEnv, eval_env: DrawerHoleEnv, every: int, path: Path, goal):
         super().__init__()
         self.train_env = train_env
         self.eval_env = eval_env
         self.every = every
         self.path = path
+        self.registry, self.goal = dp.registry(), goal
         self.history: list[dict] = []
         self.best = -1.0
         self._seen = 0
@@ -132,6 +157,9 @@ class EvalBest(BaseCallback):
             "train_mean_best_score": float(np.mean([e["best_score"] for e in recent])) if recent else 0.0,
             "validation_success_rate": validation["success_rate"],
         }
+        task = task_rollout(self.eval_env, VALIDATION_SEEDS, self.model, self.registry, self.goal)
+        row["validation_task_success_rate"] = task["success_rate"]
+        row["validation_task_episodes"] = task["episodes"]
         if row["validation_success_rate"] > self.best:
             self.best = row["validation_success_rate"]
             self.model.save(self.path)
@@ -140,7 +168,8 @@ class EvalBest(BaseCallback):
         print(f"  {self.num_timesteps:>6} steps | training episodes: {row['train_episodes']:3d}, "
               f"grasp reached {row['train_reached_rate']:.0%}, held at the end {row['train_success_rate']:.0%}, "
               f"mean best score {row['train_mean_best_score']:.2f} | validation success "
-              f"{row['validation_success_rate']:.0%}{'  <- best' if row.get('saved') else ''}")
+              f"{row['validation_success_rate']:.0%}, complete goal {row['validation_task_success_rate']:.0%}"
+              f"{'  <- best' if row.get('saved') else ''}", flush=True)
         return True
 
 
@@ -151,10 +180,13 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--spec", type=Path, default=Path("artifacts/drawer/hole_spec.json"))
+    ap.add_argument("--operator", type=Path, default=Path("artifacts/drawer/stage1_operator.json"),
+                    help="the Stage 1 operator, whose signed restoration goal the complete-goal measure uses")
     ap.add_argument("--out-dir", type=Path, default=Path("artifacts/drawer/stage3"))
     args = ap.parse_args()
     spec = load_spec(args.spec)
     target = spec_target(spec)
+    goal = dd.goal_from_operator(args.operator)
     print(f"hole: target {target}, start {spec['start']}, preserve {spec['preserve']}, "
           f"keep false {spec['preserve_absent']}")
 
@@ -166,6 +198,10 @@ def main() -> None:
         "seed": args.seed, "device": args.device, "spec": str(args.spec), "spec_sha256": sha256(args.spec),
         "target": target.to_dict(), "sac": SAC_SETTINGS,
         "seeds": {"train": TRAIN_SEEDS, "validation": VALIDATION_SEEDS, "test": TEST_SEEDS},
+        "operator": str(args.operator),
+        "selection": "the highest validation_success_rate; the earliest checkpoint among equals",
+        "also_recorded": "validation_task_success_rate: the complete signed goal after "
+                         "drawer_final_evaluate.inverse; never used for selection",
     }, indent=2))
 
     train_env = DrawerHoleEnv(spec, seed_pool=TRAIN_SEEDS)
@@ -180,7 +216,7 @@ def main() -> None:
         print(f"  {name:20s} success {result['success_rate']:.0%}")
 
     model = SAC("MlpPolicy", train_env, verbose=0, seed=args.seed, device=args.device, **SAC_SETTINGS)
-    evaluator = EvalBest(train_env, eval_env, args.eval_every, best_path)
+    evaluator = EvalBest(train_env, eval_env, args.eval_every, best_path, goal)
     print(f"training SAC for {args.timesteps} steps ({args.device})")
     started = time.perf_counter()
     model.learn(total_timesteps=args.timesteps, callback=evaluator)

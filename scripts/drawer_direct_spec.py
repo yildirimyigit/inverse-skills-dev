@@ -12,12 +12,15 @@ not reach `not at_handle_standoff` in the model, because a hole only makes its
 own literal true and the hand stays at the standoff there. So the plan is stated
 here, and both planners' own answers are recorded beside it.
 
-Everything else is derived as for every other learned skill: the hole's start is
-the exact planner's start rule (the largest set of robot-relative facts the
-library holds together: the standoff), and `hole_spec` reads the fences off the
-plan's causal structure under the signed goal. Under that goal the plan must keep
-`not handle_grasped`: the goal needs the handle released at the end and nothing
-after the hole releases it.
+The hole's start is derived as for every other learned skill: the exact planner's
+start rule (the largest set of robot-relative facts the library holds together:
+the standoff). `hole_spec` also reads fences off the plan's causal structure under
+the signed goal: there, the plan must keep `not handle_grasped`, since the goal
+needs the handle released at the end and nothing after the hole releases it. The
+direct baseline keeps no fences (decision of 2026-11-12): it is one policy for the
+whole task, rewarded with B' for the complete goal (drawer_direct_env.py), and may
+grasp on the way. The derived fences are recorded in the spec, under
+`fences_derived_not_used`, and are not used.
 
 Success is measured physically, against the complete signed goal (the direct
 environment and the final comparison); the model does not predict it here. The
@@ -115,15 +118,21 @@ def main() -> None:
 
     start = states[0]
     spec = hp.hole_spec(domain, start, protocol_plan(domain, start), goal_pos, goal_neg)
+    # One policy for the whole task, rewarded for the complete goal: no fences (2026-11-12).
+    spec["fences_derived_not_used"] = {"preserve": spec["preserve"], "preserve_absent": spec["preserve_absent"]}
+    spec["preserve"], spec["preserve_absent"] = [], []
     grasp_spec = load_spec(args.grasp_spec)
     same_start = spec["start"] == grasp_spec["start"] and spec["prefix"] == grasp_spec["prefix"]
-    ok = same_start and len({tuple(row["state"]) for row in rows}) == 1
+    ok = same_start and len({tuple(row["state"]) for row in rows}) == 1 and not hp.spec_fences(spec)
 
     print(f"\ndirect hole: {spec['hole']}, target {hp.spec_target(spec)}")
     print(f"  starts from: {', '.join(spec['start'])} after {[a['name'] for a in spec['prefix']]}"
           f"  (grasp hole: {', '.join(grasp_spec['start'])} after {[a['name'] for a in grasp_spec['prefix']]})")
     print(f"  must preserve: {spec['preserve'] or 'nothing'}; must keep false: {spec['preserve_absent'] or 'nothing'}"
           f"; after the hole: {[a['name'] for a in spec['suffix']] or 'nothing'}")
+    derived = spec["fences_derived_not_used"]
+    print(f"  fences the plan derives, not used: keep true {derived['preserve'] or 'nothing'}, "
+          f"keep false {derived['preserve_absent'] or 'nothing'}")
     print("\nDIRECT SPEC:", "PASS" if ok else "FAIL")
 
     args.out_dir.mkdir(parents=True, exist_ok=True)

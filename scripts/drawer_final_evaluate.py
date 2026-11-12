@@ -1,6 +1,7 @@
-"""Final targeted-versus-direct evaluation on the reserved configurations, seeds 3000-3049.
+"""Final targeted-versus-direct evaluation on the reserved configurations, seeds 7000-7049.
 
-These seeds were never used before: not for training, checkpoint selection or tuning.
+These seeds were never used before: not for training, checkpoint selection or tuning
+(artifacts/round2_20261112/seed_audit.json). The previous comparison used 3000-3049.
 
 Eight frozen policies, each at its validation-selected best checkpoint, with its
 SHA-256 checked against the tracked manifest before loading:
@@ -14,8 +15,9 @@ Every episode, the same for both methods:
   2. targeted: the grasp policy until handle_grasped robustly holds (at least 0.8),
      at most 40 steps (its training horizon), then the known pull_open, run only
      if the grasp holds (its precondition);
-     direct: the drawer-opening policy until the restoration goal holds, at most
-     100 steps (its training horizon);
+     direct: the drawer-opening policy for all 100 steps of its training horizon,
+     never stopped when the goal first holds (decision of 2026-11-11; before
+     that, it stopped at the first step where the goal held);
   3. settling, identical for both: 10 steps with the arm held still and the
      gripper command unchanged;
   4. success: the complete signed restoration goal of the Stage 1 operator, every
@@ -34,9 +36,13 @@ How the drawer was moved is recorded the first time it passes 50 mm open: a
 two-finger pinch (handle_grasped >= 0.8), a one-finger press (one finger at
 10 N or more while the pinch does not count), or other.
 
-Also, from the validation curves recorded during training (seeds 500-509): the
-interactions needed to first reach >= 90% validation success, whether it held
-afterwards, and best versus final checkpoint.
+Steps 2 to 4 are one function, `inverse`, which the targeted policies' training
+also calls for its complete-goal validation measure (drawer_stage3_train.py), so
+that measure and this evaluation run the same procedure.
+
+Also, from the validation curves recorded during training (seeds 500-509), for
+every curve a run recorded, each under its own name: the interactions needed to
+first reach >= 90%, whether it held afterwards, and best versus final.
 
 Writes artifacts/drawer/final_targeted_vs_direct.json (never overwrites) and prints the table.
 """
@@ -66,7 +72,7 @@ from inverse_skills.operators.literals import ROBUST_TRUE, join, neg, pos, robus
 
 torch.set_num_threads(1)
 
-SEEDS = tuple(range(3000, 3050))
+SEEDS = tuple(range(7000, 7050))
 GRASP_STEPS = 40          # the grasp policies' training horizon
 DIRECT_STEPS = 100        # the direct policies' training horizon
 SETTLE_STEPS = 10
@@ -149,6 +155,14 @@ def episode(env: Recorder, seed: int, method: str, policy, registry, goal, forwa
         row.update(success=False, failure="the push or the approach did not reach the handoff state")
         return row
 
+    row.update(inverse(env, obs, method, policy, registry, goal))
+    return row
+
+
+def inverse(env: Recorder, obs, method: str, policy, registry, goal) -> dict:
+    """Steps 2 to 4 of an episode, from the handoff: the method's policy (and, for targeted,
+    pull_open if the grasp holds), the settling, and the verdict on the complete signed goal."""
+    row = {}
     env.start()
     if method == "targeted":
         grasp = registry.get(GRASPED)
@@ -162,12 +176,13 @@ def episode(env: Recorder, seed: int, method: str, policy, registry, goal, forwa
     else:
         achieve, grasp = registry.get(OPEN), registry.get(GRASPED)
         obs, used = run_policy(env, obs, policy, lambda o: observe_direct(o, achieve, grasp),
-                               lambda s: goal_met(s, goal), DIRECT_STEPS, registry)
+                               lambda _s: False, DIRECT_STEPS, registry)      # the full horizon
         row["policy_target_achieved"] = scores(obs, registry)[OPEN] >= ROBUST_TRUE
     env.active = False
     row.update(learned_steps=used, steps_total=env.steps, steps_to_goal=env.goal_step,
                max_opening_mm=round(env.max_opening * 1000, 1), handle_grasped_held=env.grasp_held,
-               at_50mm=env.at_50mm, goal_before_settling=goal_met(scores(obs, registry), goal))
+               at_50mm=env.at_50mm, goal_before_settling=goal_met(scores(obs, registry), goal),
+               settle_gripper_command=env.gripper)
 
     obs = step_in_place(env, obs, SETTLE_STEPS, gripper_cmd=env.gripper)
     final = scores(obs, registry)
@@ -226,21 +241,37 @@ def checkpoints(stage3: Path, direct: Path) -> dict[str, dict]:
     return found
 
 
+# Every validation curve a run may record, each reported under its own name:
+#   validation_success_rate        targeted: handle_grasped at the end of a 40-step episode (skill level)
+#   validation_task_success_rate   targeted: the complete goal after `inverse` (grasp, pull_open, settling)
+#   validation_goal_rate           direct: the complete goal at the end of the 100 steps, before settling
+#   validation_settled_goal_rate   direct: the complete goal after the 100 steps and the settling
+CURVES = ("validation_success_rate", "validation_task_success_rate", "validation_goal_rate",
+          "validation_settled_goal_rate")
+# The curve the printed table shows: the complete goal where the run recorded it.
+SHOWN = {"targeted": ("validation_task_success_rate", "validation_success_rate"),
+         "direct": ("validation_settled_goal_rate", "validation_goal_rate")}
+
+
+def curve_summary(rates: list[tuple[int, float]]) -> dict:
+    first = next((i for i, (_, r) in enumerate(rates) if r >= 0.9), None)
+    return {"first_90_at_step": rates[first][0] if first is not None else None,
+            "held_90_afterwards": first is not None and all(r >= 0.9 for _, r in rates[first:]),
+            "best_validation": max(r for _, r in rates), "final_validation": rates[-1][1], "curve": rates}
+
+
 def learning(name: str, method: str, stage3: Path, direct: Path) -> dict:
-    """From the validation curve recorded during training (seeds 500-509)."""
-    folder, key = (stage3, "validation_success_rate") if method == "targeted" else (direct, "validation_goal_rate")
+    """From the validation curves recorded during training (seeds 500-509)."""
+    folder = stage3 if method == "targeted" else direct
     seed = int(name.rsplit(" ", 1)[1])
     for path in folder.glob("*/summary.json"):
         if json.loads((path.parent / "config.json").read_text())["seed"] == seed:
             history = json.loads(path.read_text())["history"]
             break
-    rates = [(h["timesteps"], h[key]) for h in history]
-    first = next((i for i, (_, r) in enumerate(rates) if r >= 0.9), None)
+    curves = {key: curve_summary([(h["timesteps"], h[key]) for h in history]) for key in CURVES if key in history[0]}
+    shown = next(key for key in SHOWN[method] if key in curves)
     selected = [h["timesteps"] for h in history if h.get("saved")][-1]
-    return {"first_90_at_step": rates[first][0] if first is not None else None,
-            "held_90_afterwards": first is not None and all(r >= 0.9 for _, r in rates[first:]),
-            "best_validation": max(r for _, r in rates), "selected_at_step": selected,
-            "final_validation": rates[-1][1], "curve": rates}
+    return {**curves[shown], "shown_curve": shown, "selected_at_step": selected, "curves": curves}
 
 
 def summarise(rows: list[dict]) -> dict:

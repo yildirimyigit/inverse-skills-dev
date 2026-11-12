@@ -4,19 +4,23 @@ The targeted method (drawer_hole_env.py) learns only the missing grasp and
 leaves the pull to the known pull_open controller. The direct baseline asks one
 policy for the whole remaining inverse: HOLE[drawer_open] after approach_handle,
 fixed by protocol. Its spec (scripts/drawer_direct_spec.py) has the same start
-condition and prefix as the grasp hole, and the fence that plan derives under the
-signed goal: not handle_grasped.
+condition and prefix as the grasp hole, and no fences: the direct baseline is one
+policy for the whole task (decision of 2026-11-12), so a spec with fences is refused.
 
-Everything except the observation and the episode length is the grasp hole's
-environment, inherited unchanged: the same handoff (the forward push, then
+Everything except the observation, the episode length and the reward is the grasp
+hole's environment, inherited unchanged: the same handoff (the forward push, then
 approach_handle), the same random start offset of up to 1 cm around the
-standoff, the same 4-D action scaling, and the framework's reward, here
-2 V(drawer_open) - 1 + min(0, 1 - 2 V(handle_grasped)) at every step, with no
-shaping. So drawer_open is the only literal rewarded; not handle_grasped is
-penalised while it is broken, at every step, including while a grasp would be
-pulling; not drawer_closed and not at_handle_standoff are not in the reward at all,
-though success requires them. A step sends the policy's action to the
-arm and nothing else: no scripted grasp or pull runs inside an episode.
+standoff and the same 4-D action scaling. The reward is B', paid at every step t
+of the 100, with s_t the state after the step (decision of 2026-11-12):
+
+    R_t = 2 V(drawer_open)(s_t) - 1 + 1[s_t meets the complete signed goal robustly]
+
+dense progress on the target, plus 1 at every step where the whole goal holds
+(at least 0.8 for p, at most 0.2 for not p). Weight exactly 1, nothing else: a
+temporary grasp costs nothing. B' only orders single steps (a state in the goal
+earns at least 1.6, any other at most 1); it does not make a goal-reaching policy
+optimal, and nothing here claims that. A step sends the policy's action to the arm
+and nothing else: no scripted grasp or pull runs inside an episode.
 
 Observation, 9 numbers: the grasp policy's own 7 (the margin of handle_grasped,
 the TCP's offset from the grasp point, the gripper's opening, the two finger
@@ -26,8 +30,7 @@ in units of its 20 cm travel.
 
 Success is the complete signed restoration goal, every literal judged robustly
 (`literals.py`), the same goal the targeted method is judged by: the drawer open
-and not shut, and the hand neither at the standoff nor holding the handle. The
-reward is the framework's, from the spec: the target's signed score plus its fences.
+and not shut, and the hand neither at the standoff nor holding the handle.
 
 Each finished episode is summarised in `episodes`, with the reason it failed:
   open_but_goal_unmet  the drawer ends open, but another goal literal is not met
@@ -49,7 +52,8 @@ from inverse_skills.envs import drawer_primitives as prim
 from inverse_skills.envs import drawer_skill_io as skill_io
 from inverse_skills.envs.drawer_hole_env import DrawerHoleEnv
 from inverse_skills.envs.motion import step_in_place
-from inverse_skills.operators.literals import ROBUST_TRUE, join, robustly_unmet
+from inverse_skills.operators.hole_planner import spec_fences
+from inverse_skills.operators.literals import ROBUST_TRUE, Literal, join, robustly_unmet
 
 MAX_STEPS = 100            # checked in scripts/drawer_direct_precheck.py
 GRASPED = "handle_grasped(drawer)"
@@ -69,10 +73,19 @@ def observe(obs, achieve, grasp, positive: bool = True) -> np.ndarray:
     ]).astype(np.float32)
 
 
+def direct_reward(target: Literal, goal, scores) -> float:
+    """B': the target's signed score, 2 V - 1 for drawer_open, plus 1 when every literal of the
+    complete signed goal robustly holds in these scores."""
+    return target.signed_score(scores[target.atom]) + (0.0 if robustly_unmet(goal, scores) else 1.0)
+
+
 class DrawerDirectEnv(DrawerHoleEnv):
     """From the standoff, open the drawer: grasp and pull, all learned."""
 
     def __init__(self, spec: dict, goal: tuple[set[str], set[str]], max_steps: int = MAX_STEPS, **kwargs):
+        if spec_fences(spec):
+            raise ValueError("the direct baseline keeps no fences (its reward is B'); this spec has "
+                             + ", ".join(str(f) for f in sorted(spec_fences(spec))))
         super().__init__(spec, max_steps=max_steps, **kwargs)
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(9,), dtype=np.float32)
         self.goal_positive, self.goal_negative = goal
@@ -84,6 +97,9 @@ class DrawerDirectEnv(DrawerHoleEnv):
 
     def observe(self, obs) -> np.ndarray:
         return observe(obs, self._achieve, self._grasp, self.target.positive)
+
+    def _reward(self, scores) -> float:
+        return direct_reward(self.target, self.goal, scores)
 
     def goal_unmet(self, scores) -> list[str]:
         """The goal literals the scores do not robustly meet."""

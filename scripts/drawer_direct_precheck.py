@@ -19,18 +19,20 @@ kept for evaluation:
   3. measurement      at every step of those episodes: the opening the
                       environment reports equals the drawer joint's position;
                       drawer_open's score is 0.5 (1 + tanh((opening - 8 cm) / 2 cm));
-                      the reward is the signed score of drawer_open, 2 V - 1,
-                      plus min(0, signed score) of each of the spec's fences;
                       goal_met is every literal of the signed goal robustly
-                      (at least 0.8 for p, at most 0.2 for not p). Both are
-                      computed here again from those definitions.
+                      (at least 0.8 for p, at most 0.2 for not p); the reward is
+                      B', the signed score of drawer_open, 2 V - 1, plus 1 where
+                      goal_met holds. Both are computed here again from those
+                      definitions. No episode here meets the goal (the reference
+                      controller never lets go), so the goal term is checked on a
+                      measured goal state in tests/test_round2_protocol.py.
   4. nothing scripted every episode step is exactly one simulator step, and no
                       scripted motion runs during an episode (they are made to
                       raise for the duration).
 
 Also measured, not gated: what uniformly random actions, which SAC explores
-with first, reach on the training starts: grasps, how far the drawer opens, and
-the best drawer_open score, the only reward signal.
+with first, reach on the training starts: grasps, how far the drawer opens, the
+best drawer_open score (the dense reward signal) and how often the goal holds.
 
 Writes artifacts/drawer/direct/precheck.json.
 """
@@ -122,13 +124,8 @@ def physical_state(env) -> np.ndarray:
 
 
 def expected_reward(env: DrawerDirectEnv, scores: dict[str, float]) -> float:
-    """The target's signed score plus each fence's signed score where it is negative, from the spec."""
-    reward = 2.0 * scores[env.achieve] - 1.0
-    for key in env.spec["preserve"]:
-        reward += min(0.0, 2.0 * scores[key] - 1.0)
-    for key in env.spec["preserve_absent"]:
-        reward += min(0.0, 1.0 - 2.0 * scores[key])
-    return reward
+    """B' from its definition: 2 V(drawer_open) - 1, plus 1 where the whole signed goal robustly holds."""
+    return 2.0 * scores[env.achieve] - 1.0 + (1.0 if expected_goal_met(env, scores) else 0.0)
 
 
 def expected_goal_met(env: DrawerDirectEnv, scores: dict[str, float]) -> bool:
